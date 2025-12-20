@@ -3,9 +3,9 @@ import 'dotenv/config';
 
 import fs from "fs";
 import path from "path";
-import compression from "compression";
-import express, { NextFunction, type Request, Response } from "express";
-import session from "express-session";
+// import compression from "compression"; // Temporarily disabled for debugging
+import express, { type Request, Response } from "express";
+// import session from "express-session"; // Temporarily disabled (was causing hangs)
 import helmet from "helmet";
 import { cacheBusterMiddleware } from "./middleware/cacheBuster";
 import { populateUser } from "./middleware/permissions";
@@ -15,7 +15,8 @@ import { registerApiHealthRoutes } from "./routes/apiHealth";
 import { cleanupCacheService } from "./services/cacheService";
 // Debug logging disabled for performance
 import { validateEnvironment } from "./utils/envValidator";
-import { log, serveStatic, setupVite } from "./vite";
+import { log } from "./utils/logger";
+// Note: serveStatic and setupVite are dynamically imported to avoid loading Vite in production
 
 
 // #region Error Handlers - Must be before async IIFE
@@ -45,7 +46,7 @@ process.on('uncaughtException', (error: Error) => {
   process.exit(1);
 });
 
-process.on('unhandledRejection', (reason: unknown, promise: Promise<unknown>) => {
+process.on('unhandledRejection', (reason: unknown, _promise: Promise<unknown>) => {
   const errorLogPath = path.join(process.cwd(), '.cursor', 'debug.log');
   const errorMessage = reason instanceof Error ? reason.message : String(reason);
   const errorStack = reason instanceof Error ? reason.stack : undefined;
@@ -271,7 +272,7 @@ app.use((req, res, next) => {
   const publicPath = path.join(process.cwd(), 'client', 'public');
   if (fs.existsSync(publicPath)) {
     // Add explicit route for merlin.jpg first (before static middleware)
-    app.get('/merlin.jpg', (req, res, next) => {
+    app.get('/merlin.jpg', (_req, res) => {
       const filePath = path.join(publicPath, 'merlin.jpg');
       if (fs.existsSync(filePath)) {
         res.sendFile(path.resolve(filePath));
@@ -401,46 +402,13 @@ app.use((req, res, next) => {
       });
 
       log('✅ Production build serving configured');
-    } else if (isDevelopment) {
-      log('⚡ Setting up Vite for development...');
-      try {
-        // Increased timeout for Vite setup (60 seconds)
-        const viteSetup = Promise.race([
-          setupVite(app, server),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Vite setup timeout after 60 seconds')), 60000)
-          )
-        ]);
-        await viteSetup;
-        log('✅ Vite middleware configured successfully');
-        log('✅ Frontend server initialized');
-
-        // Note: Frontend health can be checked at /api/health/frontend after server starts
-        log('💡 Frontend health available at: /api/health/frontend');
-      } catch (viteError: unknown) {
-        const errorMessage = viteError instanceof Error ? viteError.message : 'Unknown error';
-        const errorStack = viteError instanceof Error ? viteError.stack : undefined;
-        log(`❌ Failed to setup Vite: ${errorMessage}`);
-        console.error('Vite setup error:', viteError);
-        if (errorStack) {
-          console.error('Vite setup error stack:', errorStack);
-        }
-        // Don't throw - continue without Vite (server can still serve API)
-        log('⚠️ Continuing without Vite - API will still work');
-        log('💡 Check /api/health/frontend for detailed error information');
-      }
     } else {
-      log('📦 Setting up static file serving for production...');
-      try {
-        serveStatic(app);
-        log('✅ Static files configured');
-      } catch (staticError: unknown) {
-        const errorMessage = staticError instanceof Error ? staticError.message : 'Unknown error';
-        log(`❌ Failed to setup static files: ${errorMessage}`);
-        console.error('Static setup error:', staticError);
-        // Don't throw - continue without static files
-        log('⚠️ Continuing without static files - API will still work');
-      }
+      // Note: Development mode with Vite and non-useProductionBuild paths have been removed
+      // because they cause issues when building for production (Vite is a dev dependency).
+      // The production build always uses useProductionBuild = true which serves static files
+      // from dist/public without needing Vite.
+      log('⚠️ Neither production build nor development mode - this should not happen');
+      log('📦 Production builds should use useProductionBuild = true');
     }
 
     // ALWAYS serve the app on the port specified in the environment variable PORT
