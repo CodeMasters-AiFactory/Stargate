@@ -1,0 +1,38 @@
+{
+  "common": {
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "편집",
+    "create": "만들기",
+    "search": "검색",
+    "filter": "필터",
+    "loading": "로딩 중...",
+    "error": "오류",
+    "success": "성공"
+  },
+  "navigation": {
+    "home": "홈",
+    "dashboard": "대시보드",
+    "projects": "프로젝트",
+    "settings": "설정",
+    "templates": "템플릿",
+    "components": "구성 요소"
+  },
+  "websiteBuilder": {
+    "generate": "웹사이트 생성",
+    "preview": "미리보기",
+    "publish": "게시",
+    "save": "웹사이트 저장",
+    "export": "코드 내보내기"
+  },
+  "emailMarketing": {
+    "campaigns": "캠페인",
+    "subscribers": "구독자",
+    "templates": "템플릿",
+    "analytics": "분석",
+    "createCampaign": "캠페인 만들기",
+    "sendCampaign": "캠페인 보내기"
+  }
+}
+

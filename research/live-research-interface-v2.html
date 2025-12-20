@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Research - Blue Origin IT Solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0A3D91 0%, #1E88E5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 32px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #E2E8F0;
+        }
+        
+        .header h1 {
+            color: #0A3D91;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .progress-indicator {
+            background: #E2E8F0;
+            border-radius: 20px;
+            height: 12px;
+            margin: 16px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #1E88E5 0%, #0A3D91 100%);
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #0A3D91;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        .step-list {
+            list-style: none;
+        }
+        
+        .step-item {
+            margin-bottom: 12px;
+        }
+        
+        .step-main {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .step-main.completed {
+            background: #F0FDF4;
+            color: #065F46;
+        }
+        
+        .step-main.active {
+            background: #EFF6FF;
+            color: #1E40AF;
+            font-weight: 600;
+        }
+        
+        .step-main.pending {
+            background: #F8FAFC;
+            color: #94A3B8;
+        }
+        
+        .step-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .step-number {
+            font-weight: 700;
+            min-width: 20px;
+        }
+        
+        .page-substeps {
+            margin-left: 36px;
+            margin-top: 8px;
+            padding-left: 16px;
+            border-left: 2px solid #E2E8F0;
+            display: none;
+        }
+        
+        .step-item.expanded .page-substeps {
+            display: block;
+        }
+        
+        .page-substep {
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .page-substep.completed {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .page-substep.active {
+            background: #DBEAFE;
+            color: #1E40AF;
+            font-weight: 600;
+        }
+        
+        .page-substep.pending {
+            background: #F1F5F9;
+            color: #94A3B8;
+        }
+        
+        .page-substep-icon {
+            font-size: 14px;
+            width: 16px;
+        }
+        
+        .current-step-header {
+            background: #EFF6FF;
+            border-left: 4px solid #1E88E5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .current-step-title {
+            color: #0A3D91;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .current-step-subtitle {
+            color: #64748B;
+            font-size: 14px;
+        }
+        
+        .page-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 16px;
+        }
+        
+        .page-tab {
+            padding: 12px 24px;
+            border: none;
+            background: #F8FAFC;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748B;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .page-tab.active {
+            background: #0A3D91;
+            color: white;
+        }
+        
+        .page-tab.completed {
+            background: #10B981;
+            color: white;
+        }
+        
+        .live-research-feed {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 16px;
+            background: #F8FAFC;
+        }
+        
+        .research-activity {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #1E88E5;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .research-activity.search {
+            border-left-color: #3B82F6;
+        }
+        
+        .research-activity.analysis {
+            border-left-color: #10B981;
+        }
+        
+        .research-activity.finding {
+            border-left-color: #F59E0B;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .activity-icon {
+            font-size: 20px;
+        }
+        
+        .activity-type {
+            font-weight: 700;
+            color: #1E293B;
+            font-size: 14px;
+        }
+        
+        .activity-time {
+            color: #94A3B8;
+            font-size: 12px;
+            margin-left: auto;
+        }
+        
+        .activity-content {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 8px;
+        }
+        
+        .activity-query {
+            background: #EFF6FF;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #1E40AF;
+            margin: 8px 0;
+        }
+        
+        .activity-findings {
+            background: #FEF3C7;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 8px;
+            border-left: 3px solid #F59E0B;
+        }
+        
+        .activity-findings strong {
+            color: #92400E;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .activity-findings ul {
+            margin-left: 20px;
+            color: #78350F;
+        }
+        
+        .page-research-summary {
+            background: #F0FDF4;
+            border: 2px solid #10B981;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+            display: none;
+        }
+        
+        .summary-title {
+            color: #065F46;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0A3D91;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #64748B;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        
+        .research-status {
+            background: #FEF3C7;
+            border: 2px solid #F59E0B;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+        
+        .status-text {
+            color: #92400E;
+            font-weight: 600;
+        }
+        
+        .admin-navigation {
+            background: #0A3D91;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        
+        .nav-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .nav-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: white;
+            color: #0A3D91;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .nav-button:hover:not(:disabled) {
+            background: #EFF6FF;
+            transform: translateY(-2px);
+        }
+        
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .nav-button.prev {
+            background: #1E88E5;
+            color: white;
+        }
+        
+        .nav-button.next {
+            background: #10B981;
+            color: white;
+        }
+        
+        .page-jump-select {
+            padding: 10px 16px;
+            border: 2px solid white;
+            border-radius: 8px;
+            background: white;
+            color: #0A3D91;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            min-width: 180px;
+        }
+        
+        .page-jump-select:hover {
+            background: #EFF6FF;
+        }
+        
+        .current-context {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .context-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        .admin-badge {
+            background: #F59E0B;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar: Progress Overview -->
+        <div class="sidebar">
+            <div class="header">
+                <h1>🔬 Research Progress</h1>
+                <div class="progress-indicator">
+                    <div class="progress-bar" id="overallProgress" style="width: 10%;"></div>
+                </div>
+                <div class="progress-text" id="progressText">10% Complete</div>
+            </div>
+            
+            <ul class="step-list">
+                <li class="step-item expanded">
+                    <div class="step-main completed">
+                        <span class="step-icon">✓</span>
+                        <span class="step-number">1.</span>
+                        <span>Topic Research</span>
+                    </div>
+                    <div class="page-substeps">
+                        <div class="page-substep completed">
+                            <span class="page-substep-icon">✓</span>
+                            <span>Home Page</span>
+                        </div>
+                        <div class="page-substep active">
+                            <span class="page-substep-icon">⟳</span>
+                            <span>Services Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>About Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Contact Page</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-main pending">
+                        <span class="step-icon">○</span>
+                        <span class="step-number">2.</span>
+                        <span>Industry Research</span>
+                    </div>
+                    <div class="page-substeps">
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Home Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Services Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>About Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Contact Page</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-main pending">
+                        <span class="step-icon">○</span>
+                        <span class="step-number">3.</span>
+                        <span>Competitor ID</span>
+                    </div>
+                    <div class="page-substeps">
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Home Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Services Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>About Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Contact Page</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-main pending">
+                        <span class="step-icon">○</span>
+                        <span class="step-number">4.</span>
+                        <span>Content Analysis</span>
+                    </div>
+                    <div class="page-substeps">
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Home Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Services Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>About Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Contact Page</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-main pending">
+                        <span class="step-icon">○</span>
+                        <span class="step-number">5.</span>
+                        <span>SEO Analysis</span>
+                    </div>
+                    <div class="page-substeps">
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Home Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Services Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>About Page</span>
+                        </div>
+                        <div class="page-substep pending">
+                            <span class="page-substep-icon">○</span>
+                            <span>Contact Page</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-main pending">
+                        <span class="step-icon">○</span>
+                        <span class="step-number">6.</span>
+                        <span>SWOT Analysis</span>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-main pending">
+                        <span class="step-icon">○</span>
+                        <span class="step-number">7.</span>
+                        <span>Content Strategy</span>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-main pending">
+                        <span class="step-icon">○</span>
+                        <span class="step-number">8.</span>
+                        <span>SEO Strategy</span>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-main pending">
+                        <span class="step-icon">○</span>
+                        <span class="step-number">9.</span>
+                        <span>Site Structure</span>
+                    </div>
+                </li>
+                <li class="step-item">
+                    <div class="step-main pending">
+                        <span class="step-icon">○</span>
+                        <span class="step-number">10.</span>
+                        <span>Content Plan</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content: Live Research Feed -->
+        <div class="main-content">
+            <!-- Admin Navigation Bar -->
+            <div class="admin-navigation">
+                <div class="current-context">
+                    <span class="admin-badge">Admin View</span>
+                    <span id="currentContext">Step 1: Topic Research → Services Page</span>
+                </div>
+                <div class="nav-controls">
+                    <button class="nav-button prev" id="prevPage" onclick="navigatePage(-1)">
+                        ← Previous Page
+                    </button>
+                    <select class="page-jump-select" id="pageJump" onchange="jumpToPage(this.value)">
+                        <option value="">Jump to Page...</option>
+                        <optgroup label="Step 1: Topic Research">
+                            <option value="step1-home">Home Page</option>
+                            <option value="step1-services" selected>Services Page</option>
+                            <option value="step1-about">About Page</option>
+                            <option value="step1-contact">Contact Page</option>
+                        </optgroup>
+                        <optgroup label="Step 2: Industry Research">
+                            <option value="step2-home">Home Page</option>
+                            <option value="step2-services">Services Page</option>
+                            <option value="step2-about">About Page</option>
+                            <option value="step2-contact">Contact Page</option>
+                        </optgroup>
+                        <optgroup label="Step 3: Competitor ID">
+                            <option value="step3-home">Home Page</option>
+                            <option value="step3-services">Services Page</option>
+                            <option value="step3-about">About Page</option>
+                            <option value="step3-contact">Contact Page</option>
+                        </optgroup>
+                        <optgroup label="Step 4: Content Analysis">
+                            <option value="step4-home">Home Page</option>
+                            <option value="step4-services">Services Page</option>
+                            <option value="step4-about">About Page</option>
+                            <option value="step4-contact">Contact Page</option>
+                        </optgroup>
+                        <optgroup label="Step 5: SEO Analysis">
+                            <option value="step5-home">Home Page</option>
+                            <option value="step5-services">Services Page</option>
+                            <option value="step5-about">About Page</option>
+                            <option value="step5-contact">Contact Page</option>
+                        </optgroup>
+                    </select>
+                    <button class="nav-button next" id="nextPage" onclick="navigatePage(1)">
+                        Next Page →
+                    </button>
+                </div>
+            </div>
+            
+            <div class="current-step-header">
+                <div class="current-step-title">Step 1: Topic Research</div>
+                <div class="current-step-subtitle">Researching: Services Page Topics</div>
+            </div>
+            
+            <div class="page-tabs">
+                <button class="page-tab completed" data-page="home">🏠 Home Page</button>
+                <button class="page-tab active" data-page="services">⚙️ Services Page</button>
+                <button class="page-tab" data-page="about">ℹ️ About Page</button>
+                <button class="page-tab" data-page="contact">📞 Contact Page</button>
+            </div>
+            
+            <div id="researchFeed" class="live-research-feed">
+                <!-- Research activities will appear here in real-time -->
+                <div class="research-activity search">
+                    <div class="activity-header">
+                        <span class="activity-icon">🔍</span>
+                        <span class="activity-type">WEB SEARCH</span>
+                        <span class="activity-time">Just now</span>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-query">Searching: "IT services page content structure software development managed IT"</div>
+                        <p>Researching optimal content structure and topics for IT services pages...</p>
+                    </div>
+                </div>
+                
+                <div class="research-activity analysis">
+                    <div class="activity-header">
+                        <span class="activity-icon">📊</span>
+                        <span class="activity-type">ANALYSIS</span>
+                        <span class="activity-time">3 seconds ago</span>
+                    </div>
+                    <div class="activity-content">
+                        <p>Analyzing competitor services pages and identifying content patterns...</p>
+                        <div class="activity-findings">
+                            <strong>Key Findings:</strong>
+                            <ul>
+                                <li>Services pages average 1,200-2,000 words for comprehensive coverage</li>
+                                <li>Each service needs: description, benefits, use cases, technical details</li>
+                                <li>Visual elements (icons, diagrams) increase engagement by 40%</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="page-research-summary" id="pageSummary" style="display: none;">
+                <div class="summary-title">
+                    <span>✓</span>
+                    <span>Services Page Research Complete</span>
+                </div>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">Topics Found</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Keywords</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1,800</div>
+                        <div class="stat-label">Words Planned</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="research-status">
+                <p class="status-text">⚠️ Research in progress for: <strong id="currentPage">Services Page</strong> (Step 1: Topic Research)</p>
+                <p style="color: #78350F; font-size: 14px; margin-top: 8px;">Website generation is locked until all research steps reach 100%.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Page navigation state
+        const pages = ['home', 'services', 'about', 'contact'];
+        const steps = [
+            'Topic Research',
+            'Industry Research', 
+            'Competitor ID',
+            'Content Analysis',
+            'SEO Analysis',
+            'SWOT Analysis',
+            'Content Strategy',
+            'SEO Strategy',
+            'Site Structure',
+            'Content Plan'
+        ];
+        
+        let currentStep = 0; // 0-indexed (Step 1 = 0)
+        let currentPageIndex = 1; // 0 = home, 1 = services, etc.
+        
+        // Step expansion toggle
+        document.querySelectorAll('.step-main').forEach(step => {
+            step.addEventListener('click', function() {
+                const stepItem = this.parentElement;
+                stepItem.classList.toggle('expanded');
+            });
+        });
+        
+        // Update UI based on current step and page
+        function updateUI() {
+            const pageName = pages[currentPageIndex].charAt(0).toUpperCase() + pages[currentPageIndex].slice(1) + ' Page';
+            const stepName = steps[currentStep];
+            
+            // Update context badge
+            document.getElementById('currentContext').textContent = `Step ${currentStep + 1}: ${stepName} → ${pageName}`;
+            
+            // Update step header
+            document.querySelector('.current-step-title').textContent = `Step ${currentStep + 1}: ${stepName}`;
+            document.querySelector('.current-step-subtitle').textContent = `Researching: ${pageName}`;
+            
+            // Update page tabs
+            document.querySelectorAll('.page-tab').forEach((tab, index) => {
+                tab.classList.remove('active');
+                if (index === currentPageIndex) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Update status
+            document.getElementById('currentPage').textContent = pageName;
+            
+            // Update jump selector
+            const jumpValue = `step${currentStep + 1}-${pages[currentPageIndex]}`;
+            document.getElementById('pageJump').value = jumpValue;
+            
+            // Update navigation buttons
+            const isFirstPage = currentPageIndex === 0;
+            const isLastPage = currentPageIndex === pages.length - 1;
+            document.getElementById('prevPage').disabled = isFirstPage && currentStep === 0;
+            document.getElementById('nextPage').disabled = isLastPage && currentStep === steps.length - 1;
+            
+            // Clear and reset feed for new page
+            clearFeed();
+            addActivity('finding', `Switched to ${pageName} research`, `Now researching ${pageName} for ${stepName}...`);
+        }
+        
+        // Navigate to previous/next page
+        function navigatePage(direction) {
+            if (direction === -1) {
+                // Previous page
+                if (currentPageIndex > 0) {
+                    currentPageIndex--;
+                } else if (currentStep > 0) {
+                    currentStep--;
+                    currentPageIndex = pages.length - 1; // Go to last page of previous step
+                }
+            } else {
+                // Next page
+                if (currentPageIndex < pages.length - 1) {
+                    currentPageIndex++;
+                } else if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    currentPageIndex = 0; // Go to first page of next step
+                }
+            }
+            updateUI();
+        }
+        
+        // Jump directly to a specific page
+        function jumpToPage(value) {
+            if (!value) return;
+            
+            const parts = value.split('-');
+            const stepNum = parseInt(parts[0].replace('step', '')) - 1;
+            const pageName = parts[1];
+            
+            currentStep = stepNum;
+            currentPageIndex = pages.indexOf(pageName);
+            
+            updateUI();
+        }
+        
+        // Page tab switching
+        document.querySelectorAll('.page-tab').forEach((tab, index) => {
+            tab.addEventListener('click', function() {
+                currentPageIndex = index;
+                updateUI();
+            });
+        });
+        
+        // Feed management
+        function clearFeed() {
+            document.getElementById('researchFeed').innerHTML = '';
+        }
+        
+        function addActivity(type, title, description, query = null, findings = null) {
+            const feed = document.getElementById('researchFeed');
+            const div = document.createElement('div');
+            div.className = `research-activity ${type}`;
+            
+            const icons = {
+                'search': '🔍',
+                'analysis': '📊',
+                'finding': '💡'
+            };
+            
+            const timeAgo = 'Just now';
+            
+            let findingsHTML = '';
+            if (findings && findings.length > 0) {
+                findingsHTML = `
+                    <div class="activity-findings">
+                        <strong>Key Findings:</strong>
+                        <ul>
+                            ${findings.map(f => `<li>${f}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            let queryHTML = '';
+            if (query) {
+                queryHTML = `<div class="activity-query">Searching: "${query}"</div>`;
+            }
+            
+            div.innerHTML = `
+                <div class="activity-header">
+                    <span class="activity-icon">${icons[type] || '💡'}</span>
+                    <span class="activity-type">${type.toUpperCase()}</span>
+                    <span class="activity-time">${timeAgo}</span>
+                </div>
+                <div class="activity-content">
+                    ${queryHTML}
+                    ${title ? `<strong>${title}</strong>` : ''}
+                    <p>${description || ''}</p>
+                    ${findingsHTML}
+                </div>
+            `;
+            
+            feed.insertBefore(div, feed.firstChild);
+            feed.scrollTop = 0;
+        }
+        
+        // Initialize
+        updateUI();
+    </script>
+</body>
+</html>
+

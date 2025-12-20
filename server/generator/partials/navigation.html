@@ -1,0 +1,31 @@
+<!-- Navigation Component v6.8 -->
+<nav class="cm-nav" role="navigation">
+  <div class="cm-nav-container">
+    <div class="cm-nav-brand">
+      <a href="/index.html" class="cm-nav-logo">{{projectName}}</a>
+    </div>
+    <button class="cm-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul class="cm-nav-menu">
+      {{#each navItems}}
+      <li class="cm-nav-item">
+        <a href="{{slug}}.html" class="cm-nav-link {{#if active}}active{{/if}}">{{title}}</a>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
+

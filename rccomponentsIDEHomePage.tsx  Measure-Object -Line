@@ -1,0 +1,380 @@
+warning: in the working copy of 'client/src/components/IDE/HomePage.tsx', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/client/src/components/IDE/HomePage.tsx b/client/src/components/IDE/HomePage.tsx[m
+[1mindex d5ee51e..3b1af12 100644[m
+[1m--- a/client/src/components/IDE/HomePage.tsx[m
+[1m+++ b/client/src/components/IDE/HomePage.tsx[m
+[36m@@ -4,68 +4,88 @@[m [mimport { Card, CardContent } from '@/components/ui/card';[m
+ import { Badge } from '@/components/ui/badge';[m
+ import { Input } from '@/components/ui/input';[m
+ import { Textarea } from '@/components/ui/textarea';[m
+[31m-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';[m
+[31m-import { Search, Plus, FolderOpen, Clock, Star, MoreHorizontal, Paperclip, ChevronDown, Brain, Code, ExternalLink } from 'lucide-react';[m
+[32m+[m[32mimport {[m
+[32m+[m[32m  Select,[m
+[32m+[m[32m  SelectContent,[m
+[32m+[m[32m  SelectItem,[m
+[32m+[m[32m  SelectTrigger,[m
+[32m+[m[32m  SelectValue,[m
+[32m+[m[32m} from '@/components/ui/select';[m
+[32m+[m[32mimport {[m
+[32m+[m[32m  Search,[m
+[32m+[m[32m  Plus,[m
+[32m+[m[32m  FolderOpen,[m
+[32m+[m[32m  Clock,[m
+[32m+[m[32m  Star,[m
+[32m+[m[32m  MoreHorizontal,[m
+[32m+[m[32m  Paperclip,[m
+[32m+[m[32m  ChevronDown,[m
+[32m+[m[32m  Brain,[m
+[32m+[m[32m  Code,[m
+[32m+[m[32m  ExternalLink,[m
+[32m+[m[32m} from 'lucide-react';[m
+ import { useIDE } from '@/hooks/use-ide';[m
+ import { useToast } from '@/hooks/use-toast';[m
+ import { apiRequest } from '@/lib/queryClient';[m
+[32m+[m[32mimport { useAuth } from '@/contexts/AuthContext';[m
+ [m
+ export function HomePage() {[m
+   const { setState } = useIDE();[m
+[32m+[m[32m  const { user } = useAuth();[m
+   const [searchQuery, setSearchQuery] = useState('');[m
+   const [description, setDescription] = useState('');[m
+   const [complexity, setComplexity] = useState('medium');[m
+   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);[m
+ [m
+   const recentProjects = [[m
+[31m-    { [m
+[31m-      id: '1', [m
+[31m-      name: 'StargatePortal', [m
+[32m+[m[32m    {[m
+[32m+[m[32m      id: '1',[m
+[32m+[m[32m      name: 'StargatePortal',[m
+       lastModified: '13 minutes ago',[m
+       status: 'Public',[m
+       language: 'React',[m
+[31m-      icon: '⚛️'[m
+[32m+[m[32m      icon: '⚛️',[m
+     },[m
+[31m-    { [m
+[31m-      id: '2', [m
+[31m-      name: 'CodeMasters', [m
+[32m+[m[32m    {[m
+[32m+[m[32m      id: '2',[m
+[32m+[m[32m      name: 'CodeMasters',[m
+       lastModified: '19 hours ago',[m
+       status: 'Deployed',[m
+       language: 'Node.js',[m
+[31m-      icon: '🟢'[m
+[32m+[m[32m      icon: '🟢',[m
+     },[m
+[31m-    { [m
+[31m-      id: '3', [m
+[31m-      name: 'Genesis Church', [m
+[32m+[m[32m    {[m
+[32m+[m[32m      id: '3',[m
+[32m+[m[32m      name: 'Genesis Church',[m
+       lastModified: '2 days ago',[m
+       status: 'Deployed',[m
+       language: 'Python',[m
+[31m-      icon: '🐍'[m
+[32m+[m[32m      icon: '🐍',[m
+     },[m
+[31m-    { [m
+[31m-      id: '4', [m
+[31m-      name: 'AI Assistant Bot', [m
+[32m+[m[32m    {[m
+[32m+[m[32m      id: '4',[m
+[32m+[m[32m      name: 'AI Assistant Bot',[m
+       lastModified: '3 days ago',[m
+       status: 'Private',[m
+       language: 'TypeScript',[m
+[31m-      icon: '🤖'[m
+[32m+[m[32m      icon: '🤖',[m
+     },[m
+[31m-    { [m
+[31m-      id: '5', [m
+[31m-      name: 'E-commerce Store', [m
+[32m+[m[32m    {[m
+[32m+[m[32m      id: '5',[m
+[32m+[m[32m      name: 'E-commerce Store',[m
+       lastModified: '1 week ago',[m
+       status: 'Public',[m
+       language: 'Next.js',[m
+[31m-      icon: '🛒'[m
+[32m+[m[32m      icon: '🛒',[m
+     },[m
+[31m-    { [m
+[31m-      id: '6', [m
+[31m-      name: 'Data Visualizer', [m
+[32m+[m[32m    {[m
+[32m+[m[32m      id: '6',[m
+[32m+[m[32m      name: 'Data Visualizer',[m
+       lastModified: '2 weeks ago',[m
+       status: 'Private',[m
+       language: 'Python',[m
+[31m-      icon: '📊'[m
+[31m-    }[m
+[32m+[m[32m      icon: '📊',[m
+[32m+[m[32m    },[m
+   ];[m
+ [m
+   const templateOptions = [[m
+[36m@@ -74,7 +94,7 @@[m [mexport function HomePage() {[m
+     { id: 'python', label: 'Python', icon: '🐍', description: 'Data & AI' },[m
+     { id: 'nextjs', label: 'Next.js', icon: '▲', description: 'Full-stack React' },[m
+     { id: 'vue', label: 'Vue.js', icon: '💚', description: 'Progressive framework' },[m
+[31m-    { id: 'game', label: 'Game', icon: '🎮', description: 'Interactive games' }[m
+[32m+[m[32m    { id: 'game', label: 'Game', icon: '🎮', description: 'Interactive games' },[m
+   ];[m
+ [m
+   const [isCreating, setIsCreating] = useState(false);[m
+[36m@@ -86,21 +106,21 @@[m [mexport function HomePage() {[m
+       const response = await apiRequest('POST', '/api/projects/create', {[m
+         template,[m
+         name: `${template || 'new'}-project-${Date.now()}`,[m
+[31m-        description: description || `New ${template || ''} project`[m
+[32m+[m[32m        description: description || `New ${template || ''} project`,[m
+       });[m
+[31m-      [m
+[32m+[m
+       toast({[m
+[31m-        title: "Project Created!",[m
+[32m+[m[32m        title: 'Project Created!',[m
+         description: `Successfully created ${template || 'new'} project`,[m
+       });[m
+[31m-      [m
+[32m+[m
+       setState(prev => ({ ...prev, currentView: 'explorer' }));[m
+       setDescription('');[m
+     } catch (error: any) {[m
+       toast({[m
+[31m-        title: "Project Creation Failed",[m
+[31m-        description: error.message || "Failed to create project",[m
+[31m-        variant: "destructive",[m
+[32m+[m[32m        title: 'Project Creation Failed',[m
+[32m+[m[32m        description: error.message || 'Failed to create project',[m
+[32m+[m[32m        variant: 'destructive',[m
+       });[m
+     } finally {[m
+       setIsCreating(false);[m
+[36m@@ -110,33 +130,33 @@[m [mexport function HomePage() {[m
+   const handleGenerate = async () => {[m
+     if (!description.trim()) {[m
+       toast({[m
+[31m-        title: "Description Required",[m
+[31m-        description: "Please describe what you want to build",[m
+[31m-        variant: "destructive",[m
+[32m+[m[32m        title: 'Description Required',[m
+[32m+[m[32m        description: 'Please describe what you want to build',[m
+[32m+[m[32m        variant: 'destructive',[m
+       });[m
+       return;[m
+     }[m
+ [m
+     setIsCreating(true);[m
+     try {[m
+[31m-      const response = await apiRequest('POST', '/api/projects/generate', {[m
+[32m+[m[32m      const response = (await apiRequest('POST', '/api/projects/generate', {[m
+         description,[m
+         complexity: complexity || 'medium',[m
+[31m-        useAI: true[m
+[31m-      }) as any;[m
+[31m-      [m
+[32m+[m[32m        useAI: true,[m
+[32m+[m[32m      })) as any;[m
+[32m+[m
+       toast({[m
+[31m-        title: "AI Project Generated!",[m
+[32m+[m[32m        title: 'AI Project Generated!',[m
+         description: `Successfully generated project: ${response.name}`,[m
+       });[m
+[31m-      [m
+[32m+[m
+       setState(prev => ({ ...prev, currentView: 'explorer' }));[m
+       setDescription('');[m
+     } catch (error: any) {[m
+       toast({[m
+[31m-        title: "AI Generation Failed",[m
+[31m-        description: error.message || "Failed to generate project with AI",[m
+[31m-        variant: "destructive",[m
+[32m+[m[32m        title: 'AI Generation Failed',[m
+[32m+[m[32m        description: error.message || 'Failed to generate project with AI',[m
+[32m+[m[32m        variant: 'destructive',[m
+       });[m
+     } finally {[m
+       setIsCreating(false);[m
+[36m@@ -154,11 +174,10 @@[m [mexport function HomePage() {[m
+   return ([m
+     <div className="w-full bg-background h-full overflow-y-auto" data-testid="home-page">[m
+       <div className="w-full max-w-7xl mx-auto px-6 py-8">[m
+[31m-        [m
+         {/* Header Section */}[m
+         <div className="mb-8">[m
+           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">[m
+[31m-            Welcome back, Rudolf![m
+[32m+[m[32m            Welcome back, {user?.username || 'User'}![m
+           </h1>[m
+           <p className="text-lg text-gray-600 dark:text-gray-400">[m
+             What would you like to create today?[m
+[36m@@ -172,23 +191,23 @@[m [mexport function HomePage() {[m
+               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">[m
+                 Create a new project[m
+               </h2>[m
+[31m-              [m
+[32m+[m
+               {/* Description Input */}[m
+               <div className="mb-4">[m
+                 <Textarea[m
+                   placeholder="Describe what you want to build... (optional)"[m
+                   value={description}[m
+[31m-                  onChange={(e) => setDescription(e.target.value)}[m
+[32m+[m[32m                  onChange={e => setDescription(e.target.value)}[m
+                   className="min-h-[80px] resize-none"[m
+                   data-testid="input-project-description"[m
+                 />[m
+[31m-                [m
+[32m+[m
+                 <div className="flex items-center justify-between mt-2">[m
+                   <Button variant="ghost" size="sm" className="text-muted-foreground">[m
+                     <Paperclip className="w-4 h-4 mr-2" />[m
+                     Attach file[m
+                   </Button>[m
+[31m-                  [m
+[32m+[m
+                   <Select defaultValue="auto-theme">[m
+                     <SelectTrigger className="w-32">[m
+                       <SelectValue />[m
+[36m@@ -203,16 +222,12 @@[m [mexport function HomePage() {[m
+               </div>[m
+ [m
+               <div className="flex flex-wrap gap-3 mb-4">[m
+[31m-                <Button [m
+[31m-                  variant="outline"[m
+[31m-                  onClick={handleAIPlan}[m
+[31m-                  data-testid="button-ai-plan"[m
+[31m-                >[m
+[32m+[m[32m                <Button variant="outline" onClick={handleAIPlan} data-testid="button-ai-plan">[m
+                   <Brain className="w-4 h-4 mr-2" />[m
+                   AI Planning[m
+                 </Button>[m
+[31m-                [m
+[31m-                <Button [m
+[32m+[m
+[32m+[m[32m                <Button[m
+                   onClick={handleGenerate}[m
+                   className="bg-gradient-to-r from-blue-600 to-purple-600"[m
+                   disabled={!description.trim() || isCreating}[m
+[36m@@ -234,7 +249,7 @@[m [mexport function HomePage() {[m
+                 Or start with a template:[m
+               </h3>[m
+               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">[m
+[31m-                {templateOptions.map((template) => ([m
+[32m+[m[32m                {templateOptions.map(template => ([m
+                   <Button[m
+                     key={template.id}[m
+                     variant="outline"[m
+[36m@@ -260,12 +275,12 @@[m [mexport function HomePage() {[m
+               <Input[m
+                 placeholder="Search projects..."[m
+                 value={searchQuery}[m
+[31m-                onChange={(e) => setSearchQuery(e.target.value)}[m
+[32m+[m[32m                onChange={e => setSearchQuery(e.target.value)}[m
+                 className="pl-10"[m
+                 data-testid="input-search-projects"[m
+               />[m
+             </div>[m
+[31m-            [m
+[32m+[m
+             <div className="flex items-center space-x-2">[m
+               <Button variant="outline" size="sm">[m
+                 <Clock className="w-4 h-4 mr-2" />[m
+[36m@@ -293,13 +308,14 @@[m [mexport function HomePage() {[m
+ [m
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">[m
+             {recentProjects[m
+[31m-              .filter(project => [m
+[31m-                searchQuery === '' || [m
+[31m-                project.name.toLowerCase().includes(searchQuery.toLowerCase())[m
+[32m+[m[32m              .filter([m
+[32m+[m[32m                project =>[m
+[32m+[m[32m                  searchQuery === '' ||[m
+[32m+[m[32m                  project.name.toLowerCase().includes(searchQuery.toLowerCase())[m
+               )[m
+[31m-              .map((project) => ([m
+[31m-                <Card [m
+[31m-                  key={project.id} [m
+[32m+[m[32m              .map(project => ([m
+[32m+[m[32m                <Card[m
+[32m+[m[32m                  key={project.id}[m
+                   className="hover:shadow-md transition-shadow cursor-pointer group"[m
+                   data-testid={`project-card-${project.id}`}[m
+                 >[m
+[36m@@ -316,28 +332,28 @@[m [mexport function HomePage() {[m
+                           </p>[m
+                         </div>[m
+                       </div>[m
+[31m-                      <Button [m
+[31m-                        variant="ghost" [m
+[32m+[m[32m                      <Button[m
+[32m+[m[32m                        variant="ghost"[m
+                         size="sm"[m
+                         className="opacity-0 group-hover:opacity-100 p-1 h-auto"[m
+                       >[m
+                         <MoreHorizontal className="w-4 h-4" />[m
+                       </Button>[m
+                     </div>[m
+[31m-                    [m
+[32m+[m
+                     <div className="space-y-2">[m
+                       <div className="flex items-center justify-between">[m
+                         <span className="text-xs text-gray-500 dark:text-gray-400">[m
+                           {project.lastModified}[m
+                         </span>[m
+[31m-                        <Badge [m
+[32m+[m[32m                        <Badge[m
+                           variant={project.status === 'Deployed' ? 'default' : 'secondary'}[m
+                           className="text-xs"[m
+                         >[m
+                           {project.status}[m
+                         </Badge>[m
+                       </div>[m
+[31m-                      [m
+[32m+[m
+                       <div className="flex space-x-2">[m
+                         <Button size="sm" variant="outline" className="flex-1 text-xs">[m
+                           <FolderOpen className="w-3 h-3 mr-1" />[m
+[36m@@ -355,9 +371,9 @@[m [mexport function HomePage() {[m
+           </div>[m
+ [m
+           {/* Empty State */}[m
+[31m-          {recentProjects.filter(project => [m
+[31m-            searchQuery === '' || [m
+[31m-            project.name.toLowerCase().includes(searchQuery.toLowerCase())[m
+[32m+[m[32m          {recentProjects.filter([m
+[32m+[m[32m            project =>[m
+[32m+[m[32m              searchQuery === '' || project.name.toLowerCase().includes(searchQuery.toLowerCase())[m
+           ).length === 0 && ([m
+             <div className="text-center py-12">[m
+               <div className="text-gray-400 mb-4">[m
+[36m@@ -367,7 +383,9 @@[m [mexport function HomePage() {[m
+                 No projects found[m
+               </h3>[m
+               <p className="text-gray-500 dark:text-gray-400 mb-4">[m
+[31m-                {searchQuery ? 'Try adjusting your search terms.' : 'Create your first project to get started.'}[m
+[32m+[m[32m                {searchQuery[m
+[32m+[m[32m                  ? 'Try adjusting your search terms.'[m
+[32m+[m[32m                  : 'Create your first project to get started.'}[m
+               </p>[m
+               <Button onClick={() => handleCreateProject()}>[m
+                 <Plus className="w-4 h-4 mr-2" />[m
+[36m@@ -376,8 +394,7 @@[m [mexport function HomePage() {[m
+             </div>[m
+           )}[m
+         </div>[m
+[31m-[m
+       </div>[m
+     </div>[m
+   );[m
+[31m-}[m
+\ No newline at end of file[m
+[32m+[m[32m}[m

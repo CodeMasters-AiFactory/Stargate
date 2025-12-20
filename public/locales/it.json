@@ -1,0 +1,38 @@
+{
+  "common": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "create": "Crea",
+    "search": "Cerca",
+    "filter": "Filtra",
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "projects": "Progetti",
+    "settings": "Impostazioni",
+    "templates": "Modelli",
+    "components": "Componenti"
+  },
+  "websiteBuilder": {
+    "generate": "Genera Sito Web",
+    "preview": "Anteprima",
+    "publish": "Pubblica",
+    "save": "Salva Sito Web",
+    "export": "Esporta Codice"
+  },
+  "emailMarketing": {
+    "campaigns": "Campagne",
+    "subscribers": "Iscritti",
+    "templates": "Modelli",
+    "analytics": "Analisi",
+    "createCampaign": "Crea Campagna",
+    "sendCampaign": "Invia Campagna"
+  }
+}
+

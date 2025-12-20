@@ -1,0 +1,48 @@
+[
+  {
+    "sectionKey": "hero-1",
+    "headline": "Welcome to business",
+    "subheadline": "Your trusted partner",
+    "paragraph": "We provide exceptional business services tailored to your needs.",
+    "ctaLabel": "Get Started",
+    "ctaDescription": "Start your journey today"
+  },
+  {
+    "sectionKey": "audience-2",
+    "headline": "audience section"
+  },
+  {
+    "sectionKey": "services-1",
+    "headline": "Our Services",
+    "paragraph": "Discover our comprehensive business solutions.",
+    "bullets": [
+      "Service 1",
+      "Service 2",
+      "Service 3"
+    ]
+  },
+  {
+    "sectionKey": "case-studies-4",
+    "headline": "case-studies section"
+  },
+  {
+    "sectionKey": "team-5",
+    "headline": "team section"
+  },
+  {
+    "sectionKey": "value-1",
+    "headline": "value-proposition section"
+  },
+  {
+    "sectionKey": "process-7",
+    "headline": "process section"
+  },
+  {
+    "sectionKey": "faq-8",
+    "headline": "faq section"
+  },
+  {
+    "sectionKey": "contact-1",
+    "headline": "contact section"
+  }
+]

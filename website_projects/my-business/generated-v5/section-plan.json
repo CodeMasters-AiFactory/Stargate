@@ -1,0 +1,41 @@
+{
+  "sections": [
+    {
+      "key": "hero",
+      "type": "hero",
+      "importance": "high",
+      "notes": "Compelling headline, clear value proposition, engaging imagery related to 'Our Main Service', and a prominent call to action (e.g., 'Get Started', 'Learn More').",
+      "order": 1
+    },
+    {
+      "key": "value-proposition",
+      "type": "value-proposition",
+      "importance": "high",
+      "notes": "Elaborate on the core benefits of 'Our Main Service'. Focus on what problems it solves for the customer and the positive outcomes they can expect.",
+      "order": 2
+    },
+    {
+      "key": "services",
+      "type": "services",
+      "importance": "high",
+      "notes": "Provide a concise overview of 'Our Main Service' highlighting key features, benefits, and target audience.",
+      "order": 3
+    },
+    {
+      "key": "testimonials",
+      "type": "testimonials",
+      "importance": "medium",
+      "notes": "Include authentic testimonials from satisfied customers to build trust and credibility. Focus on testimonials that highlight the specific benefits of 'Our Main Service'.",
+      "order": 4
+    },
+    {
+      "key": "contact",
+      "type": "contact",
+      "importance": "high",
+      "notes": "A clear and easily accessible contact form and contact information, including phone number, email address, and location (Your City, Your Country). Consider adding a map if you have a physical location.",
+      "order": 5
+    }
+  ],
+  "rationale": "This homepage structure prioritizes converting visitors into customers/clients by immediately showcasing the value proposition, service details, and social proof. The hero section grabs attention and clearly states the offer. The value proposition elaborates on the benefits. The services section provides more detail about the core offering. Testimonials build trust by showcasing positive customer experiences. Finally, a readily accessible contact form enables immediate conversion.",
+  "totalSections": 5
+}

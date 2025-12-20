@@ -1,0 +1,38 @@
+{
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "create": "Erstellen",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg"
+  },
+  "navigation": {
+    "home": "Startseite",
+    "dashboard": "Dashboard",
+    "projects": "Projekte",
+    "settings": "Einstellungen",
+    "templates": "Vorlagen",
+    "components": "Komponenten"
+  },
+  "websiteBuilder": {
+    "generate": "Website generieren",
+    "preview": "Vorschau",
+    "publish": "Veröffentlichen",
+    "save": "Website speichern",
+    "export": "Code exportieren"
+  },
+  "emailMarketing": {
+    "campaigns": "Kampagnen",
+    "subscribers": "Abonnenten",
+    "templates": "Vorlagen",
+    "analytics": "Analysen",
+    "createCampaign": "Kampagne erstellen",
+    "sendCampaign": "Kampagne senden"
+  }
+}
+

@@ -1,0 +1,241 @@
+{
+  "version": "1.0",
+  "description": "Best-practice content patterns for each section type, derived from world-class websites",
+  "patterns": {
+    "hero": {
+      "headline": {
+        "pattern": "[Business Name] delivers [Primary Service] that [Value Proposition]",
+        "examples": [
+          "Iron Temple delivers Personal Training that transforms your fitness journey",
+          "Sterling Legal Partners provides Corporate Law services that protect your business",
+          "TechFlow offers SaaS Solutions that streamline your workflow"
+        ],
+        "bestPractices": [
+          "Include business name",
+          "Mention primary service",
+          "State clear value proposition",
+          "Keep under 60 characters for SEO",
+          "Use action-oriented language"
+        ]
+      },
+      "subheadline": {
+        "pattern": "We help [Target Audience] [Achieve Goal] with proven [Service Type]",
+        "examples": [
+          "We help fitness enthusiasts achieve their goals with proven personal training methods",
+          "We help businesses navigate legal challenges with proven corporate law expertise"
+        ],
+        "bestPractices": [
+          "Identify target audience",
+          "State the goal/outcome",
+          "Mention service type",
+          "Keep under 120 characters",
+          "Use specific, not generic language"
+        ]
+      }
+    },
+    "services": {
+      "heading": {
+        "pattern": "Our Services",
+        "alternatives": [
+          "What We Offer",
+          "Our Solutions",
+          "Services & Solutions"
+        ]
+      },
+      "body": {
+        "pattern": "We offer comprehensive [Service List] designed to help [Audience] [Goal]. Each service is tailored to your specific needs.",
+        "bestPractices": [
+          "List specific services, not generic terms",
+          "Mention target audience",
+          "State the benefit/outcome",
+          "Use industry-specific language",
+          "Avoid filler phrases like 'exceptional quality'"
+        ]
+      }
+    },
+    "testimonials": {
+      "heading": {
+        "pattern": "What Our Clients Say",
+        "alternatives": [
+          "Client Testimonials",
+          "Success Stories",
+          "Trusted by Clients"
+        ]
+      },
+      "body": {
+        "pattern": "Our [Emotional Tone] approach and commitment to excellence have earned the trust of [Audience] across [Location]. We're proud to be your partner in [Service].",
+        "bestPractices": [
+          "Include location if relevant",
+          "Mention specific audience",
+          "Use emotional tone from brand",
+          "Reference primary service",
+          "Build trust and credibility"
+        ]
+      }
+    },
+    "about": {
+      "heading": {
+        "pattern": "About Our Team",
+        "alternatives": [
+          "Who We Are",
+          "Our Story",
+          "Meet the Team"
+        ]
+      },
+      "body": {
+        "pattern": "Our experienced team brings [Expertise] and [Dedication] to every project. We understand [Pain Points] and work closely with you to deliver results.",
+        "bestPractices": [
+          "Highlight team expertise",
+          "Mention dedication/values",
+          "Address customer pain points",
+          "Emphasize collaboration",
+          "Show human side of business"
+        ]
+      }
+    },
+    "process": {
+      "heading": {
+        "pattern": "How We Work",
+        "alternatives": [
+          "Our Process",
+          "The Process",
+          "Working With Us"
+        ]
+      },
+      "body": {
+        "pattern": "Our proven process ensures that every [Service] engagement is structured for success. We start by understanding your needs, then develop a customized approach.",
+        "bestPractices": [
+          "Describe clear steps",
+          "Emphasize customization",
+          "Show structured approach",
+          "Build confidence",
+          "Make it easy to understand"
+        ]
+      }
+    },
+    "value-proposition": {
+      "heading": {
+        "pattern": "Why Choose Us",
+        "alternatives": [
+          "What Sets Us Apart",
+          "Our Advantages",
+          "Why Work With Us"
+        ]
+      },
+      "body": {
+        "pattern": "We combine [Emotional Tone] service with [Expertise] to deliver [Service] that matter. Our team understands [Pain Points] and provides solutions tailored to your needs.",
+        "bestPractices": [
+          "Differentiate from competitors",
+          "Combine emotional + rational appeal",
+          "Address specific pain points",
+          "Emphasize customization",
+          "Avoid generic claims"
+        ]
+      }
+    },
+    "case-studies": {
+      "heading": {
+        "pattern": "Our Work",
+        "alternatives": [
+          "Case Studies",
+          "Portfolio",
+          "Success Stories"
+        ]
+      },
+      "body": {
+        "pattern": "See how we've helped [Audience] achieve their goals through our [Service]. Each project is a testament to our commitment to excellence.",
+        "bestPractices": [
+          "Show real results",
+          "Mention specific audience",
+          "Reference service type",
+          "Build credibility",
+          "Use social proof"
+        ]
+      }
+    },
+    "faq": {
+      "heading": {
+        "pattern": "Frequently Asked Questions",
+        "alternatives": [
+          "Common Questions",
+          "FAQ",
+          "Have Questions?"
+        ]
+      },
+      "body": {
+        "pattern": "Have questions about our [Service]? We've compiled answers to the most common questions to help you understand how we can help you [Goal].",
+        "bestPractices": [
+          "Address common concerns",
+          "Use service-specific questions",
+          "Provide clear, helpful answers",
+          "Reduce friction",
+          "Build trust"
+        ]
+      }
+    },
+    "contact": {
+      "heading": {
+        "pattern": "Get In Touch",
+        "alternatives": [
+          "Contact Us",
+          "Let's Talk",
+          "Start a Conversation"
+        ]
+      },
+      "body": {
+        "pattern": "Ready to get started? Contact us today to discuss how our [Service] can help you [Goal]. We're here to answer your questions.",
+        "bestPractices": [
+          "Create urgency",
+          "Make it easy to contact",
+          "Mention service",
+          "State the goal",
+          "Be welcoming and helpful"
+        ]
+      }
+    },
+    "cta": {
+      "heading": {
+        "pattern": "Ready to Get Started?",
+        "alternatives": [
+          "Take the Next Step",
+          "Let's Begin",
+          "Start Your Journey"
+        ]
+      },
+      "body": {
+        "pattern": "Take the next step towards [Goal] with our [Service]. We're here to help you every step of the way.",
+        "bestPractices": [
+          "Use action-oriented language",
+          "Mention the goal",
+          "Reference service",
+          "Show support/guidance",
+          "Create momentum"
+        ]
+      }
+    }
+  },
+  "uniquenessRules": {
+    "noDuplicateHeadings": true,
+    "noGenericFiller": true,
+    "specificOverGeneric": true,
+    "industrySpecificLanguage": true,
+    "locationSpecificWhenRelevant": true
+  },
+  "contentQualityChecks": {
+    "minWordsPerSection": 20,
+    "maxGenericPhrases": 0,
+    "requiredElements": [
+      "specific service mention",
+      "target audience reference",
+      "value proposition"
+    ],
+    "forbiddenPhrases": [
+      "exceptional quality",
+      "we are the best",
+      "leading provider",
+      "world-class service",
+      "premium solutions"
+    ]
+  }
+}
+

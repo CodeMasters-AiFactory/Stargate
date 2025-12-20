@@ -1,0 +1,64 @@
+[
+  {
+    "sectionKey": "hero-1",
+    "headline": "Business: Excellence in Business",
+    "subheadline": "Premium services tailored to your needs",
+    "paragraph": "Business delivers exceptional services with a commitment to excellence. We combine expertise, innovation, and personalized service to exceed your expectations.",
+    "ctaLabel": "Contact Us",
+    "ctaDescription": "Take the next step"
+  },
+  {
+    "sectionKey": "audience-2",
+    "headline": "Audience",
+    "paragraph": "Business delivers exceptional services in the business industry."
+  },
+  {
+    "sectionKey": "services-1",
+    "headline": "Our Services",
+    "paragraph": "Discover how Business can help you with services. We combine expertise, innovation, and personalized service to deliver results that exceed expectations.",
+    "bullets": [
+      "services consultation",
+      "Customized solutions",
+      "Expert guidance",
+      "Ongoing support"
+    ]
+  },
+  {
+    "sectionKey": "case-studies-4",
+    "headline": "Our Work",
+    "paragraph": "Explore examples of our services and see the results we've achieved for clients."
+  },
+  {
+    "sectionKey": "team-5",
+    "headline": "Meet Our Team",
+    "paragraph": "The Business team brings together expertise, passion, and dedication. Get to know the people behind our success."
+  },
+  {
+    "sectionKey": "value-1",
+    "headline": "Why Choose Us",
+    "paragraph": "Business delivers services that combines industry expertise with personalized attention. We're committed to helping you achieve your goals through innovative solutions and exceptional service."
+  },
+  {
+    "sectionKey": "process-7",
+    "headline": "How We Work",
+    "paragraph": "At Business, we follow a proven process to deliver exceptional services. Here's how we ensure your success.",
+    "bullets": [
+      "Initial consultation",
+      "Customized plan",
+      "Expert execution",
+      "Ongoing support"
+    ]
+  },
+  {
+    "sectionKey": "faq-1",
+    "headline": "Frequently Asked Questions",
+    "paragraph": "Have questions about Business? Find answers to common questions below, or contact us for more information."
+  },
+  {
+    "sectionKey": "contact-1",
+    "headline": "Get in Touch",
+    "paragraph": "Ready to get started? Contact Business today. We're here to help.",
+    "ctaLabel": "Contact Us",
+    "ctaDescription": "Send us a message"
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "industry": "default",
+  "weights": {
+    "ux": 0.25,
+    "visual": 0.2,
+    "content": 0.2,
+    "conversion": 0.2,
+    "seo": 0.1,
+    "brand": 0.05
+  },
+  "normalizedScores": {
+    "ux": 9.16,
+    "visual": 9,
+    "conversion": 6,
+    "seo": 10,
+    "brand": 9
+  },
+  "weightedScore": 67.4,
+  "anomalies": [
+    "conversion score (6.0) differs significantly from average (8.6)"
+  ],
+  "finalVerdict": "Good",
+  "expertAgreement": 81.3
+}

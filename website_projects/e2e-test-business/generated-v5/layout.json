@@ -1,0 +1,124 @@
+{
+  "sections": [
+    {
+      "type": "hero",
+      "layout": "split-50-50",
+      "components": [
+        "headline",
+        "innovation-statement",
+        "demo-cta",
+        "product-preview"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "split",
+        "desktop": "split-50-50"
+      },
+      "spacing": "large",
+      "key": "hero-1"
+    },
+    {
+      "type": "problem",
+      "layout": "centered",
+      "components": [
+        "problem-statement",
+        "pain-points"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "centered",
+        "desktop": "centered"
+      },
+      "spacing": "medium",
+      "key": "problem-2"
+    },
+    {
+      "type": "solution",
+      "layout": "alternating-blocks",
+      "components": [
+        "solution-explanation",
+        "product-features",
+        "screenshots"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "alternating-blocks",
+        "desktop": "alternating-blocks"
+      },
+      "spacing": "large",
+      "key": "solution-3"
+    },
+    {
+      "type": "features",
+      "layout": "grid-3-column",
+      "components": [
+        "feature-cards",
+        "icons",
+        "descriptions"
+      ],
+      "breakpoints": {
+        "mobile": "1-column",
+        "tablet": "2-column",
+        "desktop": "grid-3-column"
+      },
+      "spacing": "medium",
+      "key": "features-4"
+    },
+    {
+      "type": "testimonials",
+      "layout": "carousel",
+      "components": [
+        "testimonial-cards",
+        "logos",
+        "quotes"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "carousel",
+        "desktop": "carousel"
+      },
+      "spacing": "large",
+      "key": "testimonials-1"
+    },
+    {
+      "type": "team",
+      "layout": "grid-4-column",
+      "components": [
+        "team-cards",
+        "photos",
+        "roles"
+      ],
+      "breakpoints": {
+        "mobile": "1-column",
+        "tablet": "2-column",
+        "desktop": "grid-4-column"
+      },
+      "spacing": "medium",
+      "key": "team-6"
+    },
+    {
+      "type": "cta",
+      "layout": "centered",
+      "components": [
+        "headline",
+        "beta-signup",
+        "waitlist"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "centered",
+        "desktop": "centered"
+      },
+      "spacing": "large",
+      "key": "cta-7"
+    }
+  ],
+  "wireframe": "WEBSITE WIREFRAME\n==================\n\nSection 1: HERO\n========================================\nLayout: split-50-50\nComponents: headline, innovation-statement, demo-cta, product-preview\nBreakpoints:\n  Mobile: stacked\n  Tablet: split\n  Desktop: split-50-50\nSpacing: large\n\nSection 2: PROBLEM\n========================================\nLayout: centered\nComponents: problem-statement, pain-points\nBreakpoints:\n  Mobile: stacked\n  Tablet: centered\n  Desktop: centered\nSpacing: medium\n\nSection 3: SOLUTION\n========================================\nLayout: alternating-blocks\nComponents: solution-explanation, product-features, screenshots\nBreakpoints:\n  Mobile: stacked\n  Tablet: alternating-blocks\n  Desktop: alternating-blocks\nSpacing: large\n\nSection 4: FEATURES\n========================================\nLayout: grid-3-column\nComponents: feature-cards, icons, descriptions\nBreakpoints:\n  Mobile: 1-column\n  Tablet: 2-column\n  Desktop: grid-3-column\nSpacing: medium\n\nSection 5: TESTIMONIALS\n========================================\nLayout: carousel\nComponents: testimonial-cards, logos, quotes\nBreakpoints:\n  Mobile: stacked\n  Tablet: carousel\n  Desktop: carousel\nSpacing: large\n\nSection 6: TEAM\n========================================\nLayout: grid-4-column\nComponents: team-cards, photos, roles\nBreakpoints:\n  Mobile: 1-column\n  Tablet: 2-column\n  Desktop: grid-4-column\nSpacing: medium\n\nSection 7: CTA\n========================================\nLayout: centered\nComponents: headline, beta-signup, waitlist\nBreakpoints:\n  Mobile: stacked\n  Tablet: centered\n  Desktop: centered\nSpacing: large\n\n",
+  "responsiveBreakpoints": [
+    390,
+    768,
+    1024,
+    1440
+  ],
+  "blueprint": "technology-startup"
+}

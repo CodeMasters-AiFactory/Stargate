@@ -1,0 +1,38 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "create": "作成",
+    "search": "検索",
+    "filter": "フィルター",
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "success": "成功"
+  },
+  "navigation": {
+    "home": "ホーム",
+    "dashboard": "ダッシュボード",
+    "projects": "プロジェクト",
+    "settings": "設定",
+    "templates": "テンプレート",
+    "components": "コンポーネント"
+  },
+  "websiteBuilder": {
+    "generate": "ウェブサイトを生成",
+    "preview": "プレビュー",
+    "publish": "公開",
+    "save": "ウェブサイトを保存",
+    "export": "コードをエクスポート"
+  },
+  "emailMarketing": {
+    "campaigns": "キャンペーン",
+    "subscribers": "購読者",
+    "templates": "テンプレート",
+    "analytics": "分析",
+    "createCampaign": "キャンペーンを作成",
+    "sendCampaign": "キャンペーンを送信"
+  }
+}
+

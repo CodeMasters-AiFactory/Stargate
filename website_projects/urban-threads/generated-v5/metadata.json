@@ -1,0 +1,283 @@
+{
+  "version": "6.10-cleanup-hardening",
+  "pipeline": "v6.10-cleanup-hardening",
+  "pipelineVersion": "6.10",
+  "timestamp": "2025-11-21T12:50:42.846Z",
+  "generatedAt": "2025-11-21T12:50:42.846Z",
+  "projectSlug": "urban-threads",
+  "sectionPlan": {
+    "sections": [
+      {
+        "key": "hero-1",
+        "type": "hero",
+        "importance": "high",
+        "notes": "Primary value proposition and call-to-action",
+        "order": 1
+      },
+      {
+        "key": "value-1",
+        "type": "value-proposition",
+        "importance": "high",
+        "notes": "Unique selling points and differentiators",
+        "order": 2
+      },
+      {
+        "key": "services-1",
+        "type": "services",
+        "importance": "high",
+        "notes": "Core services offered",
+        "order": 3
+      },
+      {
+        "key": "testimonials-1",
+        "type": "testimonials",
+        "importance": "medium",
+        "notes": "Social proof and client testimonials",
+        "order": 4
+      },
+      {
+        "key": "about-1",
+        "type": "about",
+        "importance": "medium",
+        "notes": "Company background and mission",
+        "order": 5
+      },
+      {
+        "key": "contact-1",
+        "type": "contact",
+        "importance": "high",
+        "notes": "Contact information and form",
+        "order": 6
+      }
+    ],
+    "rationale": "Rule-based fallback section plan based on industry and services",
+    "totalSections": 6
+  },
+  "modules": {
+    "sectionPlanner": "6.1",
+    "styleDesigner": "6.2",
+    "sectionVariants": "6.3",
+    "responsiveEngine": "6.4",
+    "imagePlanner": "6.5",
+    "copywriter": "6.6",
+    "seoEngine": "6.7",
+    "multiPage": "6.8",
+    "themeEngine": "6.9"
+  },
+  "multiPageVersion": "6.8",
+  "pages": [
+    {
+      "id": "home",
+      "slug": "/",
+      "title": "Home",
+      "sectionCount": 3
+    },
+    {
+      "id": "services",
+      "slug": "/services",
+      "title": "Services",
+      "sectionCount": 1
+    },
+    {
+      "id": "about",
+      "slug": "/about",
+      "title": "About",
+      "sectionCount": 1
+    },
+    {
+      "id": "contact",
+      "slug": "/contact",
+      "title": "Contact",
+      "sectionCount": 1
+    }
+  ],
+  "navigation": {
+    "items": [
+      {
+        "id": "home",
+        "slug": "/index.html",
+        "title": "Home"
+      },
+      {
+        "id": "services",
+        "slug": "services.html",
+        "title": "Services"
+      },
+      {
+        "id": "about",
+        "slug": "about.html",
+        "title": "About"
+      },
+      {
+        "id": "contact",
+        "slug": "contact.html",
+        "title": "Contact"
+      }
+    ],
+    "home": "/index.html"
+  },
+  "styleSystem": {
+    "final": {
+      "colors": {
+        "primary": "#10b981",
+        "neutrals": [
+          "#F8FAFC",
+          "#E2E8F0",
+          "#64748B",
+          "#1E293B"
+        ],
+        "background": "#F8FAFC",
+        "text": "#1E293B"
+      },
+      "typography": {
+        "id": "inter-system",
+        "heading": {
+          "font": "Inter",
+          "weights": [
+            700,
+            600
+          ],
+          "sizes": [
+            48,
+            36,
+            24,
+            18
+          ]
+        },
+        "body": {
+          "font": "Inter",
+          "weights": [
+            400,
+            500
+          ],
+          "sizes": [
+            16,
+            14
+          ],
+          "lineHeight": 1.6
+        },
+        "useCase": "Modern, clean, versatile"
+      },
+      "spacing": {
+        "scale": [
+          4,
+          8,
+          12,
+          16,
+          24,
+          32,
+          48,
+          64,
+          96,
+          128
+        ],
+        "system": "8px base"
+      },
+      "borderRadius": {
+        "small": "4px",
+        "medium": "8px",
+        "large": "16px",
+        "full": "9999px"
+      },
+      "shadows": {
+        "small": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        "medium": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        "large": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+      },
+      "icons": {
+        "style": "outline",
+        "library": "heroicons"
+      }
+    },
+    "aiOverride": false,
+    "industry": "E-commerce Store",
+    "isKnownIndustry": false
+  },
+  "responsiveEngineVersion": "6.4",
+  "imagePlannerVersion": "6.5",
+  "copywriterVersion": "6.6",
+  "seoEngineVersion": "6.7",
+  "plannedImages": [
+    {
+      "sectionKey": "hero-1",
+      "purpose": "hero",
+      "prompt": "Professional business hero image",
+      "alt": "business hero image"
+    },
+    {
+      "sectionKey": "services-1",
+      "purpose": "icon",
+      "prompt": "Simple icon-style illustration representing business features",
+      "alt": "business feature icon"
+    },
+    {
+      "sectionKey": "about-1",
+      "purpose": "supporting",
+      "prompt": "Professional business team or office environment",
+      "alt": "business about image"
+    }
+  ],
+  "generatedImages": [
+    {
+      "sectionKey": "hero-1",
+      "url": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGI5ODE7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTBiOTgxO3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iIzEwYjk4MSIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVXJiYW4gVGhyZWFkcwogICAgICA8L3RleHQ+CiAgICA8L3N2Zz4=",
+      "alt": "business hero image",
+      "purpose": "hero"
+    },
+    {
+      "sectionKey": "services-1",
+      "url": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAyNCIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGI5ODE7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTBiOTgxO3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iIzEwYjk4MSIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVXJiYW4gVGhyZWFkcwogICAgICA8L3RleHQ+CiAgICA8L3N2Zz4=",
+      "alt": "business feature icon",
+      "purpose": "icon"
+    }
+  ],
+  "sectionsWithCopy": [
+    "hero-1",
+    "audience-2",
+    "services-1",
+    "case-studies-4",
+    "team-5",
+    "value-1",
+    "process-7",
+    "faq-8",
+    "contact-1"
+  ],
+  "seo": {
+    "title": "Urban Threads - Business Services",
+    "description": "Professional business services from Urban Threads. Contact us today for expert solutions.",
+    "keywords": [
+      "business",
+      "business services",
+      "urban threads"
+    ],
+    "ogTitle": "Urban Threads",
+    "ogDescription": "Professional business services from Urban Threads. Contact us today for expert solutions.",
+    "ogImage": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxMGI5ODE7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTBiOTgxO3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iIzEwYjk4MSIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVXJiYW4gVGhyZWFkcwogICAgICA8L3RleHQ+CiAgICA8L3N2Zz4=",
+    "schemaLD": {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Urban Threads",
+      "description": "Professional business services from Urban Threads. Contact us today for expert solutions.",
+      "url": "https://example.com/urban-threads"
+    },
+    "slug": "urban-threads",
+    "seoScore": 70,
+    "readabilityHints": []
+  },
+  "slug": "urban-threads",
+  "features": [
+    "v5.1-llm-content-all-sections",
+    "v5.1-dalle-image-generation",
+    "v5.1-modern-css",
+    "v6.0-foundations",
+    "v6.1-ai-section-planner",
+    "v6.2-ai-style-designer",
+    "v6.3-component-variants",
+    "v6.4-responsive-engine",
+    "v6.5-ai-image-planner",
+    "v6.6-ai-copywriting-3.0",
+    "v6.7-ai-seo-engine",
+    "v6.8-multi-page-architecture",
+    "v6.9-global-theme-engine"
+  ]
+}

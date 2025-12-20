@@ -1,0 +1,12 @@
+{
+  "industry": "Law Firm",
+  "expectedContentDepth": 1500,
+  "standardCTAPatterns": ["Book Consultation", "Call Now", "Schedule a Call", "Free Consultation"],
+  "standardUXFlow": ["Hero", "Services", "About", "Testimonials", "Contact"],
+  "standardTrustElements": ["Bar memberships", "Certifications", "Case studies", "Attorney bios", "Years of experience"],
+  "typicalSEOFeatures": ["Location keywords", "Service pages", "FAQ schema", "LocalBusiness schema"],
+  "specialistRequirements": ["Confidentiality messaging", "Attorney bios", "Practice area pages", "Client testimonials"],
+  "contentKeywords": ["attorney", "lawyer", "legal", "law firm", "litigation", "representation", "counsel"],
+  "trustKeywords": ["certified", "bar association", "years of experience", "successful cases", "client testimonials"]
+}
+

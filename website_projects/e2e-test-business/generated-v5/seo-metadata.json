@@ -1,0 +1,22 @@
+{
+  "title": "E2E Test Business - Business Services",
+  "description": "Professional business services from E2E Test Business. Contact us today for expert solutions.",
+  "keywords": [
+    "business",
+    "business services",
+    "e2e test business"
+  ],
+  "ogTitle": "E2E Test Business",
+  "ogDescription": "Professional business services from E2E Test Business. Contact us today for expert solutions.",
+  "ogImage": "/assets/images/hero-1-hero-1766150290829.png",
+  "schemaLD": {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "E2E Test Business",
+    "description": "Professional business services from E2E Test Business. Contact us today for expert solutions.",
+    "url": "https://example.com/e2e-test-business"
+  },
+  "slug": "e2e-test-business",
+  "seoScore": 70,
+  "readabilityHints": []
+}

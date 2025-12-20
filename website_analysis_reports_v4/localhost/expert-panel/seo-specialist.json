@@ -1,0 +1,30 @@
+{
+  "agent": "SEO Specialist",
+  "focus": "Structure, metadata, keyword strategy, helpful content",
+  "score": 10,
+  "strengths": [
+    "Optimal title length",
+    "Keyword-rich title",
+    "Optimal meta description",
+    "One H1 per page",
+    "Schema markup present",
+    "Excellent alt text coverage"
+  ],
+  "weaknesses": [
+    "Content too thin"
+  ],
+  "verdict": "World-Class",
+  "details": {
+    "title": "Test Business - Business Services",
+    "metaDesc": "Test Business delivers exceptional services with a commitment to excellence. We combine expertise, innovation, and personalized service to exceed your expectati",
+    "headings": {
+      "h1": 1,
+      "h2": 2,
+      "h3": 1
+    },
+    "hasSchema": true,
+    "altCoverage": 1,
+    "wordCount": 128,
+    "internalLinks": 0
+  }
+}

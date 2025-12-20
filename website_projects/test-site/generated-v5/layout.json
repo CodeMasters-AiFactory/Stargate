@@ -1,0 +1,161 @@
+{
+  "sections": [
+    {
+      "type": "hero",
+      "layout": "centered",
+      "components": [
+        "value-proposition",
+        "headline",
+        "subheadline",
+        "cta-primary",
+        "cta-secondary",
+        "subtle-animation"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "centered",
+        "desktop": "centered"
+      },
+      "spacing": "extra-large",
+      "key": "hero-1"
+    },
+    {
+      "type": "social-proof",
+      "layout": "horizontal-scroll",
+      "components": [
+        "client-logos",
+        "trust-badges"
+      ],
+      "breakpoints": {
+        "mobile": "vertical",
+        "tablet": "horizontal-scroll",
+        "desktop": "horizontal-scroll"
+      },
+      "spacing": "medium",
+      "key": "social-proof-2"
+    },
+    {
+      "type": "highlights",
+      "layout": "grid-3-column",
+      "components": [
+        "feature-cards",
+        "icons",
+        "headings",
+        "descriptions"
+      ],
+      "breakpoints": {
+        "mobile": "1-column",
+        "tablet": "2-column",
+        "desktop": "grid-3-column"
+      },
+      "spacing": "large",
+      "key": "highlights-3"
+    },
+    {
+      "type": "features",
+      "layout": "grid-2-column",
+      "components": [
+        "detailed-features",
+        "icons",
+        "headings",
+        "descriptions",
+        "images"
+      ],
+      "breakpoints": {
+        "mobile": "1-column",
+        "tablet": "grid-2-column",
+        "desktop": "grid-2-column"
+      },
+      "spacing": "large",
+      "key": "features-4"
+    },
+    {
+      "type": "visual-break",
+      "layout": "full-width",
+      "components": [
+        "large-image",
+        "video",
+        "illustration"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "full-width",
+        "desktop": "full-width"
+      },
+      "spacing": "large",
+      "key": "visual-break-5"
+    },
+    {
+      "type": "testimonials",
+      "layout": "carousel",
+      "components": [
+        "testimonials",
+        "client-logos",
+        "quotes"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "carousel",
+        "desktop": "carousel"
+      },
+      "spacing": "large",
+      "key": "testimonials-1"
+    },
+    {
+      "type": "pricing",
+      "layout": "grid-3-column",
+      "components": [
+        "pricing-tiers",
+        "features",
+        "cta"
+      ],
+      "breakpoints": {
+        "mobile": "1-column",
+        "tablet": "2-column",
+        "desktop": "grid-3-column"
+      },
+      "spacing": "large",
+      "key": "pricing-7"
+    },
+    {
+      "type": "cta",
+      "layout": "centered",
+      "components": [
+        "headline",
+        "subheadline",
+        "cta-primary"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "centered",
+        "desktop": "centered"
+      },
+      "spacing": "large",
+      "key": "cta-8"
+    },
+    {
+      "type": "footer",
+      "layout": "multi-column",
+      "components": [
+        "links",
+        "social",
+        "legal"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "multi-column",
+        "desktop": "multi-column"
+      },
+      "spacing": "medium",
+      "key": "footer-9"
+    }
+  ],
+  "wireframe": "WEBSITE WIREFRAME\n==================\n\nSection 1: HERO\n========================================\nLayout: centered\nComponents: value-proposition, headline, subheadline, cta-primary, cta-secondary, subtle-animation\nBreakpoints:\n  Mobile: stacked\n  Tablet: centered\n  Desktop: centered\nSpacing: extra-large\n\nSection 2: SOCIAL-PROOF\n========================================\nLayout: horizontal-scroll\nComponents: client-logos, trust-badges\nBreakpoints:\n  Mobile: vertical\n  Tablet: horizontal-scroll\n  Desktop: horizontal-scroll\nSpacing: medium\n\nSection 3: HIGHLIGHTS\n========================================\nLayout: grid-3-column\nComponents: feature-cards, icons, headings, descriptions\nBreakpoints:\n  Mobile: 1-column\n  Tablet: 2-column\n  Desktop: grid-3-column\nSpacing: large\n\nSection 4: FEATURES\n========================================\nLayout: grid-2-column\nComponents: detailed-features, icons, headings, descriptions, images\nBreakpoints:\n  Mobile: 1-column\n  Tablet: grid-2-column\n  Desktop: grid-2-column\nSpacing: large\n\nSection 5: VISUAL-BREAK\n========================================\nLayout: full-width\nComponents: large-image, video, illustration\nBreakpoints:\n  Mobile: stacked\n  Tablet: full-width\n  Desktop: full-width\nSpacing: large\n\nSection 6: TESTIMONIALS\n========================================\nLayout: carousel\nComponents: testimonials, client-logos, quotes\nBreakpoints:\n  Mobile: stacked\n  Tablet: carousel\n  Desktop: carousel\nSpacing: large\n\nSection 7: PRICING\n========================================\nLayout: grid-3-column\nComponents: pricing-tiers, features, cta\nBreakpoints:\n  Mobile: 1-column\n  Tablet: 2-column\n  Desktop: grid-3-column\nSpacing: large\n\nSection 8: CTA\n========================================\nLayout: centered\nComponents: headline, subheadline, cta-primary\nBreakpoints:\n  Mobile: stacked\n  Tablet: centered\n  Desktop: centered\nSpacing: large\n\nSection 9: FOOTER\n========================================\nLayout: multi-column\nComponents: links, social, legal\nBreakpoints:\n  Mobile: stacked\n  Tablet: multi-column\n  Desktop: multi-column\nSpacing: medium\n\n",
+  "responsiveBreakpoints": [
+    390,
+    768,
+    1024,
+    1440
+  ],
+  "blueprint": "premium-corporate"
+}

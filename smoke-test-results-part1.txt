@@ -1,0 +1,16 @@
+[INFO] === SMOKE TEST START ===
+[INFO] Loading homepage...
+[PASS] Homepage loaded - smoke-01-homepage.png
+[INFO] Scanning homepage for clickable elements...
+[INFO] Found 7 nav elements
+[INFO] Found 15 buttons total
+[INFO] Found 10 links total
+[INFO] --- Testing Navigation ---
+[PASS] Services nav clicked - smoke-02-nav-services.png
+[PASS] Features nav clicked - smoke-03-nav-features.png
+[PASS] Pricing nav clicked - smoke-04-nav-pricing.png
+[PASS] Testimonials nav clicked - smoke-05-nav-testimonials.png
+[INFO] --- Testing CTA Buttons ---
+[PASS] Get Started clicked - smoke-06-cta-get-started.png - URL: http://localhost:5000/#testimonials
+[PASS] Merlin Wizard clicked - smoke-07-cta-merlin-wizard.png - URL: http://localhost:5000/
+[INFO] === PART 1 COMPLETE ===

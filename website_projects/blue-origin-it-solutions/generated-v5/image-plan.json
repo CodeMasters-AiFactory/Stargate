@@ -1,0 +1,20 @@
+[
+  {
+    "sectionKey": "hero-1",
+    "purpose": "hero",
+    "prompt": "Professional business hero image",
+    "alt": "business hero image"
+  },
+  {
+    "sectionKey": "services-1",
+    "purpose": "icon",
+    "prompt": "Simple icon-style illustration representing business features",
+    "alt": "business feature icon"
+  },
+  {
+    "sectionKey": "about-1",
+    "purpose": "supporting",
+    "prompt": "Professional business team or office environment",
+    "alt": "business about image"
+  }
+]

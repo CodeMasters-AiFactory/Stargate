@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(timeout /t 3 /nobreak)",
+      "Bash(exit 0)",
+      "Bash(curl:*)",
+      "Bash(powershell -Command \"Start-Process ''http://localhost:5000''\")",
+      "Bash(npm ls:*)",
+      "Bash(findstr:*)",
+      "Bash(powershell:*)",
+      "Bash(timeout /t 5 /nobreak)",
+      "Bash(timeout /t 6 /nobreak)",
+      "Bash(python -m json.tool:*)",
+      "Bash(Select-String \"HTTP|Content-Type\")",
+      "Bash(netstat:*)",
+      "Bash(taskkill /F /PID 12704)",
+      "Bash(taskkill:*)",
+      "Bash(start http://localhost:5000)",
+      "Bash(timeout /t 10 /nobreak)",
+      "Bash(Start-Sleep -Seconds 2)",
+      "Bash(timeout:*)",
+      "Bash(npm run start:production:*)",
+      "Bash(cross-env NODE_ENV=development tsx:*)",
+      "Bash(npx cross-env:*)",
+      "Bash(npm install:*)",
+      "Bash(npm search:*)",
+      "Bash(npx:*)",
+      "Bash(Select-String -Pattern \"UNMET|missing|extraneous\" -Context 1,1)",
+      "Bash(shutdown /r /t 0 /f)",
+      "Bash(shutdown /r /t 10 /c \"Testing auto-startup system - Stargate Portal\" /d p:4:1)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}

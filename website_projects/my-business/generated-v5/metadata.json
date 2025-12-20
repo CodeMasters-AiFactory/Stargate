@@ -1,0 +1,268 @@
+{
+  "version": "6.10-cleanup-hardening",
+  "pipeline": "v6.10-cleanup-hardening",
+  "pipelineVersion": "6.10",
+  "timestamp": "2025-12-02T20:19:43.363Z",
+  "generatedAt": "2025-12-02T20:19:43.363Z",
+  "projectSlug": "my-business",
+  "sectionPlan": {
+    "sections": [
+      {
+        "key": "hero",
+        "type": "hero",
+        "importance": "high",
+        "notes": "Compelling headline, clear value proposition, engaging imagery related to 'Our Main Service', and a prominent call to action (e.g., 'Get Started', 'Learn More').",
+        "order": 1
+      },
+      {
+        "key": "value-proposition",
+        "type": "value-proposition",
+        "importance": "high",
+        "notes": "Elaborate on the core benefits of 'Our Main Service'. Focus on what problems it solves for the customer and the positive outcomes they can expect.",
+        "order": 2
+      },
+      {
+        "key": "services",
+        "type": "services",
+        "importance": "high",
+        "notes": "Provide a concise overview of 'Our Main Service' highlighting key features, benefits, and target audience.",
+        "order": 3
+      },
+      {
+        "key": "testimonials",
+        "type": "testimonials",
+        "importance": "medium",
+        "notes": "Include authentic testimonials from satisfied customers to build trust and credibility. Focus on testimonials that highlight the specific benefits of 'Our Main Service'.",
+        "order": 4
+      },
+      {
+        "key": "contact",
+        "type": "contact",
+        "importance": "high",
+        "notes": "A clear and easily accessible contact form and contact information, including phone number, email address, and location (Your City, Your Country). Consider adding a map if you have a physical location.",
+        "order": 5
+      }
+    ],
+    "rationale": "This homepage structure prioritizes converting visitors into customers/clients by immediately showcasing the value proposition, service details, and social proof. The hero section grabs attention and clearly states the offer. The value proposition elaborates on the benefits. The services section provides more detail about the core offering. Testimonials build trust by showcasing positive customer experiences. Finally, a readily accessible contact form enables immediate conversion.",
+    "totalSections": 5
+  },
+  "modules": {
+    "sectionPlanner": "6.1",
+    "styleDesigner": "6.2",
+    "sectionVariants": "6.3",
+    "responsiveEngine": "6.4",
+    "imagePlanner": "6.5",
+    "copywriter": "6.6",
+    "seoEngine": "6.7",
+    "multiPage": "6.8",
+    "themeEngine": "6.9"
+  },
+  "multiPageVersion": "6.8",
+  "pages": [
+    {
+      "id": "home",
+      "slug": "/",
+      "title": "Home",
+      "sectionCount": 3
+    },
+    {
+      "id": "services",
+      "slug": "/services",
+      "title": "Services",
+      "sectionCount": 1
+    },
+    {
+      "id": "contact",
+      "slug": "/contact",
+      "title": "Contact",
+      "sectionCount": 1
+    }
+  ],
+  "navigation": {
+    "items": [
+      {
+        "id": "home",
+        "slug": "/index.html",
+        "title": "Home"
+      },
+      {
+        "id": "services",
+        "slug": "services.html",
+        "title": "Services"
+      },
+      {
+        "id": "contact",
+        "slug": "contact.html",
+        "title": "Contact"
+      }
+    ],
+    "home": "/index.html"
+  },
+  "styleSystem": {
+    "final": {
+      "colors": {
+        "primary": "#2563EB",
+        "secondary": "#1E40AF",
+        "accent": "#3B82F6",
+        "neutrals": [
+          "#F8FAFC",
+          "#E2E8F0",
+          "#64748B",
+          "#1E293B"
+        ],
+        "background": "#F8FAFC",
+        "text": "#1E293B"
+      },
+      "gradients": {
+        "primary": "linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)",
+        "secondary": "linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%)",
+        "hero": "linear-gradient(135deg, #2563EB 0%, #1E40AF 50%, #3B82F6 100%)",
+        "accent": "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+        "mesh": "radial-gradient(circle at 20% 30%, #2563EB30 0%, transparent 50%),\n        radial-gradient(circle at 80% 70%, #1E40AF30 0%, transparent 50%),\n        radial-gradient(circle at 50% 50%, #3B82F620 0%, transparent 70%)"
+      },
+      "typography": {
+        "id": "inter-system",
+        "heading": {
+          "font": "Inter",
+          "weights": [
+            700,
+            600
+          ],
+          "sizes": [
+            48,
+            36,
+            24,
+            18
+          ]
+        },
+        "body": {
+          "font": "Inter",
+          "weights": [
+            400,
+            500
+          ],
+          "sizes": [
+            16,
+            14
+          ],
+          "lineHeight": 1.6
+        },
+        "useCase": "Modern, clean, versatile"
+      },
+      "spacing": {
+        "scale": [
+          4,
+          8,
+          12,
+          16,
+          24,
+          32,
+          48,
+          64,
+          96,
+          128
+        ],
+        "system": "8px base"
+      },
+      "borderRadius": {
+        "small": "4px",
+        "medium": "8px",
+        "large": "16px",
+        "full": "9999px"
+      },
+      "shadows": {
+        "small": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        "medium": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        "large": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+      },
+      "icons": {
+        "style": "outline",
+        "library": "heroicons"
+      }
+    },
+    "aiOverride": false,
+    "industry": "professional",
+    "isKnownIndustry": false
+  },
+  "responsiveEngineVersion": "6.4",
+  "imagePlannerVersion": "6.5",
+  "copywriterVersion": "6.6",
+  "seoEngineVersion": "6.7",
+  "plannedImages": [
+    {
+      "sectionKey": "hero",
+      "purpose": "hero",
+      "prompt": "Professional business hero image",
+      "alt": "business hero image"
+    },
+    {
+      "sectionKey": "services",
+      "purpose": "icon",
+      "prompt": "Simple icon-style illustration representing business features",
+      "alt": "business feature icon"
+    }
+  ],
+  "generatedImages": [
+    {
+      "sectionKey": "hero",
+      "url": "/assets/images/hero-hero-1764706761127.png",
+      "alt": "business hero image",
+      "purpose": "hero"
+    },
+    {
+      "sectionKey": "services",
+      "url": "/assets/images/services-icon-1764706761127.png",
+      "alt": "business feature icon",
+      "purpose": "icon"
+    }
+  ],
+  "sectionsWithCopy": [
+    "hero",
+    "audience-2",
+    "services",
+    "case-studies-4",
+    "team-5",
+    "value-proposition",
+    "process-7",
+    "faq-8",
+    "contact"
+  ],
+  "seo": {
+    "title": "My Business - Business Services",
+    "description": "Professional business services from My Business. Contact us today for expert solutions.",
+    "keywords": [
+      "business",
+      "business services",
+      "my business"
+    ],
+    "ogTitle": "My Business",
+    "ogDescription": "Professional business services from My Business. Contact us today for expert solutions.",
+    "ogImage": "/assets/images/hero-hero-1764706761127.png",
+    "schemaLD": {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "My Business",
+      "description": "Professional business services from My Business. Contact us today for expert solutions.",
+      "url": "https://example.com/my-business"
+    },
+    "slug": "my-business",
+    "seoScore": 70,
+    "readabilityHints": []
+  },
+  "slug": "my-business",
+  "features": [
+    "v5.1-llm-content-all-sections",
+    "v5.1-dalle-image-generation",
+    "v5.1-modern-css",
+    "v6.0-foundations",
+    "v6.1-ai-section-planner",
+    "v6.2-ai-style-designer",
+    "v6.3-component-variants",
+    "v6.4-responsive-engine",
+    "v6.5-ai-image-planner",
+    "v6.6-ai-copywriting-3.0",
+    "v6.7-ai-seo-engine",
+    "v6.8-multi-page-architecture",
+    "v6.9-global-theme-engine"
+  ]
+}

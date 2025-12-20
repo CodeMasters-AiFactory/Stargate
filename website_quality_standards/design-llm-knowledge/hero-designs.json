@@ -1,0 +1,81 @@
+{
+  "heroes": [
+    {
+      "id": "centered-minimal",
+      "name": "Centered Minimalist",
+      "description": "Clean centered hero with minimal elements",
+      "components": ["heading", "subheading", "cta-primary"],
+      "spacing": "extra-large",
+      "alignment": "center",
+      "image": false
+    },
+    {
+      "id": "centered-with-image",
+      "name": "Centered with Image",
+      "description": "Centered content with background or side image",
+      "components": ["heading", "subheading", "cta-primary", "image"],
+      "spacing": "large",
+      "alignment": "center",
+      "image": true
+    },
+    {
+      "id": "split-content-left",
+      "name": "Split Content Left",
+      "description": "Content on left, image on right (50/50)",
+      "components": ["heading", "subheading", "cta-primary", "cta-secondary", "image"],
+      "spacing": "medium",
+      "alignment": "left",
+      "image": true
+    },
+    {
+      "id": "split-content-right",
+      "name": "Split Content Right",
+      "description": "Image on left, content on right (50/50)",
+      "components": ["image", "heading", "subheading", "cta-primary"],
+      "spacing": "medium",
+      "alignment": "right",
+      "image": true
+    },
+    {
+      "id": "video-background",
+      "name": "Video Background",
+      "description": "Full-width video with overlay content",
+      "components": ["heading", "subheading", "cta-primary", "video"],
+      "spacing": "large",
+      "alignment": "center",
+      "image": false,
+      "video": true
+    },
+    {
+      "id": "animated-gradient",
+      "name": "Animated Gradient",
+      "description": "Hero with animated gradient background",
+      "components": ["heading", "subheading", "cta-primary"],
+      "spacing": "large",
+      "alignment": "center",
+      "image": false,
+      "animation": true
+    },
+    {
+      "id": "asymmetric",
+      "name": "Asymmetric Layout",
+      "description": "Non-standard asymmetric hero layout",
+      "components": ["heading", "subheading", "cta", "image"],
+      "spacing": "medium",
+      "alignment": "asymmetric",
+      "image": true
+    },
+    {
+      "id": "full-screen",
+      "name": "Full-Screen Hero",
+      "description": "Hero taking full viewport height",
+      "components": ["heading", "subheading", "cta-primary", "cta-secondary", "image"],
+      "spacing": "extra-large",
+      "alignment": "center",
+      "image": true,
+      "fullHeight": true
+    }
+  ],
+  "totalHeroes": 50
+}
+

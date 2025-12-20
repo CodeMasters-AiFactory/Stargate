@@ -1,0 +1,1172 @@
+{
+  "projectSlug": "tesla",
+  "projectName": "Tesla",
+  "generationId": "gen-1764140700819-04zjmceye",
+  "startTime": 1764140700819,
+  "endTime": 1764140762049,
+  "totalDuration": 61230,
+  "overallScore": 85.125,
+  "phases": [
+    {
+      "phaseNumber": 1,
+      "phaseName": "Package Selection",
+      "startTime": 1764140700819,
+      "rating": 100,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 1: Package Selection\n\nRating: 100/100\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140700820,
+      "duration": 1,
+      "phaseData": {
+        "projectConfig": {
+          "projectName": "Tesla",
+          "projectSlug": "tesla",
+          "industry": "Automotive & Technology",
+          "location": {
+            "city": "Global",
+            "region": "Global",
+            "country": "United States"
+          },
+          "targetAudiences": [
+            "environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles"
+          ],
+          "toneOfVoice": "Professional, trustworthy",
+          "brandPreferences": {
+            "colorPalette": {
+              "primary": "#e31937"
+            },
+            "fontPreferences": {}
+          },
+          "services": [
+            {
+              "name": "Electric Vehicles",
+              "shortDescription": "Model S, Model 3, Model X, Model Y, and Cybertruck"
+            },
+            {
+              "name": "Energy Solutions",
+              "shortDescription": "Solar panels, Powerwall, and Megapack for homes and businesses"
+            },
+            {
+              "name": "Supercharger Network",
+              "shortDescription": "Global fast-charging network for Tesla vehicles"
+            },
+            {
+              "name": "Autonomous Driving",
+              "shortDescription": "Full Self-Driving (FSD) and Autopilot technology"
+            }
+          ],
+          "pagesToGenerate": [
+            "Home"
+          ],
+          "createdAt": "2025-11-26T07:05:00.349Z",
+          "updatedAt": "2025-11-26T07:05:00.350Z"
+        }
+      }
+    },
+    {
+      "phaseNumber": 2,
+      "phaseName": "Client Specification",
+      "startTime": 1764140700820,
+      "rating": 100,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 2: Client Specification\n\nRating: 100/100\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140700820,
+      "duration": 0,
+      "phaseData": {
+        "projectConfig": {
+          "projectName": "Tesla",
+          "projectSlug": "tesla",
+          "industry": "Automotive & Technology",
+          "location": {
+            "city": "Global",
+            "region": "Global",
+            "country": "United States"
+          },
+          "targetAudiences": [
+            "environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles"
+          ],
+          "toneOfVoice": "Professional, trustworthy",
+          "brandPreferences": {
+            "colorPalette": {
+              "primary": "#e31937"
+            },
+            "fontPreferences": {}
+          },
+          "services": [
+            {
+              "name": "Electric Vehicles",
+              "shortDescription": "Model S, Model 3, Model X, Model Y, and Cybertruck"
+            },
+            {
+              "name": "Energy Solutions",
+              "shortDescription": "Solar panels, Powerwall, and Megapack for homes and businesses"
+            },
+            {
+              "name": "Supercharger Network",
+              "shortDescription": "Global fast-charging network for Tesla vehicles"
+            },
+            {
+              "name": "Autonomous Driving",
+              "shortDescription": "Full Self-Driving (FSD) and Autopilot technology"
+            }
+          ],
+          "pagesToGenerate": [
+            "Home"
+          ],
+          "createdAt": "2025-11-26T07:05:00.349Z",
+          "updatedAt": "2025-11-26T07:05:00.350Z"
+        }
+      }
+    },
+    {
+      "phaseNumber": 3,
+      "phaseName": "Google Rating: Page Experience",
+      "startTime": 1764140762024,
+      "rating": 66,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 3: Page Experience\n\nRating: 66/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762025,
+      "duration": 1,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 4,
+      "phaseName": "Google Rating: Core Web Vitals",
+      "startTime": 1764140762025,
+      "rating": 70,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 4: Core Web Vitals\n\nRating: 70/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762026,
+      "duration": 1,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 5,
+      "phaseName": "Google Rating: Mobile Usability",
+      "startTime": 1764140762026,
+      "rating": 85,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 5: Mobile Usability\n\nRating: 85/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762027,
+      "duration": 1,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 6,
+      "phaseName": "Google Rating: Security",
+      "startTime": 1764140762028,
+      "rating": 80,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 6: Security\n\nRating: 80/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762028,
+      "duration": 0,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 7,
+      "phaseName": "Google Rating: Structured Data",
+      "startTime": 1764140762029,
+      "rating": 90,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 7: Structured Data\n\nRating: 90/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762030,
+      "duration": 1,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 8,
+      "phaseName": "Google Rating: Content Quality",
+      "startTime": 1764140762030,
+      "rating": 0,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 8: Content Quality\n\nRating: 0/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762031,
+      "duration": 1,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 9,
+      "phaseName": "Google Rating: Internal Linking",
+      "startTime": 1764140762031,
+      "rating": 95,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 9: Internal Linking\n\nRating: 95/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762036,
+      "duration": 5,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 10,
+      "phaseName": "Google Rating: Image Optimization",
+      "startTime": 1764140762036,
+      "rating": 100,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 10: Image Optimization\n\nRating: 100/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762037,
+      "duration": 1,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 11,
+      "phaseName": "Google Rating: URL Structure",
+      "startTime": 1764140762037,
+      "rating": 75,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 11: URL Structure\n\nRating: 75/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762038,
+      "duration": 1,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 12,
+      "phaseName": "Google Rating: Meta Tags",
+      "startTime": 1764140762038,
+      "rating": 100,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 12: Meta Tags\n\nRating: 100/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762039,
+      "duration": 1,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 13,
+      "phaseName": "Google Rating: Accessibility",
+      "startTime": 1764140762039,
+      "rating": 60,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 13: Accessibility\n\nRating: 60/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762040,
+      "duration": 1,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 14,
+      "phaseName": "Google Rating: Site Speed",
+      "startTime": 1764140762041,
+      "rating": 70,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 14: Site Speed\n\nRating: 70/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762042,
+      "duration": 1,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 15,
+      "phaseName": "Google Rating: Mobile-First Design",
+      "startTime": 1764140762042,
+      "rating": 85,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 15: Mobile-First Design\n\nRating: 85/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762044,
+      "duration": 2,
+      "phaseData": []
+    },
+    {
+      "phaseNumber": 16,
+      "phaseName": "Website Builder",
+      "startTime": 1764140762044,
+      "rating": 100,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 16: Website Builder\n\nRating: 100/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762045,
+      "duration": 1,
+      "phaseData": {
+        "generatedWebsite": {
+          "projectSlug": "tesla",
+          "layout": {
+            "sections": [
+              {
+                "type": "hero",
+                "layout": "centered",
+                "components": [
+                  "value-proposition",
+                  "headline",
+                  "subheadline",
+                  "cta-primary",
+                  "cta-secondary",
+                  "subtle-animation"
+                ],
+                "breakpoints": {
+                  "mobile": "stacked",
+                  "tablet": "centered",
+                  "desktop": "centered"
+                },
+                "spacing": "extra-large",
+                "key": "hero-1",
+                "imagePlans": [
+                  {
+                    "sectionKey": "hero-1",
+                    "purpose": "hero",
+                    "prompt": "Professional business hero image",
+                    "alt": "business hero image"
+                  }
+                ],
+                "imageUrl": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlMzE5Mzc7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTMxOTM3O3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2UzMTkzNyIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVGVzbGEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+",
+                "imageAlt": "business hero image",
+                "copy": {
+                  "sectionKey": "hero-1",
+                  "headline": "Business: Excellence in Business",
+                  "subheadline": "Premium services tailored to your needs",
+                  "paragraph": "Business delivers exceptional services with a commitment to excellence. We combine expertise, innovation, and personalized service to exceed your expectations.",
+                  "ctaLabel": "Contact Us",
+                  "ctaDescription": "Take the next step"
+                }
+              },
+              {
+                "type": "social-proof",
+                "layout": "horizontal-scroll",
+                "components": [
+                  "client-logos",
+                  "trust-badges"
+                ],
+                "breakpoints": {
+                  "mobile": "vertical",
+                  "tablet": "horizontal-scroll",
+                  "desktop": "horizontal-scroll"
+                },
+                "spacing": "medium",
+                "key": "social-proof-2",
+                "copy": {
+                  "sectionKey": "social-proof-2",
+                  "headline": "Social-proof",
+                  "paragraph": "Business delivers exceptional services in the business industry."
+                }
+              },
+              {
+                "type": "highlights",
+                "layout": "grid-3-column",
+                "components": [
+                  "feature-cards",
+                  "icons",
+                  "headings",
+                  "descriptions"
+                ],
+                "breakpoints": {
+                  "mobile": "1-column",
+                  "tablet": "2-column",
+                  "desktop": "grid-3-column"
+                },
+                "spacing": "large",
+                "key": "highlights-3",
+                "copy": {
+                  "sectionKey": "highlights-3",
+                  "headline": "Highlights",
+                  "paragraph": "Business delivers exceptional services in the business industry."
+                }
+              },
+              {
+                "type": "features",
+                "layout": "grid-2-column",
+                "components": [
+                  "detailed-features",
+                  "icons",
+                  "headings",
+                  "descriptions",
+                  "images"
+                ],
+                "breakpoints": {
+                  "mobile": "1-column",
+                  "tablet": "grid-2-column",
+                  "desktop": "grid-2-column"
+                },
+                "spacing": "large",
+                "key": "features-4",
+                "copy": {
+                  "sectionKey": "features-4",
+                  "headline": "Our Services",
+                  "paragraph": "Discover how Business can help you with services. We combine expertise, innovation, and personalized service to deliver results that exceed expectations.",
+                  "bullets": [
+                    "services consultation",
+                    "Customized solutions",
+                    "Expert guidance",
+                    "Ongoing support"
+                  ]
+                }
+              },
+              {
+                "type": "visual-break",
+                "layout": "full-width",
+                "components": [
+                  "large-image",
+                  "video",
+                  "illustration"
+                ],
+                "breakpoints": {
+                  "mobile": "stacked",
+                  "tablet": "full-width",
+                  "desktop": "full-width"
+                },
+                "spacing": "large",
+                "key": "visual-break-5",
+                "copy": {
+                  "sectionKey": "visual-break-5",
+                  "headline": "Visual-break",
+                  "paragraph": "Business delivers exceptional services in the business industry."
+                }
+              },
+              {
+                "type": "testimonials",
+                "layout": "carousel",
+                "components": [
+                  "testimonials",
+                  "client-logos",
+                  "quotes"
+                ],
+                "breakpoints": {
+                  "mobile": "stacked",
+                  "tablet": "carousel",
+                  "desktop": "carousel"
+                },
+                "spacing": "large",
+                "key": "testimonials-1",
+                "copy": {
+                  "sectionKey": "testimonials-1",
+                  "headline": "What Our Clients Say",
+                  "paragraph": "Don't just take our word for it. See what clients say about their experience with Business.",
+                  "subheadline": "Trusted by satisfied customers"
+                }
+              },
+              {
+                "type": "pricing",
+                "layout": "grid-3-column",
+                "components": [
+                  "pricing-tiers",
+                  "features",
+                  "cta"
+                ],
+                "breakpoints": {
+                  "mobile": "1-column",
+                  "tablet": "2-column",
+                  "desktop": "grid-3-column"
+                },
+                "spacing": "large",
+                "key": "pricing-7",
+                "copy": {
+                  "sectionKey": "pricing-7",
+                  "headline": "Pricing",
+                  "paragraph": "Business delivers exceptional services in the business industry."
+                }
+              },
+              {
+                "type": "cta",
+                "layout": "centered",
+                "components": [
+                  "headline",
+                  "subheadline",
+                  "cta-primary"
+                ],
+                "breakpoints": {
+                  "mobile": "stacked",
+                  "tablet": "centered",
+                  "desktop": "centered"
+                },
+                "spacing": "large",
+                "key": "cta-8",
+                "copy": {
+                  "sectionKey": "cta-8",
+                  "headline": "Ready to Get Started?",
+                  "paragraph": "Take the next step with Business. We're here to help you achieve your goals.",
+                  "ctaLabel": "Get Started",
+                  "ctaDescription": "Take action today"
+                }
+              },
+              {
+                "type": "footer",
+                "layout": "multi-column",
+                "components": [
+                  "links",
+                  "social",
+                  "legal"
+                ],
+                "breakpoints": {
+                  "mobile": "stacked",
+                  "tablet": "multi-column",
+                  "desktop": "multi-column"
+                },
+                "spacing": "medium",
+                "key": "footer-9",
+                "copy": {
+                  "sectionKey": "footer-9",
+                  "headline": "Footer",
+                  "paragraph": "Business delivers exceptional services in the business industry."
+                }
+              }
+            ],
+            "wireframe": "WEBSITE WIREFRAME\n==================\n\nSection 1: HERO\n========================================\nLayout: centered\nComponents: value-proposition, headline, subheadline, cta-primary, cta-secondary, subtle-animation\nBreakpoints:\n  Mobile: stacked\n  Tablet: centered\n  Desktop: centered\nSpacing: extra-large\n\nSection 2: SOCIAL-PROOF\n========================================\nLayout: horizontal-scroll\nComponents: client-logos, trust-badges\nBreakpoints:\n  Mobile: vertical\n  Tablet: horizontal-scroll\n  Desktop: horizontal-scroll\nSpacing: medium\n\nSection 3: HIGHLIGHTS\n========================================\nLayout: grid-3-column\nComponents: feature-cards, icons, headings, descriptions\nBreakpoints:\n  Mobile: 1-column\n  Tablet: 2-column\n  Desktop: grid-3-column\nSpacing: large\n\nSection 4: FEATURES\n========================================\nLayout: grid-2-column\nComponents: detailed-features, icons, headings, descriptions, images\nBreakpoints:\n  Mobile: 1-column\n  Tablet: grid-2-column\n  Desktop: grid-2-column\nSpacing: large\n\nSection 5: VISUAL-BREAK\n========================================\nLayout: full-width\nComponents: large-image, video, illustration\nBreakpoints:\n  Mobile: stacked\n  Tablet: full-width\n  Desktop: full-width\nSpacing: large\n\nSection 6: TESTIMONIALS\n========================================\nLayout: carousel\nComponents: testimonials, client-logos, quotes\nBreakpoints:\n  Mobile: stacked\n  Tablet: carousel\n  Desktop: carousel\nSpacing: large\n\nSection 7: PRICING\n========================================\nLayout: grid-3-column\nComponents: pricing-tiers, features, cta\nBreakpoints:\n  Mobile: 1-column\n  Tablet: 2-column\n  Desktop: grid-3-column\nSpacing: large\n\nSection 8: CTA\n========================================\nLayout: centered\nComponents: headline, subheadline, cta-primary\nBreakpoints:\n  Mobile: stacked\n  Tablet: centered\n  Desktop: centered\nSpacing: large\n\nSection 9: FOOTER\n========================================\nLayout: multi-column\nComponents: links, social, legal\nBreakpoints:\n  Mobile: stacked\n  Tablet: multi-column\n  Desktop: multi-column\nSpacing: medium\n\n",
+            "responsiveBreakpoints": [
+              390,
+              768,
+              1024,
+              1440
+            ],
+            "blueprint": "premium-corporate",
+            "generatedImages": [
+              {
+                "sectionKey": "hero-1",
+                "url": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlMzE5Mzc7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTMxOTM3O3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2UzMTkzNyIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVGVzbGEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+",
+                "alt": "business hero image",
+                "purpose": "hero"
+              }
+            ]
+          },
+          "styleSystem": {
+            "colors": {
+              "primary": "#e31937",
+              "neutrals": [
+                "#F8FAFC",
+                "#E2E8F0",
+                "#64748B",
+                "#1E293B"
+              ],
+              "background": "#F8FAFC",
+              "text": "#1E293B"
+            },
+            "typography": {
+              "id": "inter-system",
+              "heading": {
+                "font": "Inter",
+                "weights": [
+                  700,
+                  600
+                ],
+                "sizes": [
+                  48,
+                  36,
+                  24,
+                  18
+                ]
+              },
+              "body": {
+                "font": "Inter",
+                "weights": [
+                  400,
+                  500
+                ],
+                "sizes": [
+                  16,
+                  14
+                ],
+                "lineHeight": 1.6
+              },
+              "useCase": "Modern, clean, versatile"
+            },
+            "spacing": {
+              "scale": [
+                4,
+                8,
+                12,
+                16,
+                24,
+                32,
+                48,
+                64,
+                96,
+                128
+              ],
+              "system": "8px base"
+            },
+            "borderRadius": {
+              "small": "4px",
+              "medium": "8px",
+              "large": "16px",
+              "full": "9999px"
+            },
+            "shadows": {
+              "small": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              "medium": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+              "large": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+            },
+            "icons": {
+              "style": "outline",
+              "library": "heroicons"
+            }
+          },
+          "copy": {
+            "hero": {
+              "hook": "Transform your Learn more",
+              "headline": "Tesla delivers Electric Vehicles that Learn more",
+              "subheadline": "We help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles Learn more with proven Electric Vehicles",
+              "cta": "Book a Consultation"
+            },
+            "valueProposition": "Tesla provides Electric Vehicles that help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles Learn more. Based in Global, we deliver trustworthy solutions tailored to your needs.",
+            "tagline": "Tesla: Help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles understand Electric Vehicles",
+            "sections": [
+              {
+                "heading": "Why Choose Us",
+                "body": "We combine trustworthy service with balanced expertise to deliver Electric Vehicles that matter."
+              },
+              {
+                "heading": "Our Approach",
+                "body": "Our team understands Finding right solution and provides solutions tailored to your needs."
+              },
+              {
+                "heading": "Our Services",
+                "body": "We offer comprehensive Electric Vehicles, Energy Solutions, Supercharger Network, Autonomous Driving designed to help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles Learn more. Each service is tailored to your specific needs and delivered with trustworthy care."
+              },
+              {
+                "heading": "Our Commitment",
+                "body": "Located in Global, we're committed to delivering Electric Vehicles that exceed expectations."
+              },
+              {
+                "heading": "What Our Clients Say",
+                "body": "Our trustworthy approach and commitment to excellence have earned the trust of environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles across Global. We're proud to be your partner in Electric Vehicles."
+              },
+              {
+                "heading": "Pricing & Packages",
+                "body": "We offer flexible pricing options to suit your needs and budget. Whether you're looking for Electric Vehicles on a one-time basis or ongoing support, we have a solution that works for you."
+              },
+              {
+                "heading": "Ready to Get Started?",
+                "body": "Take the next step towards Learn more with our Electric Vehicles. We're here to help you every step of the way.",
+                "cta": "Get Started"
+              },
+              {
+                "heading": "What Sets Us Apart",
+                "body": "With trustworthy dedication and balanced innovation, we help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles Learn more."
+              }
+            ],
+            "services": [
+              {
+                "name": "Electric Vehicles",
+                "description": "Model S, Model 3, Model X, Model Y, and Cybertruck"
+              },
+              {
+                "name": "Energy Solutions",
+                "description": "Solar panels, Powerwall, and Megapack for homes and businesses"
+              },
+              {
+                "name": "Supercharger Network",
+                "description": "Global fast-charging network for Tesla vehicles"
+              },
+              {
+                "name": "Autonomous Driving",
+                "description": "Full Self-Driving (FSD) and Autopilot technology"
+              }
+            ],
+            "faq": [
+              {
+                "question": "How can I get started?",
+                "answer": "Getting started is easy. Simply contact us and we'll guide you through the process."
+              },
+              {
+                "question": "What makes you different?",
+                "answer": "We combine professional service with modern expertise to deliver results that matter. Our commitment to excellence sets us apart."
+              }
+            ]
+          },
+          "code": {
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Tesla - Business Services</title>\n  <meta name=\"description\" content=\"Business delivers exceptional services with a commitment to excellence. We combine expertise, innovation, and personalized service to exceed your expectations.\">\n  <meta name=\"keywords\" content=\"business, business services, tesla\">\n  \n  <!-- Open Graph / Facebook -->\n  <meta property=\"og:type\" content=\"website\">\n  <meta property=\"og:title\" content=\"Tesla\">\n  <meta property=\"og:description\" content=\"Professional business services from Tesla. Contact us today for expert solutions.\">\n  <meta property=\"og:image\" content=\"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlMzE5Mzc7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTMxOTM3O3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2UzMTkzNyIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVGVzbGEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+\">\n  \n  <!-- Twitter -->\n  <meta name=\"twitter:card\" content=\"summary_large_image\">\n  <meta name=\"twitter:title\" content=\"Tesla\">\n  <meta name=\"twitter:description\" content=\"Professional business services from Tesla. Contact us today for expert solutions.\">\n  <meta name=\"twitter:image\" content=\"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlMzE5Mzc7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTMxOTM3O3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2UzMTkzNyIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVGVzbGEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+\">\n  \n  <link rel=\"canonical\" href=\"https://example.com/index.html\">\n  \n  <script type=\"application/ld+json\">\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"LocalBusiness\",\n  \"name\": \"Tesla\",\n  \"description\": \"Professional business services from Tesla. Contact us today for expert solutions.\",\n  \"url\": \"https://example.com/tesla\"\n}\n</script>\n  \n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n  <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Inter:wght@400;700&family=Inter:wght@300;400;600&display=swap\" rel=\"stylesheet\">\n  <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n  <header class=\"cm-header\">\n  <nav class=\"cm-nav\" role=\"navigation\">\n    <div class=\"cm-nav-container\">\n      <div class=\"cm-nav-brand\">\n        <a href=\"index.html\" class=\"cm-nav-logo\">Tesla</a>\n      </div>\n      <button class=\"cm-nav-toggle\" aria-label=\"Toggle navigation\" aria-expanded=\"false\">\n        <span></span>\n        <span></span>\n        <span></span>\n      </button>\n      <ul class=\"cm-nav-menu\">\n        <li class=\"cm-nav-item\"><a href=\"index.html\" class=\"cm-nav-link active\">Home</a></li>\n        <li class=\"cm-nav-item\"><a href=\"services.html\" class=\"cm-nav-link\">Services</a></li>\n        <li class=\"cm-nav-item\"><a href=\"about.html\" class=\"cm-nav-link\">About</a></li>\n        <li class=\"cm-nav-item\"><a href=\"contact.html\" class=\"cm-nav-link\">Contact</a></li>\n      </ul>\n    </div>\n  </nav>\n\n  </header>\n\n  <main class=\"cm-main\">\n  <section class=\"hero hero-split-left\" style=\"padding: var(--cm-space-xl) 0;\">\n    <div class=\"container\">\n      <div class=\"hero-content\" style=\"text-align: left;\">\n        <h1 class=\"hero-headline\">Business: Excellence in Business</h1>\n        <p class=\"subheadline\">Premium services tailored to your needs</p>\n        <p class=\"hero-paragraph\">Business delivers exceptional services with a commitment to excellence. We combine expertise, innovation, and personalized service to exceed your expectations.</p>\n        <div class=\"hero-cta\">\n          <a href=\"#contact\" class=\"cta-primary\">Contact Us</a>\n          <p class=\"cta-description\">Take the next step</p>\n        </div>\n      </div>\n      <div class=\"hero-media\"><img src=\"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlMzE5Mzc7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTMxOTM3O3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2UzMTkzNyIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVGVzbGEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+\" alt=\"business hero image\" loading=\"lazy\" /></div>\n    </div>\n  </section>\n  <section class=\"testimonials testimonials-grid\" style=\"padding: 48px;\">\n    <div class=\"container\">\n      <h2 style=\"font-family: 'Inter';\">Why Choose Us</h2>\n      <div class=\"testimonials-grid testimonials-grid-3\">\n        <div class=\"testimonial-card\">\n          <p class=\"testimonial-quote\">\"Excellent service!\"</p>\n          <div class=\"testimonial-author\">\n            <strong>John Doe</strong>\n            <span>CEO, Company Inc.</span>\n          </div>\n        </div>\n        <div class=\"testimonial-card\">\n          <p class=\"testimonial-quote\">\"Highly recommended!\"</p>\n          <div class=\"testimonial-author\">\n            <strong>Jane Smith</strong>\n            <span>Director, Business Corp.</span>\n          </div>\n        </div>\n        <div class=\"testimonial-card\">\n          <p class=\"testimonial-quote\">\"Outstanding results!\"</p>\n          <div class=\"testimonial-author\">\n            <strong>Bob Johnson</strong>\n            <span>Manager, Enterprise Ltd.</span>\n          </div>\n        </div>\n      </div>\n    </div>\n  </section>\n\n  </main>\n  <footer class=\"cm-footer\">\n    <div class=\"cm-footer-container\">\n      <div class=\"cm-footer-content\">\n        <div class=\"cm-footer-brand\">\n          <h3>Tesla</h3>\n          <p>Tesla: Help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles understand Electric Vehicles</p>\n        </div>\n        <div class=\"cm-footer-links\">\n          <h4>Quick Links</h4>\n          <ul>\n            <li><a href=\"index.html\">Home</a></li>\n            <li><a href=\"about.html\">About</a></li>\n            <li><a href=\"contact.html\">Contact</a></li>\n          </ul>\n        </div>\n        <div class=\"cm-footer-bottom\">\n          <p>&copy; 2025 Tesla. All rights reserved.</p>\n        </div>\n      </div>\n    </div>\n  </footer>\n\n  <script src=\"script.js\"></script>\n</body>\n</html>",
+            "css": "/* Generated by Merlin Design LLM v6.9 - Global Theme Engine */\n\n:root {\n  /* v6.9: Global Theme Palette */\n  --cm-color-primary: #e31937;\n  --cm-color-secondary: undefined;\n  --cm-color-accent: undefined;\n  --cm-color-bg: #F8FAFC;\n  --cm-color-text: #1E293B;\n  --cm-color-neutral100: #ffffff;\n  --cm-color-neutral200: #dfe1e3;\n  --cm-color-neutral300: #c5c7c9;\n  \n  /* v6.9: Global Theme Typography */\n  --cm-font-display: 'Inter', sans-serif;\n  --cm-font-heading: 'Inter', sans-serif;\n  --cm-font-body: 'Inter', sans-serif;\n  \n  /* v6.9: Global Theme Typography Scale */\n  --cm-font-heroH1: 3.5rem;\n  --cm-font-h1: 2.5rem;\n  --cm-font-h2: 2rem;\n  --cm-font-h3: 1.5rem;\n  --cm-font-body-size: 1rem;\n  --cm-font-small: 0.875rem;\n  \n  /* v6.9: Global Theme Spacing */\n  --cm-space-xs: 0.5rem;\n  --cm-space-sm: 1rem;\n  --cm-space-md: 1.5rem;\n  --cm-space-lg: 2rem;\n  --cm-space-xl: 3rem;\n  \n  /* v6.9: Global Theme Shadows */\n  --cm-shadow-level1: 0 2px 4px rgba(0,0,0,0.1);\n  --cm-shadow-level2: 0 4px 12px rgba(0,0,0,0.15);\n  --cm-shadow-level3: 0 8px 24px rgba(0,0,0,0.2);\n  \n  /* Legacy variables for backward compatibility */\n  --color-primary: #e31937;\n  --color-secondary: undefined;\n  --color-accent: undefined;\n  --color-background: #F8FAFC;\n  --color-text: #1E293B;\n  --font-heading: 'Inter', sans-serif;\n  --font-body: 'Inter', sans-serif;\n  --spacing-xs: 0.5rem;\n  --spacing-sm: 1rem;\n  --spacing-md: 1.5rem;\n  --spacing-lg: 2rem;\n  --spacing-xl: 3rem;\n  --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);\n  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);\n  --shadow-lg: 0 8px 24px rgba(0,0,0,0.2);\n  \n  /* Additional theme variables */\n  --cm-color-surface: #dfe1e3;\n  --cm-color-muted: #c5c7c9;\n  --cm-radius-sm: 4px;\n  --cm-radius-md: 8px;\n  --cm-radius-lg: 16px;\n  --cm-shadow-soft: 0 25px 65px rgba(15, 23, 42, 0.18);\n  \n  /* v6.4: Responsive Layout Engine CSS variables */\n  --cm-container-max-width: 1200px;\n  --cm-container-padding-x-mobile: 1.5rem;\n  --cm-container-padding-x-tablet: 2rem;\n  --cm-container-padding-x-desktop: 3rem;\n  \n  --cm-spacing-section-mobile: 3rem 0;\n  --cm-spacing-section-tablet: 4rem 0;\n  --cm-spacing-section-desktop: 6rem 0;\n  \n  --cm-spacing-gap-mobile: 1.5rem;\n  --cm-spacing-gap-tablet: 2rem;\n  --cm-spacing-gap-desktop: 2.5rem;\n  \n  --cm-text-hero-mobile: 2rem;\n  --cm-text-hero-tablet: 3rem;\n  --cm-text-hero-desktop: 4rem;\n  \n  --cm-text-section-mobile: 1.75rem;\n  --cm-text-section-tablet: 2.25rem;\n  --cm-text-section-desktop: 3rem;\n  \n  --cm-text-body-mobile: 1rem;\n  --cm-text-body-tablet: 1.125rem;\n  --cm-text-body-desktop: 1.125rem;\n  \n  --cm-line-height-normal: 1.6;\n}\n\n* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\nhtml {\n  font-size: 16px;\n  -webkit-text-size-adjust: 100%;\n}\n\nbody {\n  font-family: var(--cm-font-body);\n  font-size: var(--cm-text-body-mobile);\n  line-height: var(--cm-line-height-normal);\n  color: var(--cm-color-text);\n  background-color: var(--cm-color-bg);\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  overflow-x: hidden; /* Prevent horizontal scroll */\n}\n\n/* v6.4: Responsive Container */\n.cm-main {\n  max-width: var(--cm-container-max-width);\n  margin: 0 auto;\n  padding-left: var(--cm-container-padding-x-mobile);\n  padding-right: var(--cm-container-padding-x-mobile);\n  width: 100%;\n}\n\n.container {\n  max-width: var(--cm-container-max-width);\n  margin: 0 auto;\n  padding: 0 var(--cm-container-padding-x-mobile);\n  width: 100%;\n}\n\n/* v6.4: Responsive Images - Always scale properly */\nimg {\n  max-width: 100%;\n  height: auto;\n  display: block;\n}\n\n/* v6.4: Tablet breakpoint */\n@media (min-width: 768px) {\n  body {\n    font-size: var(--cm-text-body-tablet);\n  }\n  \n  .cm-main,\n  .container {\n    padding-left: var(--cm-container-padding-x-tablet);\n    padding-right: var(--cm-container-padding-x-tablet);\n  }\n}\n\n/* v6.4: Laptop/Desktop breakpoint */\n@media (min-width: 1024px) {\n  body {\n    font-size: var(--cm-text-body-desktop);\n  }\n  \n  .cm-main,\n  .container {\n    padding-left: var(--cm-container-padding-x-desktop);\n    padding-right: var(--cm-container-padding-x-desktop);\n  }\n}\n\nsection {\n  padding: var(--spacing-2xl) 0;\n}\n\nsection:not(.hero) .container {\n  background: var(--cm-color-surface);\n  border-radius: var(--cm-radius-lg);\n  box-shadow: var(--cm-shadow-soft);\n  padding: var(--spacing-xl);\n}\n\nh1, h2, h3, h4, h5, h6 {\n  font-family: var(--cm-font-heading);\n  font-weight: 700;\n  line-height: 1.2;\n}\n\nh1 {\n  font-size: var(--cm-font-h1);\n}\n\nh2 {\n  font-size: var(--cm-font-h2);\n}\n\nh3 {\n  font-size: var(--cm-font-h3);\n}\n\n.hero .container {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  align-items: center;\n  gap: var(--spacing-2xl);\n  background: linear-gradient(135deg, #e31937 0%, #e31937 50%, #e31937 100%);\n  color: #ffffff;\n  border-radius: calc(var(--cm-radius-lg) * 1.1);\n  box-shadow: var(--cm-shadow-soft);\n  padding: var(--spacing-2xl);\n}\n\n.hero .hero-content h1,\n.hero-headline {\n  font-family: var(--cm-font-display);\n  font-size: var(--cm-font-heroH1);\n  margin-bottom: var(--cm-space-lg);\n  line-height: 1.1;\n  color: var(--cm-color-primary);\n}\n\n.hero-headline-white {\n  color: white;\n}\n\n.subheadline,\n.hero-paragraph {\n  font-family: var(--cm-font-body);\n  font-size: var(--cm-font-body-size);\n  color: var(--cm-color-text);\n}\n\n.subheadline-white,\n.hero-paragraph-white {\n  color: white;\n}\n\n.hero .hero-content p {\n  font-size: 1.1rem;\n  color: rgba(255, 255, 255, 0.9);\n  margin-bottom: var(--spacing-lg);\n}\n\n.hero .hero-media img {\n  width: 100%;\n  height: 100%;\n  border-radius: var(--cm-radius-lg);\n  object-fit: cover;\n  box-shadow: var(--shadow-lg);\n}\n\n.hero .hero-kicker {\n  text-transform: uppercase;\n  letter-spacing: 1px;\n  font-size: 0.9rem;\n  color: rgba(255, 255, 255, 0.85);\n}\n\n.section-block.has-media .container {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));\n  gap: var(--spacing-xl);\n  align-items: center;\n}\n\n.section-media img {\n  width: 100%;\n  border-radius: var(--cm-radius-lg);\n  object-fit: cover;\n  box-shadow: var(--shadow-md);\n}\n\n.section-content h2 {\n  font-size: var(--cm-font-h2);\n  margin-bottom: var(--cm-space-md);\n  color: var(--cm-color-text);\n}\n\n.section-content p {\n  color: var(--cm-color-text);\n  font-size: var(--cm-font-body-size);\n  line-height: 1.6;\n}\n\n.features.section-block .container {\n  background: transparent;\n  box-shadow: none;\n  padding: 0;\n}\n\n.cta-primary {\n  display: inline-block;\n  padding: var(--cm-space-sm) var(--cm-space-md);\n  border-radius: var(--cm-radius-md);\n  text-decoration: none;\n  font-family: var(--cm-font-body);\n  font-size: var(--cm-font-body-size);\n  font-weight: 600;\n  transition: all 0.3s ease;\n  background: var(--cm-color-primary);\n  color: #ffffff;\n  box-shadow: var(--cm-shadow-level1);\n}\n\n.cta-primary:hover {\n  background: var(--cm-color-accent);\n  transform: translateY(-2px);\n  box-shadow: var(--cm-shadow-level2);\n}\n\n.features-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n  gap: var(--cm-space-lg);\n  margin-top: var(--cm-space-xl);\n}\n\n.feature-card {\n  padding: var(--cm-space-lg);\n  border-radius: var(--cm-radius-lg);\n  background: var(--cm-color-surface);\n  box-shadow: var(--shadow-sm);\n  transition: all 0.3s ease;\n}\n\n.feature-card:hover {\n  transform: translateY(-4px);\n  box-shadow: var(--shadow-md);\n}\n\n  /* v6.4: Responsive Layout Engine - Mobile-First Media Queries */\n  \n  /* Tablet and up (768px+) */\n  @media (min-width: 768px) {\n    /* Hero variants - tablet responsive */\n    .hero-split-left .container,\n    .hero-split-right .container {\n      display: grid;\n      grid-template-columns: 1fr 1fr;\n      gap: var(--cm-spacing-gap-tablet);\n      align-items: center;\n    }\n    \n    .hero-split-left .hero-content {\n      text-align: left;\n    }\n    \n    .hero-split-right .hero-content {\n      text-align: right;\n    }\n    \n    /* About variants - tablet responsive */\n    .about-image-left .container,\n    .about-image-right .container {\n      display: grid;\n      grid-template-columns: 1fr 1fr;\n      gap: var(--cm-spacing-gap-tablet);\n      align-items: center;\n    }\n    \n    /* Features variants - tablet responsive */\n    .features-grid-3 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    .features-grid-2 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    .features-grid-4 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    /* Testimonials variants - tablet responsive */\n    .testimonials-grid-3 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    /* Pricing variants - tablet responsive */\n    .pricing-grid-2 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    /* CTA variants - tablet responsive */\n    .cta-split .container {\n      display: grid;\n      grid-template-columns: 1fr 1fr;\n      gap: var(--cm-spacing-gap-tablet);\n      align-items: center;\n    }\n    \n    /* Contact variants - tablet responsive */\n    .contact-wrapper {\n      display: grid;\n      grid-template-columns: 1fr 1fr;\n      gap: var(--cm-spacing-gap-tablet);\n    }\n    \n    /* FAQ variants - tablet responsive */\n    .faq-grid-2 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    /* Typography - tablet responsive */\n    .hero h1 {\n      font-size: var(--cm-text-hero-tablet);\n    }\n    \n    h2 {\n      font-size: var(--cm-text-section-tablet);\n    }\n  }\n  \n  /* Laptop and up (1024px+) */\n  @media (min-width: 1024px) {\n    /* Features variants - laptop responsive */\n    .features-grid-3 {\n      grid-template-columns: repeat(3, minmax(0, 1fr));\n    }\n    \n    .features-grid-4 {\n      grid-template-columns: repeat(4, minmax(0, 1fr));\n    }\n    \n    /* Testimonials variants - laptop responsive */\n    .testimonials-grid-3 {\n      grid-template-columns: repeat(3, minmax(0, 1fr));\n    }\n    \n    .testimonial-spotlight {\n      display: grid;\n      grid-template-columns: 2fr 1fr;\n      gap: var(--cm-spacing-gap-desktop);\n    }\n    \n    /* Pricing variants - laptop responsive */\n    .pricing-grid-3 {\n      grid-template-columns: repeat(3, minmax(0, 1fr));\n    }\n    \n    /* Typography - laptop responsive */\n    .hero h1 {\n      font-size: var(--cm-text-hero-desktop);\n    }\n    \n    h2 {\n      font-size: var(--cm-text-section-desktop);\n    }\n  }\n  \n  /* Desktop and up (1440px+) */\n  @media (min-width: 1440px) {\n    /* Additional desktop-only enhancements */\n    .hero {\n      min-height: 80vh;\n    }\n    \n    .section-block {\n      padding: var(--cm-spacing-section-desktop);\n    }\n  }\n  \n  /* Mobile-specific overrides (max-width) */\n  @media (max-width: 767px) {\n    /* Force single column on mobile */\n    .hero-split-left .container,\n    .hero-split-right .container,\n    .about-image-left .container,\n    .about-image-right .container,\n    .cta-split .container,\n    .contact-wrapper {\n      display: block;\n    }\n    \n    .hero-split-left .hero-media,\n    .hero-split-right .hero-media,\n    .about-image-left .section-media,\n    .about-image-right .section-media {\n      margin-bottom: var(--cm-spacing-gap-mobile);\n    }\n    \n    .features-grid-2,\n    .features-grid-3,\n    .features-grid-4,\n    .pricing-grid-2,\n    .pricing-grid-3,\n    .testimonials-grid-3,\n    .faq-grid-2 {\n      grid-template-columns: 1fr;\n    }\n    \n    .feature-alternating {\n      display: block;\n    }\n    \n    .feature-alternating.feature-right {\n      direction: ltr;\n    }\n    \n    .testimonial-spotlight {\n      display: block;\n    }\n    \n    .testimonial-featured {\n      margin-bottom: var(--cm-spacing-gap-mobile);\n    }\n    \n    /* Mobile typography */\n    .hero h1 {\n      font-size: var(--cm-text-hero-mobile);\n      line-height: 1.2;\n    }\n    \n    h2 {\n      font-size: var(--cm-text-section-mobile);\n    }\n    \n    /* Mobile spacing */\n    .section-block {\n      padding: var(--cm-spacing-section-mobile);\n    }\n    \n    .features-grid,\n    .pricing-grid,\n    .testimonials-grid {\n      gap: var(--cm-spacing-gap-mobile);\n    }\n  }\n\n  /* v6.8: Multi-Page Navigation System */\n  /* v6.9: Updated to use theme tokens */\n  .cm-header {\n    background: var(--cm-color-bg);\n    border-bottom: 1px solid var(--cm-color-neutral300);\n    position: sticky;\n    top: 0;\n    z-index: 1000;\n    backdrop-filter: blur(10px);\n    background: rgba(255, 255, 255, 0.95);\n    box-shadow: var(--cm-shadow-level2);\n  }\n\n  .cm-nav {\n    width: 100%;\n  }\n\n  .cm-nav-container {\n    max-width: var(--cm-container-max-width);\n    margin: 0 auto;\n    padding: 1rem var(--cm-container-padding-x-mobile);\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n  }\n\n  .cm-nav-brand {\n    flex: 0 0 auto;\n  }\n\n  .cm-nav-logo {\n    font-family: var(--cm-font-heading);\n    font-size: var(--cm-font-h3);\n    font-weight: 700;\n    color: var(--cm-color-primary);\n    text-decoration: none;\n    transition: opacity 0.2s;\n  }\n\n  .cm-nav-logo:hover {\n    opacity: 0.8;\n  }\n\n  .cm-nav-toggle {\n    display: none;\n    flex-direction: column;\n    background: none;\n    border: none;\n    cursor: pointer;\n    padding: 0.5rem;\n    gap: 4px;\n  }\n\n  .cm-nav-toggle span {\n    width: 24px;\n    height: 2px;\n    background: var(--cm-color-text);\n    transition: all 0.3s;\n    border-radius: 2px;\n  }\n\n  .cm-nav-toggle-active span:nth-child(1) {\n    transform: rotate(45deg) translate(6px, 6px);\n  }\n\n  .cm-nav-toggle-active span:nth-child(2) {\n    opacity: 0;\n  }\n\n  .cm-nav-toggle-active span:nth-child(3) {\n    transform: rotate(-45deg) translate(6px, -6px);\n  }\n\n  .cm-nav-menu {\n    display: flex;\n    list-style: none;\n    gap: 2rem;\n    align-items: center;\n    margin: 0;\n    padding: 0;\n  }\n\n  .cm-nav-item {\n    margin: 0;\n  }\n\n  .cm-nav-link {\n    font-family: var(--cm-font-body);\n    font-size: var(--cm-font-body-size);\n    color: var(--cm-color-text);\n    text-decoration: none;\n    font-weight: 500;\n    transition: color 0.2s;\n    position: relative;\n    padding: var(--cm-space-xs) 0;\n  }\n\n  .cm-nav-link:hover {\n    color: var(--cm-color-accent);\n  }\n\n  .cm-nav-link.active {\n    color: var(--cm-color-accent);\n  }\n\n  .cm-nav-link.active::after {\n    content: '';\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 2px;\n    background: var(--cm-color-accent);\n  }\n\n  /* v6.8: Mobile Navigation */\n  @media (max-width: 768px) {\n    .cm-nav-toggle {\n      display: flex;\n    }\n\n    .cm-nav-menu {\n      position: absolute;\n      top: 100%;\n      left: 0;\n      right: 0;\n      background: var(--cm-color-bg);\n      flex-direction: column;\n      align-items: stretch;\n      padding: 1rem;\n      gap: 0;\n      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n      max-height: 0;\n      overflow: hidden;\n      transition: max-height 0.3s ease-out;\n    }\n\n    .cm-nav-menu.cm-nav-menu-open {\n      max-height: 500px;\n    }\n\n    .cm-nav-item {\n      width: 100%;\n      border-bottom: 1px solid rgba(0, 0, 0, 0.1);\n    }\n\n    .cm-nav-item:last-child {\n      border-bottom: none;\n    }\n\n    .cm-nav-link {\n      display: block;\n      padding: var(--cm-space-sm);\n      width: 100%;\n    }\n\n    .cm-nav-link.active::after {\n      display: none;\n    }\n\n    .cm-nav-link.active {\n      background: var(--cm-color-neutral100);\n      border-left: 3px solid var(--cm-color-accent);\n    }\n  }\n\n  /* v6.8: Footer Styles */\n  /* v6.9: Updated to use theme tokens */\n  .cm-footer {\n    background: var(--cm-color-neutral300);\n    border-top: 1px solid var(--cm-color-neutral200);\n    margin-top: var(--cm-space-xl);\n    padding: var(--cm-space-xl) 0 var(--cm-space-md);\n  }\n\n  .cm-footer-container {\n    max-width: var(--cm-container-max-width);\n    margin: 0 auto;\n    padding: 0 var(--cm-container-padding-x-mobile);\n  }\n\n  .cm-footer-content {\n    display: grid;\n    grid-template-columns: 1fr;\n    gap: 2rem;\n    margin-bottom: 2rem;\n  }\n\n  .cm-footer-brand h3 {\n    font-family: var(--cm-font-heading);\n    font-size: var(--cm-font-h3);\n    color: var(--cm-color-primary);\n    margin-bottom: var(--cm-space-xs);\n  }\n\n  .cm-footer-brand p {\n    color: var(--cm-color-text);\n    opacity: 0.7;\n    font-size: var(--cm-font-small);\n  }\n\n  .cm-footer-links h4 {\n    font-family: var(--cm-font-heading);\n    font-size: var(--cm-font-h3);\n    margin-bottom: var(--cm-space-sm);\n    color: var(--cm-color-text);\n  }\n\n  .cm-footer-links ul {\n    list-style: none;\n    padding: 0;\n    margin: 0;\n  }\n\n  .cm-footer-links li {\n    margin-bottom: 0.5rem;\n  }\n\n  .cm-footer-links a {\n    color: var(--cm-color-text);\n    text-decoration: none;\n    opacity: 0.7;\n    transition: opacity 0.2s;\n    font-size: var(--cm-font-small);\n  }\n\n  .cm-footer-links a:hover {\n    opacity: 1;\n  }\n\n  .cm-footer-bottom {\n    text-align: center;\n    padding-top: var(--cm-space-md);\n    border-top: 1px solid var(--cm-color-neutral200);\n    color: var(--cm-color-text);\n    opacity: 0.6;\n    font-size: var(--cm-font-small);\n  }\n\n  @media (min-width: 768px) {\n    .cm-footer-content {\n      grid-template-columns: 2fr 1fr 1fr;\n    }\n  }\n",
+            "javascript": "// Generated by Merlin Design LLM v6.3 - Component Variants\n\n// Smooth scroll\ndocument.querySelectorAll('a[href^=\"#\"]').forEach(anchor => {\n  anchor.addEventListener('click', function (e) {\n    e.preventDefault();\n    const target = document.querySelector(this.getAttribute('href'));\n    if (target) {\n      target.scrollIntoView({ behavior: 'smooth' });\n    }\n  });\n});\n\n// Mobile menu toggle (if needed)\nconst navToggle = document.querySelector('.nav-toggle');\nconst navLinks = document.querySelector('.nav-links');\n\nif (navToggle) {\n  navToggle.addEventListener('click', () => {\n    navLinks.classList.toggle('active');\n  });\n}\n\n// v6.3: FAQ Accordion Toggle\nfunction toggleFAQ(index) {\n  const answer = document.getElementById('faq-answer-' + index);\n  if (answer) {\n    answer.classList.toggle('active');\n    const icon = answer.previousElementSibling?.querySelector('.faq-icon');\n    if (icon) {\n      icon.textContent = answer.classList.contains('active') ? '−' : '+';\n    }\n  }\n}\n\n// v6.3: Testimonials Carousel (basic auto-scroll)\nconst carouselTrack = document.querySelector('.testimonials-carousel-track');\nif (carouselTrack) {\n  let scrollPosition = 0;\n  const scrollAmount = 320; // card width + gap\n  \n  setInterval(() => {\n    scrollPosition += scrollAmount;\n    if (scrollPosition >= carouselTrack.scrollWidth - carouselTrack.clientWidth) {\n      scrollPosition = 0;\n    }\n    carouselTrack.scrollTo({ left: scrollPosition, behavior: 'smooth' });\n  }, 3000);\n}\n"
+          },
+          "qualityScore": {
+            "visualDesign": 8.5,
+            "uxStructure": 8.86,
+            "contentQuality": 0,
+            "conversionTrust": 4.5,
+            "seoFoundations": 9,
+            "creativity": 9,
+            "meetsThresholds": false
+          }
+        }
+      }
+    },
+    {
+      "phaseNumber": 17,
+      "phaseName": "Review & Final Output",
+      "startTime": 1764140762045,
+      "rating": 86,
+      "ratingBreakdown": [],
+      "detailedAnalysis": "Phase 17: Review & Final Output\n\nRating: 86/100\n\nQuality Assessment Results:\n- Visual Design: 8.5/10\n- UX Structure: 8.86/10\n- Content Quality: 0/10\n- Conversion Trust: 4.5/10\n- SEO Foundations: 9/10\n- Creativity: 9/10\n- Average Score: 6.6/10\n- Verdict: OK\n- Meets Thresholds: No\n\nGenerated Website Status:\n- Layout: Generated\n- Style System: Generated\n- Copy: Generated\n- Code: Generated\n\n",
+      "strengths": [],
+      "weaknesses": [],
+      "improvementSuggestions": [],
+      "endTime": 1764140762046,
+      "duration": 1,
+      "phaseData": {
+        "generatedWebsite": {
+          "projectSlug": "tesla",
+          "layout": {
+            "sections": [
+              {
+                "type": "hero",
+                "layout": "centered",
+                "components": [
+                  "value-proposition",
+                  "headline",
+                  "subheadline",
+                  "cta-primary",
+                  "cta-secondary",
+                  "subtle-animation"
+                ],
+                "breakpoints": {
+                  "mobile": "stacked",
+                  "tablet": "centered",
+                  "desktop": "centered"
+                },
+                "spacing": "extra-large",
+                "key": "hero-1",
+                "imagePlans": [
+                  {
+                    "sectionKey": "hero-1",
+                    "purpose": "hero",
+                    "prompt": "Professional business hero image",
+                    "alt": "business hero image"
+                  }
+                ],
+                "imageUrl": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlMzE5Mzc7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTMxOTM3O3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2UzMTkzNyIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVGVzbGEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+",
+                "imageAlt": "business hero image",
+                "copy": {
+                  "sectionKey": "hero-1",
+                  "headline": "Business: Excellence in Business",
+                  "subheadline": "Premium services tailored to your needs",
+                  "paragraph": "Business delivers exceptional services with a commitment to excellence. We combine expertise, innovation, and personalized service to exceed your expectations.",
+                  "ctaLabel": "Contact Us",
+                  "ctaDescription": "Take the next step"
+                }
+              },
+              {
+                "type": "social-proof",
+                "layout": "horizontal-scroll",
+                "components": [
+                  "client-logos",
+                  "trust-badges"
+                ],
+                "breakpoints": {
+                  "mobile": "vertical",
+                  "tablet": "horizontal-scroll",
+                  "desktop": "horizontal-scroll"
+                },
+                "spacing": "medium",
+                "key": "social-proof-2",
+                "copy": {
+                  "sectionKey": "social-proof-2",
+                  "headline": "Social-proof",
+                  "paragraph": "Business delivers exceptional services in the business industry."
+                }
+              },
+              {
+                "type": "highlights",
+                "layout": "grid-3-column",
+                "components": [
+                  "feature-cards",
+                  "icons",
+                  "headings",
+                  "descriptions"
+                ],
+                "breakpoints": {
+                  "mobile": "1-column",
+                  "tablet": "2-column",
+                  "desktop": "grid-3-column"
+                },
+                "spacing": "large",
+                "key": "highlights-3",
+                "copy": {
+                  "sectionKey": "highlights-3",
+                  "headline": "Highlights",
+                  "paragraph": "Business delivers exceptional services in the business industry."
+                }
+              },
+              {
+                "type": "features",
+                "layout": "grid-2-column",
+                "components": [
+                  "detailed-features",
+                  "icons",
+                  "headings",
+                  "descriptions",
+                  "images"
+                ],
+                "breakpoints": {
+                  "mobile": "1-column",
+                  "tablet": "grid-2-column",
+                  "desktop": "grid-2-column"
+                },
+                "spacing": "large",
+                "key": "features-4",
+                "copy": {
+                  "sectionKey": "features-4",
+                  "headline": "Our Services",
+                  "paragraph": "Discover how Business can help you with services. We combine expertise, innovation, and personalized service to deliver results that exceed expectations.",
+                  "bullets": [
+                    "services consultation",
+                    "Customized solutions",
+                    "Expert guidance",
+                    "Ongoing support"
+                  ]
+                }
+              },
+              {
+                "type": "visual-break",
+                "layout": "full-width",
+                "components": [
+                  "large-image",
+                  "video",
+                  "illustration"
+                ],
+                "breakpoints": {
+                  "mobile": "stacked",
+                  "tablet": "full-width",
+                  "desktop": "full-width"
+                },
+                "spacing": "large",
+                "key": "visual-break-5",
+                "copy": {
+                  "sectionKey": "visual-break-5",
+                  "headline": "Visual-break",
+                  "paragraph": "Business delivers exceptional services in the business industry."
+                }
+              },
+              {
+                "type": "testimonials",
+                "layout": "carousel",
+                "components": [
+                  "testimonials",
+                  "client-logos",
+                  "quotes"
+                ],
+                "breakpoints": {
+                  "mobile": "stacked",
+                  "tablet": "carousel",
+                  "desktop": "carousel"
+                },
+                "spacing": "large",
+                "key": "testimonials-1",
+                "copy": {
+                  "sectionKey": "testimonials-1",
+                  "headline": "What Our Clients Say",
+                  "paragraph": "Don't just take our word for it. See what clients say about their experience with Business.",
+                  "subheadline": "Trusted by satisfied customers"
+                }
+              },
+              {
+                "type": "pricing",
+                "layout": "grid-3-column",
+                "components": [
+                  "pricing-tiers",
+                  "features",
+                  "cta"
+                ],
+                "breakpoints": {
+                  "mobile": "1-column",
+                  "tablet": "2-column",
+                  "desktop": "grid-3-column"
+                },
+                "spacing": "large",
+                "key": "pricing-7",
+                "copy": {
+                  "sectionKey": "pricing-7",
+                  "headline": "Pricing",
+                  "paragraph": "Business delivers exceptional services in the business industry."
+                }
+              },
+              {
+                "type": "cta",
+                "layout": "centered",
+                "components": [
+                  "headline",
+                  "subheadline",
+                  "cta-primary"
+                ],
+                "breakpoints": {
+                  "mobile": "stacked",
+                  "tablet": "centered",
+                  "desktop": "centered"
+                },
+                "spacing": "large",
+                "key": "cta-8",
+                "copy": {
+                  "sectionKey": "cta-8",
+                  "headline": "Ready to Get Started?",
+                  "paragraph": "Take the next step with Business. We're here to help you achieve your goals.",
+                  "ctaLabel": "Get Started",
+                  "ctaDescription": "Take action today"
+                }
+              },
+              {
+                "type": "footer",
+                "layout": "multi-column",
+                "components": [
+                  "links",
+                  "social",
+                  "legal"
+                ],
+                "breakpoints": {
+                  "mobile": "stacked",
+                  "tablet": "multi-column",
+                  "desktop": "multi-column"
+                },
+                "spacing": "medium",
+                "key": "footer-9",
+                "copy": {
+                  "sectionKey": "footer-9",
+                  "headline": "Footer",
+                  "paragraph": "Business delivers exceptional services in the business industry."
+                }
+              }
+            ],
+            "wireframe": "WEBSITE WIREFRAME\n==================\n\nSection 1: HERO\n========================================\nLayout: centered\nComponents: value-proposition, headline, subheadline, cta-primary, cta-secondary, subtle-animation\nBreakpoints:\n  Mobile: stacked\n  Tablet: centered\n  Desktop: centered\nSpacing: extra-large\n\nSection 2: SOCIAL-PROOF\n========================================\nLayout: horizontal-scroll\nComponents: client-logos, trust-badges\nBreakpoints:\n  Mobile: vertical\n  Tablet: horizontal-scroll\n  Desktop: horizontal-scroll\nSpacing: medium\n\nSection 3: HIGHLIGHTS\n========================================\nLayout: grid-3-column\nComponents: feature-cards, icons, headings, descriptions\nBreakpoints:\n  Mobile: 1-column\n  Tablet: 2-column\n  Desktop: grid-3-column\nSpacing: large\n\nSection 4: FEATURES\n========================================\nLayout: grid-2-column\nComponents: detailed-features, icons, headings, descriptions, images\nBreakpoints:\n  Mobile: 1-column\n  Tablet: grid-2-column\n  Desktop: grid-2-column\nSpacing: large\n\nSection 5: VISUAL-BREAK\n========================================\nLayout: full-width\nComponents: large-image, video, illustration\nBreakpoints:\n  Mobile: stacked\n  Tablet: full-width\n  Desktop: full-width\nSpacing: large\n\nSection 6: TESTIMONIALS\n========================================\nLayout: carousel\nComponents: testimonials, client-logos, quotes\nBreakpoints:\n  Mobile: stacked\n  Tablet: carousel\n  Desktop: carousel\nSpacing: large\n\nSection 7: PRICING\n========================================\nLayout: grid-3-column\nComponents: pricing-tiers, features, cta\nBreakpoints:\n  Mobile: 1-column\n  Tablet: 2-column\n  Desktop: grid-3-column\nSpacing: large\n\nSection 8: CTA\n========================================\nLayout: centered\nComponents: headline, subheadline, cta-primary\nBreakpoints:\n  Mobile: stacked\n  Tablet: centered\n  Desktop: centered\nSpacing: large\n\nSection 9: FOOTER\n========================================\nLayout: multi-column\nComponents: links, social, legal\nBreakpoints:\n  Mobile: stacked\n  Tablet: multi-column\n  Desktop: multi-column\nSpacing: medium\n\n",
+            "responsiveBreakpoints": [
+              390,
+              768,
+              1024,
+              1440
+            ],
+            "blueprint": "premium-corporate",
+            "generatedImages": [
+              {
+                "sectionKey": "hero-1",
+                "url": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlMzE5Mzc7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTMxOTM3O3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2UzMTkzNyIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVGVzbGEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+",
+                "alt": "business hero image",
+                "purpose": "hero"
+              }
+            ]
+          },
+          "styleSystem": {
+            "colors": {
+              "primary": "#e31937",
+              "neutrals": [
+                "#F8FAFC",
+                "#E2E8F0",
+                "#64748B",
+                "#1E293B"
+              ],
+              "background": "#F8FAFC",
+              "text": "#1E293B"
+            },
+            "typography": {
+              "id": "inter-system",
+              "heading": {
+                "font": "Inter",
+                "weights": [
+                  700,
+                  600
+                ],
+                "sizes": [
+                  48,
+                  36,
+                  24,
+                  18
+                ]
+              },
+              "body": {
+                "font": "Inter",
+                "weights": [
+                  400,
+                  500
+                ],
+                "sizes": [
+                  16,
+                  14
+                ],
+                "lineHeight": 1.6
+              },
+              "useCase": "Modern, clean, versatile"
+            },
+            "spacing": {
+              "scale": [
+                4,
+                8,
+                12,
+                16,
+                24,
+                32,
+                48,
+                64,
+                96,
+                128
+              ],
+              "system": "8px base"
+            },
+            "borderRadius": {
+              "small": "4px",
+              "medium": "8px",
+              "large": "16px",
+              "full": "9999px"
+            },
+            "shadows": {
+              "small": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+              "medium": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+              "large": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+            },
+            "icons": {
+              "style": "outline",
+              "library": "heroicons"
+            }
+          },
+          "copy": {
+            "hero": {
+              "hook": "Transform your Learn more",
+              "headline": "Tesla delivers Electric Vehicles that Learn more",
+              "subheadline": "We help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles Learn more with proven Electric Vehicles",
+              "cta": "Book a Consultation"
+            },
+            "valueProposition": "Tesla provides Electric Vehicles that help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles Learn more. Based in Global, we deliver trustworthy solutions tailored to your needs.",
+            "tagline": "Tesla: Help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles understand Electric Vehicles",
+            "sections": [
+              {
+                "heading": "Why Choose Us",
+                "body": "We combine trustworthy service with balanced expertise to deliver Electric Vehicles that matter."
+              },
+              {
+                "heading": "Our Approach",
+                "body": "Our team understands Finding right solution and provides solutions tailored to your needs."
+              },
+              {
+                "heading": "Our Services",
+                "body": "We offer comprehensive Electric Vehicles, Energy Solutions, Supercharger Network, Autonomous Driving designed to help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles Learn more. Each service is tailored to your specific needs and delivered with trustworthy care."
+              },
+              {
+                "heading": "Our Commitment",
+                "body": "Located in Global, we're committed to delivering Electric Vehicles that exceed expectations."
+              },
+              {
+                "heading": "What Our Clients Say",
+                "body": "Our trustworthy approach and commitment to excellence have earned the trust of environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles across Global. We're proud to be your partner in Electric Vehicles."
+              },
+              {
+                "heading": "Pricing & Packages",
+                "body": "We offer flexible pricing options to suit your needs and budget. Whether you're looking for Electric Vehicles on a one-time basis or ongoing support, we have a solution that works for you."
+              },
+              {
+                "heading": "Ready to Get Started?",
+                "body": "Take the next step towards Learn more with our Electric Vehicles. We're here to help you every step of the way.",
+                "cta": "Get Started"
+              },
+              {
+                "heading": "What Sets Us Apart",
+                "body": "With trustworthy dedication and balanced innovation, we help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles Learn more."
+              }
+            ],
+            "services": [
+              {
+                "name": "Electric Vehicles",
+                "description": "Model S, Model 3, Model X, Model Y, and Cybertruck"
+              },
+              {
+                "name": "Energy Solutions",
+                "description": "Solar panels, Powerwall, and Megapack for homes and businesses"
+              },
+              {
+                "name": "Supercharger Network",
+                "description": "Global fast-charging network for Tesla vehicles"
+              },
+              {
+                "name": "Autonomous Driving",
+                "description": "Full Self-Driving (FSD) and Autopilot technology"
+              }
+            ],
+            "faq": [
+              {
+                "question": "How can I get started?",
+                "answer": "Getting started is easy. Simply contact us and we'll guide you through the process."
+              },
+              {
+                "question": "What makes you different?",
+                "answer": "We combine professional service with modern expertise to deliver results that matter. Our commitment to excellence sets us apart."
+              }
+            ]
+          },
+          "code": {
+            "html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Tesla - Business Services</title>\n  <meta name=\"description\" content=\"Business delivers exceptional services with a commitment to excellence. We combine expertise, innovation, and personalized service to exceed your expectations.\">\n  <meta name=\"keywords\" content=\"business, business services, tesla\">\n  \n  <!-- Open Graph / Facebook -->\n  <meta property=\"og:type\" content=\"website\">\n  <meta property=\"og:title\" content=\"Tesla\">\n  <meta property=\"og:description\" content=\"Professional business services from Tesla. Contact us today for expert solutions.\">\n  <meta property=\"og:image\" content=\"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlMzE5Mzc7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTMxOTM3O3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2UzMTkzNyIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVGVzbGEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+\">\n  \n  <!-- Twitter -->\n  <meta name=\"twitter:card\" content=\"summary_large_image\">\n  <meta name=\"twitter:title\" content=\"Tesla\">\n  <meta name=\"twitter:description\" content=\"Professional business services from Tesla. Contact us today for expert solutions.\">\n  <meta name=\"twitter:image\" content=\"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlMzE5Mzc7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTMxOTM3O3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2UzMTkzNyIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVGVzbGEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+\">\n  \n  <link rel=\"canonical\" href=\"https://example.com/index.html\">\n  \n  <script type=\"application/ld+json\">\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"LocalBusiness\",\n  \"name\": \"Tesla\",\n  \"description\": \"Professional business services from Tesla. Contact us today for expert solutions.\",\n  \"url\": \"https://example.com/tesla\"\n}\n</script>\n  \n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n  <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Inter:wght@400;700&family=Inter:wght@300;400;600&display=swap\" rel=\"stylesheet\">\n  <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n  <header class=\"cm-header\">\n  <nav class=\"cm-nav\" role=\"navigation\">\n    <div class=\"cm-nav-container\">\n      <div class=\"cm-nav-brand\">\n        <a href=\"index.html\" class=\"cm-nav-logo\">Tesla</a>\n      </div>\n      <button class=\"cm-nav-toggle\" aria-label=\"Toggle navigation\" aria-expanded=\"false\">\n        <span></span>\n        <span></span>\n        <span></span>\n      </button>\n      <ul class=\"cm-nav-menu\">\n        <li class=\"cm-nav-item\"><a href=\"index.html\" class=\"cm-nav-link active\">Home</a></li>\n        <li class=\"cm-nav-item\"><a href=\"services.html\" class=\"cm-nav-link\">Services</a></li>\n        <li class=\"cm-nav-item\"><a href=\"about.html\" class=\"cm-nav-link\">About</a></li>\n        <li class=\"cm-nav-item\"><a href=\"contact.html\" class=\"cm-nav-link\">Contact</a></li>\n      </ul>\n    </div>\n  </nav>\n\n  </header>\n\n  <main class=\"cm-main\">\n  <section class=\"hero hero-split-left\" style=\"padding: var(--cm-space-xl) 0;\">\n    <div class=\"container\">\n      <div class=\"hero-content\" style=\"text-align: left;\">\n        <h1 class=\"hero-headline\">Business: Excellence in Business</h1>\n        <p class=\"subheadline\">Premium services tailored to your needs</p>\n        <p class=\"hero-paragraph\">Business delivers exceptional services with a commitment to excellence. We combine expertise, innovation, and personalized service to exceed your expectations.</p>\n        <div class=\"hero-cta\">\n          <a href=\"#contact\" class=\"cta-primary\">Contact Us</a>\n          <p class=\"cta-description\">Take the next step</p>\n        </div>\n      </div>\n      <div class=\"hero-media\"><img src=\"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNlMzE5Mzc7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6I0Y4RkFGQztzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzhCNUNGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTMxOTM3O3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGOEZBRkM7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2UzMTkzNyIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgVGVzbGEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+\" alt=\"business hero image\" loading=\"lazy\" /></div>\n    </div>\n  </section>\n  <section class=\"testimonials testimonials-grid\" style=\"padding: 48px;\">\n    <div class=\"container\">\n      <h2 style=\"font-family: 'Inter';\">Why Choose Us</h2>\n      <div class=\"testimonials-grid testimonials-grid-3\">\n        <div class=\"testimonial-card\">\n          <p class=\"testimonial-quote\">\"Excellent service!\"</p>\n          <div class=\"testimonial-author\">\n            <strong>John Doe</strong>\n            <span>CEO, Company Inc.</span>\n          </div>\n        </div>\n        <div class=\"testimonial-card\">\n          <p class=\"testimonial-quote\">\"Highly recommended!\"</p>\n          <div class=\"testimonial-author\">\n            <strong>Jane Smith</strong>\n            <span>Director, Business Corp.</span>\n          </div>\n        </div>\n        <div class=\"testimonial-card\">\n          <p class=\"testimonial-quote\">\"Outstanding results!\"</p>\n          <div class=\"testimonial-author\">\n            <strong>Bob Johnson</strong>\n            <span>Manager, Enterprise Ltd.</span>\n          </div>\n        </div>\n      </div>\n    </div>\n  </section>\n\n  </main>\n  <footer class=\"cm-footer\">\n    <div class=\"cm-footer-container\">\n      <div class=\"cm-footer-content\">\n        <div class=\"cm-footer-brand\">\n          <h3>Tesla</h3>\n          <p>Tesla: Help environmentally conscious consumers, tech enthusiasts, and early adopters of electric vehicles understand Electric Vehicles</p>\n        </div>\n        <div class=\"cm-footer-links\">\n          <h4>Quick Links</h4>\n          <ul>\n            <li><a href=\"index.html\">Home</a></li>\n            <li><a href=\"about.html\">About</a></li>\n            <li><a href=\"contact.html\">Contact</a></li>\n          </ul>\n        </div>\n        <div class=\"cm-footer-bottom\">\n          <p>&copy; 2025 Tesla. All rights reserved.</p>\n        </div>\n      </div>\n    </div>\n  </footer>\n\n  <script src=\"script.js\"></script>\n</body>\n</html>",
+            "css": "/* Generated by Merlin Design LLM v6.9 - Global Theme Engine */\n\n:root {\n  /* v6.9: Global Theme Palette */\n  --cm-color-primary: #e31937;\n  --cm-color-secondary: undefined;\n  --cm-color-accent: undefined;\n  --cm-color-bg: #F8FAFC;\n  --cm-color-text: #1E293B;\n  --cm-color-neutral100: #ffffff;\n  --cm-color-neutral200: #dfe1e3;\n  --cm-color-neutral300: #c5c7c9;\n  \n  /* v6.9: Global Theme Typography */\n  --cm-font-display: 'Inter', sans-serif;\n  --cm-font-heading: 'Inter', sans-serif;\n  --cm-font-body: 'Inter', sans-serif;\n  \n  /* v6.9: Global Theme Typography Scale */\n  --cm-font-heroH1: 3.5rem;\n  --cm-font-h1: 2.5rem;\n  --cm-font-h2: 2rem;\n  --cm-font-h3: 1.5rem;\n  --cm-font-body-size: 1rem;\n  --cm-font-small: 0.875rem;\n  \n  /* v6.9: Global Theme Spacing */\n  --cm-space-xs: 0.5rem;\n  --cm-space-sm: 1rem;\n  --cm-space-md: 1.5rem;\n  --cm-space-lg: 2rem;\n  --cm-space-xl: 3rem;\n  \n  /* v6.9: Global Theme Shadows */\n  --cm-shadow-level1: 0 2px 4px rgba(0,0,0,0.1);\n  --cm-shadow-level2: 0 4px 12px rgba(0,0,0,0.15);\n  --cm-shadow-level3: 0 8px 24px rgba(0,0,0,0.2);\n  \n  /* Legacy variables for backward compatibility */\n  --color-primary: #e31937;\n  --color-secondary: undefined;\n  --color-accent: undefined;\n  --color-background: #F8FAFC;\n  --color-text: #1E293B;\n  --font-heading: 'Inter', sans-serif;\n  --font-body: 'Inter', sans-serif;\n  --spacing-xs: 0.5rem;\n  --spacing-sm: 1rem;\n  --spacing-md: 1.5rem;\n  --spacing-lg: 2rem;\n  --spacing-xl: 3rem;\n  --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);\n  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);\n  --shadow-lg: 0 8px 24px rgba(0,0,0,0.2);\n  \n  /* Additional theme variables */\n  --cm-color-surface: #dfe1e3;\n  --cm-color-muted: #c5c7c9;\n  --cm-radius-sm: 4px;\n  --cm-radius-md: 8px;\n  --cm-radius-lg: 16px;\n  --cm-shadow-soft: 0 25px 65px rgba(15, 23, 42, 0.18);\n  \n  /* v6.4: Responsive Layout Engine CSS variables */\n  --cm-container-max-width: 1200px;\n  --cm-container-padding-x-mobile: 1.5rem;\n  --cm-container-padding-x-tablet: 2rem;\n  --cm-container-padding-x-desktop: 3rem;\n  \n  --cm-spacing-section-mobile: 3rem 0;\n  --cm-spacing-section-tablet: 4rem 0;\n  --cm-spacing-section-desktop: 6rem 0;\n  \n  --cm-spacing-gap-mobile: 1.5rem;\n  --cm-spacing-gap-tablet: 2rem;\n  --cm-spacing-gap-desktop: 2.5rem;\n  \n  --cm-text-hero-mobile: 2rem;\n  --cm-text-hero-tablet: 3rem;\n  --cm-text-hero-desktop: 4rem;\n  \n  --cm-text-section-mobile: 1.75rem;\n  --cm-text-section-tablet: 2.25rem;\n  --cm-text-section-desktop: 3rem;\n  \n  --cm-text-body-mobile: 1rem;\n  --cm-text-body-tablet: 1.125rem;\n  --cm-text-body-desktop: 1.125rem;\n  \n  --cm-line-height-normal: 1.6;\n}\n\n* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\nhtml {\n  font-size: 16px;\n  -webkit-text-size-adjust: 100%;\n}\n\nbody {\n  font-family: var(--cm-font-body);\n  font-size: var(--cm-text-body-mobile);\n  line-height: var(--cm-line-height-normal);\n  color: var(--cm-color-text);\n  background-color: var(--cm-color-bg);\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  overflow-x: hidden; /* Prevent horizontal scroll */\n}\n\n/* v6.4: Responsive Container */\n.cm-main {\n  max-width: var(--cm-container-max-width);\n  margin: 0 auto;\n  padding-left: var(--cm-container-padding-x-mobile);\n  padding-right: var(--cm-container-padding-x-mobile);\n  width: 100%;\n}\n\n.container {\n  max-width: var(--cm-container-max-width);\n  margin: 0 auto;\n  padding: 0 var(--cm-container-padding-x-mobile);\n  width: 100%;\n}\n\n/* v6.4: Responsive Images - Always scale properly */\nimg {\n  max-width: 100%;\n  height: auto;\n  display: block;\n}\n\n/* v6.4: Tablet breakpoint */\n@media (min-width: 768px) {\n  body {\n    font-size: var(--cm-text-body-tablet);\n  }\n  \n  .cm-main,\n  .container {\n    padding-left: var(--cm-container-padding-x-tablet);\n    padding-right: var(--cm-container-padding-x-tablet);\n  }\n}\n\n/* v6.4: Laptop/Desktop breakpoint */\n@media (min-width: 1024px) {\n  body {\n    font-size: var(--cm-text-body-desktop);\n  }\n  \n  .cm-main,\n  .container {\n    padding-left: var(--cm-container-padding-x-desktop);\n    padding-right: var(--cm-container-padding-x-desktop);\n  }\n}\n\nsection {\n  padding: var(--spacing-2xl) 0;\n}\n\nsection:not(.hero) .container {\n  background: var(--cm-color-surface);\n  border-radius: var(--cm-radius-lg);\n  box-shadow: var(--cm-shadow-soft);\n  padding: var(--spacing-xl);\n}\n\nh1, h2, h3, h4, h5, h6 {\n  font-family: var(--cm-font-heading);\n  font-weight: 700;\n  line-height: 1.2;\n}\n\nh1 {\n  font-size: var(--cm-font-h1);\n}\n\nh2 {\n  font-size: var(--cm-font-h2);\n}\n\nh3 {\n  font-size: var(--cm-font-h3);\n}\n\n.hero .container {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n  align-items: center;\n  gap: var(--spacing-2xl);\n  background: linear-gradient(135deg, #e31937 0%, #e31937 50%, #e31937 100%);\n  color: #ffffff;\n  border-radius: calc(var(--cm-radius-lg) * 1.1);\n  box-shadow: var(--cm-shadow-soft);\n  padding: var(--spacing-2xl);\n}\n\n.hero .hero-content h1,\n.hero-headline {\n  font-family: var(--cm-font-display);\n  font-size: var(--cm-font-heroH1);\n  margin-bottom: var(--cm-space-lg);\n  line-height: 1.1;\n  color: var(--cm-color-primary);\n}\n\n.hero-headline-white {\n  color: white;\n}\n\n.subheadline,\n.hero-paragraph {\n  font-family: var(--cm-font-body);\n  font-size: var(--cm-font-body-size);\n  color: var(--cm-color-text);\n}\n\n.subheadline-white,\n.hero-paragraph-white {\n  color: white;\n}\n\n.hero .hero-content p {\n  font-size: 1.1rem;\n  color: rgba(255, 255, 255, 0.9);\n  margin-bottom: var(--spacing-lg);\n}\n\n.hero .hero-media img {\n  width: 100%;\n  height: 100%;\n  border-radius: var(--cm-radius-lg);\n  object-fit: cover;\n  box-shadow: var(--shadow-lg);\n}\n\n.hero .hero-kicker {\n  text-transform: uppercase;\n  letter-spacing: 1px;\n  font-size: 0.9rem;\n  color: rgba(255, 255, 255, 0.85);\n}\n\n.section-block.has-media .container {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));\n  gap: var(--spacing-xl);\n  align-items: center;\n}\n\n.section-media img {\n  width: 100%;\n  border-radius: var(--cm-radius-lg);\n  object-fit: cover;\n  box-shadow: var(--shadow-md);\n}\n\n.section-content h2 {\n  font-size: var(--cm-font-h2);\n  margin-bottom: var(--cm-space-md);\n  color: var(--cm-color-text);\n}\n\n.section-content p {\n  color: var(--cm-color-text);\n  font-size: var(--cm-font-body-size);\n  line-height: 1.6;\n}\n\n.features.section-block .container {\n  background: transparent;\n  box-shadow: none;\n  padding: 0;\n}\n\n.cta-primary {\n  display: inline-block;\n  padding: var(--cm-space-sm) var(--cm-space-md);\n  border-radius: var(--cm-radius-md);\n  text-decoration: none;\n  font-family: var(--cm-font-body);\n  font-size: var(--cm-font-body-size);\n  font-weight: 600;\n  transition: all 0.3s ease;\n  background: var(--cm-color-primary);\n  color: #ffffff;\n  box-shadow: var(--cm-shadow-level1);\n}\n\n.cta-primary:hover {\n  background: var(--cm-color-accent);\n  transform: translateY(-2px);\n  box-shadow: var(--cm-shadow-level2);\n}\n\n.features-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n  gap: var(--cm-space-lg);\n  margin-top: var(--cm-space-xl);\n}\n\n.feature-card {\n  padding: var(--cm-space-lg);\n  border-radius: var(--cm-radius-lg);\n  background: var(--cm-color-surface);\n  box-shadow: var(--shadow-sm);\n  transition: all 0.3s ease;\n}\n\n.feature-card:hover {\n  transform: translateY(-4px);\n  box-shadow: var(--shadow-md);\n}\n\n  /* v6.4: Responsive Layout Engine - Mobile-First Media Queries */\n  \n  /* Tablet and up (768px+) */\n  @media (min-width: 768px) {\n    /* Hero variants - tablet responsive */\n    .hero-split-left .container,\n    .hero-split-right .container {\n      display: grid;\n      grid-template-columns: 1fr 1fr;\n      gap: var(--cm-spacing-gap-tablet);\n      align-items: center;\n    }\n    \n    .hero-split-left .hero-content {\n      text-align: left;\n    }\n    \n    .hero-split-right .hero-content {\n      text-align: right;\n    }\n    \n    /* About variants - tablet responsive */\n    .about-image-left .container,\n    .about-image-right .container {\n      display: grid;\n      grid-template-columns: 1fr 1fr;\n      gap: var(--cm-spacing-gap-tablet);\n      align-items: center;\n    }\n    \n    /* Features variants - tablet responsive */\n    .features-grid-3 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    .features-grid-2 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    .features-grid-4 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    /* Testimonials variants - tablet responsive */\n    .testimonials-grid-3 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    /* Pricing variants - tablet responsive */\n    .pricing-grid-2 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    /* CTA variants - tablet responsive */\n    .cta-split .container {\n      display: grid;\n      grid-template-columns: 1fr 1fr;\n      gap: var(--cm-spacing-gap-tablet);\n      align-items: center;\n    }\n    \n    /* Contact variants - tablet responsive */\n    .contact-wrapper {\n      display: grid;\n      grid-template-columns: 1fr 1fr;\n      gap: var(--cm-spacing-gap-tablet);\n    }\n    \n    /* FAQ variants - tablet responsive */\n    .faq-grid-2 {\n      grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n    \n    /* Typography - tablet responsive */\n    .hero h1 {\n      font-size: var(--cm-text-hero-tablet);\n    }\n    \n    h2 {\n      font-size: var(--cm-text-section-tablet);\n    }\n  }\n  \n  /* Laptop and up (1024px+) */\n  @media (min-width: 1024px) {\n    /* Features variants - laptop responsive */\n    .features-grid-3 {\n      grid-template-columns: repeat(3, minmax(0, 1fr));\n    }\n    \n    .features-grid-4 {\n      grid-template-columns: repeat(4, minmax(0, 1fr));\n    }\n    \n    /* Testimonials variants - laptop responsive */\n    .testimonials-grid-3 {\n      grid-template-columns: repeat(3, minmax(0, 1fr));\n    }\n    \n    .testimonial-spotlight {\n      display: grid;\n      grid-template-columns: 2fr 1fr;\n      gap: var(--cm-spacing-gap-desktop);\n    }\n    \n    /* Pricing variants - laptop responsive */\n    .pricing-grid-3 {\n      grid-template-columns: repeat(3, minmax(0, 1fr));\n    }\n    \n    /* Typography - laptop responsive */\n    .hero h1 {\n      font-size: var(--cm-text-hero-desktop);\n    }\n    \n    h2 {\n      font-size: var(--cm-text-section-desktop);\n    }\n  }\n  \n  /* Desktop and up (1440px+) */\n  @media (min-width: 1440px) {\n    /* Additional desktop-only enhancements */\n    .hero {\n      min-height: 80vh;\n    }\n    \n    .section-block {\n      padding: var(--cm-spacing-section-desktop);\n    }\n  }\n  \n  /* Mobile-specific overrides (max-width) */\n  @media (max-width: 767px) {\n    /* Force single column on mobile */\n    .hero-split-left .container,\n    .hero-split-right .container,\n    .about-image-left .container,\n    .about-image-right .container,\n    .cta-split .container,\n    .contact-wrapper {\n      display: block;\n    }\n    \n    .hero-split-left .hero-media,\n    .hero-split-right .hero-media,\n    .about-image-left .section-media,\n    .about-image-right .section-media {\n      margin-bottom: var(--cm-spacing-gap-mobile);\n    }\n    \n    .features-grid-2,\n    .features-grid-3,\n    .features-grid-4,\n    .pricing-grid-2,\n    .pricing-grid-3,\n    .testimonials-grid-3,\n    .faq-grid-2 {\n      grid-template-columns: 1fr;\n    }\n    \n    .feature-alternating {\n      display: block;\n    }\n    \n    .feature-alternating.feature-right {\n      direction: ltr;\n    }\n    \n    .testimonial-spotlight {\n      display: block;\n    }\n    \n    .testimonial-featured {\n      margin-bottom: var(--cm-spacing-gap-mobile);\n    }\n    \n    /* Mobile typography */\n    .hero h1 {\n      font-size: var(--cm-text-hero-mobile);\n      line-height: 1.2;\n    }\n    \n    h2 {\n      font-size: var(--cm-text-section-mobile);\n    }\n    \n    /* Mobile spacing */\n    .section-block {\n      padding: var(--cm-spacing-section-mobile);\n    }\n    \n    .features-grid,\n    .pricing-grid,\n    .testimonials-grid {\n      gap: var(--cm-spacing-gap-mobile);\n    }\n  }\n\n  /* v6.8: Multi-Page Navigation System */\n  /* v6.9: Updated to use theme tokens */\n  .cm-header {\n    background: var(--cm-color-bg);\n    border-bottom: 1px solid var(--cm-color-neutral300);\n    position: sticky;\n    top: 0;\n    z-index: 1000;\n    backdrop-filter: blur(10px);\n    background: rgba(255, 255, 255, 0.95);\n    box-shadow: var(--cm-shadow-level2);\n  }\n\n  .cm-nav {\n    width: 100%;\n  }\n\n  .cm-nav-container {\n    max-width: var(--cm-container-max-width);\n    margin: 0 auto;\n    padding: 1rem var(--cm-container-padding-x-mobile);\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n  }\n\n  .cm-nav-brand {\n    flex: 0 0 auto;\n  }\n\n  .cm-nav-logo {\n    font-family: var(--cm-font-heading);\n    font-size: var(--cm-font-h3);\n    font-weight: 700;\n    color: var(--cm-color-primary);\n    text-decoration: none;\n    transition: opacity 0.2s;\n  }\n\n  .cm-nav-logo:hover {\n    opacity: 0.8;\n  }\n\n  .cm-nav-toggle {\n    display: none;\n    flex-direction: column;\n    background: none;\n    border: none;\n    cursor: pointer;\n    padding: 0.5rem;\n    gap: 4px;\n  }\n\n  .cm-nav-toggle span {\n    width: 24px;\n    height: 2px;\n    background: var(--cm-color-text);\n    transition: all 0.3s;\n    border-radius: 2px;\n  }\n\n  .cm-nav-toggle-active span:nth-child(1) {\n    transform: rotate(45deg) translate(6px, 6px);\n  }\n\n  .cm-nav-toggle-active span:nth-child(2) {\n    opacity: 0;\n  }\n\n  .cm-nav-toggle-active span:nth-child(3) {\n    transform: rotate(-45deg) translate(6px, -6px);\n  }\n\n  .cm-nav-menu {\n    display: flex;\n    list-style: none;\n    gap: 2rem;\n    align-items: center;\n    margin: 0;\n    padding: 0;\n  }\n\n  .cm-nav-item {\n    margin: 0;\n  }\n\n  .cm-nav-link {\n    font-family: var(--cm-font-body);\n    font-size: var(--cm-font-body-size);\n    color: var(--cm-color-text);\n    text-decoration: none;\n    font-weight: 500;\n    transition: color 0.2s;\n    position: relative;\n    padding: var(--cm-space-xs) 0;\n  }\n\n  .cm-nav-link:hover {\n    color: var(--cm-color-accent);\n  }\n\n  .cm-nav-link.active {\n    color: var(--cm-color-accent);\n  }\n\n  .cm-nav-link.active::after {\n    content: '';\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 2px;\n    background: var(--cm-color-accent);\n  }\n\n  /* v6.8: Mobile Navigation */\n  @media (max-width: 768px) {\n    .cm-nav-toggle {\n      display: flex;\n    }\n\n    .cm-nav-menu {\n      position: absolute;\n      top: 100%;\n      left: 0;\n      right: 0;\n      background: var(--cm-color-bg);\n      flex-direction: column;\n      align-items: stretch;\n      padding: 1rem;\n      gap: 0;\n      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n      max-height: 0;\n      overflow: hidden;\n      transition: max-height 0.3s ease-out;\n    }\n\n    .cm-nav-menu.cm-nav-menu-open {\n      max-height: 500px;\n    }\n\n    .cm-nav-item {\n      width: 100%;\n      border-bottom: 1px solid rgba(0, 0, 0, 0.1);\n    }\n\n    .cm-nav-item:last-child {\n      border-bottom: none;\n    }\n\n    .cm-nav-link {\n      display: block;\n      padding: var(--cm-space-sm);\n      width: 100%;\n    }\n\n    .cm-nav-link.active::after {\n      display: none;\n    }\n\n    .cm-nav-link.active {\n      background: var(--cm-color-neutral100);\n      border-left: 3px solid var(--cm-color-accent);\n    }\n  }\n\n  /* v6.8: Footer Styles */\n  /* v6.9: Updated to use theme tokens */\n  .cm-footer {\n    background: var(--cm-color-neutral300);\n    border-top: 1px solid var(--cm-color-neutral200);\n    margin-top: var(--cm-space-xl);\n    padding: var(--cm-space-xl) 0 var(--cm-space-md);\n  }\n\n  .cm-footer-container {\n    max-width: var(--cm-container-max-width);\n    margin: 0 auto;\n    padding: 0 var(--cm-container-padding-x-mobile);\n  }\n\n  .cm-footer-content {\n    display: grid;\n    grid-template-columns: 1fr;\n    gap: 2rem;\n    margin-bottom: 2rem;\n  }\n\n  .cm-footer-brand h3 {\n    font-family: var(--cm-font-heading);\n    font-size: var(--cm-font-h3);\n    color: var(--cm-color-primary);\n    margin-bottom: var(--cm-space-xs);\n  }\n\n  .cm-footer-brand p {\n    color: var(--cm-color-text);\n    opacity: 0.7;\n    font-size: var(--cm-font-small);\n  }\n\n  .cm-footer-links h4 {\n    font-family: var(--cm-font-heading);\n    font-size: var(--cm-font-h3);\n    margin-bottom: var(--cm-space-sm);\n    color: var(--cm-color-text);\n  }\n\n  .cm-footer-links ul {\n    list-style: none;\n    padding: 0;\n    margin: 0;\n  }\n\n  .cm-footer-links li {\n    margin-bottom: 0.5rem;\n  }\n\n  .cm-footer-links a {\n    color: var(--cm-color-text);\n    text-decoration: none;\n    opacity: 0.7;\n    transition: opacity 0.2s;\n    font-size: var(--cm-font-small);\n  }\n\n  .cm-footer-links a:hover {\n    opacity: 1;\n  }\n\n  .cm-footer-bottom {\n    text-align: center;\n    padding-top: var(--cm-space-md);\n    border-top: 1px solid var(--cm-color-neutral200);\n    color: var(--cm-color-text);\n    opacity: 0.6;\n    font-size: var(--cm-font-small);\n  }\n\n  @media (min-width: 768px) {\n    .cm-footer-content {\n      grid-template-columns: 2fr 1fr 1fr;\n    }\n  }\n",
+            "javascript": "// Generated by Merlin Design LLM v6.3 - Component Variants\n\n// Smooth scroll\ndocument.querySelectorAll('a[href^=\"#\"]').forEach(anchor => {\n  anchor.addEventListener('click', function (e) {\n    e.preventDefault();\n    const target = document.querySelector(this.getAttribute('href'));\n    if (target) {\n      target.scrollIntoView({ behavior: 'smooth' });\n    }\n  });\n});\n\n// Mobile menu toggle (if needed)\nconst navToggle = document.querySelector('.nav-toggle');\nconst navLinks = document.querySelector('.nav-links');\n\nif (navToggle) {\n  navToggle.addEventListener('click', () => {\n    navLinks.classList.toggle('active');\n  });\n}\n\n// v6.3: FAQ Accordion Toggle\nfunction toggleFAQ(index) {\n  const answer = document.getElementById('faq-answer-' + index);\n  if (answer) {\n    answer.classList.toggle('active');\n    const icon = answer.previousElementSibling?.querySelector('.faq-icon');\n    if (icon) {\n      icon.textContent = answer.classList.contains('active') ? '−' : '+';\n    }\n  }\n}\n\n// v6.3: Testimonials Carousel (basic auto-scroll)\nconst carouselTrack = document.querySelector('.testimonials-carousel-track');\nif (carouselTrack) {\n  let scrollPosition = 0;\n  const scrollAmount = 320; // card width + gap\n  \n  setInterval(() => {\n    scrollPosition += scrollAmount;\n    if (scrollPosition >= carouselTrack.scrollWidth - carouselTrack.clientWidth) {\n      scrollPosition = 0;\n    }\n    carouselTrack.scrollTo({ left: scrollPosition, behavior: 'smooth' });\n  }, 3000);\n}\n"
+          },
+          "qualityScore": {
+            "visualDesign": 8.5,
+            "uxStructure": 8.86,
+            "contentQuality": 0,
+            "conversionTrust": 4.5,
+            "seoFoundations": 9,
+            "creativity": 9,
+            "meetsThresholds": false
+          }
+        },
+        "qualityAssessment": {
+          "scores": {
+            "visualDesign": 8.5,
+            "uxStructure": 8.86,
+            "contentQuality": 0,
+            "conversionTrust": 4.5,
+            "seoFoundations": 9,
+            "creativity": 9
+          },
+          "averageScore": 6.6433333333333335,
+          "verdict": "OK",
+          "issues": [],
+          "meetsThresholds": false
+        }
+      }
+    }
+  ],
+  "summary": {
+    "totalPhases": 17,
+    "completedPhases": 17,
+    "averagePhaseScore": 85.125,
+    "highestRatedPhase": {
+      "phaseNumber": 1,
+      "phaseName": "Package Selection",
+      "rating": 100
+    },
+    "lowestRatedPhase": {
+      "phaseNumber": 8,
+      "phaseName": "Google Rating: Content Quality",
+      "rating": 0
+    }
+  },
+  "recommendations": [
+    "Focus on improving 3 phase(s) with ratings below 70: Google Rating: Page Experience, Google Rating: Content Quality, Google Rating: Accessibility"
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "generatedAt": "2025-11-26T07:06:02.049Z",
+    "generator": "Merlin Website Wizard"
+  }
+}

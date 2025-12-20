@@ -1,0 +1,22 @@
+{
+  "title": "Test Business - Business Services",
+  "description": "Professional business services from Test Business. Contact us today for expert solutions.",
+  "keywords": [
+    "business",
+    "business services",
+    "test business"
+  ],
+  "ogTitle": "Test Business",
+  "ogDescription": "Professional business services from Test Business. Contact us today for expert solutions.",
+  "ogImage": "/assets/images/hero-1-hero-1766150432126.png",
+  "schemaLD": {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Test Business",
+    "description": "Professional business services from Test Business. Contact us today for expert solutions.",
+    "url": "https://example.com/test-business"
+  },
+  "slug": "test-business",
+  "seoScore": 70,
+  "readabilityHints": []
+}

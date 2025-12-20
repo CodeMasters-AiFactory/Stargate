@@ -1,0 +1,1345 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2025-01-20",
+  "description": "Universal homepage structures derived from the best 200 websites on earth (Apple, Stripe, Tesla, Airbnb, Shopify, Notion, Slack, etc.)",
+  "totalBlueprints": 20,
+  "blueprints": [
+    {
+      "id": "premium-corporate",
+      "name": "Premium Corporate (Stripe Model)",
+      "description": "Crisp, modern, minimal with heavy whitespace and technical clarity",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Value Prop + CTA + subtle animation)",
+          "components": ["value-proposition", "headline", "subheadline", "cta-primary", "cta-secondary", "subtle-animation"],
+          "layout": "centered",
+          "spacing": "extra-large"
+        },
+        {
+          "order": 2,
+          "type": "social-proof",
+          "name": "Social Proof Strip",
+          "components": ["client-logos", "trust-badges"],
+          "layout": "horizontal-scroll",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "highlights",
+          "name": "Product/Service Highlights",
+          "components": ["feature-cards", "icons", "headings", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 4,
+          "type": "features",
+          "name": "Deeper Feature Grid",
+          "components": ["detailed-features", "icons", "headings", "descriptions", "images"],
+          "layout": "grid-2-column",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "visual-break",
+          "name": "Visual Break Section",
+          "components": ["large-image", "video", "illustration"],
+          "layout": "full-width",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "testimonials",
+          "name": "Testimonials/Logos",
+          "components": ["testimonials", "client-logos", "quotes"],
+          "layout": "carousel",
+          "spacing": "large"
+        },
+        {
+          "order": 7,
+          "type": "pricing",
+          "name": "Pricing/Packages",
+          "components": ["pricing-tiers", "features", "cta"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 8,
+          "type": "cta",
+          "name": "CTA Band",
+          "components": ["headline", "subheadline", "cta-primary"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 9,
+          "type": "footer",
+          "name": "Footer",
+          "components": ["links", "social", "legal"],
+          "layout": "multi-column",
+          "spacing": "medium"
+        }
+      ],
+      "tone": "Crisp, modern, minimal. Heavy whitespace. Technical clarity.",
+      "bestFor": ["SaaS", "Tech", "Corporate", "B2B", "Finance"],
+      "industryMatch": ["saas", "tech", "software", "corporate", "finance", "consulting"]
+    },
+    {
+      "id": "brand-storytelling",
+      "name": "Brand Storytelling (Apple Model)",
+      "description": "Emotional, cinematic with high imagery and minimal text",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Giant Hero (Imagery-driven)",
+          "components": ["large-image", "headline", "subheadline", "cta"],
+          "layout": "full-width-image",
+          "spacing": "extra-large"
+        },
+        {
+          "order": 2,
+          "type": "showcase",
+          "name": "Product Showcase Blocks",
+          "components": ["product-images", "headings", "descriptions"],
+          "layout": "alternating-blocks",
+          "spacing": "large"
+        },
+        {
+          "order": 3,
+          "type": "story-cards",
+          "name": "Visual Story Cards (scroll-based)",
+          "components": ["story-images", "headings", "descriptions"],
+          "layout": "scroll-horizontal",
+          "spacing": "large"
+        },
+        {
+          "order": 4,
+          "type": "features",
+          "name": "Feature Bands",
+          "components": ["feature-headings", "feature-images", "descriptions"],
+          "layout": "full-width-bands",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "technology",
+          "name": "Technology Highlights",
+          "components": ["tech-features", "images", "headings"],
+          "layout": "grid-2-column",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "cta",
+          "name": "CTA + Learn More Buttons",
+          "components": ["headline", "cta-primary", "cta-secondary"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 7,
+          "type": "footer",
+          "name": "Footer",
+          "components": ["links", "social", "legal"],
+          "layout": "multi-column",
+          "spacing": "medium"
+        }
+      ],
+      "tone": "Emotional, cinematic. High imagery. Minimal text.",
+      "bestFor": ["Premium Brands", "Consumer Products", "Luxury", "Apple-style"],
+      "industryMatch": ["luxury", "consumer", "premium", "brand", "product", "retail"]
+    },
+    {
+      "id": "trust-first-service",
+      "name": "Trust-First Service (Law Firm Model)",
+      "description": "Serious, trustworthy with clear content and heavy credibility",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Clear headline + CTA)",
+          "components": ["headline", "subheadline", "cta-primary"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 2,
+          "type": "audience",
+          "name": "Who We Serve",
+          "components": ["audience-cards", "headings", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "services",
+          "name": "Key Practice Areas",
+          "components": ["service-cards", "icons", "headings", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 4,
+          "type": "case-studies",
+          "name": "Outcomes / Case Studies",
+          "components": ["case-study-cards", "results", "testimonials"],
+          "layout": "grid-2-column",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "team",
+          "name": "Attorney Profiles",
+          "components": ["profile-cards", "photos", "credentials", "bio"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "value-proposition",
+          "name": "Why Choose Us",
+          "components": ["headline", "benefits", "icons"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 7,
+          "type": "process",
+          "name": "Process (3–5 steps)",
+          "components": ["process-steps", "numbers", "headings", "descriptions"],
+          "layout": "horizontal-steps",
+          "spacing": "large"
+        },
+        {
+          "order": 8,
+          "type": "faq",
+          "name": "FAQ",
+          "components": ["questions", "answers"],
+          "layout": "accordion",
+          "spacing": "medium"
+        },
+        {
+          "order": 9,
+          "type": "contact",
+          "name": "Contact/Booking",
+          "components": ["contact-form", "contact-info", "booking-cta"],
+          "layout": "split-form",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Serious, trustworthy. Clear content. Heavy on credibility.",
+      "bestFor": ["Law Firms", "Medical", "Professional Services", "Trust-Heavy"],
+      "industryMatch": ["law", "medical", "legal", "professional", "accounting", "consulting"]
+    },
+    {
+      "id": "local-service-business",
+      "name": "Local Service Business",
+      "description": "Immediate action with location-based SEO and fast-loading",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Big CTA: \"Call Now\")",
+          "components": ["headline", "subheadline", "call-now-cta", "emergency-banner"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 2,
+          "type": "services",
+          "name": "Services List",
+          "components": ["service-list", "icons", "descriptions"],
+          "layout": "grid-2-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "pricing",
+          "name": "Pricing / Promos",
+          "components": ["pricing-cards", "promotions", "cta"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 4,
+          "type": "location",
+          "name": "Service Area Map",
+          "components": ["map", "service-areas", "location-list"],
+          "layout": "split-map",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "testimonials",
+          "name": "Testimonials",
+          "components": ["testimonial-cards", "ratings", "photos"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 6,
+          "type": "value-proposition",
+          "name": "Why Choose Us",
+          "components": ["benefits", "icons", "headings"],
+          "layout": "grid-4-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 7,
+          "type": "contact",
+          "name": "Contact Section",
+          "components": ["contact-form", "phone", "address", "hours"],
+          "layout": "split-form",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Immediate action. Location-based SEO. Fast-loading.",
+      "bestFor": ["Trades", "Local Services", "Emergency Services", "Home Services"],
+      "industryMatch": ["electrician", "plumber", "cleaning", "landscaping", "roofing", "local", "trades"]
+    },
+    {
+      "id": "creative-agency",
+      "name": "Creative Agency (Notion + Dropbox Style)",
+      "description": "Personality, originality, and aesthetic focus",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Bold Hero (Typography-heavy)",
+          "components": ["large-headline", "subheadline", "cta", "typography-focus"],
+          "layout": "centered",
+          "spacing": "extra-large"
+        },
+        {
+          "order": 2,
+          "type": "portfolio",
+          "name": "Creative Showreel or Case Grid",
+          "components": ["portfolio-grid", "case-studies", "images"],
+          "layout": "masonry-grid",
+          "spacing": "large"
+        },
+        {
+          "order": 3,
+          "type": "services",
+          "name": "Capabilities Section",
+          "components": ["service-cards", "icons", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 4,
+          "type": "philosophy",
+          "name": "Unique \"Philosophy\" Section",
+          "components": ["philosophy-text", "values", "approach"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "work",
+          "name": "Selected Work Highlights",
+          "components": ["featured-work", "images", "case-studies"],
+          "layout": "alternating-blocks",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "social-proof",
+          "name": "Social Proof",
+          "components": ["client-logos", "testimonials", "awards"],
+          "layout": "horizontal-scroll",
+          "spacing": "medium"
+        },
+        {
+          "order": 7,
+          "type": "cta",
+          "name": "CTA to Contact",
+          "components": ["headline", "cta-primary"],
+          "layout": "centered",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Personality. Originality. Aesthetic.",
+      "bestFor": ["Creative Agencies", "Design Studios", "Branding", "Web Design"],
+      "industryMatch": ["creative", "agency", "design", "branding", "web design", "marketing", "photography", "video"]
+    },
+    {
+      "id": "saas-product",
+      "name": "SaaS Product (Shopify Model)",
+      "description": "Clear, direct, conversion-first approach",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Problem → Solution → CTA)",
+          "components": ["problem-statement", "solution", "headline", "cta-primary"],
+          "layout": "split-50-50",
+          "spacing": "large"
+        },
+        {
+          "order": 2,
+          "type": "social-proof",
+          "name": "Trusted by logos strip",
+          "components": ["client-logos", "trust-badges"],
+          "layout": "horizontal-scroll",
+          "spacing": "small"
+        },
+        {
+          "order": 3,
+          "type": "features",
+          "name": "Core Features (icon grid)",
+          "components": ["feature-cards", "icons", "headings", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 4,
+          "type": "features-detailed",
+          "name": "Detailed Feature Blocks",
+          "components": ["detailed-features", "screenshots", "headings", "descriptions"],
+          "layout": "alternating-blocks",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "demo",
+          "name": "Screenshots or Demos",
+          "components": ["product-screenshots", "demo-video", "interactive-demo"],
+          "layout": "full-width",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "testimonials",
+          "name": "Testimonials",
+          "components": ["testimonial-cards", "quotes", "photos", "names"],
+          "layout": "carousel",
+          "spacing": "large"
+        },
+        {
+          "order": 7,
+          "type": "pricing",
+          "name": "Pricing",
+          "components": ["pricing-tiers", "features", "cta"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 8,
+          "type": "cta",
+          "name": "CTA Band",
+          "components": ["headline", "subheadline", "cta-primary"],
+          "layout": "centered",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Clear, direct. Conversion-first.",
+      "bestFor": ["SaaS", "Software Products", "Tech Startups", "B2B Software"],
+      "industryMatch": ["saas", "software", "tech", "startup", "platform", "app"]
+    },
+    {
+      "id": "content-education",
+      "name": "Content/Education Business",
+      "description": "Friendly, educational with trust in expertise",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Value + CTA)",
+          "components": ["headline", "value-proposition", "cta-primary"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 2,
+          "type": "courses",
+          "name": "Courses/Programs grid",
+          "components": ["course-cards", "images", "headings", "descriptions", "pricing"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "benefits",
+          "name": "What you get",
+          "components": ["benefit-cards", "icons", "headings", "descriptions"],
+          "layout": "grid-4-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 4,
+          "type": "testimonials",
+          "name": "Success Stories",
+          "components": ["success-stories", "testimonials", "results"],
+          "layout": "grid-2-column",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "instructor",
+          "name": "Instructor Profile",
+          "components": ["instructor-photo", "bio", "credentials", "achievements"],
+          "layout": "split-profile",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "faq",
+          "name": "FAQ",
+          "components": ["questions", "answers"],
+          "layout": "accordion",
+          "spacing": "medium"
+        },
+        {
+          "order": 7,
+          "type": "cta",
+          "name": "CTA",
+          "components": ["headline", "cta-primary"],
+          "layout": "centered",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Friendly. Educational. Trust in expertise.",
+      "bestFor": ["Online Courses", "Education", "Training", "Tutoring"],
+      "industryMatch": ["education", "courses", "training", "tutoring", "online learning", "school"]
+    },
+    {
+      "id": "real-estate-property",
+      "name": "Real Estate / Property",
+      "description": "Visual, detail-focused approach",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (search or CTA)",
+          "components": ["headline", "search-form", "cta-primary"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 2,
+          "type": "listings",
+          "name": "Featured Listings",
+          "components": ["property-cards", "images", "details", "pricing"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "value-proposition",
+          "name": "Why Choose Us",
+          "components": ["benefits", "icons", "headings"],
+          "layout": "grid-4-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 4,
+          "type": "location",
+          "name": "Neighborhood/areas served",
+          "components": ["neighborhood-cards", "images", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "team",
+          "name": "Agents",
+          "components": ["agent-cards", "photos", "credentials", "contact"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "testimonials",
+          "name": "Testimonials",
+          "components": ["testimonial-cards", "quotes", "photos"],
+          "layout": "carousel",
+          "spacing": "large"
+        },
+        {
+          "order": 7,
+          "type": "cta",
+          "name": "CTA",
+          "components": ["headline", "cta-primary"],
+          "layout": "centered",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Visual. Detail-focused.",
+      "bestFor": ["Real Estate", "Property", "Rentals", "Property Development"],
+      "industryMatch": ["real estate", "property", "rental", "housing", "realty"]
+    },
+    {
+      "id": "personal-brand",
+      "name": "Personal Brand (Speaker/Coach)",
+      "description": "Personal, emotional with strong storytelling",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (photo + headline + CTA)",
+          "components": ["personal-photo", "headline", "subheadline", "cta-primary"],
+          "layout": "split-50-50",
+          "spacing": "large"
+        },
+        {
+          "order": 2,
+          "type": "story",
+          "name": "Story section",
+          "components": ["story-text", "personal-photos", "timeline"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 3,
+          "type": "services",
+          "name": "Services / topics",
+          "components": ["service-cards", "topics", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 4,
+          "type": "media",
+          "name": "Media & testimonials",
+          "components": ["media-appearances", "testimonials", "videos"],
+          "layout": "grid-2-column",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "products",
+          "name": "Books/products",
+          "components": ["product-cards", "images", "headings", "cta"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 6,
+          "type": "cta",
+          "name": "Contact CTA",
+          "components": ["headline", "cta-primary"],
+          "layout": "centered",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Personal, emotional. Strong storytelling.",
+      "bestFor": ["Speakers", "Coaches", "Authors", "Influencers", "Personal Brands"],
+      "industryMatch": ["speaker", "coach", "author", "influencer", "personal", "trainer", "consultant"]
+    },
+    {
+      "id": "hyper-minimalist",
+      "name": "Hyper-Minimalist (Tesla Model)",
+      "description": "Clean, elegant, product-first approach",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Large hero with bold headline",
+          "components": ["large-headline", "subheadline", "cta"],
+          "layout": "centered",
+          "spacing": "extra-large"
+        },
+        {
+          "order": 2,
+          "type": "visual",
+          "name": "One or two beautiful visual sections",
+          "components": ["large-image", "product-image", "minimal-text"],
+          "layout": "full-width",
+          "spacing": "large"
+        },
+        {
+          "order": 3,
+          "type": "content",
+          "name": "Minimal copy",
+          "components": ["headline", "brief-description"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 4,
+          "type": "cta",
+          "name": "CTA buttons",
+          "components": ["cta-primary", "cta-secondary"],
+          "layout": "centered",
+          "spacing": "medium"
+        },
+        {
+          "order": 5,
+          "type": "footer",
+          "name": "Footer",
+          "components": ["links", "legal"],
+          "layout": "minimal",
+          "spacing": "small"
+        }
+      ],
+      "tone": "Clean. Elegant. Product-first.",
+      "bestFor": ["Premium Products", "Luxury Brands", "Minimalist Design", "Tesla-style"],
+      "industryMatch": ["luxury", "premium", "minimalist", "product", "automotive", "high-end"]
+    },
+    {
+      "id": "restaurant-food-service",
+      "name": "Restaurant & Food Service",
+      "description": "Appetizing, warm, inviting with menu focus and reservation system",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Food imagery + headline + Reservation CTA)",
+          "components": ["large-food-image", "headline", "subheadline", "reservation-cta"],
+          "layout": "full-width-image",
+          "spacing": "extra-large"
+        },
+        {
+          "order": 2,
+          "type": "menu",
+          "name": "Featured Menu Items",
+          "components": ["menu-cards", "food-images", "prices", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "about",
+          "name": "Our Story",
+          "components": ["story-text", "chef-photo", "history"],
+          "layout": "split-50-50",
+          "spacing": "large"
+        },
+        {
+          "order": 4,
+          "type": "specialties",
+          "name": "Specialties & Signature Dishes",
+          "components": ["specialty-cards", "images", "descriptions"],
+          "layout": "grid-2-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 5,
+          "type": "testimonials",
+          "name": "Customer Reviews",
+          "components": ["review-cards", "ratings", "photos"],
+          "layout": "carousel",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "hours-location",
+          "name": "Hours & Location",
+          "components": ["hours-list", "map", "address", "phone"],
+          "layout": "split-map",
+          "spacing": "large"
+        },
+        {
+          "order": 7,
+          "type": "cta",
+          "name": "Reservation CTA",
+          "components": ["headline", "reservation-button"],
+          "layout": "centered",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Warm, inviting, appetizing. Food-focused.",
+      "bestFor": ["Restaurants", "Cafes", "Food Trucks", "Catering"],
+      "industryMatch": ["restaurant", "cafe", "food", "dining", "catering", "bakery", "bar"]
+    },
+    {
+      "id": "healthcare-medical",
+      "name": "Healthcare & Medical Practice",
+      "description": "Caring, professional, trustworthy with patient focus and appointment booking",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Caring headline + Appointment CTA)",
+          "components": ["headline", "subheadline", "appointment-cta", "trust-badge"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 2,
+          "type": "services",
+          "name": "Medical Services",
+          "components": ["service-cards", "icons", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "doctors",
+          "name": "Our Medical Team",
+          "components": ["doctor-cards", "photos", "credentials", "specialties"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 4,
+          "type": "value-proposition",
+          "name": "Why Choose Us",
+          "components": ["benefits", "icons", "headings"],
+          "layout": "grid-4-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 5,
+          "type": "testimonials",
+          "name": "Patient Testimonials",
+          "components": ["testimonial-cards", "quotes", "patient-photos"],
+          "layout": "carousel",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "insurance",
+          "name": "Accepted Insurance",
+          "components": ["insurance-logos", "insurance-list"],
+          "layout": "horizontal-scroll",
+          "spacing": "medium"
+        },
+        {
+          "order": 7,
+          "type": "contact",
+          "name": "Contact & Location",
+          "components": ["contact-form", "address", "phone", "hours"],
+          "layout": "split-form",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Caring, professional, trustworthy. Patient-focused.",
+      "bestFor": ["Medical Practices", "Clinics", "Dental", "Veterinary", "Healthcare"],
+      "industryMatch": ["medical", "healthcare", "dental", "veterinary", "clinic", "hospital", "wellness"]
+    },
+    {
+      "id": "fitness-wellness",
+      "name": "Fitness & Wellness",
+      "description": "Energetic, motivational, results-driven with class schedules and membership",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Transformational headline + Trial CTA)",
+          "components": ["large-headline", "transformational-message", "trial-cta"],
+          "layout": "full-width-image",
+          "spacing": "extra-large"
+        },
+        {
+          "order": 2,
+          "type": "services",
+          "name": "Fitness Programs",
+          "components": ["program-cards", "images", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "results",
+          "name": "Success Stories",
+          "components": ["before-after", "results", "testimonials"],
+          "layout": "grid-2-column",
+          "spacing": "large"
+        },
+        {
+          "order": 4,
+          "type": "schedule",
+          "name": "Class Schedule",
+          "components": ["schedule-table", "class-types", "times"],
+          "layout": "full-width",
+          "spacing": "medium"
+        },
+        {
+          "order": 5,
+          "type": "trainers",
+          "name": "Our Trainers",
+          "components": ["trainer-cards", "photos", "credentials", "specialties"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "pricing",
+          "name": "Membership Plans",
+          "components": ["membership-tiers", "pricing", "features", "cta"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 7,
+          "type": "cta",
+          "name": "Start Your Journey",
+          "components": ["headline", "trial-cta"],
+          "layout": "centered",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Energetic, motivational, results-driven.",
+      "bestFor": ["Gyms", "Fitness Centers", "Yoga Studios", "Personal Training", "Wellness"],
+      "industryMatch": ["fitness", "gym", "yoga", "wellness", "training", "exercise", "health"]
+    },
+    {
+      "id": "event-wedding",
+      "name": "Event & Wedding Planning",
+      "description": "Elegant, celebratory, detail-oriented with portfolio and booking system",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Elegant imagery + Consultation CTA)",
+          "components": ["elegant-image", "headline", "subheadline", "consultation-cta"],
+          "layout": "full-width-image",
+          "spacing": "extra-large"
+        },
+        {
+          "order": 2,
+          "type": "services",
+          "name": "Event Services",
+          "components": ["service-cards", "icons", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "portfolio",
+          "name": "Past Events Gallery",
+          "components": ["event-gallery", "images", "event-types"],
+          "layout": "masonry-grid",
+          "spacing": "large"
+        },
+        {
+          "order": 4,
+          "type": "testimonials",
+          "name": "Client Testimonials",
+          "components": ["testimonial-cards", "quotes", "photos"],
+          "layout": "carousel",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "process",
+          "name": "Planning Process",
+          "components": ["process-steps", "numbers", "headings", "descriptions"],
+          "layout": "horizontal-steps",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "packages",
+          "name": "Event Packages",
+          "components": ["package-cards", "features", "pricing", "cta"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 7,
+          "type": "cta",
+          "name": "Book Your Event",
+          "components": ["headline", "consultation-cta"],
+          "layout": "centered",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Elegant, celebratory, detail-oriented.",
+      "bestFor": ["Wedding Planning", "Event Planning", "Party Services", "Corporate Events"],
+      "industryMatch": ["wedding", "event", "party", "planning", "celebration", "venue"]
+    },
+    {
+      "id": "nonprofit-charity",
+      "name": "Non-Profit & Charity",
+      "description": "Compassionate, inspiring, mission-driven with donation focus and impact stories",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Mission statement + Donate CTA)",
+          "components": ["mission-statement", "headline", "donate-cta"],
+          "layout": "centered",
+          "spacing": "extra-large"
+        },
+        {
+          "order": 2,
+          "type": "mission",
+          "name": "Our Mission",
+          "components": ["mission-text", "values", "vision"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 3,
+          "type": "impact",
+          "name": "Impact & Results",
+          "components": ["impact-stats", "numbers", "stories"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 4,
+          "type": "programs",
+          "name": "Programs & Initiatives",
+          "components": ["program-cards", "images", "descriptions"],
+          "layout": "grid-2-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 5,
+          "type": "stories",
+          "name": "Success Stories",
+          "components": ["story-cards", "testimonials", "impact"],
+          "layout": "grid-2-column",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "get-involved",
+          "name": "Get Involved",
+          "components": ["volunteer-cta", "donate-cta", "partner-cta"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 7,
+          "type": "donate",
+          "name": "Donate Section",
+          "components": ["donation-amounts", "donate-button", "impact-message"],
+          "layout": "centered",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Compassionate, inspiring, mission-driven.",
+      "bestFor": ["Non-Profits", "Charities", "Foundations", "Social Causes"],
+      "industryMatch": ["nonprofit", "charity", "foundation", "ngo", "social", "cause"]
+    },
+    {
+      "id": "blog-content-news",
+      "name": "Blog & Content Publisher",
+      "description": "Informative, engaging, content-rich with article showcase and newsletter",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Headline + Featured Article)",
+          "components": ["headline", "subheadline", "featured-article", "newsletter-signup"],
+          "layout": "split-50-50",
+          "spacing": "large"
+        },
+        {
+          "order": 2,
+          "type": "categories",
+          "name": "Content Categories",
+          "components": ["category-tabs", "icons"],
+          "layout": "horizontal-tabs",
+          "spacing": "small"
+        },
+        {
+          "order": 3,
+          "type": "articles",
+          "name": "Latest Articles",
+          "components": ["article-cards", "images", "headings", "excerpts"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 4,
+          "type": "featured",
+          "name": "Featured Content",
+          "components": ["featured-articles", "images", "headings"],
+          "layout": "alternating-blocks",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "newsletter",
+          "name": "Newsletter Signup",
+          "components": ["newsletter-form", "benefits", "cta"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "popular",
+          "name": "Popular Articles",
+          "components": ["popular-list", "article-previews"],
+          "layout": "sidebar-list",
+          "spacing": "medium"
+        },
+        {
+          "order": 7,
+          "type": "authors",
+          "name": "Meet Our Writers",
+          "components": ["author-cards", "photos", "bio"],
+          "layout": "grid-4-column",
+          "spacing": "medium"
+        }
+      ],
+      "tone": "Informative, engaging, content-rich.",
+      "bestFor": ["Blogs", "News Sites", "Content Publishers", "Magazines"],
+      "industryMatch": ["blog", "news", "content", "magazine", "publisher", "media", "journalism"]
+    },
+    {
+      "id": "technology-startup",
+      "name": "Technology Startup",
+      "description": "Innovative, fast-paced, solution-focused with product demo and investor info",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Innovation message + Demo CTA)",
+          "components": ["headline", "innovation-statement", "demo-cta", "product-preview"],
+          "layout": "split-50-50",
+          "spacing": "large"
+        },
+        {
+          "order": 2,
+          "type": "problem",
+          "name": "Problem We Solve",
+          "components": ["problem-statement", "pain-points"],
+          "layout": "centered",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "solution",
+          "name": "Our Solution",
+          "components": ["solution-explanation", "product-features", "screenshots"],
+          "layout": "alternating-blocks",
+          "spacing": "large"
+        },
+        {
+          "order": 4,
+          "type": "features",
+          "name": "Key Features",
+          "components": ["feature-cards", "icons", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 5,
+          "type": "testimonials",
+          "name": "Early Adopters",
+          "components": ["testimonial-cards", "logos", "quotes"],
+          "layout": "carousel",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "team",
+          "name": "Our Team",
+          "components": ["team-cards", "photos", "roles"],
+          "layout": "grid-4-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 7,
+          "type": "cta",
+          "name": "Join the Beta",
+          "components": ["headline", "beta-signup", "waitlist"],
+          "layout": "centered",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Innovative, fast-paced, solution-focused.",
+      "bestFor": ["Tech Startups", "Innovation Labs", "Product Companies", "B2B Tech"],
+      "industryMatch": ["startup", "technology", "innovation", "product", "tech", "disruptive"]
+    },
+    {
+      "id": "music-entertainment",
+      "name": "Music & Entertainment",
+      "description": "Dynamic, creative, engaging with media showcase and booking system",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Media player + headline + Booking CTA)",
+          "components": ["media-player", "headline", "subheadline", "booking-cta"],
+          "layout": "full-width-media",
+          "spacing": "extra-large"
+        },
+        {
+          "order": 2,
+          "type": "portfolio",
+          "name": "Music/Content Showcase",
+          "components": ["media-grid", "albums", "videos", "playlists"],
+          "layout": "masonry-grid",
+          "spacing": "large"
+        },
+        {
+          "order": 3,
+          "type": "services",
+          "name": "Services & Offerings",
+          "components": ["service-cards", "icons", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 4,
+          "type": "events",
+          "name": "Upcoming Events",
+          "components": ["event-cards", "dates", "venues", "tickets"],
+          "layout": "grid-2-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 5,
+          "type": "testimonials",
+          "name": "Client Reviews",
+          "components": ["testimonial-cards", "quotes", "ratings"],
+          "layout": "carousel",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "contact",
+          "name": "Booking & Contact",
+          "components": ["booking-form", "contact-info", "availability"],
+          "layout": "split-form",
+          "spacing": "large"
+        },
+        {
+          "order": 7,
+          "type": "social",
+          "name": "Follow Us",
+          "components": ["social-links", "latest-posts", "feed"],
+          "layout": "grid-4-column",
+          "spacing": "medium"
+        }
+      ],
+      "tone": "Dynamic, creative, engaging.",
+      "bestFor": ["Musicians", "Bands", "DJs", "Entertainment", "Artists"],
+      "industryMatch": ["music", "entertainment", "musician", "band", "dj", "artist", "performer"]
+    },
+    {
+      "id": "fashion-apparel",
+      "name": "Fashion & Apparel",
+      "description": "Stylish, trend-forward, visual with product showcase and lookbook",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Fashion imagery + Collection CTA)",
+          "components": ["fashion-image", "headline", "collection-cta"],
+          "layout": "full-width-image",
+          "spacing": "extra-large"
+        },
+        {
+          "order": 2,
+          "type": "collections",
+          "name": "Featured Collections",
+          "components": ["collection-cards", "images", "titles"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "products",
+          "name": "Shop Products",
+          "components": ["product-cards", "images", "prices", "quick-view"],
+          "layout": "grid-4-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 4,
+          "type": "lookbook",
+          "name": "Style Lookbook",
+          "components": ["lookbook-gallery", "styled-shots", "outfits"],
+          "layout": "masonry-grid",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "about",
+          "name": "Our Brand Story",
+          "components": ["brand-story", "values", "mission"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "testimonials",
+          "name": "Customer Reviews",
+          "components": ["review-cards", "ratings", "photos"],
+          "layout": "carousel",
+          "spacing": "large"
+        },
+        {
+          "order": 7,
+          "type": "newsletter",
+          "name": "Stay in Style",
+          "components": ["newsletter-signup", "style-tips", "exclusive-offers"],
+          "layout": "centered",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Stylish, trend-forward, visual.",
+      "bestFor": ["Fashion Brands", "Clothing Stores", "Apparel", "Boutiques"],
+      "industryMatch": ["fashion", "clothing", "apparel", "boutique", "style", "designer", "retail"]
+    },
+    {
+      "id": "consulting-professional",
+      "name": "Consulting & Professional Services",
+      "description": "Strategic, expertise-focused, results-driven with case studies and expertise",
+      "structure": [
+        {
+          "order": 1,
+          "type": "hero",
+          "name": "Hero (Expertise statement + Consultation CTA)",
+          "components": ["headline", "expertise-statement", "consultation-cta"],
+          "layout": "centered",
+          "spacing": "large"
+        },
+        {
+          "order": 2,
+          "type": "services",
+          "name": "Our Services",
+          "components": ["service-cards", "icons", "descriptions"],
+          "layout": "grid-3-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 3,
+          "type": "expertise",
+          "name": "Areas of Expertise",
+          "components": ["expertise-areas", "icons", "descriptions"],
+          "layout": "grid-4-column",
+          "spacing": "medium"
+        },
+        {
+          "order": 4,
+          "type": "case-studies",
+          "name": "Case Studies & Results",
+          "components": ["case-study-cards", "results", "metrics"],
+          "layout": "grid-2-column",
+          "spacing": "large"
+        },
+        {
+          "order": 5,
+          "type": "team",
+          "name": "Our Consultants",
+          "components": ["consultant-cards", "photos", "credentials", "specialties"],
+          "layout": "grid-3-column",
+          "spacing": "large"
+        },
+        {
+          "order": 6,
+          "type": "testimonials",
+          "name": "Client Testimonials",
+          "components": ["testimonial-cards", "client-logos", "quotes"],
+          "layout": "carousel",
+          "spacing": "large"
+        },
+        {
+          "order": 7,
+          "type": "cta",
+          "name": "Schedule Consultation",
+          "components": ["headline", "consultation-form", "contact-info"],
+          "layout": "split-form",
+          "spacing": "large"
+        }
+      ],
+      "tone": "Strategic, expertise-focused, results-driven.",
+      "bestFor": ["Consulting Firms", "Business Advisors", "Professional Services", "Strategy"],
+      "industryMatch": ["consulting", "advisor", "strategy", "business", "professional", "expert"]
+    }
+  ]
+}
+

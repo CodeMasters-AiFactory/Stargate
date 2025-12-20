@@ -1,0 +1,87 @@
+{
+    "folders":  [
+                    {
+                        "path":  "."
+                    }
+                ],
+    "settings":  {
+                     "task.allowAutomaticTasks":  "on",
+                     "task.autoDetect":  "on",
+                     "task.quickOpen.detail":  true,
+                     "task.quickOpen.skip":  false,
+                     "files.autoSave":  "afterDelay",
+                     "files.autoSaveDelay":  1000,
+                     "security.workspace.trust.enabled":  true,
+                     "security.workspace.trust.untrustedFiles":  "open",
+                     "security.workspace.trust.banner":  "never",
+                     "extensions.ignoreRecommendations":  true,
+                     "extensions.autoCheckUpdates":  false,
+                     "extensions.autoUpdate":  false,
+                     "cSpell.enabled":  false,
+                     "prettier.enable":  false,
+                     "editor.formatOnSave":  false,
+                     "eslint.enable":  true,
+                     "telemetry.telemetryLevel":  "off",
+                     "update.mode":  "manual",
+                     "extensions.showRecommendationsOnlyOnDemand":  true
+                 },
+    "tasks":  {
+                  "version":  "2.0.0",
+                  "tasks":  [
+                                {
+                                    "label":  "🚀 AUTO-START: Start Services (Manual)",
+                                    "type":  "shell",
+                                    "command":  "powershell -ExecutionPolicy Bypass -File \"${workspaceFolder}/scripts/start-and-verify.ps1\"",
+                                    "runOptions":  {
+                                                       "runOn":  "default"
+                                                   },
+                                    "isBackground":  false,
+                                    "presentation":  {
+                                                         "reveal":  "always",
+                                                         "panel":  "new",
+                                                         "focus":  false,
+                                                         "clear":  false
+                                                     },
+                                    "problemMatcher":  [
+
+                                                       ],
+                                    "group":  {
+                                                  "kind":  "build",
+                                                  "isDefault":  true
+                                              }
+                                },
+                                {
+                                    "label":  "🔄 Start Server (Manual)",
+                                    "type":  "shell",
+                                    "command":  "npm run dev",
+                                    "runOptions":  {
+                                                       "runOn":  "default"
+                                                   },
+                                    "isBackground":  true,
+                                    "problemMatcher":  {
+                                                           "background":  {
+                                                                              "activeOnStart":  true,
+                                                                              "beginsPattern":  ".*",
+                                                                              "endsPattern":  "(✅ Stargate IDE server running|Server running on port|ready|listening)"
+                                                                          }
+                                                       }
+                                },
+                                {
+                                    "label":  "🧪 Test Frontend",
+                                    "type":  "shell",
+                                    "command":  "powershell -ExecutionPolicy Bypass -File \"${workspaceFolder}/test-frontend.ps1\"",
+                                    "problemMatcher":  [
+
+                                                       ]
+                                },
+                                {
+                                    "label":  "🧪 Test Minimal SSE Endpoint",
+                                    "type":  "shell",
+                                    "command":  "powershell -ExecutionPolicy Bypass -File \"${workspaceFolder}/test-minimal-endpoint.ps1\"",
+                                    "problemMatcher":  [
+
+                                                       ]
+                                }
+                            ]
+              }
+}

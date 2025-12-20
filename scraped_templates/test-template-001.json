@@ -1,0 +1,12 @@
+﻿{
+    "industry":  "General Business",
+    "cssContent":  "body { font-family: Arial; }",
+    "id":  "test-template-001",
+    "htmlContent":  "\u003chtml\u003e\u003cbody\u003e\u003ch1\u003eTest Heading\u003c/h1\u003e\u003cp\u003eThis is test content that will be rewritten.\u003c/p\u003e\u003cp\u003eAnother paragraph with original content.\u003c/p\u003e\u003c/body\u003e\u003c/html\u003e",
+    "name":  "Test Template for Rewrite",
+    "contentRewritten":  false,
+    "brand":  "Test Brand",
+    "qaMetadata":  {
+
+                   }
+}

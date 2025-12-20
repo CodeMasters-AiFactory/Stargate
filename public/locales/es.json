@@ -1,0 +1,38 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "projects": "Proyectos",
+    "settings": "Configuración",
+    "templates": "Plantillas",
+    "components": "Componentes"
+  },
+  "websiteBuilder": {
+    "generate": "Generar Sitio Web",
+    "preview": "Vista Previa",
+    "publish": "Publicar",
+    "save": "Guardar Sitio Web",
+    "export": "Exportar Código"
+  },
+  "emailMarketing": {
+    "campaigns": "Campañas",
+    "subscribers": "Suscriptores",
+    "templates": "Plantillas",
+    "analytics": "Analíticas",
+    "createCampaign": "Crear Campaña",
+    "sendCampaign": "Enviar Campaña"
+  }
+}
+

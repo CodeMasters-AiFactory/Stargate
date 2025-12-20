@@ -1,0 +1,12 @@
+{
+  "industry": "SaaS",
+  "expectedContentDepth": 2000,
+  "standardCTAPatterns": ["Start Free Trial", "Get Started", "Request Demo", "Try for Free", "Sign Up"],
+  "standardUXFlow": ["Hero", "Features", "Pricing", "Testimonials", "CTA"],
+  "standardTrustElements": ["Customer logos", "Case studies", "Security badges", "SOC 2", "GDPR compliance"],
+  "typicalSEOFeatures": ["Product keywords", "Comparison pages", "Blog", "Feature pages", "Integration pages"],
+  "specialistRequirements": ["Feature explanations", "Integration info", "API documentation", "Pricing transparency"],
+  "contentKeywords": ["software", "platform", "solution", "dashboard", "API", "integration", "features"],
+  "trustKeywords": ["trusted by", "customers", "enterprise", "security", "compliance", "SOC 2"]
+}
+

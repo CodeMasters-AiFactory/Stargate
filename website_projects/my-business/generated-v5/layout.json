@@ -1,0 +1,158 @@
+{
+  "sections": [
+    {
+      "type": "hero",
+      "layout": "centered",
+      "components": [
+        "headline",
+        "subheadline",
+        "cta-primary"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "centered",
+        "desktop": "centered"
+      },
+      "spacing": "large",
+      "key": "hero"
+    },
+    {
+      "type": "audience",
+      "layout": "grid-3-column",
+      "components": [
+        "audience-cards",
+        "headings",
+        "descriptions"
+      ],
+      "breakpoints": {
+        "mobile": "1-column",
+        "tablet": "2-column",
+        "desktop": "grid-3-column"
+      },
+      "spacing": "medium",
+      "key": "audience-2"
+    },
+    {
+      "type": "services",
+      "layout": "grid-3-column",
+      "components": [
+        "service-cards",
+        "icons",
+        "headings",
+        "descriptions"
+      ],
+      "breakpoints": {
+        "mobile": "1-column",
+        "tablet": "2-column",
+        "desktop": "grid-3-column"
+      },
+      "spacing": "medium",
+      "key": "services"
+    },
+    {
+      "type": "case-studies",
+      "layout": "grid-2-column",
+      "components": [
+        "case-study-cards",
+        "results",
+        "testimonials"
+      ],
+      "breakpoints": {
+        "mobile": "1-column",
+        "tablet": "grid-2-column",
+        "desktop": "grid-2-column"
+      },
+      "spacing": "large",
+      "key": "case-studies-4"
+    },
+    {
+      "type": "team",
+      "layout": "grid-3-column",
+      "components": [
+        "profile-cards",
+        "photos",
+        "credentials",
+        "bio"
+      ],
+      "breakpoints": {
+        "mobile": "1-column",
+        "tablet": "2-column",
+        "desktop": "grid-3-column"
+      },
+      "spacing": "large",
+      "key": "team-5"
+    },
+    {
+      "type": "value-proposition",
+      "layout": "centered",
+      "components": [
+        "headline",
+        "benefits",
+        "icons"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "centered",
+        "desktop": "centered"
+      },
+      "spacing": "large",
+      "key": "value-proposition"
+    },
+    {
+      "type": "process",
+      "layout": "horizontal-steps",
+      "components": [
+        "process-steps",
+        "numbers",
+        "headings",
+        "descriptions"
+      ],
+      "breakpoints": {
+        "mobile": "vertical",
+        "tablet": "horizontal-steps",
+        "desktop": "horizontal-steps"
+      },
+      "spacing": "large",
+      "key": "process-7"
+    },
+    {
+      "type": "faq",
+      "layout": "accordion",
+      "components": [
+        "questions",
+        "answers"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "accordion",
+        "desktop": "accordion"
+      },
+      "spacing": "medium",
+      "key": "faq-8"
+    },
+    {
+      "type": "contact",
+      "layout": "split-form",
+      "components": [
+        "contact-form",
+        "contact-info",
+        "booking-cta"
+      ],
+      "breakpoints": {
+        "mobile": "stacked",
+        "tablet": "split",
+        "desktop": "split-form"
+      },
+      "spacing": "large",
+      "key": "contact"
+    }
+  ],
+  "wireframe": "WEBSITE WIREFRAME\n==================\n\nSection 1: HERO\n========================================\nLayout: centered\nComponents: headline, subheadline, cta-primary\nBreakpoints:\n  Mobile: stacked\n  Tablet: centered\n  Desktop: centered\nSpacing: large\n\nSection 2: AUDIENCE\n========================================\nLayout: grid-3-column\nComponents: audience-cards, headings, descriptions\nBreakpoints:\n  Mobile: 1-column\n  Tablet: 2-column\n  Desktop: grid-3-column\nSpacing: medium\n\nSection 3: SERVICES\n========================================\nLayout: grid-3-column\nComponents: service-cards, icons, headings, descriptions\nBreakpoints:\n  Mobile: 1-column\n  Tablet: 2-column\n  Desktop: grid-3-column\nSpacing: medium\n\nSection 4: CASE-STUDIES\n========================================\nLayout: grid-2-column\nComponents: case-study-cards, results, testimonials\nBreakpoints:\n  Mobile: 1-column\n  Tablet: grid-2-column\n  Desktop: grid-2-column\nSpacing: large\n\nSection 5: TEAM\n========================================\nLayout: grid-3-column\nComponents: profile-cards, photos, credentials, bio\nBreakpoints:\n  Mobile: 1-column\n  Tablet: 2-column\n  Desktop: grid-3-column\nSpacing: large\n\nSection 6: VALUE-PROPOSITION\n========================================\nLayout: centered\nComponents: headline, benefits, icons\nBreakpoints:\n  Mobile: stacked\n  Tablet: centered\n  Desktop: centered\nSpacing: large\n\nSection 7: PROCESS\n========================================\nLayout: horizontal-steps\nComponents: process-steps, numbers, headings, descriptions\nBreakpoints:\n  Mobile: vertical\n  Tablet: horizontal-steps\n  Desktop: horizontal-steps\nSpacing: large\n\nSection 8: FAQ\n========================================\nLayout: accordion\nComponents: questions, answers\nBreakpoints:\n  Mobile: stacked\n  Tablet: accordion\n  Desktop: accordion\nSpacing: medium\n\nSection 9: CONTACT\n========================================\nLayout: split-form\nComponents: contact-form, contact-info, booking-cta\nBreakpoints:\n  Mobile: stacked\n  Tablet: split\n  Desktop: split-form\nSpacing: large\n\n",
+  "responsiveBreakpoints": [
+    390,
+    768,
+    1024,
+    1440
+  ],
+  "blueprint": "trust-first-service"
+}

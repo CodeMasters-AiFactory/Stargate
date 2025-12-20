@@ -1,0 +1,54 @@
+[
+  {
+    "sectionKey": "hero-1",
+    "headline": "Business: Excellence in Business",
+    "subheadline": "Premium services tailored to your needs",
+    "paragraph": "Business delivers exceptional services with a commitment to excellence. We combine expertise, innovation, and personalized service to exceed your expectations.",
+    "ctaLabel": "Contact Us",
+    "ctaDescription": "Take the next step"
+  },
+  {
+    "sectionKey": "social-proof-2",
+    "headline": "Social-proof",
+    "paragraph": "Business delivers exceptional services in the business industry."
+  },
+  {
+    "sectionKey": "features-3",
+    "headline": "Our Services",
+    "paragraph": "Discover how Business can help you with services. We combine expertise, innovation, and personalized service to deliver results that exceed expectations.",
+    "bullets": [
+      "services consultation",
+      "Customized solutions",
+      "Expert guidance",
+      "Ongoing support"
+    ]
+  },
+  {
+    "sectionKey": "features-detailed-4",
+    "headline": "Features-detailed",
+    "paragraph": "Business delivers exceptional services in the business industry."
+  },
+  {
+    "sectionKey": "demo-5",
+    "headline": "Demo",
+    "paragraph": "Business delivers exceptional services in the business industry."
+  },
+  {
+    "sectionKey": "testimonials-1",
+    "headline": "What Our Clients Say",
+    "paragraph": "Don't just take our word for it. See what clients say about their experience with Business.",
+    "subheadline": "Trusted by satisfied customers"
+  },
+  {
+    "sectionKey": "pricing-7",
+    "headline": "Pricing",
+    "paragraph": "Business delivers exceptional services in the business industry."
+  },
+  {
+    "sectionKey": "cta-8",
+    "headline": "Ready to Get Started?",
+    "paragraph": "Take the next step with Business. We're here to help you achieve your goals.",
+    "ctaLabel": "Get Started",
+    "ctaDescription": "Take action today"
+  }
+]

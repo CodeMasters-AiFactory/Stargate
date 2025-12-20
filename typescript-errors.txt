@@ -1,0 +1,200 @@
+﻿
+> rest-express@1.0.0 check
+> tsc
+
+client/src/components/Admin/DepartmentAccess.tsx(4,72): error TS6133: 'Shield' is declared but its value is never read.
+client/src/components/Admin/DesignScraper.tsx(27,29): error TS6133: 'Building2' is declared but its value is never read.
+client/src/components/Admin/DesignScraper.tsx(27,65): error TS6133: 'MapPin' is declared but its value is never read.
+client/src/components/Admin/SearchEngineScraper.tsx(20,18): error TS6133: 'Building2' is declared but its value is never read.
+client/src/components/Admin/SearchEngineScraper.tsx(22,1): error TS6133: 'Badge' is declared but its value is never read.
+client/src/components/Admin/SearchEngineScraper.tsx(162,9): error TS6133: 'handleFileUpload' is declared but its value is never read.
+client/src/components/Admin/SearchEngineScraper.tsx(166,5): error TS2304: Cannot find name 'setDomainFile'.
+client/src/components/Admin/SearchEngineScraper.tsx(225,5): error TS2304: Cannot find name 'setSiteProgress'.
+client/src/components/Admin/SearchEngineScraper.tsx(239,9): error TS2304: Cannot find name 'setSiteProgress'.
+client/src/components/Admin/SearchEngineScraper.tsx(243,11): error TS2304: Cannot find name 'setSiteProgress'.
+client/src/components/Admin/SearchEngineScraper.tsx(260,11): error TS2304: Cannot find name 'setSiteProgress'.
+client/src/components/Admin/SearchEngineScraper.tsx(276,13): error TS2304: Cannot find name 'setSiteProgress'.
+client/src/components/Admin/SearchEngineScraper.tsx(284,13): error TS2304: Cannot find name 'setSiteProgress'.
+client/src/components/Admin/SearchEngineScraper.tsx(293,11): error TS2304: Cannot find name 'setSiteProgress'.
+client/src/components/Admin/SearchEngineScraper.tsx(305,7): error TS2304: Cannot find name 'setSiteProgress'.
+client/src/components/Admin/SearchEngineScraper.tsx(320,7): error TS2304: Cannot find name 'setSiteProgress'.
+client/src/components/Admin/SearchEngineScraper.tsx(332,9): error TS6133: 'handleBulkScrapeAllIndustries' is declared but its value is never read.
+client/src/components/Admin/SearchEngineScraper.tsx(342,5): error TS2304: Cannot find name 'setIsBulkScraping'.
+client/src/components/Admin/SearchEngineScraper.tsx(373,7): error TS2304: Cannot find name 'setIsBulkScraping'.
+client/src/components/Admin/TemplateManagement.tsx(26,3): error TS6133: 'DialogTrigger' is declared but its value is never read.
+client/src/components/Admin/TemplateManagement.tsx(47,36): error TS6133: 'Eye' is declared but its value is never read.
+client/src/components/Admin/TemplateManagement.tsx(47,50): error TS6133: 'Filter' is declared but its value is never read.
+client/src/components/Admin/TemplateManagement.tsx(68,10): error TS6133: 'selectedTemplate' is declared but its value is never read.
+client/src/components/Admin/TemplateManagement.tsx(69,10): error TS6133: 'deleteTemplateId' is declared but its value is never read.
+client/src/components/Admin/TemplateManagement.tsx(69,28): error TS6133: 'setDeleteTemplateId' is declared but its value is never read.
+client/src/components/Admin/TemplateManagement.tsx(864,63): error TS2367: This comparison appears to be unintentional because the types '"library" | undefined' and '"file"' have no overlap.
+client/src/components/Agents/AgentConversationPanel.tsx(11,26): error TS6133: 'AGENT_CONFIGS' is declared but its value is never read.
+client/src/components/Agents/AgentConversationPanel.tsx(23,3): error TS6133: 'Maximize2' is declared but its value is never read.
+client/src/components/Agents/AgentConversationPanel.tsx(45,3): error TS6133: 'onMessageClick' is declared but its value is never read.
+client/src/components/Agents/AgentConversationPanel.tsx(128,50): error TS6133: 'i' is declared but its value is never read.
+client/src/components/Agents/AgentMessage.tsx(75,14): error TS2322: Type '{}' is not assignable to type 'ReactNode'.
+client/src/components/Agents/MerlinApprovalDialog.tsx(134,25): error TS6133: 'config' is declared but its value is never read.
+client/src/components/ErrorBoundary.tsx(60,50): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+client/src/components/IDE/AIWebsiteGeneration.tsx(239,23): error TS2353: Object literal may only specify known properties, and 'path' does not exist in type '{ slug: string; html: string; }'.
+client/src/components/IDE/AIWebsiteGeneration.tsx(283,9): error TS6133: 'simulateStep' is declared but its value is never read.
+client/src/components/IDE/AIWebsiteGeneration.tsx(332,13): error TS7030: Not all code paths return a value.
+client/src/components/IDE/CheckoutPanel.tsx(6,27): error TS6133: 'useEffect' is declared but its value is never read.
+client/src/components/IDE/CheckoutPanel.tsx(49,33): error TS6133: 'projectId' is declared but its value is never read.
+client/src/components/IDE/ClientInfoCollection.tsx(14,27): error TS6133: 'useEffect' is declared but its value is never read.
+client/src/components/IDE/ClientInfoCollection.tsx(42,3): error TS6133: 'Check' is declared but its value is never read.
+client/src/components/IDE/CraftVisualEditor.tsx(13,57): error TS6133: 'useEffect' is declared but its value is never read.
+client/src/components/IDE/CraftVisualEditor.tsx(30,3): error TS6133: 'Settings' is declared but its value is never read.
+client/src/components/IDE/CraftVisualEditor.tsx(39,3): error TS6133: 'Link2' is declared but its value is never read.
+client/src/components/IDE/CraftVisualEditor.tsx(43,3): error TS6133: 'Star' is declared but its value is never read.
+client/src/components/IDE/CraftVisualEditor.tsx(44,3): error TS6133: 'Users' is declared but its value is never read.
+client/src/components/IDE/CraftVisualEditor.tsx(46,3): error TS6133: 'MapPin' is declared but its value is never read.
+client/src/components/IDE/CraftVisualEditor.tsx(201,30): error TS6133: 'variant' is declared but its value is never read.
+client/src/components/IDE/CraftVisualEditor.tsx(240,61): error TS6133: 'setProp' is declared but its value is never read.
+client/src/components/IDE/CraftVisualEditor.tsx(535,54): error TS2339: Property 'isDeletable' does not exist on type 'NodeData'.
+client/src/components/IDE/CraftVisualEditor.tsx(617,52): error TS6133: 'state' is declared but its value is never read.
+client/src/components/IDE/DeploymentsScreen.tsx(364,25): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+client/src/components/IDE/DevicePreviewPanel.tsx(7,29): error TS6133: 'CardHeader' is declared but its value is never read.
+client/src/components/IDE/DevicePreviewPanel.tsx(7,41): error TS6133: 'CardTitle' is declared but its value is never read.
+client/src/components/IDE/DevicePreviewPanel.tsx(9,1): error TS6133: 'Button' is declared but its value is never read.
+client/src/components/IDE/DevicePreviewPanel.tsx(10,16): error TS6133: 'TabsContent' is declared but its value is never read.
+client/src/components/IDE/DevicePreviewPanel.tsx(124,19): error TS1117: An object literal cannot have multiple properties with the same name.
+client/src/components/IDE/DownloadProjectScreen.tsx(76,11): error TS6133: 'state' is declared but its value is never read.
+client/src/components/IDE/DownloadProjectScreen.tsx(148,37): error TS2345: Argument of type '(prev: IDEState) => { currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<IDEState>'.
+  Type '(prev: IDEState) => { currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type '(prevState: IDEState) => IDEState'.
+    Call signature return types '{ currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; bottomPanelHeight: number; ... 4 more ...; merlinQuickGenerate?: { ...; } | undefined; }' and 'IDEState' are incompatible.
+      The types of 'currentView' are incompatible between these types.
+        Type '"dashboard"' is not assignable to type '"services" | "home" | "website" | "usage" | "security" | "website-page" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | "explorer" | "templates" | ... 26 more ... | "merlin-quick-generate"'.
+client/src/components/IDE/DownloadProjectScreen.tsx(329,37): error TS2345: Argument of type '(prev: IDEState) => { currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<IDEState>'.
+  Type '(prev: IDEState) => { currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type '(prevState: IDEState) => IDEState'.
+    Call signature return types '{ currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; bottomPanelHeight: number; ... 4 more ...; merlinQuickGenerate?: { ...; } | undefined; }' and 'IDEState' are incompatible.
+      The types of 'currentView' are incompatible between these types.
+        Type '"dashboard"' is not assignable to type '"services" | "home" | "website" | "usage" | "security" | "website-page" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | "explorer" | "templates" | ... 26 more ... | "merlin-quick-generate"'.
+client/src/components/IDE/FinalApproval.tsx(22,3): error TS6133: 'ExternalLink' is declared but its value is never read.
+client/src/components/IDE/FinalApproval.tsx(23,3): error TS6133: 'Copy' is declared but its value is never read.
+client/src/components/IDE/ImageReplacementStage.tsx(325,63): error TS6133: 'src' is declared but its value is never read.
+client/src/components/IDE/LivePreview.tsx(20,3): error TS6133: 'Copy' is declared but its value is never read.
+client/src/components/IDE/LivePreview.tsx(23,3): error TS6133: 'Eye' is declared but its value is never read.
+client/src/components/IDE/LivePreview.tsx(61,10): error TS6133: 'lastUpdate' is declared but its value is never read.
+client/src/components/IDE/MainLayout.tsx(78,16): error TS2345: Argument of type '(prev: IDEState) => { currentView: "landing" | "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; ... 6 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<IDEState>'.
+  Type '(prev: IDEState) => { currentView: "landing" | "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; ... 6 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type '(prevState: IDEState) => IDEState'.
+    Call signature return types '{ currentView: "landing" | "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' and 'IDEState' are incompatible.
+      The types of 'currentView' are incompatible between these types.
+        Type '"landing" | "dashboard"' is not assignable to type '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"'.
+          Type '"landing"' is not assignable to type '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"'.
+client/src/components/IDE/MainLayout.tsx(123,10): error TS6133: 'sidebarWidth' is declared but its value is never read.
+client/src/components/IDE/MainLayout.tsx(136,14): error TS2345: Argument of type '(prev: IDEState) => { currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<IDEState>'.
+  Type '(prev: IDEState) => { currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type '(prevState: IDEState) => IDEState'.
+    Call signature return types '{ currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; bottomPanelHeight: number; ... 4 more ...; merlinQuickGenerate?: { ...; } | undefined; }' and 'IDEState' are incompatible.
+      The types of 'currentView' are incompatible between these types.
+        Type '"dashboard"' is not assignable to type '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"'.
+client/src/components/IDE/MainLayout.tsx(149,14): error TS2345: Argument of type '(prev: IDEState) => { currentView: "landing"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<IDEState>'.
+  Type '(prev: IDEState) => { currentView: "landing"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type '(prevState: IDEState) => IDEState'.
+    Call signature return types '{ currentView: "landing"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; bottomPanelHeight: number; ... 4 more ...; merlinQuickGenerate?: { ...; } | undefined; }' and 'IDEState' are incompatible.
+      The types of 'currentView' are incompatible between these types.
+        Type '"landing"' is not assignable to type '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"'.
+client/src/components/IDE/MainLayout.tsx(154,14): error TS2345: Argument of type '(prev: IDEState) => { currentView: "ide"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<IDEState>'.
+  Type '(prev: IDEState) => { currentView: "ide"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type '(prevState: IDEState) => IDEState'.
+    Call signature return types '{ currentView: "ide"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; bottomPanelHeight: number; ... 4 more ...; merlinQuickGenerate?: { ...; } | undefined; }' and 'IDEState' are incompatible.
+      The types of 'currentView' are incompatible between these types.
+        Type '"ide"' is not assignable to type '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"'.
+client/src/components/IDE/MainLayout.tsx(296,115): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "apps" | "deployments" | "usage" | "explorer" | ... 24 more ... | "website-debugger"' and '"landing"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(296,150): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "apps" | "deployments" | "usage" | "explorer" | ... 24 more ... | "website-debugger"' and '"ide"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(296,181): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "apps" | "deployments" | "usage" | "explorer" | ... 24 more ... | "website-debugger"' and '"dashboard"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(316,50): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"' and '""' have no overlap.
+client/src/components/IDE/MainLayout.tsx(321,16): error TS2345: Argument of type '(prev: IDEState) => IDEState | { currentView: "landing" | "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; ... 7 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<IDEState>'.
+  Type '(prev: IDEState) => IDEState | { currentView: "landing" | "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; ... 7 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type '(prevState: IDEState) => IDEState'.
+    Type 'IDEState | { currentView: "landing" | "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; ... 6 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type 'IDEState'.
+      Type '{ currentView: "landing" | "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; ... 6 more ...; merlinQuickGenerate?: { requirements: Record<string, unknown>; skipChecklist: boolean; }; }' is not assignable to type 'IDEState'.
+        Types of property 'currentView' are incompatible.
+          Type '"landing" | "dashboard"' is not assignable to type '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"'.
+            Type '"landing"' is not assignable to type '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"'.
+client/src/components/IDE/MainLayout.tsx(324,34): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"' and '""' have no overlap.
+client/src/components/IDE/MainLayout.tsx(355,17): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "deployments" | "usage" | ... 26 more ... | "merlin-quick-generate"' and '"ide"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(357,19): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "deployments" | "usage" | ... 26 more ... | "merlin-quick-generate"' and '"landing"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(359,21): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "deployments" | "usage" | ... 26 more ... | "merlin-quick-generate"' and '"dashboard"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(372,26): error TS2345: Argument of type '(prev: IDEState) => { currentView: "ide"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<IDEState>'.
+  Type '(prev: IDEState) => { currentView: "ide"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type '(prevState: IDEState) => IDEState'.
+    Call signature return types '{ currentView: "ide"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; bottomPanelHeight: number; ... 4 more ...; merlinQuickGenerate?: { ...; } | undefined; }' and 'IDEState' are incompatible.
+      The types of 'currentView' are incompatible between these types.
+        Type '"ide"' is not assignable to type '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"'.
+client/src/components/IDE/MainLayout.tsx(379,26): error TS2345: Argument of type '(prev: IDEState) => { currentView: "ide"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<IDEState>'.
+  Type '(prev: IDEState) => { currentView: "ide"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type '(prevState: IDEState) => IDEState'.
+    Call signature return types '{ currentView: "ide"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; bottomPanelHeight: number; ... 4 more ...; merlinQuickGenerate?: { ...; } | undefined; }' and 'IDEState' are incompatible.
+      The types of 'currentView' are incompatible between these types.
+        Type '"ide"' is not assignable to type '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"'.
+client/src/components/IDE/MainLayout.tsx(384,49): error TS2345: Argument of type '(prev: IDEState) => { currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<IDEState>'.
+  Type '(prev: IDEState) => { currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type '(prevState: IDEState) => IDEState'.
+    Call signature return types '{ currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; bottomPanelHeight: number; ... 4 more ...; merlinQuickGenerate?: { ...; } | undefined; }' and 'IDEState' are incompatible.
+      The types of 'currentView' are incompatible between these types.
+        Type '"dashboard"' is not assignable to type '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"'.
+client/src/components/IDE/MainLayout.tsx(441,15): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"' and '"ide"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(443,19): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"' and '"dashboard"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(483,14): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"' and '"dashboard"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(486,15): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"' and '"ide"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(489,15): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 27 more ... | "merlin-quick-generate"' and '"landing"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(495,56): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "templates" | "home" | "website" | "website-page" | "services" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | ... 26 more ... | "merlin-quick-generate"' and '""' have no overlap.
+client/src/components/IDE/MainLayout.tsx(534,79): error TS2304: Cannot find name 'switchToHome'.
+client/src/components/IDE/MainLayout.tsx(535,15): error TS2367: This comparison appears to be unintentional because the types '"security" | "download" | "home" | "website" | "website-page" | "stargate-ide" | "explorer" | "agent" | "console" | "shell" | "preview" | "git" | "database" | "storage" | "secrets" | ... 13 more ... | "live-testing"' and '"project-creation"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(625,15): error TS2367: This comparison appears to be unintentional because the types '"security" | "home" | "website" | "website-page" | "stargate-ide" | "explorer" | "storage" | "multiplayer" | "history" | "extensions" | "quantum" | "aiplanning" | "download-project" | "monitoring"' and '"pandora"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(634,15): error TS2367: This comparison appears to be unintentional because the types '"security" | "home" | "website" | "website-page" | "stargate-ide" | "explorer" | "storage" | "multiplayer" | "history" | "extensions" | "quantum" | "aiplanning" | "download-project" | "monitoring"' and '"regis"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(643,15): error TS2367: This comparison appears to be unintentional because the types '"security" | "home" | "website" | "website-page" | "stargate-ide" | "explorer" | "storage" | "multiplayer" | "history" | "extensions" | "quantum" | "aiplanning" | "download-project" | "monitoring"' and '"nero"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(661,15): error TS2367: This comparison appears to be unintentional because the types '"security" | "home" | "website" | "website-page" | "stargate-ide" | "explorer" | "storage" | "multiplayer" | "history" | "extensions" | "aiplanning" | "download-project" | "monitoring"' and '"titan-ticket"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(670,15): error TS2367: This comparison appears to be unintentional because the types '"security" | "home" | "website" | "website-page" | "stargate-ide" | "explorer" | "storage" | "multiplayer" | "history" | "extensions" | "aiplanning" | "download-project" | "monitoring"' and '"titan-support"' have no overlap.
+client/src/components/IDE/MainLayout.tsx(679,15): error TS2367: This comparison appears to be unintentional because the types '"security" | "home" | "website" | "website-page" | "stargate-ide" | "explorer" | "storage" | "multiplayer" | "history" | "extensions" | "aiplanning" | "download-project" | "monitoring"' and '"ai-factory"' have no overlap.
+client/src/components/IDE/MarketingLandingPage.tsx(9,3): error TS6133: 'Globe' is declared but its value is never read.
+client/src/components/IDE/MarketingLandingPage.tsx(22,3): error TS6133: 'Code' is declared but its value is never read.
+client/src/components/IDE/MarketingLandingPage.tsx(61,14): error TS2345: Argument of type '(prev: IDEState) => { currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to parameter of type 'SetStateAction<IDEState>'.
+  Type '(prev: IDEState) => { currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; ... 5 more ...; merlinQuickGenerate?: { ...; } | undefined; }' is not assignable to type '(prevState: IDEState) => IDEState'.
+    Call signature return types '{ currentView: "dashboard"; currentProject: Project | null; openTabs: Tab[]; activeTabId: string | null; fileTree: FileNode[]; isLoading: boolean; bottomPanelHeight: number; ... 4 more ...; merlinQuickGenerate?: { ...; } | undefined; }' and 'IDEState' are incompatible.
+      The types of 'currentView' are incompatible between these types.
+        Type '"dashboard"' is not assignable to type '"services" | "home" | "website" | "usage" | "security" | "website-page" | "stargate-ide" | "stargate-websites" | "merlin-packages" | "apps" | "deployments" | "explorer" | "templates" | ... 26 more ... | "merlin-quick-generate"'.
+client/src/components/IDE/MergePreview.tsx(9,1): error TS6192: All imports in import declaration are unused.
+client/src/components/IDE/MergePreview.tsx(11,1): error TS6133: 'Progress' is declared but its value is never read.
+client/src/components/IDE/MergePreview.tsx(20,3): error TS6133: 'CheckCircle2' is declared but its value is never read.
+client/src/components/IDE/MerlinQuickGenerate.tsx(7,3): error TS6133: 'Sparkles' is declared but its value is never read.
+client/src/components/IDE/MerlinQuickGenerate.tsx(38,10): error TS6133: 'currentStep' is declared but its value is never read.
+client/src/components/IDE/MerlinQuickGenerate.tsx(289,33): error TS6133: 'idx' is declared but its value is never read.
+client/src/components/IDE/MultiPagePreview.tsx(9,39): error TS6133: 'TabsContent' is declared but its value is never read.
+client/src/components/IDE/MultiPagePreview.tsx(11,40): error TS6196: 'PageSpec' is declared but never used.
+client/src/components/IDE/MultiPagePreview.tsx(12,29): error TS6133: 'Eye' is declared but its value is never read.
+client/src/components/IDE/PerformanceMonitor.tsx(42,10): error TS6133: 'plans' is declared but its value is never read.
+client/src/components/IDE/PerformanceMonitor.tsx(122,9): error TS6133: 'getUsageBg' is declared but its value is never read.
+client/src/components/IDE/PreviewPanel.tsx(2,29): error TS6133: 'CardDescription' is declared but its value is never read.
+client/src/components/IDE/PreviewPanel.tsx(2,46): error TS6133: 'CardHeader' is declared but its value is never read.
+client/src/components/IDE/PreviewPanel.tsx(2,58): error TS6133: 'CardTitle' is declared but its value is never read.
+client/src/components/IDE/ProjectCreationFlow.tsx(2,1): error TS6192: All imports in import declaration are unused.
+client/src/components/IDE/ProjectCreationFlow.tsx(13,3): error TS6133: 'Settings' is declared but its value is never read.
+client/src/components/IDE/ProjectCreationFlow.tsx(16,3): error TS6133: 'Code' is declared but its value is never read.
+client/src/components/IDE/ProjectCreationFlow.tsx(17,3): error TS6133: 'Database' is declared but its value is never read.
+client/src/components/IDE/ProjectCreationFlow.tsx(19,3): error TS6133: 'Zap' is declared but its value is never read.
+client/src/components/IDE/ProjectCreationPage.tsx(38,10): error TS6133: 'aiSuggestions' is declared but its value is never read.
+client/src/components/IDE/QuickStartGenerator.tsx(11,1): error TS6133: 'Textarea' is declared but its value is never read.
+client/src/components/IDE/RealTimePreviewPanel.tsx(7,1): error TS6192: All imports in import declaration are unused.
+client/src/components/IDE/RealTimePreviewPanel.tsx(10,1): error TS6133: 'Button' is declared but its value is never read.
+client/src/components/IDE/RealTimePreviewPanel.tsx(11,1): error TS6133: 'ScrollArea' is declared but its value is never read.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(12,46): error TS6133: 'useCallback' is declared but its value is never read.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(14,1): error TS6192: All imports in import declaration are unused.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(18,3): error TS6133: 'Sparkles' is declared but its value is never read.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(21,3): error TS6133: 'Wand2' is declared but its value is never read.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(22,3): error TS6133: 'Play' is declared but its value is never read.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(23,3): error TS6133: 'Pause' is declared but its value is never read.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(24,3): error TS6133: 'RotateCcw' is declared but its value is never read.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(31,3): error TS6133: 'ChevronRight' is declared but its value is never read.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(32,3): error TS6133: 'Zap' is declared but its value is never read.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(573,33): error TS2339: Property 'phone' does not exist on type 'ComprehensiveRequirements'.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(790,13): error TS6133: 'originalText' is declared but its value is never read.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(1015,32): error TS2339: Property 'phone' does not exist on type 'ComprehensiveRequirements'.
+client/src/components/IDE/RealTimeWebsiteTransform.tsx(1015,61): error TS2339: Property 'phone' does not exist on type 'ComprehensiveRequirements'.
+client/src/components/IDE/ResearchPhase.tsx(74,59): error TS6133: 'onCancel' is declared but its value is never read.
+client/src/components/IDE/ResizableLivePreview.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+client/src/components/IDE/ResizableLivePreview.tsx(4,1): error TS6192: All imports in import declaration are unused.
+client/src/components/IDE/ResizableLivePreview.tsx(27,3): error TS6133: 'defaultWidth' is declared but its value is never read.
+client/src/components/IDE/ResizableLivePreview.tsx(28,3): error TS6133: 'minWidth' is declared but its value is never read.
+client/src/components/IDE/ResizableLivePreview.tsx(29,3): error TS6133: 'maxWidth' is declared but its value is never read.
+client/src/components/IDE/ReviewAndRedesign.tsx(28,3): error TS6133: 'Check' is declared but its value is never read.
+client/src/components/IDE/ReviewAndRedesign.tsx(29,3): error TS6133: 'Image' is declared but its value is never read.
+client/src/components/IDE/SEOExpertEvaluation.tsx(33,3): error TS6133: 'RefreshCw' is declared but its value is never read.
+client/src/components/IDE/ServicesDashboard.tsx(1,17): error TS6133: 'useState' is declared but its value is never read.
+client/src/components/IDE/ServicesDashboard.tsx(2,1): error TS6133: 'Button' is declared but its value is never read.
+client/src/components/IDE/ServicesDashboard.tsx(15,3): error TS6133: 'ArrowLeft' is declared but its value is never read.

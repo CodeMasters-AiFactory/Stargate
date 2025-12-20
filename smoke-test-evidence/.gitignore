@@ -1,0 +1,12 @@
+# Ignore evidence files (they can be large and change frequently)
+*.png
+*.jpg
+*.jpeg
+*.log
+*.json
+*.txt
+
+# Keep directory structure
+!.gitkeep
+!README.md
+

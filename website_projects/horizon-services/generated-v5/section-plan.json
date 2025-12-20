@@ -1,0 +1,41 @@
+{
+  "sections": [
+    {
+      "key": "hero",
+      "type": "hero",
+      "importance": "high",
+      "notes": "Visually appealing with a clear headline, brief description, and a strong call to action (e.g., 'Get a Free Quote', 'Schedule Service'). Should include a high-quality image or video showcasing HVAC, plumbing, or cooling services.",
+      "order": 1
+    },
+    {
+      "key": "value-proposition",
+      "type": "value-proposition",
+      "importance": "high",
+      "notes": "Highlight key benefits for homeowners (e.g., reliability, expertise, fast service, upfront pricing). Focus on solving their problems and building trust.",
+      "order": 2
+    },
+    {
+      "key": "services",
+      "type": "services",
+      "importance": "high",
+      "notes": "Showcase the range of HVAC, plumbing, and cooling services offered. Use clear icons and concise descriptions. Link to dedicated service pages for more details. Categorize services for easy navigation (e.g., HVAC Repair, Plumbing Installation, Air Conditioning Maintenance).",
+      "order": 3
+    },
+    {
+      "key": "testimonials",
+      "type": "testimonials",
+      "importance": "high",
+      "notes": "Include authentic testimonials from satisfied customers in Pennsylvania, Maryland, New Jersey, and Delaware. Use real names and photos (if possible) to increase credibility. Rotate testimonials to keep the content fresh.",
+      "order": 4
+    },
+    {
+      "key": "contact",
+      "type": "contact",
+      "importance": "high",
+      "notes": "Prominent contact information (phone number, email address). Include a simple contact form for easy inquiries. Clearly state service areas (Pennsylvania, Maryland, New Jersey, and Delaware). Consider adding live chat functionality.",
+      "order": 5
+    }
+  ],
+  "rationale": "The proposed homepage structure prioritizes converting visitors into customers by immediately presenting a compelling hero section, followed by a strong value proposition, detailed service offerings, social proof through testimonials, and a clear path for contacting Horizon Services. This design focuses on building trust and showcasing expertise in HVAC, plumbing, and cooling services within the target geographic area.",
+  "totalSections": 5
+}

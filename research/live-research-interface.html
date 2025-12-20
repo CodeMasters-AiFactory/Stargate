@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Research - Blue Origin IT Solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0A3D91 0%, #1E88E5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .main-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 32px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #E2E8F0;
+        }
+        
+        .header h1 {
+            color: #0A3D91;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .progress-indicator {
+            background: #E2E8F0;
+            border-radius: 20px;
+            height: 12px;
+            margin: 16px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #1E88E5 0%, #0A3D91 100%);
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #0A3D91;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        .step-list {
+            list-style: none;
+        }
+        
+        .step-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .step-item.completed {
+            background: #F0FDF4;
+            color: #065F46;
+        }
+        
+        .step-item.active {
+            background: #EFF6FF;
+            color: #1E40AF;
+            font-weight: 600;
+        }
+        
+        .step-item.pending {
+            background: #F8FAFC;
+            color: #94A3B8;
+        }
+        
+        .step-icon {
+            font-size: 18px;
+        }
+        
+        .page-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 16px;
+        }
+        
+        .page-tab {
+            padding: 12px 24px;
+            border: none;
+            background: #F8FAFC;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748B;
+            transition: all 0.3s;
+        }
+        
+        .page-tab.active {
+            background: #0A3D91;
+            color: white;
+        }
+        
+        .page-tab.completed {
+            background: #10B981;
+            color: white;
+        }
+        
+        .live-research-feed {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 16px;
+            background: #F8FAFC;
+        }
+        
+        .research-activity {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #1E88E5;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .research-activity.search {
+            border-left-color: #3B82F6;
+        }
+        
+        .research-activity.analysis {
+            border-left-color: #10B981;
+        }
+        
+        .research-activity.finding {
+            border-left-color: #F59E0B;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .activity-icon {
+            font-size: 20px;
+        }
+        
+        .activity-type {
+            font-weight: 700;
+            color: #1E293B;
+            font-size: 14px;
+        }
+        
+        .activity-time {
+            color: #94A3B8;
+            font-size: 12px;
+            margin-left: auto;
+        }
+        
+        .activity-content {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 8px;
+        }
+        
+        .activity-query {
+            background: #EFF6FF;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #1E40AF;
+            margin: 8px 0;
+        }
+        
+        .activity-findings {
+            background: #FEF3C7;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 8px;
+            border-left: 3px solid #F59E0B;
+        }
+        
+        .activity-findings strong {
+            color: #92400E;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .activity-findings ul {
+            margin-left: 20px;
+            color: #78350F;
+        }
+        
+        .page-research-summary {
+            background: #F0FDF4;
+            border: 2px solid #10B981;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        
+        .summary-title {
+            color: #065F46;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0A3D91;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #64748B;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        
+        .research-status {
+            background: #FEF3C7;
+            border: 2px solid #F59E0B;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+        
+        .status-text {
+            color: #92400E;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar: Progress Overview -->
+        <div class="sidebar">
+            <div class="header">
+                <h1>🔬 Research Progress</h1>
+                <div class="progress-indicator">
+                    <div class="progress-bar" id="overallProgress" style="width: 10%;"></div>
+                </div>
+                <div class="progress-text" id="progressText">10% Complete</div>
+            </div>
+            
+            <ul class="step-list">
+                <li class="step-item completed">
+                    <span class="step-icon">✓</span>
+                    <span>1. Topic Research</span>
+                </li>
+                <li class="step-item active">
+                    <span class="step-icon">⟳</span>
+                    <span>2. Industry Research</span>
+                </li>
+                <li class="step-item pending">
+                    <span class="step-icon">○</span>
+                    <span>3. Competitor ID</span>
+                </li>
+                <li class="step-item pending">
+                    <span class="step-icon">○</span>
+                    <span>4. Content Analysis</span>
+                </li>
+                <li class="step-item pending">
+                    <span class="step-icon">○</span>
+                    <span>5. SEO Analysis</span>
+                </li>
+                <li class="step-item pending">
+                    <span class="step-icon">○</span>
+                    <span>6. SWOT Analysis</span>
+                </li>
+                <li class="step-item pending">
+                    <span class="step-icon">○</span>
+                    <span>7. Content Strategy</span>
+                </li>
+                <li class="step-item pending">
+                    <span class="step-icon">○</span>
+                    <span>8. SEO Strategy</span>
+                </li>
+                <li class="step-item pending">
+                    <span class="step-icon">○</span>
+                    <span>9. Site Structure</span>
+                </li>
+                <li class="step-item pending">
+                    <span class="step-icon">○</span>
+                    <span>10. Content Plan</span>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content: Live Research Feed -->
+        <div class="main-content">
+            <div class="page-tabs">
+                <button class="page-tab active" data-page="home">🏠 Home Page</button>
+                <button class="page-tab" data-page="services">⚙️ Services Page</button>
+                <button class="page-tab" data-page="about">ℹ️ About Page</button>
+                <button class="page-tab" data-page="contact">📞 Contact Page</button>
+            </div>
+            
+            <div id="researchFeed" class="live-research-feed">
+                <!-- Research activities will appear here in real-time -->
+                <div class="research-activity search">
+                    <div class="activity-header">
+                        <span class="activity-icon">🔍</span>
+                        <span class="activity-type">WEB SEARCH</span>
+                        <span class="activity-time">Just now</span>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-query">Searching: "IT services industry trends 2024 2025 business technology solutions"</div>
+                        <p>Analyzing current industry trends, market dynamics, and emerging technologies in the IT services sector...</p>
+                    </div>
+                </div>
+                
+                <div class="research-activity analysis">
+                    <div class="activity-header">
+                        <span class="activity-icon">📊</span>
+                        <span class="activity-type">ANALYSIS</span>
+                        <span class="activity-time">2 seconds ago</span>
+                    </div>
+                    <div class="activity-content">
+                        <p>Processing search results and identifying key industry patterns...</p>
+                        <div class="activity-findings">
+                            <strong>Key Findings:</strong>
+                            <ul>
+                                <li>Cloud migration services showing 35% year-over-year growth</li>
+                                <li>Cybersecurity concerns top priority for 78% of businesses</li>
+                                <li>Managed IT services market valued at $267B in 2024</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="research-activity search">
+                    <div class="activity-header">
+                        <span class="activity-icon">🔍</span>
+                        <span class="activity-type">WEB SEARCH</span>
+                        <span class="activity-time">5 seconds ago</span>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-query">Searching: "IT services target audience business owners managers decision makers"</div>
+                        <p>Researching decision-making factors and pain points for business owners and managers...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="page-research-summary" id="pageSummary" style="display: none;">
+                <div class="summary-title">
+                    <span>✓</span>
+                    <span>Home Page Research Complete</span>
+                </div>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Topics Found</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Keywords</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1,200</div>
+                        <div class="stat-label">Words Planned</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="research-status">
+                <p class="status-text">⚠️ Research in progress for: <strong id="currentPage">Home Page</strong></p>
+                <p style="color: #78350F; font-size: 14px; margin-top: 8px;">Website generation is locked until all page research is complete.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simulate live research activities
+        const activities = [
+            {
+                type: 'search',
+                icon: '🔍',
+                query: 'IT services industry trends 2024 2025',
+                content: 'Analyzing current industry trends and market dynamics...'
+            },
+            {
+                type: 'analysis',
+                icon: '📊',
+                content: 'Processing findings and identifying patterns...',
+                findings: ['Cloud services growing 35% YoY', 'Cybersecurity top priority', 'Market valued at $267B']
+            },
+            {
+                type: 'search',
+                icon: '🔍',
+                query: 'IT services target audience business owners',
+                content: 'Researching decision-maker pain points...'
+            }
+        ];
+        
+        let activityIndex = 0;
+        const feed = document.getElementById('researchFeed');
+        
+        function addActivity(activity) {
+            const div = document.createElement('div');
+            div.className = `research-activity ${activity.type}`;
+            
+            const time = new Date().toLocaleTimeString();
+            
+            div.innerHTML = `
+                <div class="activity-header">
+                    <span class="activity-icon">${activity.icon}</span>
+                    <span class="activity-type">${activity.type.toUpperCase()}</span>
+                    <span class="activity-time">${time}</span>
+                </div>
+                <div class="activity-content">
+                    ${activity.query ? `<div class="activity-query">Searching: "${activity.query}"</div>` : ''}
+                    <p>${activity.content}</p>
+                    ${activity.findings ? `
+                        <div class="activity-findings">
+                            <strong>Key Findings:</strong>
+                            <ul>
+                                ${activity.findings.map(f => `<li>${f}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            feed.insertBefore(div, feed.firstChild);
+            feed.scrollTop = 0;
+        }
+        
+        // Page tab switching
+        document.querySelectorAll('.page-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('currentPage').textContent = this.textContent.replace('🏠 ', '').replace('⚙️ ', '').replace('ℹ️ ', '').replace('📞 ', '');
+            });
+        });
+    </script>
+</body>
+</html>
+

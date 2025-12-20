@@ -1,0 +1,100 @@
+﻿
+> rest-express@1.0.0 lint
+> eslint . --ext .ts,.tsx,.js,.jsx
+
+
+C:\CURSOR PROJECTS\StargatePortal\INJECT_SCRIPT.js
+  0:0  error  Parsing error: ESLint was configured to run on `<tsconfigRootDir>/INJECT_SCRIPT.js` using `parserOptions.project`: <tsconfigRootDir>/tsconfig.json
+However, that TSConfig does not include this file. Either:
+- Change ESLint's list of included files to not include this file
+- Change that TSConfig to include this file
+- Create a new TSConfig that includes this file and include it in your parserOptions.project
+See the typescript-eslint docs for more info: https://typescript-eslint.io/troubleshooting/typed-linting#i-get-errors-telling-me-eslint-was-configured-to-run--however-that-tsconfig-does-not--none-of-those-tsconfigs-include-this-file
+
+C:\CURSOR PROJECTS\StargatePortal\INSTANT_FILL_ALL.js
+  0:0  error  Parsing error: ESLint was configured to run on `<tsconfigRootDir>/INSTANT_FILL_ALL.js` using `parserOptions.project`: <tsconfigRootDir>/tsconfig.json
+However, that TSConfig does not include this file. Either:
+- Change ESLint's list of included files to not include this file
+- Change that TSConfig to include this file
+- Create a new TSConfig that includes this file and include it in your parserOptions.project
+See the typescript-eslint docs for more info: https://typescript-eslint.io/troubleshooting/typed-linting#i-get-errors-telling-me-eslint-was-configured-to-run--however-that-tsconfig-does-not--none-of-those-tsconfigs-include-this-file
+
+C:\CURSOR PROJECTS\StargatePortal\SPEED_FILL.js
+  0:0  error  Parsing error: ESLint was configured to run on `<tsconfigRootDir>/SPEED_FILL.js` using `parserOptions.project`: <tsconfigRootDir>/tsconfig.json
+However, that TSConfig does not include this file. Either:
+- Change ESLint's list of included files to not include this file
+- Change that TSConfig to include this file
+- Create a new TSConfig that includes this file and include it in your parserOptions.project
+See the typescript-eslint docs for more info: https://typescript-eslint.io/troubleshooting/typed-linting#i-get-errors-telling-me-eslint-was-configured-to-run--however-that-tsconfig-does-not--none-of-those-tsconfigs-include-this-file
+
+C:\CURSOR PROJECTS\StargatePortal\assess-website.ts
+  0:0  error  Parsing error: ESLint was configured to run on `<tsconfigRootDir>/assess-website.ts` using `parserOptions.project`: <tsconfigRootDir>/tsconfig.json
+However, that TSConfig does not include this file. Either:
+- Change ESLint's list of included files to not include this file
+- Change that TSConfig to include this file
+- Create a new TSConfig that includes this file and include it in your parserOptions.project
+See the typescript-eslint docs for more info: https://typescript-eslint.io/troubleshooting/typed-linting#i-get-errors-telling-me-eslint-was-configured-to-run--however-that-tsconfig-does-not--none-of-those-tsconfigs-include-this-file
+
+C:\CURSOR PROJECTS\StargatePortal\client\src\components\AI\AgentInstructionsSystem.ts
+   31:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  124:52  error    '_agentId' is defined but never used      @typescript-eslint/no-unused-vars
+  254:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  257:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\CURSOR PROJECTS\StargatePortal\client\src\components\AI\ConversationalAgent.tsx
+   17:35  warning  Unexpected any. Specify a different type      @typescript-eslint/no-explicit-any
+  117:11  error    Unexpected lexical declaration in case block  no-case-declarations
+
+C:\CURSOR PROJECTS\StargatePortal\client\src\components\AI\MemoryAwareAgent.tsx
+  24:14  warning  Unexpected any. Specify a different type                                                                                    @typescript-eslint/no-explicit-any
+  32:24  warning  Unexpected any. Specify a different type                                                                                    @typescript-eslint/no-explicit-any
+  33:20  warning  Unexpected any. Specify a different type                                                                                    @typescript-eslint/no-explicit-any
+  34:21  warning  Unexpected any. Specify a different type                                                                                    @typescript-eslint/no-explicit-any
+  35:17  warning  Unexpected any. Specify a different type                                                                                    @typescript-eslint/no-explicit-any
+  36:14  warning  Unexpected any. Specify a different type                                                                                    @typescript-eslint/no-explicit-any
+  43:35  warning  Unexpected any. Specify a different type                                                                                    @typescript-eslint/no-explicit-any
+  71:6   warning  React Hook useEffect has a missing dependency: 'initializeMemorySession'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\CURSOR PROJECTS\StargatePortal\client\src\components\Admin\DepartmentAccess.tsx
+   4:72  error    'Shield' is defined but never used        @typescript-eslint/no-unused-vars
+  88:69  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\CURSOR PROJECTS\StargatePortal\client\src\components\Admin\DesignScraper.tsx
+   27:29  error    'Building2' is defined but never used                            @typescript-eslint/no-unused-vars
+   27:65  error    'MapPin' is defined but never used                               @typescript-eslint/no-unused-vars
+   83:16  warning  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  287:29  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\CURSOR PROJECTS\StargatePortal\client\src\components\Admin\RoleManagement.tsx
+  247:5  warning  Unexpected console statement  no-console
+
+C:\CURSOR PROJECTS\StargatePortal\client\src\components\Admin\SearchEngineScraper.tsx
+   20:18  error    'Building2' is defined but never used                               @typescript-eslint/no-unused-vars
+   22:10  error    'Badge' is defined but never used                                   @typescript-eslint/no-unused-vars
+  162:9   error    'handleFileUpload' is assigned a value but never used               @typescript-eslint/no-unused-vars
+  265:13  warning  Unexpected console statement                                        no-console
+  267:61  warning  Unexpected any. Specify a different type                            @typescript-eslint/no-explicit-any
+  269:17  warning  Unexpected console statement                                        no-console
+  332:9   error    'handleBulkScrapeAllIndustries' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\CURSOR PROJECTS\StargatePortal\client\src\components\Admin\TemplateManagement.tsx
+   26:3   error    'DialogTrigger' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+   47:36  error    'Eye' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+   47:50  error    'Filter' is defined but never used                                                                                 @typescript-eslint/no-unused-vars
+   68:10  error    'selectedTemplate' is assigned a value but never used                                                              @typescript-eslint/no-unused-vars
+   69:10  error    'deleteTemplateId' is assigned a value but never used                                                              @typescript-eslint/no-unused-vars
+   69:28  error    'setDeleteTemplateId' is assigned a value but never used                                                           @typescript-eslint/no-unused-vars
+  120:9   warning  Unexpected console statement                                                                                       no-console
+  121:9   warning  Unexpected console statement                                                                                       no-console
+  122:49  warning  Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  123:45  warning  Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  124:48  warning  Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  150:7   warning  Unexpected console statement                                                                                       no-console
+  158:6   warning  React Hook useEffect has a missing dependency: 'fetchTemplates'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  182:45  warning  Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  184:45  warning  Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  225:11  error    Unexpected lexical declaration in case block                                                                       no-case-declarations
+  226:11  error    Unexpected lexical declaration in case block                                                                       no-case-declarations
+  274:6   warning  React Hook useEffect has a missing dependency: 'fetchTemplates'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  337:5   warning  Unexpected console statement                                                                                       no-console
+  341:7   warning  Unexpected console statement                                                                                       no-console

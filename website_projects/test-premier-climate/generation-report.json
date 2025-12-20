@@ -1,0 +1,66 @@
+{
+  "templateId": "horizon-services-hvac-4705648140",
+  "clientInfo": {
+    "businessName": "Premier Climate Solutions",
+    "industry": "HVAC",
+    "location": {
+      "city": "Atlanta",
+      "state": "Georgia",
+      "country": "United States"
+    },
+    "services": [
+      {
+        "name": "Air Conditioning Repair",
+        "description": "Fast, reliable AC repair for homes and businesses"
+      },
+      {
+        "name": "Heating System Installation",
+        "description": "Expert installation of furnaces and heat pumps"
+      },
+      {
+        "name": "HVAC Maintenance",
+        "description": "Preventive maintenance to keep your systems running efficiently"
+      },
+      {
+        "name": "Duct Cleaning",
+        "description": "Professional duct cleaning for better air quality"
+      },
+      {
+        "name": "Emergency Service",
+        "description": "24/7 emergency HVAC repair when you need it most"
+      }
+    ],
+    "phone": "(404) 555-COOL",
+    "email": "info@premierclimatesolutions.com",
+    "address": "1234 Peachtree Street NE, Atlanta, GA 30309",
+    "tagline": "Your Comfort, Our Priority - Serving Atlanta Since 2010",
+    "testimonials": [
+      {
+        "name": "John M.",
+        "quote": "Premier Climate Solutions saved us during a heatwave. Fast, professional service!",
+        "rating": 5
+      },
+      {
+        "name": "Sarah K.",
+        "quote": "Best HVAC company in Atlanta. Fair prices and excellent work.",
+        "rating": 5
+      },
+      {
+        "name": "Mike R.",
+        "quote": "They installed our new furnace quickly and cleanly. Highly recommend!",
+        "rating": 5
+      }
+    ]
+  },
+  "generatedAt": "2025-12-03T06:57:33.596Z",
+  "success": true,
+  "contentChanges": 110,
+  "imagesReplaced": 0,
+  "errors": [],
+  "verification": {
+    "brandReplaced": true,
+    "hasPhone": true,
+    "hasEmail": false,
+    "hasCity": true
+  }
+}

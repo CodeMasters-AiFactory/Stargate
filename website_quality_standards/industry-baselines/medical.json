@@ -1,0 +1,12 @@
+{
+  "industry": "Medical",
+  "expectedContentDepth": 1000,
+  "standardCTAPatterns": ["Book Appointment", "Call Now", "Schedule Visit", "Request Appointment"],
+  "standardUXFlow": ["Hero", "Services", "Doctors", "Testimonials", "Contact"],
+  "standardTrustElements": ["Certifications", "Insurance accepted", "Reviews", "Years of experience", "Board certified"],
+  "typicalSEOFeatures": ["Location + specialty keywords", "FAQ schema", "MedicalProfessional schema", "Service pages"],
+  "specialistRequirements": ["HIPAA compliance messaging", "Insurance information", "Doctor profiles", "Patient portal"],
+  "contentKeywords": ["doctor", "physician", "medical", "healthcare", "treatment", "appointment", "clinic"],
+  "trustKeywords": ["board certified", "licensed", "insurance accepted", "patient reviews", "years of experience"]
+}
+

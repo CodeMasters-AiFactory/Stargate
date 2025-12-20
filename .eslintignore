@@ -1,0 +1,14 @@
+node_modules
+dist
+build
+*.config.js
+*.config.ts
+vite.config.ts
+drizzle.config.ts
+postcss.config.js
+tailwind.config.ts
+coverage
+.vscode
+.idea
+attached_assets
+

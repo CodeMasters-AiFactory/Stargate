@@ -1,0 +1,344 @@
+{
+  "hero": [
+    {
+      "id": "hero-split-left",
+      "description": "Text left, image right",
+      "bestForGoals": ["lead-gen", "trust", "clarity"],
+      "bestForIndustries": ["legal", "law", "saas", "b2b", "consulting"],
+      "layoutHints": {
+        "align": "left",
+        "imagePosition": "right",
+        "gridTemplate": "1fr 1fr"
+      }
+    },
+    {
+      "id": "hero-split-right",
+      "description": "Image left, text right",
+      "bestForGoals": ["visual", "impact", "branding"],
+      "bestForIndustries": ["creative", "design", "photography", "art"],
+      "layoutHints": {
+        "align": "right",
+        "imagePosition": "left",
+        "gridTemplate": "1fr 1fr"
+      }
+    },
+    {
+      "id": "hero-centered",
+      "description": "Centered text, optional image below or background",
+      "bestForGoals": ["branding", "portfolio", "ngos", "mission"],
+      "bestForIndustries": ["nonprofit", "education", "charity", "foundation"],
+      "layoutHints": {
+        "align": "center",
+        "imagePosition": "below"
+      }
+    },
+    {
+      "id": "hero-image-background",
+      "description": "Full-width background image with overlay text",
+      "bestForGoals": ["impact", "visual", "emotion"],
+      "bestForIndustries": ["travel", "marine", "outdoors", "adventure", "hospitality"],
+      "layoutHints": {
+        "align": "center",
+        "imageMode": "background",
+        "overlay": true
+      }
+    },
+    {
+      "id": "hero-minimal",
+      "description": "Minimal centered text, no image",
+      "bestForGoals": ["clarity", "focus"],
+      "bestForIndustries": ["saas", "tech", "startup"],
+      "layoutHints": {
+        "align": "center",
+        "imageMode": "none"
+      }
+    }
+  ],
+  "features": [
+    {
+      "id": "features-3-column-cards",
+      "description": "3 cards in a grid",
+      "bestForGoals": ["overview", "comparison", "benefits"],
+      "bestForIndustries": ["saas", "b2b", "product", "tech"],
+      "layoutHints": {
+        "columnsDesktop": 3,
+        "columnsTablet": 2,
+        "columnsMobile": 1,
+        "cardStyle": "elevated"
+      }
+    },
+    {
+      "id": "features-2-column-icons",
+      "description": "2 columns with icons and text",
+      "bestForGoals": ["benefits", "services"],
+      "bestForIndustries": ["services", "consulting", "professional"],
+      "layoutHints": {
+        "columnsDesktop": 2,
+        "columnsMobile": 1,
+        "iconStyle": "large"
+      }
+    },
+    {
+      "id": "features-4-column-compact",
+      "description": "4 compact feature cards",
+      "bestForGoals": ["overview", "quick-scan"],
+      "bestForIndustries": ["saas", "product", "tech"],
+      "layoutHints": {
+        "columnsDesktop": 4,
+        "columnsTablet": 2,
+        "columnsMobile": 1,
+        "cardStyle": "compact"
+      }
+    },
+    {
+      "id": "features-alternating",
+      "description": "Alternating left-right feature rows",
+      "bestForGoals": ["storytelling", "engagement"],
+      "bestForIndustries": ["creative", "agency", "design"],
+      "layoutHints": {
+        "layout": "alternating",
+        "imagePosition": "alternating"
+      }
+    }
+  ],
+  "services": [
+    {
+      "id": "services-grid",
+      "description": "Grid of service cards",
+      "bestForGoals": ["overview", "comparison"],
+      "bestForIndustries": ["legal", "consulting", "professional"],
+      "layoutHints": {
+        "columnsDesktop": 3,
+        "columnsTablet": 2,
+        "columnsMobile": 1
+      }
+    },
+    {
+      "id": "services-list",
+      "description": "Vertical list with icons",
+      "bestForGoals": ["clarity", "scanning"],
+      "bestForIndustries": ["services", "professional"],
+      "layoutHints": {
+        "layout": "vertical",
+        "iconStyle": "inline"
+      }
+    },
+    {
+      "id": "services-accordion",
+      "description": "Expandable accordion items",
+      "bestForGoals": ["detail", "exploration"],
+      "bestForIndustries": ["consulting", "professional"],
+      "layoutHints": {
+        "layout": "accordion",
+        "expandable": true
+      }
+    }
+  ],
+  "about": [
+    {
+      "id": "about-image-left",
+      "description": "Image left, text right",
+      "bestForGoals": ["trust", "personal"],
+      "bestForIndustries": ["creative", "healthcare", "marine", "outdoors", "photography"],
+      "layoutHints": {
+        "imagePosition": "left",
+        "gridTemplate": "1fr 1fr"
+      }
+    },
+    {
+      "id": "about-image-right",
+      "description": "Text left, image right",
+      "bestForGoals": ["professional", "credibility"],
+      "bestForIndustries": ["legal", "saas", "b2b", "consulting"],
+      "layoutHints": {
+        "imagePosition": "right",
+        "gridTemplate": "1fr 1fr"
+      }
+    },
+    {
+      "id": "about-centered",
+      "description": "Centered text with image above or below",
+      "bestForGoals": ["mission", "values"],
+      "bestForIndustries": ["nonprofit", "education", "charity"],
+      "layoutHints": {
+        "align": "center",
+        "imagePosition": "above"
+      }
+    },
+    {
+      "id": "about-split-image",
+      "description": "Split layout with large image and text overlay",
+      "bestForGoals": ["visual", "impact"],
+      "bestForIndustries": ["creative", "design", "art"],
+      "layoutHints": {
+        "imageMode": "split",
+        "overlay": true
+      }
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "testimonials-grid",
+      "description": "Grid of testimonial cards",
+      "bestForGoals": ["social-proof", "trust"],
+      "bestForIndustries": ["saas", "b2b", "product", "services"],
+      "layoutHints": {
+        "columnsDesktop": 3,
+        "columnsTablet": 2,
+        "columnsMobile": 1,
+        "cardStyle": "quote"
+      }
+    },
+    {
+      "id": "testimonials-spotlight",
+      "description": "One large highlighted testimonial with smaller quotes",
+      "bestForGoals": ["impact", "focus"],
+      "bestForIndustries": ["creative", "agency", "design"],
+      "layoutHints": {
+        "layout": "spotlight",
+        "highlightIndex": 0
+      }
+    },
+    {
+      "id": "testimonials-carousel",
+      "description": "Horizontal scrolling carousel",
+      "bestForGoals": ["engagement", "variety"],
+      "bestForIndustries": ["saas", "product", "tech"],
+      "layoutHints": {
+        "layout": "carousel",
+        "scrollable": true
+      }
+    }
+  ],
+  "pricing": [
+    {
+      "id": "pricing-3-tier",
+      "description": "3 column pricing table with highlighted middle plan",
+      "bestForGoals": ["conversion", "comparison"],
+      "bestForIndustries": ["saas", "product", "service"],
+      "layoutHints": {
+        "columnsDesktop": 3,
+        "columnsTablet": 1,
+        "columnsMobile": 1,
+        "highlightIndex": 1
+      }
+    },
+    {
+      "id": "pricing-2-tier",
+      "description": "2 column pricing comparison",
+      "bestForGoals": ["simplicity", "choice"],
+      "bestForIndustries": ["saas", "service"],
+      "layoutHints": {
+        "columnsDesktop": 2,
+        "columnsMobile": 1
+      }
+    },
+    {
+      "id": "pricing-single",
+      "description": "Single highlighted pricing plan",
+      "bestForGoals": ["focus", "conversion"],
+      "bestForIndustries": ["service", "consulting"],
+      "layoutHints": {
+        "columnsDesktop": 1,
+        "highlight": true
+      }
+    }
+  ],
+  "cta": [
+    {
+      "id": "cta-centered",
+      "description": "Centered call-to-action block with button",
+      "bestForGoals": ["conversion", "focus"],
+      "bestForIndustries": ["all"],
+      "layoutHints": {
+        "align": "center",
+        "style": "block"
+      }
+    },
+    {
+      "id": "cta-split",
+      "description": "Split layout with text left, CTA right",
+      "bestForGoals": ["balance", "information"],
+      "bestForIndustries": ["saas", "b2b"],
+      "layoutHints": {
+        "align": "split",
+        "gridTemplate": "1fr 1fr"
+      }
+    },
+    {
+      "id": "cta-with-image",
+      "description": "CTA with background or side image",
+      "bestForGoals": ["visual", "impact"],
+      "bestForIndustries": ["creative", "travel", "outdoors"],
+      "layoutHints": {
+        "imageMode": "background",
+        "overlay": true
+      }
+    }
+  ],
+  "value-proposition": [
+    {
+      "id": "value-prop-centered",
+      "description": "Centered value proposition text",
+      "bestForGoals": ["clarity", "focus"],
+      "bestForIndustries": ["all"],
+      "layoutHints": {
+        "align": "center"
+      }
+    },
+    {
+      "id": "value-prop-split",
+      "description": "Split layout with benefits list",
+      "bestForGoals": ["detail", "benefits"],
+      "bestForIndustries": ["saas", "b2b", "product"],
+      "layoutHints": {
+        "align": "split",
+        "showBenefits": true
+      }
+    }
+  ],
+  "contact": [
+    {
+      "id": "contact-split-form",
+      "description": "Contact form left, info right",
+      "bestForGoals": ["conversion", "information"],
+      "bestForIndustries": ["all"],
+      "layoutHints": {
+        "gridTemplate": "1fr 1fr",
+        "formPosition": "left"
+      }
+    },
+    {
+      "id": "contact-centered",
+      "description": "Centered contact form",
+      "bestForGoals": ["simplicity", "focus"],
+      "bestForIndustries": ["creative", "personal"],
+      "layoutHints": {
+        "align": "center",
+        "formWidth": "narrow"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "id": "faq-accordion",
+      "description": "Expandable accordion FAQ items",
+      "bestForGoals": ["detail", "exploration"],
+      "bestForIndustries": ["all"],
+      "layoutHints": {
+        "layout": "accordion",
+        "expandable": true
+      }
+    },
+    {
+      "id": "faq-2-column",
+      "description": "2 column FAQ grid",
+      "bestForGoals": ["overview", "scanning"],
+      "bestForIndustries": ["saas", "product"],
+      "layoutHints": {
+        "columnsDesktop": 2,
+        "columnsMobile": 1
+      }
+    }
+  ]
+}

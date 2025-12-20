@@ -1,0 +1,231 @@
+{
+  "version": "1.0",
+  "description": "Proven strategies for improving website quality in each category",
+  "strategies": {
+    "visualDesign": {
+      "issues": {
+        "missingCSS": {
+          "severity": "critical",
+          "fix": "Generate complete CSS file with color palette, typography, spacing system",
+          "priority": 1
+        },
+        "noColorSystem": {
+          "severity": "high",
+          "fix": "Define cohesive color palette (primary, secondary, accent) based on industry",
+          "priority": 2
+        },
+        "poorTypography": {
+          "severity": "high",
+          "fix": "Implement typography hierarchy with display fonts for headings, readable body fonts",
+          "priority": 2
+        },
+        "inconsistentSpacing": {
+          "severity": "medium",
+          "fix": "Use 8px grid system (8, 16, 24, 32, 48, 64, 96px) for consistent spacing",
+          "priority": 3
+        },
+        "noImages": {
+          "severity": "high",
+          "fix": "Add custom images, illustrations, or high-quality curated visuals (not stock photos)",
+          "priority": 2
+        }
+      },
+      "improvementSteps": [
+        "Ensure CSS file exists and is complete",
+        "Define color palette from style system",
+        "Implement typography system",
+        "Apply consistent spacing",
+        "Add visual content (images/illustrations)"
+      ]
+    },
+    "contentQuality": {
+      "issues": {
+        "duplicateContent": {
+          "severity": "critical",
+          "fix": "Generate unique content for each section based on section type",
+          "priority": 1
+        },
+        "genericFiller": {
+          "severity": "critical",
+          "fix": "Replace generic phrases with specific, industry-relevant content",
+          "priority": 1
+        },
+        "noLocationSpecific": {
+          "severity": "medium",
+          "fix": "Add location-specific content (city, region) where relevant",
+          "priority": 3
+        },
+        "noServiceDetails": {
+          "severity": "high",
+          "fix": "Describe services in detail with specific use cases, not generic terms",
+          "priority": 2
+        },
+        "missingValueProps": {
+          "severity": "high",
+          "fix": "Add clear, differentiated value propositions (not 'we are the best')",
+          "priority": 2
+        }
+      },
+      "improvementSteps": [
+        "Ensure each section has unique content",
+        "Remove all generic filler text",
+        "Add location-specific content",
+        "Detail services with use cases",
+        "Add clear value propositions"
+      ]
+    },
+    "conversionTrust": {
+      "issues": {
+        "singleCTA": {
+          "severity": "high",
+          "fix": "Add multiple CTAs throughout the page (hero, sections, footer)",
+          "priority": 2
+        },
+        "noContactInfo": {
+          "severity": "critical",
+          "fix": "Add contact information (phone, email, address, form)",
+          "priority": 1
+        },
+        "noTestimonials": {
+          "severity": "high",
+          "fix": "Add testimonials, case studies, or client logos for social proof",
+          "priority": 2
+        },
+        "noTrustSignals": {
+          "severity": "medium",
+          "fix": "Add trust signals (certifications, memberships, years in business)",
+          "priority": 3
+        },
+        "weakCTAs": {
+          "severity": "medium",
+          "fix": "Use action-oriented CTAs ('Book Consultation' not 'Learn More')",
+          "priority": 3
+        }
+      },
+      "improvementSteps": [
+        "Add multiple CTAs throughout page",
+        "Include contact information prominently",
+        "Add testimonials/social proof",
+        "Include trust signals",
+        "Use strong, action-oriented CTAs"
+      ]
+    },
+    "seoFoundations": {
+      "issues": {
+        "noMetaDescription": {
+          "severity": "high",
+          "fix": "Add compelling meta description (150-165 chars) with CTA",
+          "priority": 2
+        },
+        "brokenTitle": {
+          "severity": "critical",
+          "fix": "Fix page title (50-60 chars, includes location/service, proper grammar)",
+          "priority": 1
+        },
+        "poorHeadingHierarchy": {
+          "severity": "high",
+          "fix": "Ensure proper H1 → H2 → H3 hierarchy, one H1 per page",
+          "priority": 2
+        },
+        "noSchemaMarkup": {
+          "severity": "medium",
+          "fix": "Add schema markup (Organization, LocalBusiness, Service, FAQPage)",
+          "priority": 3
+        },
+        "noLocationKeywords": {
+          "severity": "medium",
+          "fix": "Include location keywords in H1 and throughout content",
+          "priority": 3
+        },
+        "noAltText": {
+          "severity": "medium",
+          "fix": "Add descriptive alt text to all images",
+          "priority": 3
+        }
+      },
+      "improvementSteps": [
+        "Fix page title (proper length, includes keywords)",
+        "Add meta description",
+        "Ensure proper heading hierarchy",
+        "Add schema markup",
+        "Include location keywords",
+        "Add alt text to images"
+      ]
+    },
+    "uxStructure": {
+      "issues": {
+        "brokenNavigation": {
+          "severity": "critical",
+          "fix": "Fix navigation links to match actual sections",
+          "priority": 1
+        },
+        "noUserJourney": {
+          "severity": "high",
+          "fix": "Design clear user journeys for different audience types",
+          "priority": 2
+        },
+        "poorMobileExperience": {
+          "severity": "high",
+          "fix": "Ensure responsive design works on mobile (test at 390px, 768px)",
+          "priority": 2
+        },
+        "confusingStructure": {
+          "severity": "medium",
+          "fix": "Organize sections logically (hero → services → testimonials → contact)",
+          "priority": 3
+        }
+      },
+      "improvementSteps": [
+        "Fix navigation to match sections",
+        "Design clear user journeys",
+        "Test and fix mobile responsiveness",
+        "Organize sections logically"
+      ]
+    },
+    "creativity": {
+      "issues": {
+        "genericTemplate": {
+          "severity": "high",
+          "fix": "Create unique visual identity with custom design elements",
+          "priority": 2
+        },
+        "noBrandIdentity": {
+          "severity": "high",
+          "fix": "Develop cohesive brand identity (colors, typography, spacing)",
+          "priority": 2
+        },
+        "noCustomImages": {
+          "severity": "medium",
+          "fix": "Use custom illustrations or photography, not stock photos",
+          "priority": 3
+        },
+        "noDifferentiation": {
+          "severity": "medium",
+          "fix": "Add unique design elements that differentiate from competitors",
+          "priority": 3
+        }
+      },
+      "improvementSteps": [
+        "Create unique visual identity",
+        "Develop cohesive brand system",
+        "Add custom images/illustrations",
+        "Add differentiating elements"
+      ]
+    }
+  },
+  "priorityOrder": [
+    "critical",
+    "high",
+    "medium",
+    "low"
+  ],
+  "improvementWorkflow": {
+    "step1": "Identify all issues with severity >= high",
+    "step2": "Fix critical issues first (CSS, duplicate content, broken navigation)",
+    "step3": "Fix high-priority issues (content quality, conversion, SEO)",
+    "step4": "Re-assess quality",
+    "step5": "Fix remaining issues if score < target",
+    "step6": "Repeat until target met or max iterations reached"
+  }
+}
+

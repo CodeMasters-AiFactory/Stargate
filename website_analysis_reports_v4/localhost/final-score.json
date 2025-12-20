@@ -1,0 +1,16 @@
+{
+  "url": "http://localhost:5000/website_projects/test-business/generated-v5/index.html",
+  "timestamp": "2025-12-19T13:20:51.362Z",
+  "expertScores": {
+    "ux": 9.16,
+    "visual": 9,
+    "conversion": 6,
+    "seo": 10,
+    "brand": 9
+  },
+  "consensusScore": 67.4,
+  "perceptionScore": 70,
+  "weightedFinalScore": 68.2,
+  "verdict": "Good",
+  "meetsExcellentCriteria": false
+}

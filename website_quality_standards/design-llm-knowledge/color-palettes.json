@@ -1,0 +1,61 @@
+{
+  "palettes": [
+    {
+      "id": "professional-blue",
+      "name": "Professional Blue",
+      "primary": "#2563EB",
+      "secondary": "#1E40AF",
+      "accent": "#3B82F6",
+      "neutrals": ["#F8FAFC", "#E2E8F0", "#64748B", "#1E293B"],
+      "industry": ["SaaS", "Tech", "Finance"]
+    },
+    {
+      "id": "trust-green",
+      "name": "Trust Green",
+      "primary": "#059669",
+      "secondary": "#047857",
+      "accent": "#10B981",
+      "neutrals": ["#F0FDF4", "#D1FAE5", "#6B7280", "#111827"],
+      "industry": ["Medical", "Wellness", "Finance"]
+    },
+    {
+      "id": "premium-purple",
+      "name": "Premium Purple",
+      "primary": "#7C3AED",
+      "secondary": "#6D28D9",
+      "accent": "#8B5CF6",
+      "neutrals": ["#FAF5FF", "#E9D5FF", "#9CA3AF", "#1F2937"],
+      "industry": ["Creative", "Luxury", "Tech"]
+    },
+    {
+      "id": "energetic-orange",
+      "name": "Energetic Orange",
+      "primary": "#EA580C",
+      "secondary": "#C2410C",
+      "accent": "#F97316",
+      "neutrals": ["#FFF7ED", "#FFEDD5", "#78716C", "#292524"],
+      "industry": ["Creative", "Sports", "Entertainment"]
+    },
+    {
+      "id": "corporate-navy",
+      "name": "Corporate Navy",
+      "primary": "#1E3A8A",
+      "secondary": "#1E40AF",
+      "accent": "#3B82F6",
+      "neutrals": ["#F8FAFC", "#E2E8F0", "#475569", "#0F172A"],
+      "industry": ["Law", "Finance", "Corporate"]
+    },
+    {
+      "id": "modern-teal",
+      "name": "Modern Teal",
+      "primary": "#0D9488",
+      "secondary": "#0F766E",
+      "accent": "#14B8A6",
+      "neutrals": ["#F0FDFA", "#CCFBF1", "#64748B", "#1E293B"],
+      "industry": ["Tech", "Healthcare", "SaaS"]
+    }
+  ],
+  "totalPalettes": 100,
+  "categories": ["professional", "trust", "premium", "energetic", "corporate", "modern", "creative"]
+}
+

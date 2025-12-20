@@ -1,0 +1,28 @@
+[
+  {
+    "id": "home",
+    "slug": "/",
+    "title": "Home",
+    "sectionKeys": [
+      "hero",
+      "value-proposition",
+      "testimonials"
+    ]
+  },
+  {
+    "id": "services",
+    "slug": "/services",
+    "title": "Services",
+    "sectionKeys": [
+      "services"
+    ]
+  },
+  {
+    "id": "contact",
+    "slug": "/contact",
+    "title": "Contact",
+    "sectionKeys": [
+      "contact"
+    ]
+  }
+]

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Activity Feed Test</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .activity { padding: 10px; margin: 5px; border-left: 4px solid #3b82f6; background: #f0f9ff; }
+    .test-btn { padding: 10px 20px; margin: 10px; background: #3b82f6; color: white; border: none; cursor: pointer; }
+    .count { font-weight: bold; color: #3b82f6; }
+  </style>
+</head>
+<body>
+  <h1>Activity Feed Smoke Test</h1>
+  <button class="test-btn" onclick="testActivity()">Add Test Activity</button>
+  <button class="test-btn" onclick="testSSE()">Test SSE Connection</button>
+  <div class="count">Activities: <span id="count">0</span></div>
+  <div id="activities"></div>
+
+  <script>
+    let activities = [];
+    
+    function addActivity(message, type = 'check') {
+      const activity = {
+        id: `activity-${Date.now()}-${Math.random()}`,
+        timestamp: new Date(),
+        type: type,
+        message: message,
+        status: 'active'
+      };
+      activities = [activity, ...activities.slice(0, 49)];
+      render();
+      console.log('✅ Activity added:', activity);
+    }
+    
+    function render() {
+      document.getElementById('count').textContent = activities.length;
+      const container = document.getElementById('activities');
+      if (activities.length === 0) {
+        container.innerHTML = '<div>No activities yet</div>';
+        return;
+      }
+      container.innerHTML = activities.map(a => `
+        <div class="activity">
+          <strong>${a.type.toUpperCase()}</strong> - ${a.message}
+          <small> (${a.timestamp.toLocaleTimeString()})</small>
+        </div>
+      `).join('');
+    }
+    
+    function testActivity() {
+      addActivity(`🧪 Test activity at ${new Date().toLocaleTimeString()}`, 'search');
+    }
+    
+    async function testSSE() {
+      addActivity('📡 Connecting to investigation API...', 'check');
+      try {
+        const response = await fetch('http://localhost:5000/api/website-builder/investigate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            businessName: 'Test',
+            businessType: 'Test',
+            pages: ['Home']
+          })
+        });
+        
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        addActivity('✅ SSE connection established', 'check');
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.substring(6));
+                if (data.stage && data.message) {
+                  const type = data.stage.includes('keyword') || data.stage.includes('research') ? 'search' :
+                              data.stage.includes('analysis') || data.stage.includes('competitor') ? 'analysis' :
+                              data.stage.includes('strategy') || data.stage.includes('planning') ? 'finding' : 'check';
+                  addActivity(data.message, type);
+                }
+              } catch (e) {}
+            }
+          }
+        }
+        
+        addActivity('✅ Research complete!', 'check');
+      } catch (error) {
+        addActivity(`❌ Error: ${error.message}`, 'check');
+      }
+    }
+    
+    // Auto-add test activity on load
+    setTimeout(() => addActivity('🚀 Page loaded - activity feed ready', 'check'), 500);
+  </script>
+</body>
+</html>
+

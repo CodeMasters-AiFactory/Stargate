@@ -1,0 +1,163 @@
+{
+  "base": {
+    "colors": {
+      "primary": "#3B82F6",
+      "neutrals": [
+        "#F8FAFC",
+        "#E2E8F0",
+        "#64748B",
+        "#1E293B"
+      ],
+      "background": "#F8FAFC",
+      "text": "#1E293B"
+    },
+    "gradients": {
+      "primary": "linear-gradient(135deg, #3B82F6 0%, #10B981 100%)",
+      "secondary": "linear-gradient(135deg, #10B981 0%, #8B5CF6 100%)",
+      "hero": "linear-gradient(135deg, #3B82F6 0%, #10B981 50%, #8B5CF6 100%)",
+      "accent": "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+      "mesh": "radial-gradient(circle at 20% 30%, #3B82F630 0%, transparent 50%),\n        radial-gradient(circle at 80% 70%, #10B98130 0%, transparent 50%),\n        radial-gradient(circle at 50% 50%, #8B5CF620 0%, transparent 70%)"
+    },
+    "typography": {
+      "id": "inter-system",
+      "heading": {
+        "font": "Inter",
+        "weights": [
+          700,
+          600
+        ],
+        "sizes": [
+          48,
+          36,
+          24,
+          18
+        ]
+      },
+      "body": {
+        "font": "Inter",
+        "weights": [
+          400,
+          500
+        ],
+        "sizes": [
+          16,
+          14
+        ],
+        "lineHeight": 1.6
+      },
+      "useCase": "Modern, clean, versatile"
+    },
+    "spacing": {
+      "scale": [
+        4,
+        8,
+        12,
+        16,
+        24,
+        32,
+        48,
+        64,
+        96,
+        128
+      ],
+      "system": "8px base"
+    },
+    "borderRadius": {
+      "small": "4px",
+      "medium": "8px",
+      "large": "16px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "small": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+      "medium": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+      "large": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+    },
+    "icons": {
+      "style": "outline",
+      "library": "heroicons"
+    }
+  },
+  "final": {
+    "colors": {
+      "primary": "#3B82F6",
+      "neutrals": [
+        "#F8FAFC",
+        "#E2E8F0",
+        "#64748B",
+        "#1E293B"
+      ],
+      "background": "#F8FAFC",
+      "text": "#1E293B"
+    },
+    "gradients": {
+      "primary": "linear-gradient(135deg, #3B82F6 0%, #10B981 100%)",
+      "secondary": "linear-gradient(135deg, #10B981 0%, #8B5CF6 100%)",
+      "hero": "linear-gradient(135deg, #3B82F6 0%, #10B981 50%, #8B5CF6 100%)",
+      "accent": "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+      "mesh": "radial-gradient(circle at 20% 30%, #3B82F630 0%, transparent 50%),\n        radial-gradient(circle at 80% 70%, #10B98130 0%, transparent 50%),\n        radial-gradient(circle at 50% 50%, #8B5CF620 0%, transparent 70%)"
+    },
+    "typography": {
+      "id": "inter-system",
+      "heading": {
+        "font": "Inter",
+        "weights": [
+          700,
+          600
+        ],
+        "sizes": [
+          48,
+          36,
+          24,
+          18
+        ]
+      },
+      "body": {
+        "font": "Inter",
+        "weights": [
+          400,
+          500
+        ],
+        "sizes": [
+          16,
+          14
+        ],
+        "lineHeight": 1.6
+      },
+      "useCase": "Modern, clean, versatile"
+    },
+    "spacing": {
+      "scale": [
+        4,
+        8,
+        12,
+        16,
+        24,
+        32,
+        48,
+        64,
+        96,
+        128
+      ],
+      "system": "8px base"
+    },
+    "borderRadius": {
+      "small": "4px",
+      "medium": "8px",
+      "large": "16px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "small": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+      "medium": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+      "large": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+    },
+    "icons": {
+      "style": "outline",
+      "library": "heroicons"
+    }
+  },
+  "aiOverride": false,
+  "industry": "Technology",
+  "isKnownIndustry": true
+}

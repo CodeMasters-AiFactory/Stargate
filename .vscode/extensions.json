@@ -1,0 +1,38 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "eamodio.gitlens",
+    "rangav.vscode-thunder-client",
+    "ckolkman.vscode-postgres",
+    "usernamehw.errorlens",
+    "dsznajder.es7-react-js-snippets",
+    "formulahendry.auto-rename-tag",
+    "streetsidesoftware.code-spell-checker",
+    "anthropic.claude-code"
+  ],
+  "unwantedRecommendations": [
+    "vscjava.vscode-java-pack",
+    "vscjava.vscode-java-debug",
+    "vscjava.vscode-java-test",
+    "vscjava.vscode-maven",
+    "vscjava.vscode-java-dependency",
+    "reditorsupport.r",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "a4nnw.log-plus",
+    "actboy168.tasks",
+    "christian-kohler.path-intellisense",
+    "davidanson.vscode-markdownlint",
+    "github.github-vscode-theme",
+    "ibm.output-colorizer",
+    "imgildev.vscode-code-log-plus",
+    "ms-azuretools.vscode-containers",
+    "ms-azuretools.vscode-docker",
+    "ms-vscode.vscode-typescript-next",
+    "mtxr.sqltools",
+    "shardulm94.trailing-spaces",
+    "yzhang.markdown-all-in-one"
+  ]
+}

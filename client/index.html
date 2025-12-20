@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, viewport-fit=cover" />
+    <!-- Cache-Busting Meta Tags - Prevent browser caching in development -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!-- Color scheme for Windows high-contrast mode -->
+    <meta name="color-scheme" content="dark light" />
+    <!-- Force font rendering mode -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <title>Stargate IDE</title>
+    <meta name="description" content="A powerful web-based code editor for modern development workflows" />
+    <!-- Resource Hints for Performance -->
+    <!-- DNS Prefetch for external domains -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <!-- Preconnect for critical external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Preload Inter font with heavier weights for Windows clarity -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap"></noscript>
+    <!-- Preload critical resources (will be injected by Vite in production) -->
+    <!-- Vite will automatically add preload hints for critical chunks -->
+    <link rel="stylesheet" href="/src/critical.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // CRITICAL: ALWAYS clear wizard data BEFORE React loads
+      // This runs immediately when page loads, before any React code executes
+      // RULE: Never ask user to clear cache - always do it automatically
+      // Replit recommendation: Clear localStorage before reloading
+      (function() {
+        try {
+          // Replit recommendation: Unregister service workers (they cache aggressively)
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+              registrations.forEach(registration => {
+                registration.unregister();
+                console.log('[Pre-React] Unregistered service worker:', registration.scope);
+              });
+            });
+          }
+
+          // PERMANENT FIX: DO NOT clear wizard state on page load
+          // State should only be cleared when user explicitly clicks "Start Over"
+          // This allows refresh to preserve the current page/stage
+          // React components will handle state restoration properly
+          console.log('[Pre-React] ✅ State preservation enabled - React will handle restoration');
+        } catch (error) {
+          console.error('[Pre-React] Error in auto-clear:', error);
+        }
+      })();
+
+      // Suppress YouTube API warnings - must run before YouTube scripts load
+      (function() {
+        const originalError = window.onerror;
+        const originalConsoleError = console.error;
+        const originalConsoleWarn = console.warn;
+
+        window.onerror = function(message, source, lineno, colno, error) {
+          if (typeof message === 'string' && (
+            message.includes('Unrecognized feature') ||
+            message.includes('postMessage') ||
+            message.includes('target origin') ||
+            message.includes('youtube.com') ||
+            source?.includes('youtube.com')
+          )) {
+            return true; // Suppress YouTube warnings
+          }
+          if (originalError) {
+            return originalError.call(this, message, source, lineno, colno, error);
+          }
+          return false;
+        };
+
+        console.error = function(...args) {
+          const message = args[0]?.toString() || '';
+          if (
+            message.includes('Unrecognized feature:') ||
+            message.includes('postMessage') ||
+            message.includes('target origin') ||
+            message.includes('youtube.com') ||
+            args.some(arg => typeof arg === 'string' && arg.includes('youtube'))
+          ) {
+            return; // Suppress YouTube warnings
+          }
+          originalConsoleError.apply(console, args);
+        };
+
+        console.warn = function(...args) {
+          const message = args[0]?.toString() || '';
+          if (
+            message.includes('Unrecognized feature:') ||
+            message.includes('postMessage') ||
+            message.includes('target origin') ||
+            message.includes('youtube.com') ||
+            args.some(arg => typeof arg === 'string' && arg.includes('youtube'))
+          ) {
+            return; // Suppress YouTube warnings
+          }
+          originalConsoleWarn.apply(console, args);
+        };
+
+        // Suppress unhandled promise rejections from YouTube
+        window.addEventListener('unhandledrejection', function(event) {
+          const reason = event.reason?.toString() || '';
+          if (
+            reason.includes('youtube') ||
+            reason.includes('postMessage') ||
+            reason.includes('target origin')
+          ) {
+            event.preventDefault();
+          }
+        }, true); // Use capture phase to catch early
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

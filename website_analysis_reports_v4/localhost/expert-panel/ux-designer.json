@@ -1,0 +1,39 @@
+{
+  "agent": "UX Designer",
+  "focus": "Layout, flow, spacing, navigation logic",
+  "score": 9.16,
+  "strengths": [
+    "Clear navigation structure",
+    "Clear user journey",
+    "Optimal navigation complexity"
+  ],
+  "weaknesses": [
+    "Heading structure needs improvement",
+    "Some tap targets too small"
+  ],
+  "verdict": "World-Class",
+  "details": {
+    "heuristics": {
+      "score": 7.2,
+      "violations": [
+        "Some form fields lack labels"
+      ]
+    },
+    "navigation": {
+      "exists": true,
+      "linkCount": 5,
+      "hasLogo": true,
+      "isSticky": false
+    },
+    "headingStructure": {
+      "h1": 1,
+      "h2": 2,
+      "h3": 1
+    },
+    "tapTargets": {
+      "total": 12,
+      "adequate": 1
+    },
+    "layoutRhythm": 0
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "pairings": [
+    {
+      "id": "inter-system",
+      "heading": {
+        "font": "Inter",
+        "weights": [700, 600],
+        "sizes": [48, 36, 24, 18]
+      },
+      "body": {
+        "font": "Inter",
+        "weights": [400, 500],
+        "sizes": [16, 14],
+        "lineHeight": 1.6
+      },
+      "useCase": "Modern, clean, versatile"
+    },
+    {
+      "id": "playfair-merriweather",
+      "heading": {
+        "font": "Playfair Display",
+        "weights": [700, 600],
+        "sizes": [56, 40, 28, 20]
+      },
+      "body": {
+        "font": "Merriweather",
+        "weights": [400, 300],
+        "sizes": [18, 16],
+        "lineHeight": 1.7
+      },
+      "useCase": "Editorial, luxury, traditional"
+    },
+    {
+      "id": "poppins-open-sans",
+      "heading": {
+        "font": "Poppins",
+        "weights": [700, 600],
+        "sizes": [48, 36, 24, 18]
+      },
+      "body": {
+        "font": "Open Sans",
+        "weights": [400, 600],
+        "sizes": [16, 14],
+        "lineHeight": 1.6
+      },
+      "useCase": "Friendly, approachable, modern"
+    },
+    {
+      "id": "montserrat-lato",
+      "heading": {
+        "font": "Montserrat",
+        "weights": [700, 600],
+        "sizes": [48, 36, 24, 18]
+      },
+      "body": {
+        "font": "Lato",
+        "weights": [400, 700],
+        "sizes": [16, 14],
+        "lineHeight": 1.65
+      },
+      "useCase": "Professional, clean, readable"
+    },
+    {
+      "id": "raleway-source-sans",
+      "heading": {
+        "font": "Raleway",
+        "weights": [700, 600],
+        "sizes": [48, 36, 24, 18]
+      },
+      "body": {
+        "font": "Source Sans Pro",
+        "weights": [400, 600],
+        "sizes": [16, 14],
+        "lineHeight": 1.6
+      },
+      "useCase": "Modern, professional, versatile"
+    }
+  ],
+  "totalPairings": 100
+}
+

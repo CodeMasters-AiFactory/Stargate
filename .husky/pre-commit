@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Running pre-commit checks..."
+
+# Run lint-staged (runs ESLint and Prettier on staged files)
+npm run pre-commit
+
+# Run type checking
+npm run check
+
+# Run tests (quick check)
+npm run test:ci
+
+echo "✅ Pre-commit checks passed!"
+

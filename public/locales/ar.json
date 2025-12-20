@@ -1,0 +1,38 @@
+{
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "search": "بحث",
+    "filter": "تصفية",
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجاح"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "dashboard": "لوحة التحكم",
+    "projects": "المشاريع",
+    "settings": "الإعدادات",
+    "templates": "القوالب",
+    "components": "المكونات"
+  },
+  "websiteBuilder": {
+    "generate": "إنشاء موقع ويب",
+    "preview": "معاينة",
+    "publish": "نشر",
+    "save": "حفظ الموقع",
+    "export": "تصدير الكود"
+  },
+  "emailMarketing": {
+    "campaigns": "الحملات",
+    "subscribers": "المشتركين",
+    "templates": "القوالب",
+    "analytics": "التحليلات",
+    "createCampaign": "إنشاء حملة",
+    "sendCampaign": "إرسال الحملة"
+  }
+}
+

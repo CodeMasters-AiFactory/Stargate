@@ -1,0 +1,266 @@
+{
+  "version": "6.10-cleanup-hardening",
+  "pipeline": "v6.10-cleanup-hardening",
+  "pipelineVersion": "6.10",
+  "timestamp": "2025-12-02T20:25:00.960Z",
+  "generatedAt": "2025-12-02T20:25:00.960Z",
+  "projectSlug": "horizon-services",
+  "sectionPlan": {
+    "sections": [
+      {
+        "key": "hero",
+        "type": "hero",
+        "importance": "high",
+        "notes": "Visually appealing with a clear headline, brief description, and a strong call to action (e.g., 'Get a Free Quote', 'Schedule Service'). Should include a high-quality image or video showcasing HVAC, plumbing, or cooling services.",
+        "order": 1
+      },
+      {
+        "key": "value-proposition",
+        "type": "value-proposition",
+        "importance": "high",
+        "notes": "Highlight key benefits for homeowners (e.g., reliability, expertise, fast service, upfront pricing). Focus on solving their problems and building trust.",
+        "order": 2
+      },
+      {
+        "key": "services",
+        "type": "services",
+        "importance": "high",
+        "notes": "Showcase the range of HVAC, plumbing, and cooling services offered. Use clear icons and concise descriptions. Link to dedicated service pages for more details. Categorize services for easy navigation (e.g., HVAC Repair, Plumbing Installation, Air Conditioning Maintenance).",
+        "order": 3
+      },
+      {
+        "key": "testimonials",
+        "type": "testimonials",
+        "importance": "high",
+        "notes": "Include authentic testimonials from satisfied customers in Pennsylvania, Maryland, New Jersey, and Delaware. Use real names and photos (if possible) to increase credibility. Rotate testimonials to keep the content fresh.",
+        "order": 4
+      },
+      {
+        "key": "contact",
+        "type": "contact",
+        "importance": "high",
+        "notes": "Prominent contact information (phone number, email address). Include a simple contact form for easy inquiries. Clearly state service areas (Pennsylvania, Maryland, New Jersey, and Delaware). Consider adding live chat functionality.",
+        "order": 5
+      }
+    ],
+    "rationale": "The proposed homepage structure prioritizes converting visitors into customers by immediately presenting a compelling hero section, followed by a strong value proposition, detailed service offerings, social proof through testimonials, and a clear path for contacting Horizon Services. This design focuses on building trust and showcasing expertise in HVAC, plumbing, and cooling services within the target geographic area.",
+    "totalSections": 5
+  },
+  "modules": {
+    "sectionPlanner": "6.1",
+    "styleDesigner": "6.2",
+    "sectionVariants": "6.3",
+    "responsiveEngine": "6.4",
+    "imagePlanner": "6.5",
+    "copywriter": "6.6",
+    "seoEngine": "6.7",
+    "multiPage": "6.8",
+    "themeEngine": "6.9"
+  },
+  "multiPageVersion": "6.8",
+  "pages": [
+    {
+      "id": "home",
+      "slug": "/",
+      "title": "Home",
+      "sectionCount": 3
+    },
+    {
+      "id": "services",
+      "slug": "/services",
+      "title": "Services",
+      "sectionCount": 1
+    },
+    {
+      "id": "contact",
+      "slug": "/contact",
+      "title": "Contact",
+      "sectionCount": 1
+    }
+  ],
+  "navigation": {
+    "items": [
+      {
+        "id": "home",
+        "slug": "/index.html",
+        "title": "Home"
+      },
+      {
+        "id": "services",
+        "slug": "services.html",
+        "title": "Services"
+      },
+      {
+        "id": "contact",
+        "slug": "contact.html",
+        "title": "Contact"
+      }
+    ],
+    "home": "/index.html"
+  },
+  "styleSystem": {
+    "final": {
+      "colors": {
+        "primary": "#2563EB",
+        "secondary": "#1E40AF",
+        "accent": "#3B82F6",
+        "neutrals": [
+          "#F8FAFC",
+          "#E2E8F0",
+          "#64748B",
+          "#1E293B"
+        ],
+        "background": "#F8FAFC",
+        "text": "#1E293B"
+      },
+      "gradients": {
+        "primary": "linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)",
+        "secondary": "linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%)",
+        "hero": "linear-gradient(135deg, #2563EB 0%, #1E40AF 50%, #3B82F6 100%)",
+        "accent": "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+        "mesh": "radial-gradient(circle at 20% 30%, #2563EB30 0%, transparent 50%),\n        radial-gradient(circle at 80% 70%, #1E40AF30 0%, transparent 50%),\n        radial-gradient(circle at 50% 50%, #3B82F620 0%, transparent 70%)"
+      },
+      "typography": {
+        "id": "inter-system",
+        "heading": {
+          "font": "Inter",
+          "weights": [
+            700,
+            600
+          ],
+          "sizes": [
+            48,
+            36,
+            24,
+            18
+          ]
+        },
+        "body": {
+          "font": "Inter",
+          "weights": [
+            400,
+            500
+          ],
+          "sizes": [
+            16,
+            14
+          ],
+          "lineHeight": 1.6
+        },
+        "useCase": "Modern, clean, versatile"
+      },
+      "spacing": {
+        "scale": [
+          4,
+          8,
+          12,
+          16,
+          24,
+          32,
+          48,
+          64,
+          96,
+          128
+        ],
+        "system": "8px base"
+      },
+      "borderRadius": {
+        "small": "4px",
+        "medium": "8px",
+        "large": "16px",
+        "full": "9999px"
+      },
+      "shadows": {
+        "small": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        "medium": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        "large": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+      },
+      "icons": {
+        "style": "outline",
+        "library": "heroicons"
+      }
+    },
+    "aiOverride": false,
+    "industry": "business",
+    "isKnownIndustry": false
+  },
+  "responsiveEngineVersion": "6.4",
+  "imagePlannerVersion": "6.5",
+  "copywriterVersion": "6.6",
+  "seoEngineVersion": "6.7",
+  "plannedImages": [
+    {
+      "sectionKey": "hero",
+      "purpose": "hero",
+      "prompt": "Professional business hero image",
+      "alt": "business hero image"
+    },
+    {
+      "sectionKey": "services",
+      "purpose": "icon",
+      "prompt": "Simple icon-style illustration representing business features",
+      "alt": "business feature icon"
+    }
+  ],
+  "generatedImages": [
+    {
+      "sectionKey": "hero",
+      "url": "/assets/images/hero-hero-1764707078832.png",
+      "alt": "business hero image",
+      "purpose": "hero"
+    },
+    {
+      "sectionKey": "services",
+      "url": "/assets/images/services-icon-1764707078832.png",
+      "alt": "business feature icon",
+      "purpose": "icon"
+    }
+  ],
+  "sectionsWithCopy": [
+    "hero",
+    "services",
+    "expertise-3",
+    "case-studies-4",
+    "team-5",
+    "testimonials",
+    "cta-7"
+  ],
+  "seo": {
+    "title": "Horizon Services - Business Services",
+    "description": "Professional business services from Horizon Services. Contact us today for expert solutions.",
+    "keywords": [
+      "business",
+      "business services",
+      "horizon services"
+    ],
+    "ogTitle": "Horizon Services",
+    "ogDescription": "Professional business services from Horizon Services. Contact us today for expert solutions.",
+    "ogImage": "/assets/images/hero-hero-1764707078832.png",
+    "schemaLD": {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Horizon Services",
+      "description": "Professional business services from Horizon Services. Contact us today for expert solutions.",
+      "url": "https://example.com/horizon-services"
+    },
+    "slug": "horizon-services",
+    "seoScore": 70,
+    "readabilityHints": []
+  },
+  "slug": "horizon-services",
+  "features": [
+    "v5.1-llm-content-all-sections",
+    "v5.1-dalle-image-generation",
+    "v5.1-modern-css",
+    "v6.0-foundations",
+    "v6.1-ai-section-planner",
+    "v6.2-ai-style-designer",
+    "v6.3-component-variants",
+    "v6.4-responsive-engine",
+    "v6.5-ai-image-planner",
+    "v6.6-ai-copywriting-3.0",
+    "v6.7-ai-seo-engine",
+    "v6.8-multi-page-architecture",
+    "v6.9-global-theme-engine"
+  ]
+}

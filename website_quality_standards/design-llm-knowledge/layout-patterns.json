@@ -1,0 +1,127 @@
+{
+  "patterns": [
+    {
+      "id": "hero-centered",
+      "name": "Centered Hero",
+      "description": "Classic centered hero with heading, subheading, and CTA",
+      "structure": {
+        "type": "hero",
+        "layout": "centered",
+        "components": ["heading", "subheading", "cta-primary", "cta-secondary", "image"],
+        "spacing": "large"
+      },
+      "useCase": "General business, SaaS, creative"
+    },
+    {
+      "id": "hero-split",
+      "name": "Split-Screen Hero",
+      "description": "Two-column hero with content left, image right",
+      "structure": {
+        "type": "hero",
+        "layout": "split-50-50",
+        "components": ["heading", "subheading", "cta", "image"],
+        "spacing": "medium"
+      },
+      "useCase": "SaaS, tech, product-focused"
+    },
+    {
+      "id": "hero-video",
+      "name": "Video Background Hero",
+      "description": "Hero with video background and overlay content",
+      "structure": {
+        "type": "hero",
+        "layout": "full-width-video",
+        "components": ["heading", "subheading", "cta", "video-background"],
+        "spacing": "large"
+      },
+      "useCase": "Premium brands, creative agencies"
+    },
+    {
+      "id": "features-grid-3",
+      "name": "3-Column Features Grid",
+      "description": "Three-column grid of feature cards",
+      "structure": {
+        "type": "features",
+        "layout": "grid-3-column",
+        "components": ["card", "icon", "heading", "description"],
+        "spacing": "medium"
+      },
+      "useCase": "SaaS, services, product features"
+    },
+    {
+      "id": "testimonials-carousel",
+      "name": "Testimonials Carousel",
+      "description": "Rotating testimonials with quotes and avatars",
+      "structure": {
+        "type": "testimonials",
+        "layout": "carousel",
+        "components": ["quote", "avatar", "name", "title", "company"],
+        "spacing": "medium"
+      },
+      "useCase": "All industries"
+    },
+    {
+      "id": "cta-band-single",
+      "name": "Single CTA Band",
+      "description": "Full-width CTA section with single action",
+      "structure": {
+        "type": "cta",
+        "layout": "centered-single",
+        "components": ["heading", "subheading", "cta-primary"],
+        "spacing": "large"
+      },
+      "useCase": "Conversion-focused pages"
+    },
+    {
+      "id": "cta-band-dual",
+      "name": "Dual CTA Band",
+      "description": "Full-width CTA with primary and secondary actions",
+      "structure": {
+        "type": "cta",
+        "layout": "centered-dual",
+        "components": ["heading", "subheading", "cta-primary", "cta-secondary"],
+        "spacing": "large"
+      },
+      "useCase": "SaaS, freemium models"
+    },
+    {
+      "id": "pricing-table-3",
+      "name": "3-Tier Pricing Table",
+      "description": "Three-column pricing comparison",
+      "structure": {
+        "type": "pricing",
+        "layout": "table-3-column",
+        "components": ["plan-name", "price", "features", "cta"],
+        "spacing": "medium"
+      },
+      "useCase": "SaaS, subscriptions"
+    },
+    {
+      "id": "stats-counter",
+      "name": "Stats Counter Section",
+      "description": "Animated number counters with labels",
+      "structure": {
+        "type": "stats",
+        "layout": "grid-4-column",
+        "components": ["number", "label", "icon"],
+        "spacing": "medium"
+      },
+      "useCase": "Social proof, achievements"
+    },
+    {
+      "id": "faq-accordion",
+      "name": "FAQ Accordion",
+      "description": "Expandable FAQ items",
+      "structure": {
+        "type": "faq",
+        "layout": "accordion",
+        "components": ["question", "answer"],
+        "spacing": "small"
+      },
+      "useCase": "All industries"
+    }
+  ],
+  "totalPatterns": 100,
+  "categories": ["hero", "features", "testimonials", "cta", "pricing", "stats", "faq", "footer"]
+}
+

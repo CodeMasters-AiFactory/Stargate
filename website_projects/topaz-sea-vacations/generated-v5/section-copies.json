@@ -1,0 +1,51 @@
+[
+  {
+    "sectionKey": "hero-1",
+    "headline": "Welcome to business",
+    "subheadline": "Your trusted partner",
+    "paragraph": "We provide exceptional business services tailored to your needs.",
+    "ctaLabel": "Get Started",
+    "ctaDescription": "Start your journey today"
+  },
+  {
+    "sectionKey": "social-proof-2",
+    "headline": "social-proof section"
+  },
+  {
+    "sectionKey": "highlights-3",
+    "headline": "highlights section"
+  },
+  {
+    "sectionKey": "features-4",
+    "headline": "Our Services",
+    "paragraph": "Discover our comprehensive business solutions.",
+    "bullets": [
+      "Service 1",
+      "Service 2",
+      "Service 3"
+    ]
+  },
+  {
+    "sectionKey": "visual-break-5",
+    "headline": "visual-break section"
+  },
+  {
+    "sectionKey": "testimonials-1",
+    "headline": "testimonials section"
+  },
+  {
+    "sectionKey": "pricing-7",
+    "headline": "pricing section"
+  },
+  {
+    "sectionKey": "cta-8",
+    "headline": "Ready to Get Started?",
+    "paragraph": "Take the next step today.",
+    "ctaLabel": "Get Started",
+    "ctaDescription": "Join us now"
+  },
+  {
+    "sectionKey": "footer-9",
+    "headline": "footer section"
+  }
+]

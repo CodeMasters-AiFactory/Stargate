@@ -1,0 +1,22 @@
+{
+  "title": "Horizon Services - Business Services",
+  "description": "Professional business services from Horizon Services. Contact us today for expert solutions.",
+  "keywords": [
+    "business",
+    "business services",
+    "horizon services"
+  ],
+  "ogTitle": "Horizon Services",
+  "ogDescription": "Professional business services from Horizon Services. Contact us today for expert solutions.",
+  "ogImage": "/assets/images/hero-hero-1764707078832.png",
+  "schemaLD": {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Horizon Services",
+    "description": "Professional business services from Horizon Services. Contact us today for expert solutions.",
+    "url": "https://example.com/horizon-services"
+  },
+  "slug": "horizon-services",
+  "seoScore": 70,
+  "readabilityHints": []
+}

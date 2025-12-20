@@ -1,0 +1,22 @@
+{
+  "title": "Blue Origin IT Solutions - Business Services",
+  "description": "Professional business services from Blue Origin IT Solutions. Contact us today for expert solutions.",
+  "keywords": [
+    "business",
+    "business services",
+    "blue origin it solutions"
+  ],
+  "ogTitle": "Blue Origin IT Solutions",
+  "ogDescription": "Professional business services from Blue Origin IT Solutions. Contact us today for expert solutions.",
+  "ogImage": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTc5MiIgaGVpZ2h0PSIxMDI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQxIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMyNTYzRUI7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6IzFFNDBBRjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNCODJGNjtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxyYWRpYWxHcmFkaWVudCBpZD0icmFkaWFsR3JhZCIgY3g9IjUwJSIgY3k9IjUwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMjU2M0VCO3N0b3Atb3BhY2l0eTowLjMiIC8+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMxRTQwQUY7c3RvcC1vcGFjaXR5OjAuMSIgLz4KICAgICAgICA8L3JhZGlhbEdyYWRpZW50PgogICAgICAgIDxmaWx0ZXIgaWQ9ImJsdXIiPgogICAgICAgICAgPGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjMiLz4KICAgICAgICA8L2ZpbHRlcj4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyYWQxKSIgb3BhY2l0eT0iMC4xNSIvPgogICAgICA8Y2lyY2xlIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjEwMCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkKSIgZmlsdGVyPSJ1cmwoI2JsdXIpIi8+CiAgICAgIDxjaXJjbGUgY3g9IjgwJSIgY3k9IjcwJSIgcj0iMTUwIiBmaWxsPSJ1cmwoI3JhZGlhbEdyYWQpIiBmaWx0ZXI9InVybCgjYmx1cikiLz4KICAgICAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iIzI1NjNFQiIgCiAgICAgICAgICAgIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIG9wYWNpdHk9IjAuMiI+CiAgICAgICAgQmx1ZSBPcmlnaW4gSVQgU29sdXRpb25zCiAgICAgIDwvdGV4dD4KICAgIDwvc3ZnPg==",
+  "schemaLD": {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Blue Origin IT Solutions",
+    "description": "Professional business services from Blue Origin IT Solutions. Contact us today for expert solutions.",
+    "url": "https://example.com/blue-origin-it-solutions"
+  },
+  "slug": "blue-origin-it-solutions",
+  "seoScore": 70,
+  "readabilityHints": []
+}

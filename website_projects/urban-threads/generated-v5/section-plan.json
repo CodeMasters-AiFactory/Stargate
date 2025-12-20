@@ -1,0 +1,48 @@
+{
+  "sections": [
+    {
+      "key": "hero-1",
+      "type": "hero",
+      "importance": "high",
+      "notes": "Primary value proposition and call-to-action",
+      "order": 1
+    },
+    {
+      "key": "value-1",
+      "type": "value-proposition",
+      "importance": "high",
+      "notes": "Unique selling points and differentiators",
+      "order": 2
+    },
+    {
+      "key": "services-1",
+      "type": "services",
+      "importance": "high",
+      "notes": "Core services offered",
+      "order": 3
+    },
+    {
+      "key": "testimonials-1",
+      "type": "testimonials",
+      "importance": "medium",
+      "notes": "Social proof and client testimonials",
+      "order": 4
+    },
+    {
+      "key": "about-1",
+      "type": "about",
+      "importance": "medium",
+      "notes": "Company background and mission",
+      "order": 5
+    },
+    {
+      "key": "contact-1",
+      "type": "contact",
+      "importance": "high",
+      "notes": "Contact information and form",
+      "order": 6
+    }
+  ],
+  "rationale": "Rule-based fallback section plan based on industry and services",
+  "totalSections": 6
+}

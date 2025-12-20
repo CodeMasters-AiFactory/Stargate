@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apple Design Studio - Premium Digital Experiences</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=SF+Pro+Text:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Apple.com Pixel-Perfect Replica CSS */
+    :root {
+      --apple-blue: #0071E3;
+      --apple-blue-hover: #0077ED;
+      --apple-dark: #1D1D1F;
+      --apple-gray: #86868B;
+      --apple-light-gray: #F5F5F7;
+      --apple-white: #FFFFFF;
+      --apple-text: #1D1D1F;
+      --apple-text-secondary: #86868B;
+      --apple-border: #D2D2D7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--apple-white);
+      color: var(--apple-text);
+      line-height: 1.47059;
+      font-weight: 400;
+      letter-spacing: -0.022em;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Navigation - Apple Style */
+    .nav {
+      background: rgba(251, 251, 253, 0.8);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-container {
+      max-width: 980px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+    }
+
+    .nav-logo {
+      font-size: 21px;
+      font-weight: 600;
+      color: var(--apple-dark);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+    }
+
+    .nav-links li {
+      padding: 0 12px;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--apple-dark);
+      text-decoration: none;
+      opacity: 0.8;
+      transition: opacity 0.3s;
+    }
+
+    .nav-links a:hover {
+      opacity: 1;
+    }
+
+    /* Hero Section - Apple Centered Style */
+    .hero {
+      padding-top: 150px;
+      padding-bottom: 100px;
+      text-align: center;
+      background: var(--apple-white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-content {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 22px;
+    }
+
+    .hero h1 {
+      font-size: 96px;
+      font-weight: 600;
+      line-height: 1.0416666667;
+      letter-spacing: -0.015em;
+      color: var(--apple-text);
+      margin-bottom: 6px;
+    }
+
+    .hero-headline {
+      font-size: 96px;
+      font-weight: 600;
+      background: linear-gradient(90deg, #FB7185, #818CF8, #34D399, #FBBF24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subheadline {
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1.14286;
+      letter-spacing: 0.007em;
+      color: var(--apple-text);
+      margin-top: 20px;
+      margin-bottom: 30px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    /* Buttons - Apple Style */
+    .btn {
+      font-size: 17px;
+      line-height: 1.17648;
+      font-weight: 400;
+      letter-spacing: -0.022em;
+      padding: 12px 24px;
+      border-radius: 980px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--apple-blue);
+      color: var(--apple-white);
+    }
+
+    .btn-primary:hover {
+      background: var(--apple-blue-hover);
+    }
+
+    .btn-secondary {
+      color: var(--apple-blue);
+      background: transparent;
+    }
+
+    .btn-secondary:hover {
+      text-decoration: underline;
+    }
+
+    .btn-icon {
+      font-size: 14px;
+    }
+
+    /* Feature Section */
+    .features {
+      padding: 120px 0;
+      background: var(--apple-light-gray);
+    }
+
+    .section-container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 22px;
+    }
+
+    .section-title {
+      font-size: 64px;
+      font-weight: 600;
+      line-height: 1.0625;
+      letter-spacing: -0.009em;
+      text-align: center;
+      margin-bottom: 80px;
+      color: var(--apple-text);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .feature-card {
+      background: var(--apple-white);
+      border-radius: 18px;
+      padding: 40px 35px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      margin-bottom: 24px;
+    }
+
+    .feature-card h3 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--apple-text);
+    }
+
+    .feature-card p {
+      font-size: 17px;
+      color: var(--apple-text-secondary);
+      line-height: 1.47059;
+    }
+
+    /* Products Section - Like Apple Product Grid */
+    .products {
+      padding: 120px 0;
+      background: var(--apple-white);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .product-card {
+      background: var(--apple-light-gray);
+      border-radius: 18px;
+      padding: 60px 40px;
+      text-align: center;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      transition: transform 0.3s;
+    }
+
+    .product-card:hover {
+      transform: scale(1.01);
+    }
+
+    .product-card.dark {
+      background: var(--apple-dark);
+      color: var(--apple-white);
+    }
+
+    .product-card.dark h3,
+    .product-card.dark p {
+      color: var(--apple-white);
+    }
+
+    .product-card.dark p {
+      opacity: 0.8;
+    }
+
+    .product-card h3 {
+      font-size: 40px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .product-card .price {
+      font-size: 21px;
+      color: var(--apple-text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .product-card .product-links {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .product-card .product-links a {
+      color: var(--apple-blue);
+      text-decoration: none;
+      font-size: 21px;
+    }
+
+    .product-card .product-links a:hover {
+      text-decoration: underline;
+    }
+
+    .product-image {
+      margin-top: auto;
+      font-size: 120px;
+    }
+
+    /* Footer - Apple Style */
+    .footer {
+      background: var(--apple-light-gray);
+      padding: 20px 0;
+      border-top: 1px solid var(--apple-border);
+    }
+
+    .footer-container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 22px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--apple-border);
+    }
+
+    .footer-column h4 {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--apple-dark);
+      margin-bottom: 12px;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 8px;
+    }
+
+    .footer-column a {
+      font-size: 12px;
+      color: var(--apple-text-secondary);
+      text-decoration: none;
+    }
+
+    .footer-column a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      font-size: 12px;
+      color: var(--apple-text-secondary);
+    }
+
+    /* Responsive */
+    @media (max-width: 1068px) {
+      .hero h1, .hero-headline {
+        font-size: 72px;
+      }
+      .section-title {
+        font-size: 48px;
+      }
+      .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero h1, .hero-headline {
+        font-size: 48px;
+      }
+      .hero-subheadline {
+        font-size: 21px;
+      }
+      .section-title {
+        font-size: 40px;
+      }
+      .feature-grid, .product-grid {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        display: none;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">Apple Design Studio</a>
+      <ul class="nav-links">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="fade-in">Think</h1>
+      <h1 class="hero-headline fade-in delay-1">Different.</h1>
+      <p class="hero-subheadline fade-in delay-2">We create digital experiences that inspire, engage, and transform.</p>
+      <div class="hero-cta fade-in delay-3">
+        <a href="#contact" class="btn btn-primary">Get Started <span class="btn-icon">→</span></a>
+        <a href="#work" class="btn btn-secondary">View Our Work <span class="btn-icon">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="services">
+    <div class="section-container">
+      <h2 class="section-title">What we do best.</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Design</h3>
+          <p>Beautiful interfaces crafted with precision and purpose. Every pixel matters.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💻</div>
+          <h3>Development</h3>
+          <p>Clean, performant code that brings designs to life with seamless interactions.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚀</div>
+          <h3>Strategy</h3>
+          <p>User-centered thinking that drives meaningful results and lasting impact.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section class="products" id="work">
+    <div class="section-container">
+      <h2 class="section-title">Our latest work.</h2>
+      <div class="product-grid">
+        <div class="product-card">
+          <h3>Brand Identity</h3>
+          <p class="price">Complete visual systems</p>
+          <div class="product-links">
+            <a href="#">Learn more →</a>
+            <a href="#">View case study →</a>
+          </div>
+          <div class="product-image">✦</div>
+        </div>
+        <div class="product-card dark">
+          <h3>Web Design</h3>
+          <p class="price">Pixel-perfect experiences</p>
+          <div class="product-links">
+            <a href="#" style="color: #2997FF;">Learn more →</a>
+            <a href="#" style="color: #2997FF;">View case study →</a>
+          </div>
+          <div class="product-image">◈</div>
+        </div>
+        <div class="product-card dark">
+          <h3>Mobile Apps</h3>
+          <p class="price">Native iOS & Android</p>
+          <div class="product-links">
+            <a href="#" style="color: #2997FF;">Learn more →</a>
+            <a href="#" style="color: #2997FF;">View case study →</a>
+          </div>
+          <div class="product-image">◉</div>
+        </div>
+        <div class="product-card">
+          <h3>Motion Design</h3>
+          <p class="price">Engaging animations</p>
+          <div class="product-links">
+            <a href="#">Learn more →</a>
+            <a href="#">View case study →</a>
+          </div>
+          <div class="product-image">◎</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="hero" id="contact" style="min-height: auto; padding: 120px 0; background: var(--apple-light-gray);">
+    <div class="hero-content">
+      <h2 class="section-title" style="margin-bottom: 20px;">Let's create something amazing.</h2>
+      <p class="hero-subheadline">Ready to transform your digital presence?</p>
+      <div class="hero-cta">
+        <a href="mailto:hello@appledesignstudio.com" class="btn btn-primary">Contact Us <span class="btn-icon">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#">Brand Design</a></li>
+            <li><a href="#">Web Development</a></li>
+            <li><a href="#">Mobile Apps</a></li>
+            <li><a href="#">Motion Design</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Our Work</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="#">Dribbble</a></li>
+            <li><a href="#">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Copyright © 2024 Apple Design Studio. All rights reserved.</p>
+        <p>Privacy Policy | Terms of Use</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+

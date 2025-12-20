@@ -1,0 +1,49 @@
+{
+  "hero": {
+    "hook": "Transform your Learn more",
+    "headline": "Iron Temple delivers Personal Training that Learn more",
+    "subheadline": "We help fitness enthusiasts and health-conscious individuals Learn more with proven Personal Training",
+    "cta": "Book a Consultation"
+  },
+  "valueProposition": "Iron Temple provides Personal Training that help fitness enthusiasts and health-conscious individuals Learn more. Based in East Coast, we deliver trustworthy solutions tailored to your needs.",
+  "tagline": "Iron Temple: Help fitness enthusiasts and health-conscious individuals understand Personal Training",
+  "sections": [
+    {
+      "heading": "Why Choose Us",
+      "body": "We combine trustworthy service with balanced expertise to deliver Personal Training that matter. Our team understands Finding right solution and provides solutions tailored to your needs.",
+      "cta": "Learn More"
+    },
+    {
+      "heading": "Our Services",
+      "body": "We offer comprehensive Personal Training, Group Classes, Nutrition Coaching designed to help you Learn more. Each service is tailored to your specific needs and delivered with trustworthy care."
+    },
+    {
+      "heading": "Trusted by Clients",
+      "body": "Our trustworthy approach and commitment to excellence have earned the trust of fitness enthusiasts and health-conscious individuals across East Coast. We're proud to be your partner in Personal Training."
+    }
+  ],
+  "services": [
+    {
+      "name": "Personal Training",
+      "description": "One-on-one coaching sessions"
+    },
+    {
+      "name": "Group Classes",
+      "description": "Yoga, Pilates, HIIT, and more"
+    },
+    {
+      "name": "Nutrition Coaching",
+      "description": "Meal planning and dietary guidance"
+    }
+  ],
+  "faq": [
+    {
+      "question": "How can I get started?",
+      "answer": "Getting started is easy. Simply contact us and we'll guide you through the process."
+    },
+    {
+      "question": "What makes you different?",
+      "answer": "We combine professional service with modern expertise to deliver results that matter. Our commitment to excellence sets us apart."
+    }
+  ]
+}

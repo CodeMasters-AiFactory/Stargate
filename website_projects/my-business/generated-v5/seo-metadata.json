@@ -1,0 +1,22 @@
+{
+  "title": "My Business - Business Services",
+  "description": "Professional business services from My Business. Contact us today for expert solutions.",
+  "keywords": [
+    "business",
+    "business services",
+    "my business"
+  ],
+  "ogTitle": "My Business",
+  "ogDescription": "Professional business services from My Business. Contact us today for expert solutions.",
+  "ogImage": "/assets/images/hero-hero-1764706761127.png",
+  "schemaLD": {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "My Business",
+    "description": "Professional business services from My Business. Contact us today for expert solutions.",
+    "url": "https://example.com/my-business"
+  },
+  "slug": "my-business",
+  "seoScore": 70,
+  "readabilityHints": []
+}

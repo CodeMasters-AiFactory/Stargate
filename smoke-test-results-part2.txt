@@ -1,0 +1,10 @@
+[INFO] === TESTING SIGN IN FLOW ===
+[PASS] Sign In modal opened - smoke-10-signin-modal.png
+[PASS] Sign In form filled - smoke-11-signin-filled.png
+[PASS] Sign In submitted - smoke-12-signin-result.png - URL: http://localhost:5000/
+[INFO] Got error response (expected for test creds)
+[INFO] === TESTING SIGN UP FLOW ===
+[PASS] Sign Up tab clicked - smoke-13-signup-tab.png
+[INFO] Found 4 inputs in signup form
+[PASS] Sign Up form filled - smoke-14-signup-filled.png
+[INFO] === AUTH TESTS COMPLETE ===

@@ -1,0 +1,38 @@
+{
+  "agent": "Brand Identity Analyst",
+  "focus": "Uniqueness, consistency, narrative voice, memorable impression",
+  "score": 9,
+  "strengths": [
+    "Unique brand voice",
+    "Logo present",
+    "Some custom imagery",
+    "Some brand narrative",
+    "Strong color identity",
+    "Not generic template"
+  ],
+  "weaknesses": [],
+  "verdict": "World-Class",
+  "details": {
+    "hasGeneric": false,
+    "brandElements": {
+      "hasLogo": true,
+      "svgCount": 0,
+      "iconCount": 2,
+      "hasIconSystem": false
+    },
+    "images": {
+      "total": 1,
+      "custom": 1,
+      "highQuality": 0
+    },
+    "hasStory": false,
+    "hasTagline": true,
+    "colors": 5,
+    "memorableElements": {
+      "hasCustomHero": true,
+      "hasAnimations": false,
+      "hasUniqueLayout": false
+    },
+    "isGeneric": false
+  }
+}

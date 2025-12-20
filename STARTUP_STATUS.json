@@ -1,0 +1,11 @@
+﻿{
+    "message":  "Server did not become ready within 60 second(s)",
+    "url":  "http://localhost:5000",
+    "jobId":  0,
+    "error":  "Timeout waiting for server",
+    "timestamp":  "2025-12-17T11:57:57.3574000Z",
+    "serverRunning":  false,
+    "healthCheckPassed":  false,
+    "status":  "error",
+    "portListening":  false
+}

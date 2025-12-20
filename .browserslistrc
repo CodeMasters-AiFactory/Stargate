@@ -1,0 +1,15 @@
+﻿# Browserslist configuration
+# This defines which browsers to support
+
+# Modern browsers (last 2 versions of each)
+> 0.5%
+last 2 versions
+Firefox ESR
+not dead
+not IE 11
+
+# Specific browser versions
+Chrome >= 90
+Firefox >= 88
+Safari >= 14
+Edge >= 90
