@@ -56,12 +56,28 @@ jobs:
 
       - name: Deploy to Azure Web App
         run: |
+          # Use async deployment to avoid timeout
           az webapp deploy \
             --resource-group stargate-rg \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --src-path deploy.zip \
             --type zip \
-            --async false
+            --async true
+
+          # Wait for deployment to complete (up to 10 minutes)
+          echo "Waiting for deployment to complete..."
+          for i in {1..20}; do
+            sleep 30
+            STATUS=$(az webapp deployment list --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --query "[0].status" -o tsv 2>/dev/null || echo "building")
+            echo "Deployment status: $STATUS"
+            if [ "$STATUS" = "4" ] || [ "$STATUS" = "success" ]; then
+              echo "Deployment completed successfully!"
+              break
+            elif [ "$STATUS" = "3" ] || [ "$STATUS" = "failed" ]; then
+              echo "Deployment failed!"
+              exit 1
+            fi
+          done
 
       - name: Deployment Summary
         run: |
