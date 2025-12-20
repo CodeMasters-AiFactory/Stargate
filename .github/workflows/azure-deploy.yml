@@ -42,16 +42,24 @@ jobs:
           if [ -f "azure-deploy/web.config" ]; then
             cp azure-deploy/web.config deploy/
           fi
-          # Copy only needed node_modules for production
+          # Install production dependencies
           cd deploy
           npm install --omit=dev --ignore-scripts
+          # Create zip for deployment
+          cd ..
+          cd deploy && zip -r ../deploy.zip . && cd ..
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./deploy
+        run: |
+          az webapp deployment source config-zip \
+            --resource-group stargate-rg \
+            --name ${{ env.AZURE_WEBAPP_NAME }} \
+            --src deploy.zip
 
       - name: Deployment Summary
         run: |
