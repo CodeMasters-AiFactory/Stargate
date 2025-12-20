@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: stargate-portal  # Change this to your app name
+  AZURE_WEBAPP_NAME: stargate-portal
   NODE_VERSION: '20.x'
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install all dependencies
         run: npm install
 
       - name: Build application
@@ -37,16 +37,14 @@ jobs:
         run: |
           mkdir -p deploy
           cp -r dist deploy/
-          cp -r server deploy/
           cp package.json deploy/
           cp package-lock.json deploy/
           if [ -f "azure-deploy/web.config" ]; then
             cp azure-deploy/web.config deploy/
           fi
-
-      - name: Install production dependencies only
-        working-directory: ./deploy
-        run: npm install --omit=dev
+          # Copy only needed node_modules for production
+          cd deploy
+          npm install --omit=dev --ignore-scripts
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
