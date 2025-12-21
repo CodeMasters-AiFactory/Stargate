@@ -1,5 +1,12 @@
+// IMMEDIATE STARTUP LOG - Before any imports
+console.log('[STARTUP] Server starting at', new Date().toISOString());
+console.log('[STARTUP] Node version:', process.version);
+console.log('[STARTUP] PORT env:', process.env.PORT);
+console.log('[STARTUP] NODE_ENV:', process.env.NODE_ENV);
+
 // Load environment variables FIRST - before any other imports
 import 'dotenv/config';
+console.log('[STARTUP] dotenv loaded');
 
 import fs from "fs";
 import path from "path";
@@ -17,6 +24,8 @@ import { cleanupCacheService } from "./services/cacheService";
 import { validateEnvironment } from "./utils/envValidator";
 import { log } from "./utils/logger";
 // Note: serveStatic and setupVite are dynamically imported to avoid loading Vite in production
+
+console.log('[STARTUP] All imports completed successfully');
 
 
 // #region Error Handlers - Must be before async IIFE
