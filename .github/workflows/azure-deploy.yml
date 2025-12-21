@@ -44,46 +44,10 @@ jobs:
           cp server/azure-minimal.js deploy/server.js
 
           # Create package.json
-          cat > deploy/package.json << 'EOF'
-          {
-            "name": "stargate-portal",
-            "version": "1.0.0",
-            "main": "server.js",
-            "scripts": {
-              "start": "node server.js"
-            },
-            "engines": {
-              "node": ">=20.0.0"
-            }
-          }
-          EOF
+          echo '{"name":"stargate-portal","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js"},"engines":{"node":">=20.0.0"}}' > deploy/package.json
 
           # Create web.config for IIS/iisnode
-          cat > deploy/web.config << 'EOF'
-          <?xml version="1.0" encoding="utf-8"?>
-          <configuration>
-            <system.webServer>
-              <handlers>
-                <add name="iisnode" path="server.js" verb="*" modules="iisnode"/>
-              </handlers>
-              <rewrite>
-                <rules>
-                  <rule name="StaticContent" stopProcessing="true">
-                    <match url="^public/(.*)$" />
-                    <action type="Rewrite" url="public/{R:1}"/>
-                  </rule>
-                  <rule name="DynamicContent">
-                    <conditions>
-                      <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="True"/>
-                    </conditions>
-                    <action type="Rewrite" url="server.js"/>
-                  </rule>
-                </rules>
-              </rewrite>
-              <iisnode node_env="production" watchedFiles="web.config;*.js"/>
-            </system.webServer>
-          </configuration>
-          EOF
+          echo '<?xml version="1.0" encoding="utf-8"?><configuration><system.webServer><handlers><add name="iisnode" path="server.js" verb="*" modules="iisnode"/></handlers><rewrite><rules><rule name="DynamicContent"><match url=".*"/><action type="Rewrite" url="server.js"/></rule></rules></rewrite><iisnode node_env="production" watchedFiles="web.config;*.js" loggingEnabled="true" logDirectory="iisnode"/></system.webServer></configuration>' > deploy/web.config
 
           # Create zip (no node_modules needed!)
           cd deploy
