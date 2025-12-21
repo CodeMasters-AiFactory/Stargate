@@ -11,4 +11,5 @@ coverage
 .vscode
 .idea
 attached_assets
+server/azure-minimal.js
 

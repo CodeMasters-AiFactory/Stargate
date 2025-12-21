@@ -19,6 +19,8 @@ const path = require('path');
 const PORT = process.env.PORT || 8080;
 
 console.log('Creating HTTP server...');
+console.log('CWD:', process.cwd());
+console.log('__dirname:', __dirname);
 
 const server = http.createServer((req, res) => {
   console.log(`${req.method} ${req.url}`);
@@ -37,14 +39,16 @@ const server = http.createServer((req, res) => {
   // Health check
   if (req.url === '/api/health' || req.url === '/health') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      status: 'ok',
-      server: 'azure-minimal-cjs',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      node: process.version,
-      port: PORT
-    }));
+    res.end(
+      JSON.stringify({
+        status: 'ok',
+        server: 'azure-minimal-cjs',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        node: process.version,
+        port: PORT,
+      })
+    );
     return;
   }
 
@@ -59,9 +63,11 @@ const server = http.createServer((req, res) => {
   if (req.url === '/' || req.url === '') {
     // Try to find and serve index.html
     const indexPaths = [
+      path.join(process.cwd(), 'public', 'index.html'),
+      path.join(__dirname, 'public', 'index.html'),
       path.join(process.cwd(), 'dist', 'public', 'index.html'),
       path.join(__dirname, '..', 'dist', 'public', 'index.html'),
-      path.join(process.cwd(), 'dist', 'index.html')
+      path.join(process.cwd(), 'dist', 'index.html'),
     ];
 
     for (const indexPath of indexPaths) {
@@ -91,6 +97,53 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Static file serving for assets
+  const publicDirs = [
+    path.join(process.cwd(), 'public'),
+    path.join(__dirname, 'public'),
+    path.join(process.cwd(), 'dist', 'public'),
+  ];
+
+  // Try to serve static file
+  for (const publicDir of publicDirs) {
+    const filePath = path.join(publicDir, req.url);
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+      const ext = path.extname(filePath).toLowerCase();
+      const mimeTypes = {
+        '.html': 'text/html',
+        '.js': 'application/javascript',
+        '.css': 'text/css',
+        '.json': 'application/json',
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.gif': 'image/gif',
+        '.svg': 'image/svg+xml',
+        '.ico': 'image/x-icon',
+        '.woff': 'font/woff',
+        '.woff2': 'font/woff2',
+        '.ttf': 'font/ttf',
+        '.eot': 'application/vnd.ms-fontobject',
+      };
+      const contentType = mimeTypes[ext] || 'application/octet-stream';
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(fs.readFileSync(filePath));
+      return;
+    }
+  }
+
+  // SPA fallback - serve index.html for client-side routing
+  if (!req.url.startsWith('/api')) {
+    for (const publicDir of publicDirs) {
+      const indexPath = path.join(publicDir, 'index.html');
+      if (fs.existsSync(indexPath)) {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(fs.readFileSync(indexPath, 'utf8'));
+        return;
+      }
+    }
+  }
+
   // 404 for everything else
   res.writeHead(404, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify({ error: 'Not found', path: req.url }));
@@ -107,16 +160,16 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log('='.repeat(50));
 });
 
-server.on('error', (err) => {
+server.on('error', err => {
   console.error('SERVER ERROR:', err);
   process.exit(1);
 });
 
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', err => {
   console.error('UNCAUGHT EXCEPTION:', err);
 });
 
-process.on('unhandledRejection', (reason) => {
+process.on('unhandledRejection', reason => {
   console.error('UNHANDLED REJECTION:', reason);
 });
 
