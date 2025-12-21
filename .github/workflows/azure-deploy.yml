@@ -54,6 +54,16 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Configure startup command for ESM
+        run: |
+          # CRITICAL: Azure needs explicit startup command for ESM modules
+          az webapp config set \
+            --resource-group stargate-rg \
+            --name ${{ env.AZURE_WEBAPP_NAME }} \
+            --startup-file "node dist/index.js"
+
+          echo "Startup command configured: node dist/index.js"
+
       - name: Deploy to Azure Web App
         run: |
           # Use async deployment to avoid timeout
@@ -78,6 +88,11 @@ jobs:
               exit 1
             fi
           done
+
+      - name: Restart app to apply changes
+        run: |
+          az webapp restart --resource-group stargate-rg --name ${{ env.AZURE_WEBAPP_NAME }}
+          echo "App restarted"
 
       - name: Deployment Summary
         run: |
