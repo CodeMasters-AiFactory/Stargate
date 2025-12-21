@@ -5,11 +5,13 @@
  * If this doesn't work, the issue is with Azure configuration, not our code.
  */
 
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
+// Wrap everything in try-catch to capture any startup errors
+try {
+  const http = require('http');
+  const fs = require('fs');
+  const path = require('path');
 
-const PORT = process.env.PORT || 8080;
+  const PORT = process.env.PORT || process.env.HTTP_PLATFORM_PORT || 8080;
 
 console.log('='.repeat(50));
 console.log('AZURE MINIMAL SERVER STARTING');
@@ -174,3 +176,9 @@ process.on('SIGTERM', () => {
   console.log('SIGTERM received');
   server.close(() => process.exit(0));
 });
+
+} catch (error) {
+  console.error('FATAL STARTUP ERROR:', error);
+  console.error('Stack:', error.stack);
+  process.exit(1);
+}
