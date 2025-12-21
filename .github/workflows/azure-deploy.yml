@@ -70,8 +70,11 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           package: deploy.zip
 
-      - name: Restart Azure Web App
+      - name: Configure Azure Web App
         run: |
+          # Set Node.js version
+          az webapp config set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --node-version 20-lts
+          # Restart the app
           az webapp restart --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg
 
       - name: Deployment Summary
