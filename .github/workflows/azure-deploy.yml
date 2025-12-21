@@ -45,8 +45,14 @@ jobs:
           cp -r dist/public deploy/public
           cp dist/server.js deploy/server.js
 
-          # Create package.json for Azure Windows
-          cat > deploy/package.json << 'EOF'
+          # Copy package files and install production dependencies
+          cp package.json deploy/
+          cp package-lock.json deploy/
+          cd deploy
+          npm install --omit=dev --ignore-scripts
+
+          # Override package.json with simpler version for Azure
+          cat > package.json << 'EOF'
           {
             "name": "stargate-portal",
             "version": "1.0.0",
@@ -59,6 +65,7 @@ jobs:
             }
           }
           EOF
+          cd ..
 
           # Create web.config for IIS/iisnode on Windows
           cat > deploy/web.config << 'EOF'
@@ -88,13 +95,6 @@ jobs:
             </system.webServer>
           </configuration>
           EOF
-
-          # Copy production dependencies
-          cp package.json deploy/package-full.json
-          cp package-lock.json deploy/
-          cd deploy
-          npm install --omit=dev --ignore-scripts
-          rm package-full.json
 
           # Create zip
           zip -r ../deploy.zip .
