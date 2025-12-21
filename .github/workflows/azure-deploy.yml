@@ -72,11 +72,16 @@ jobs:
 
       - name: Configure Azure Web App
         run: |
-          # Set Node.js version and startup command
-          az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --settings WEBSITE_NODE_DEFAULT_VERSION="~20"
-          az webapp config set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --startup-file "node server.js"
+          # Debug: Show current config
+          echo "=== Current App Config ==="
+          az webapp show --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --query "{kind:kind, state:state}" -o json || true
+          az webapp config show --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --query "{nodeVersion:nodeVersion, linuxFxVersion:linuxFxVersion, windowsFxVersion:windowsFxVersion}" -o json || true
+
+          # Set Node.js version
+          az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --settings WEBSITE_NODE_DEFAULT_VERSION="~20" || true
+
           # Restart the app
-          az webapp restart --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg
+          az webapp restart --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg || true
 
       - name: Deployment Summary
         run: |
