@@ -5,22 +5,20 @@
  * If this doesn't work, the issue is with Azure configuration, not our code.
  */
 
-console.log('='.repeat(50));
-console.log('AZURE MINIMAL SERVER STARTING');
-console.log('Time:', new Date().toISOString());
-console.log('Node version:', process.version);
-console.log('PORT:', process.env.PORT);
-console.log('='.repeat(50));
-
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 8080;
 
-console.log('Creating HTTP server...');
+console.log('='.repeat(50));
+console.log('AZURE MINIMAL SERVER STARTING');
+console.log('Time:', new Date().toISOString());
+console.log('Node version:', process.version);
+console.log('PORT:', PORT);
 console.log('CWD:', process.cwd());
 console.log('__dirname:', __dirname);
+console.log('='.repeat(50));
 
 const server = http.createServer((req, res) => {
   console.log(`${req.method} ${req.url}`);

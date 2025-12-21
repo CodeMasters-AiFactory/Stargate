@@ -70,6 +70,10 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           package: deploy.zip
 
+      - name: Restart Azure Web App
+        run: |
+          az webapp restart --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg
+
       - name: Deployment Summary
         run: |
           echo "=========================================="
