@@ -10,6 +10,7 @@
     "start:verified": "powershell -ExecutionPolicy Bypass -File ./scripts/start-and-verify.ps1",
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "build:production": "vite build && esbuild server/index-production.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --outfile=dist/index-production.js",
+    "build:azure": "vite build && esbuild server/index-azure.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js",
     "start": "NODE_ENV=production node dist/index.js",
     "start:production": "cross-env NODE_ENV=development tsx server/index-production.ts",
     "check": "tsc",
