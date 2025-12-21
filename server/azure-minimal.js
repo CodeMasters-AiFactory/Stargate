@@ -149,11 +149,10 @@ const server = http.createServer((req, res) => {
 
 console.log('Starting server on port', PORT);
 
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, () => {
   console.log('='.repeat(50));
   console.log('SERVER STARTED SUCCESSFULLY');
   console.log('Port:', PORT);
-  console.log('URL: http://0.0.0.0:' + PORT);
   console.log('Time:', new Date().toISOString());
   console.log('='.repeat(50));
 });
