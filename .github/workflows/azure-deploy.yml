@@ -1,4 +1,4 @@
-name: Deploy to Azure App Service
+name: Deploy to Azure App Service (Windows)
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: stargate-linux
+  AZURE_WEBAPP_NAME: stargate-portal
   NODE_VERSION: '20.x'
 
 jobs:
@@ -25,26 +25,32 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install all dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: Build frontend only
-        run: npx vite build
+      - name: Build application
+        run: |
+          # Build frontend with Vite
+          npx vite build
+          # Build server with esbuild (CommonJS for Windows compatibility)
+          npx esbuild server/index.ts --platform=node --packages=external --bundle --format=cjs --outfile=dist/server.js
         env:
           NODE_ENV: production
 
-      - name: Create minimal deployment package
+      - name: Prepare deployment package
         run: |
           mkdir -p deploy
-          # Copy built frontend
-          cp -r dist deploy/
-          # Copy the minimal CommonJS server (no bundling needed)
-          cp server/azure-minimal.js deploy/server.js
-          # Minimal package.json for Azure
+
+          # Copy built files
+          cp -r dist/public deploy/public
+          cp dist/server.js deploy/server.js
+
+          # Create package.json for Azure Windows
           cat > deploy/package.json << 'EOF'
           {
             "name": "stargate-portal",
             "version": "1.0.0",
+            "main": "server.js",
             "scripts": {
               "start": "node server.js"
             },
@@ -53,57 +59,63 @@ jobs:
             }
           }
           EOF
-          # Create zip for deployment
-          cd deploy && zip -r ../deploy.zip . && cd ..
-          echo "Deployment package contents:"
-          ls -la deploy/
+
+          # Create web.config for IIS/iisnode on Windows
+          cat > deploy/web.config << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <configuration>
+            <system.webServer>
+              <handlers>
+                <add name="iisnode" path="server.js" verb="*" modules="iisnode"/>
+              </handlers>
+              <rewrite>
+                <rules>
+                  <rule name="NodeInspector" patternSyntax="ECMAScript" stopProcessing="true">
+                    <match url="^server.js\/debug[\/]?" />
+                  </rule>
+                  <rule name="StaticContent">
+                    <action type="Rewrite" url="public{REQUEST_URI}"/>
+                  </rule>
+                  <rule name="DynamicContent">
+                    <conditions>
+                      <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="True"/>
+                    </conditions>
+                    <action type="Rewrite" url="server.js"/>
+                  </rule>
+                </rules>
+              </rewrite>
+              <iisnode node_env="production" watchedFiles="web.config;*.js"/>
+            </system.webServer>
+          </configuration>
+          EOF
+
+          # Copy production dependencies
+          cp package.json deploy/package-full.json
+          cp package-lock.json deploy/
+          cd deploy
+          npm install --omit=dev --ignore-scripts
+          rm package-full.json
+
+          # Create zip
+          zip -r ../deploy.zip .
+
+          echo "=== Deployment package contents ==="
+          ls -la
 
       - name: Login to Azure
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Configure startup command
-        run: |
-          # Use npm start which runs node server.js
-          az webapp config set \
-            --resource-group stargate-rg \
-            --name ${{ env.AZURE_WEBAPP_NAME }} \
-            --startup-file "node server.js"
-
-          echo "Startup command configured: node server.js"
-
       - name: Deploy to Azure Web App
-        run: |
-          # Use async deployment to avoid timeout
-          az webapp deploy \
-            --resource-group stargate-rg \
-            --name ${{ env.AZURE_WEBAPP_NAME }} \
-            --src-path deploy.zip \
-            --type zip \
-            --async true
-
-          # Wait for deployment to complete (up to 10 minutes)
-          echo "Waiting for deployment to complete..."
-          for i in {1..20}; do
-            sleep 30
-            STATUS=$(az webapp deployment list --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --query "[0].status" -o tsv 2>/dev/null || echo "building")
-            echo "Deployment status: $STATUS"
-            if [ "$STATUS" = "4" ] || [ "$STATUS" = "success" ]; then
-              echo "Deployment completed successfully!"
-              break
-            elif [ "$STATUS" = "3" ] || [ "$STATUS" = "failed" ]; then
-              echo "Deployment failed!"
-              exit 1
-            fi
-          done
-
-      - name: Restart app to apply changes
-        run: |
-          az webapp restart --resource-group stargate-rg --name ${{ env.AZURE_WEBAPP_NAME }}
-          echo "App restarted"
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: deploy.zip
 
       - name: Deployment Summary
         run: |
+          echo "=========================================="
           echo "Deployed to: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"
           echo "Deployment completed at: $(date)"
+          echo "=========================================="
