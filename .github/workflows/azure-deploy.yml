@@ -1,4 +1,4 @@
-name: Deploy to Azure App Service (Windows)
+name: Deploy to Azure App Service
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: stargate-portal
+  AZURE_WEBAPP_NAME: stargate-linux
   NODE_VERSION: '20.x'
 
 jobs:
@@ -33,27 +33,59 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Build server
+        run: npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
       - name: Prepare deployment package
         run: |
           mkdir -p deploy
-
-          # Copy built frontend to public folder
+          
+          # Copy built frontend
           cp -r dist/public deploy/public
-
-          # Use the minimal CommonJS server (no external dependencies)
-          cp server/azure-minimal.js deploy/server.js
-
-          # Create package.json
-          echo '{"name":"stargate-portal","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js"},"engines":{"node":">=20.0.0"}}' > deploy/package.json
-
-          # Copy web.config for IIS/iisnode
-          cp azure/web.config deploy/web.config
-
-          # Create zip (no node_modules needed!)
+          
+          # Copy built server
+          cp dist/index.js deploy/server.js
+          
+          # Create package.json for Azure
+          cat > deploy/package.json << 'EOF'
+          {
+            "name": "stargate-portal",
+            "version": "1.0.0",
+            "type": "module",
+            "main": "server.js",
+            "scripts": {
+              "start": "node server.js"
+            },
+            "engines": {
+              "node": ">=20.0.0"
+            },
+            "dependencies": {
+              "express": "^4.21.2",
+              "express-session": "^1.18.1",
+              "passport": "^0.7.0",
+              "passport-local": "^1.0.0",
+              "drizzle-orm": "^0.39.3",
+              "postgres": "^3.4.5",
+              "@neondatabase/serverless": "^0.10.4",
+              "ws": "^8.18.0",
+              "dotenv": "^16.4.5",
+              "zod": "^3.24.1",
+              "bcryptjs": "^2.4.3",
+              "connect-pg-simple": "^10.0.0",
+              "cors": "^2.8.5",
+              "helmet": "^8.0.0",
+              "compression": "^1.7.5",
+              "cookie-parser": "^1.4.7",
+              "memorystore": "^1.6.7"
+            }
+          }
+          EOF
+          
+          # Create zip
           cd deploy
           zip -r ../deploy.zip .
           cd ..
-
+          
           echo "=== Deployment package contents ==="
           ls -la deploy/
           echo "=== Zip file size ==="
@@ -70,18 +102,13 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           package: deploy.zip
 
-      - name: Configure Azure Web App
+      - name: Post-deployment setup
         run: |
-          # Debug: Show current config
-          echo "=== Current App Config ==="
-          az webapp show --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --query "{kind:kind, state:state}" -o json || true
-          az webapp config show --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --query "{nodeVersion:nodeVersion, linuxFxVersion:linuxFxVersion, windowsFxVersion:windowsFxVersion}" -o json || true
-
-          # Set Node.js version
-          az webapp config appsettings set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --settings WEBSITE_NODE_DEFAULT_VERSION="~20" || true
-
+          # Set startup command
+          az webapp config set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg --startup-file "npm start"
+          
           # Restart the app
-          az webapp restart --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg || true
+          az webapp restart --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group stargate-rg
 
       - name: Deployment Summary
         run: |

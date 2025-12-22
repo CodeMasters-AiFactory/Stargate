@@ -1,0 +1,126 @@
+═══════════════════════════════════════════════════════════════════════════════
+STARGATE PORTAL - CLAUDE PROGRESS LOG
+Merlin 8.0 Industry DNA Expansion Mission
+═══════════════════════════════════════════════════════════════════════════════
+
+PROJECT: Stargate Portal
+LOCATION: C:\CURSOR PROJECTS\StargatePortal
+MISSION: Expand Industry DNA from 10 to 50+ industries
+
+═══════════════════════════════════════════════════════════════════════════════
+HOW TO USE THIS FILE (FOR CLAUDE AGENTS)
+═══════════════════════════════════════════════════════════════════════════════
+
+1. READ this file first to understand current state
+2. READ feature_list.json to see which industries are done/pending
+3. PICK ONE industry marked as "passes": false
+4. IMPLEMENT the industry DNA in server/engines/merlin8/industryDNA.ts
+5. TEST by generating a sample website for that industry
+6. UPDATE feature_list.json - set "passes": true for completed industry
+7. GIT COMMIT with descriptive message
+8. UPDATE this progress file with what you did
+
+═══════════════════════════════════════════════════════════════════════════════
+FILE LOCATIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+Industry DNA Engine: server/engines/merlin8/industryDNA.ts
+Orchestrator: server/engines/merlin8/orchestrator.ts
+HTML Generator: server/engines/merlin8/htmlGenerator.ts
+Leonardo Integration: server/engines/merlin8/leonardoIntegration.ts
+API Routes: server/routes/merlin8.ts
+
+═══════════════════════════════════════════════════════════════════════════════
+INDUSTRY DNA TEMPLATE (COPY THIS WHEN ADDING NEW INDUSTRY)
+═══════════════════════════════════════════════════════════════════════════════
+
+'{industry-id}': {
+  id: '{industry-id}',
+  name: '{Industry Display Name}',
+  keywords: ['keyword1', 'keyword2', 'keyword3'],
+  
+  design: {
+    colorScheme: 'dark' | 'light' | 'warm' | 'cool' | 'luxury',
+    primaryColor: '#HEXCODE',
+    secondaryColor: '#HEXCODE',
+    accentColor: '#HEXCODE',
+    backgroundColor: '#HEXCODE',
+    textColor: '#HEXCODE',
+    
+    fonts: {
+      heading: "'Font Name', fallback",
+      body: "'Font Name', fallback",
+    },
+    
+    aesthetic: 'Description of visual style',
+    heroStyle: 'full-bleed' | 'split' | 'minimal' | 'video' | 'gradient',
+    borderRadius: 'none' | 'small' | 'medium' | 'large',
+    shadows: 'none' | 'subtle' | 'medium' | 'dramatic',
+  },
+  
+  images: {
+    hero: 'Leonardo AI prompt for hero image',
+    services: 'Leonardo AI prompt for services image',
+    about: 'Leonardo AI prompt for about image',
+    team: 'Leonardo AI prompt for team image',
+    style: 'Overall image style guidance',
+  },
+  
+  copy: {
+    tone: 'Description of writing tone',
+    powerWords: ['word1', 'word2', 'word3'],
+    avoidWords: ['word1', 'word2'],
+    ctaText: ['CTA Option 1', 'CTA Option 2'],
+    taglineStyle: 'Description of tagline approach',
+  },
+  
+  sections: ['hero', 'services', 'about', ...],
+  specialFeatures: ['feature1', 'feature2'],
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+SESSION LOG
+═══════════════════════════════════════════════════════════════════════════════
+
+--- SESSION: 2024-12-22 (Initial Setup) ---
+Agent: Claude Opus 4.5
+Status: ✅ COMPLETED
+
+Actions:
+1. Created overnight agent harness based on Anthropic research
+2. Created init.ps1 startup script
+3. Created feature_list.json with 54 industries
+4. Created claude-progress.txt (this file)
+5. Existing industries already implemented: 10/54
+
+Existing Industries (DONE):
+- racing ✅
+- restaurant ✅
+- legal ✅
+- tech ✅
+- realestate ✅
+- fitness ✅
+- medical ✅
+- photography ✅
+- salon ✅
+- construction ✅
+
+Next Priority:
+- accounting (High demand, straightforward)
+- automotive (Common business type)
+- dental (Medical adjacent, clear patterns)
+
+Git Commit: "feat(merlin8): overnight agent harness setup"
+
+═══════════════════════════════════════════════════════════════════════════════
+IMPORTANT NOTES
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Each industry must have UNIQUE keywords that don't overlap too much
+2. Color schemes should reflect industry expectations
+3. Leonardo AI prompts must be detailed and specific
+4. Always test by generating a sample website after adding industry
+5. Commit after EACH successful industry addition
+6. Update this file after EACH session
+
+═══════════════════════════════════════════════════════════════════════════════

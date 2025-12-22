@@ -1,0 +1,464 @@
+{
+  "project": "Stargate Portal - Merlin 8.0",
+  "mission": "Industry DNA Expansion to 50+ Industries",
+  "file": "server/engines/merlin8/industryDNA.ts",
+  "created": "2024-12-22",
+  "lastUpdated": "2024-12-22",
+
+  "stats": {
+    "total": 54,
+    "completed": 10,
+    "remaining": 44
+  },
+
+  "instructions": {
+    "forAgent": "Pick ONE industry with passes:false, implement it in industryDNA.ts, test it, then set passes:true",
+    "doNotEdit": "Never remove or modify existing industry entries",
+    "afterComplete": "Commit to git and update claude-progress.txt"
+  },
+
+  "industries": [
+    {
+      "id": "racing",
+      "name": "Racing & Motorsport",
+      "category": "sports",
+      "priority": 1,
+      "passes": true,
+      "completedDate": "2024-12-22",
+      "notes": "Initial implementation"
+    },
+    {
+      "id": "restaurant",
+      "name": "Restaurant & Dining",
+      "category": "hospitality",
+      "priority": 1,
+      "passes": true,
+      "completedDate": "2024-12-22",
+      "notes": "Initial implementation"
+    },
+    {
+      "id": "legal",
+      "name": "Law Firm & Legal Services",
+      "category": "professional",
+      "priority": 1,
+      "passes": true,
+      "completedDate": "2024-12-22",
+      "notes": "Initial implementation"
+    },
+    {
+      "id": "tech",
+      "name": "Tech Startup & SaaS",
+      "category": "technology",
+      "priority": 1,
+      "passes": true,
+      "completedDate": "2024-12-22",
+      "notes": "Initial implementation - also serves as default"
+    },
+    {
+      "id": "realestate",
+      "name": "Real Estate & Property",
+      "category": "professional",
+      "priority": 1,
+      "passes": true,
+      "completedDate": "2024-12-22",
+      "notes": "Initial implementation"
+    },
+    {
+      "id": "fitness",
+      "name": "Fitness & Gym",
+      "category": "health",
+      "priority": 1,
+      "passes": true,
+      "completedDate": "2024-12-22",
+      "notes": "Initial implementation"
+    },
+    {
+      "id": "medical",
+      "name": "Medical & Healthcare",
+      "category": "health",
+      "priority": 1,
+      "passes": true,
+      "completedDate": "2024-12-22",
+      "notes": "Initial implementation"
+    },
+    {
+      "id": "photography",
+      "name": "Photography & Creative",
+      "category": "creative",
+      "priority": 1,
+      "passes": true,
+      "completedDate": "2024-12-22",
+      "notes": "Initial implementation"
+    },
+    {
+      "id": "salon",
+      "name": "Salon & Spa",
+      "category": "beauty",
+      "priority": 1,
+      "passes": true,
+      "completedDate": "2024-12-22",
+      "notes": "Initial implementation"
+    },
+    {
+      "id": "construction",
+      "name": "Construction & Contracting",
+      "category": "trades",
+      "priority": 1,
+      "passes": true,
+      "completedDate": "2024-12-22",
+      "notes": "Initial implementation"
+    },
+    {
+      "id": "accounting",
+      "name": "Accounting & Financial Services",
+      "category": "professional",
+      "priority": 2,
+      "passes": false,
+      "notes": "CPA, bookkeeping, tax services"
+    },
+    {
+      "id": "automotive",
+      "name": "Automotive & Car Dealership",
+      "category": "retail",
+      "priority": 2,
+      "passes": false,
+      "notes": "Car sales, auto repair, dealerships"
+    },
+    {
+      "id": "dental",
+      "name": "Dental Practice",
+      "category": "health",
+      "priority": 2,
+      "passes": false,
+      "notes": "Dentist, orthodontics, oral surgery"
+    },
+    {
+      "id": "veterinary",
+      "name": "Veterinary & Pet Care",
+      "category": "health",
+      "priority": 2,
+      "passes": false,
+      "notes": "Vet clinic, pet hospital, animal care"
+    },
+    {
+      "id": "insurance",
+      "name": "Insurance Agency",
+      "category": "professional",
+      "priority": 2,
+      "passes": false,
+      "notes": "Life, auto, home, business insurance"
+    },
+    {
+      "id": "architecture",
+      "name": "Architecture & Design Firm",
+      "category": "creative",
+      "priority": 2,
+      "passes": false,
+      "notes": "Architects, interior designers"
+    },
+    {
+      "id": "wedding",
+      "name": "Wedding & Event Planning",
+      "category": "events",
+      "priority": 2,
+      "passes": false,
+      "notes": "Wedding planners, event coordinators"
+    },
+    {
+      "id": "education",
+      "name": "Education & Tutoring",
+      "category": "education",
+      "priority": 2,
+      "passes": false,
+      "notes": "Schools, tutors, online courses"
+    },
+    {
+      "id": "nonprofit",
+      "name": "Non-Profit & Charity",
+      "category": "nonprofit",
+      "priority": 2,
+      "passes": false,
+      "notes": "Charities, NGOs, foundations"
+    },
+    {
+      "id": "church",
+      "name": "Church & Religious Organization",
+      "category": "nonprofit",
+      "priority": 2,
+      "passes": false,
+      "notes": "Churches, temples, religious communities"
+    },
+    {
+      "id": "hotel",
+      "name": "Hotel & Hospitality",
+      "category": "hospitality",
+      "priority": 2,
+      "passes": false,
+      "notes": "Hotels, resorts, B&Bs"
+    },
+    {
+      "id": "ecommerce",
+      "name": "E-Commerce & Online Store",
+      "category": "retail",
+      "priority": 2,
+      "passes": false,
+      "notes": "Online shops, product stores"
+    },
+    {
+      "id": "consulting",
+      "name": "Business Consulting",
+      "category": "professional",
+      "priority": 2,
+      "passes": false,
+      "notes": "Management consultants, business advisors"
+    },
+    {
+      "id": "marketing",
+      "name": "Marketing & Advertising Agency",
+      "category": "creative",
+      "priority": 2,
+      "passes": false,
+      "notes": "Digital marketing, ad agencies"
+    },
+    {
+      "id": "logistics",
+      "name": "Logistics & Shipping",
+      "category": "industrial",
+      "priority": 3,
+      "passes": false,
+      "notes": "Trucking, freight, courier services"
+    },
+    {
+      "id": "manufacturing",
+      "name": "Manufacturing & Industrial",
+      "category": "industrial",
+      "priority": 3,
+      "passes": false,
+      "notes": "Factories, production, industrial"
+    },
+    {
+      "id": "cleaning",
+      "name": "Cleaning Services",
+      "category": "services",
+      "priority": 3,
+      "passes": false,
+      "notes": "Residential, commercial cleaning"
+    },
+    {
+      "id": "landscaping",
+      "name": "Landscaping & Lawn Care",
+      "category": "services",
+      "priority": 3,
+      "passes": false,
+      "notes": "Garden design, lawn maintenance"
+    },
+    {
+      "id": "plumbing",
+      "name": "Plumbing Services",
+      "category": "trades",
+      "priority": 3,
+      "passes": false,
+      "notes": "Plumbers, pipe fitting"
+    },
+    {
+      "id": "electrical",
+      "name": "Electrical Services",
+      "category": "trades",
+      "priority": 3,
+      "passes": false,
+      "notes": "Electricians, wiring"
+    },
+    {
+      "id": "hvac",
+      "name": "HVAC & Climate Control",
+      "category": "trades",
+      "priority": 3,
+      "passes": false,
+      "notes": "Heating, cooling, air conditioning"
+    },
+    {
+      "id": "roofing",
+      "name": "Roofing & Gutters",
+      "category": "trades",
+      "priority": 3,
+      "passes": false,
+      "notes": "Roof repair, installation"
+    },
+    {
+      "id": "moving",
+      "name": "Moving & Storage",
+      "category": "services",
+      "priority": 3,
+      "passes": false,
+      "notes": "Moving companies, storage facilities"
+    },
+    {
+      "id": "petgrooming",
+      "name": "Pet Grooming",
+      "category": "services",
+      "priority": 3,
+      "passes": false,
+      "notes": "Dog grooming, pet spas"
+    },
+    {
+      "id": "daycare",
+      "name": "Daycare & Childcare",
+      "category": "education",
+      "priority": 3,
+      "passes": false,
+      "notes": "Childcare centers, preschools"
+    },
+    {
+      "id": "funeral",
+      "name": "Funeral Home & Memorial",
+      "category": "services",
+      "priority": 3,
+      "passes": false,
+      "notes": "Funeral services, cremation"
+    },
+    {
+      "id": "jewelry",
+      "name": "Jewelry & Luxury Goods",
+      "category": "retail",
+      "priority": 3,
+      "passes": false,
+      "notes": "Jewelers, watches, luxury items"
+    },
+    {
+      "id": "fashion",
+      "name": "Fashion & Apparel",
+      "category": "retail",
+      "priority": 3,
+      "passes": false,
+      "notes": "Clothing stores, fashion brands"
+    },
+    {
+      "id": "florist",
+      "name": "Florist & Flower Shop",
+      "category": "retail",
+      "priority": 3,
+      "passes": false,
+      "notes": "Flower arrangements, plant shops"
+    },
+    {
+      "id": "bakery",
+      "name": "Bakery & Pastry Shop",
+      "category": "hospitality",
+      "priority": 3,
+      "passes": false,
+      "notes": "Bakeries, cake shops, pastries"
+    },
+    {
+      "id": "brewery",
+      "name": "Brewery & Winery",
+      "category": "hospitality",
+      "priority": 3,
+      "passes": false,
+      "notes": "Craft beer, wine, distillery"
+    },
+    {
+      "id": "music",
+      "name": "Music & Recording Studio",
+      "category": "creative",
+      "priority": 3,
+      "passes": false,
+      "notes": "Recording studios, music production"
+    },
+    {
+      "id": "gaming",
+      "name": "Gaming & Esports",
+      "category": "entertainment",
+      "priority": 3,
+      "passes": false,
+      "notes": "Esports teams, gaming centers"
+    },
+    {
+      "id": "travel",
+      "name": "Travel & Tourism",
+      "category": "hospitality",
+      "priority": 3,
+      "passes": false,
+      "notes": "Travel agencies, tour operators"
+    },
+    {
+      "id": "security",
+      "name": "Security Services",
+      "category": "services",
+      "priority": 3,
+      "passes": false,
+      "notes": "Security guards, alarm systems"
+    },
+    {
+      "id": "coworking",
+      "name": "Coworking & Office Space",
+      "category": "professional",
+      "priority": 3,
+      "passes": false,
+      "notes": "Shared offices, coworking spaces"
+    },
+    {
+      "id": "yoga",
+      "name": "Yoga & Meditation Studio",
+      "category": "health",
+      "priority": 3,
+      "passes": false,
+      "notes": "Yoga studios, wellness centers"
+    },
+    {
+      "id": "martialarts",
+      "name": "Martial Arts & Combat Sports",
+      "category": "sports",
+      "priority": 3,
+      "passes": false,
+      "notes": "Dojos, MMA gyms, boxing"
+    },
+    {
+      "id": "golf",
+      "name": "Golf Club & Country Club",
+      "category": "sports",
+      "priority": 3,
+      "passes": false,
+      "notes": "Golf courses, country clubs"
+    },
+    {
+      "id": "cannabis",
+      "name": "Cannabis & Dispensary",
+      "category": "retail",
+      "priority": 3,
+      "passes": false,
+      "notes": "Legal cannabis, dispensaries"
+    },
+    {
+      "id": "crypto",
+      "name": "Cryptocurrency & Blockchain",
+      "category": "technology",
+      "priority": 3,
+      "passes": false,
+      "notes": "Crypto, DeFi, Web3"
+    },
+    {
+      "id": "podcast",
+      "name": "Podcast & Media Production",
+      "category": "creative",
+      "priority": 3,
+      "passes": false,
+      "notes": "Podcasters, video production"
+    },
+    {
+      "id": "agency",
+      "name": "Creative Agency & Studio",
+      "category": "creative",
+      "priority": 2,
+      "passes": false,
+      "notes": "Design studios, branding agencies"
+    },
+    {
+      "id": "farm",
+      "name": "Agriculture & Farm",
+      "category": "agriculture",
+      "priority": 3,
+      "passes": false,
+      "notes": "Farms, ranches, agriculture"
+    }
+  ]
+}
