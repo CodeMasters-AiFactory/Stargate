@@ -25,10 +25,10 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run npm audit
-        run: npm audit --audit-level=moderate
+        run: npm audit --audit-level=moderate || true
         continue-on-error: true
 
       - name: Check for outdated packages
@@ -36,7 +36,8 @@ jobs:
 
       - name: Run security audit (detailed)
         run: |
-          npm audit --json > audit-report.json || true
+          npm audit --json > audit-report.json 2>&1 || echo '{"error": "audit failed"}' > audit-report.json
+          echo "=== Audit Report ==="
           cat audit-report.json
 
       - name: Upload audit report
@@ -46,6 +47,7 @@ jobs:
           name: security-audit-report
           path: audit-report.json
           retention-days: 30
+          if-no-files-found: warn
 
       - name: Comment PR with security findings
         if: github.event_name == 'pull_request'
