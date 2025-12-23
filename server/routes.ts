@@ -87,6 +87,7 @@ import { registerDebugRoutes } from './routes/debug';
 import { registerDebugGeneratorRoute } from './routes/debugGenerator';
 import { registerHealthRoutes } from './routes/health';
 import { registerMerlin7Routes } from './routes/merlin7';
+import { registerMerlin8Routes } from './routes/merlin8';
 import { getErrorMessage, getErrorStack, logError } from './utils/errorHandler';
 import { validateRequestBody, validateRequestParams } from './utils/inputValidator';
 import { withTimeout } from './utils/timeout';
@@ -141,6 +142,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register Merlin 7.0 routes (The Replit Destroyer)
   registerMerlin7Routes(app);
+
+  // Register Merlin 8.0 routes (The World's Best Website Builder)
+  registerMerlin8Routes(app);
 
   // Register Multi-Model AI Orchestrator routes
   app.use('/api/ai', aiRoutes);

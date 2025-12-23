@@ -15,16 +15,16 @@
   ],
   "verdict": "World-Class",
   "details": {
-    "title": "Test Business - Business Services",
-    "metaDesc": "Test Business delivers exceptional services with a commitment to excellence. We combine expertise, innovation, and personalized service to exceed your expectati",
+    "title": "Velocity F1 Racing - Business Services",
+    "metaDesc": "Velocity F1 Racing delivers exceptional F1 Racing with a commitment to excellence. We combine expertise, innovation, and personalized service to exceed your exp",
     "headings": {
       "h1": 1,
-      "h2": 2,
+      "h2": 1,
       "h3": 1
     },
     "hasSchema": true,
     "altCoverage": 1,
-    "wordCount": 128,
+    "wordCount": 91,
     "internalLinks": 0
   }
 }

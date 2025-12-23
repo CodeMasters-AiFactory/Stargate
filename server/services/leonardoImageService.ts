@@ -183,8 +183,8 @@ export async function generateWithLeonardo(
   }
   
   try {
-    // Leonardo API endpoint
-    const modelId = options.modelId || '6bef9f1b-29cb-40c7-b9df-32b51c1f67b3'; // Leonardo Diffusion XL (default)
+    // Leonardo API endpoint - Using Leonardo Phoenix (latest model)
+    const modelId = options.modelId || '6b645e3a-d64f-4341-a6d8-7a3690fbf042'; // Leonardo Phoenix 1.0
     
     // Step 1: Initiate generation
     const generateResponse = await fetch(`${client.baseURL}/generations`, {

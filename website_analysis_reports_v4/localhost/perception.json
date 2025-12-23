@@ -1,12 +1,12 @@
 {
   "firstImpression": 17.5,
-  "emotionalResonance": 15,
+  "emotionalResonance": 12.5,
   "cohesion": 20,
   "identityRecognition": 17.5,
-  "totalScore": 70,
+  "totalScore": 67.5,
   "breakdown": {
     "trust": "medium",
-    "premium": "medium",
+    "premium": "low",
     "memorable": "medium"
   }
 }

@@ -1,0 +1,12 @@
+{
+  "startTime": "2025-12-22T14:38:02.602Z",
+  "steps": [],
+  "errors": [
+    {
+      "message": "page.waitForLoadState: Test timeout of 180000ms exceeded.",
+      "stack": "page.waitForLoadState: Test timeout of 180000ms exceeded.\n    at C:\\CURSOR PROJECTS\\StargatePortal\\tests\\e2e\\f1-racing-test.spec.ts:43:18"
+    }
+  ],
+  "success": false,
+  "endTime": "2025-12-22T14:41:02.689Z"
+}

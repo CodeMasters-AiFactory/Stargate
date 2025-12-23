@@ -1,0 +1,68 @@
+{
+  "startTime": "2025-12-22T15:18:14.624Z",
+  "steps": [
+    {
+      "step": "Load Homepage",
+      "status": "pass",
+      "details": "Homepage loaded",
+      "screenshot": "f1-01-homepage.png"
+    },
+    {
+      "step": "Login",
+      "status": "pass",
+      "details": "Login completed",
+      "screenshot": "f1-02-after-login.png"
+    },
+    {
+      "step": "Select Service",
+      "status": "pass",
+      "details": "Merlin Websites service selected",
+      "screenshot": "f1-03-merlin-selected.png"
+    },
+    {
+      "step": "Select Package",
+      "status": "pass",
+      "details": "Package selected",
+      "screenshot": "f1-04-package-selected.png"
+    },
+    {
+      "step": "Select Template",
+      "status": "pass",
+      "details": "Template selected",
+      "screenshot": "f1-05-template-selected.png"
+    },
+    {
+      "step": "Business Info",
+      "status": "pass",
+      "details": "F1 Racing team info entered",
+      "screenshot": "f1-06-info-entered.png"
+    },
+    {
+      "step": "Project Creation",
+      "status": "pass",
+      "details": "F1 Racing project auto-created",
+      "screenshot": "f1-07-project-created.png"
+    },
+    {
+      "step": "Website Preview",
+      "status": "pass",
+      "details": "Generated F1 website displayed",
+      "screenshot": "f1-08-website-preview.png"
+    },
+    {
+      "step": "Responsive Test",
+      "status": "pass",
+      "details": "Mobile, tablet, desktop views tested",
+      "screenshot": "f1-09c-desktop.png"
+    },
+    {
+      "step": "Final State",
+      "status": "pass",
+      "details": "Test complete",
+      "screenshot": "f1-10-final.png"
+    }
+  ],
+  "errors": [],
+  "recommendations": [],
+  "endTime": "2025-12-22T15:19:01.163Z"
+}

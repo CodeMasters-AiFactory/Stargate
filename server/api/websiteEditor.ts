@@ -1,9 +1,11 @@
 /**
  * Website Editor API
- * Handles website editing via chat interface (NO AI - Local only)
+ * AI-Powered chat interface for website editing
+ * Uses Claude (Anthropic) when available, falls back to local processing
  */
 
 import type { Express } from 'express';
+import Anthropic from '@anthropic-ai/sdk';
 
 interface WebsiteEditRequest {
   message: string;
@@ -15,12 +17,152 @@ interface WebsiteEditRequest {
   };
 }
 
+// Initialize Anthropic client if API key available
+let anthropic: Anthropic | null = null;
+try {
+  if (process.env.ANTHROPIC_API_KEY) {
+    anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    console.log('[Website Editor] ✅ Claude AI enabled for Merlin chat');
+  } else {
+    console.log('[Website Editor] ⚠️ ANTHROPIC_API_KEY not set - using local processing');
+  }
+} catch (error) {
+  console.error('[Website Editor] Failed to initialize Anthropic:', error);
+}
+
+/**
+ * MERLIN SYSTEM PROMPT - The AI personality for website editing
+ */
+const MERLIN_SYSTEM_PROMPT = `You are Merlin, an AI Website Wizard assistant. You help users edit and improve their websites through natural conversation.
+
+## Your Personality:
+- Friendly, helpful, and enthusiastic about web design
+- Clear and concise in your responses
+- Proactive in suggesting improvements
+- Patient when users aren't sure what they want
+
+## Your Capabilities:
+1. **Text Changes**: Update headings, paragraphs, buttons, links
+2. **Color Changes**: Modify colors of any element (backgrounds, text, buttons)
+3. **Style Changes**: Adjust fonts, sizes, spacing, borders
+4. **Layout Changes**: Show/hide sections, reorder elements
+5. **Image Guidance**: Suggest image changes (note: actual image replacement requires user upload)
+
+## Response Format:
+When the user asks for a change, you should:
+1. Acknowledge what they want to change
+2. If you can make the change, describe what you did
+3. If you need more information, ask a clarifying question
+4. Suggest related improvements if appropriate
+
+## Important Rules:
+- Be conversational, not robotic
+- Don't overwhelm with technical jargon
+- If you're unsure what they want, ask
+- Always be encouraging and positive
+- Keep responses concise (2-4 sentences usually)
+
+## Current Context:
+You're helping edit a website. The user can see a live preview of their website next to this chat.`;
+
+/**
+ * Generate Claude AI response for website editing
+ */
+async function generateClaudeResponse(
+  message: string,
+  currentHtml: string,
+  context: { businessName: string; industry?: string; location?: string }
+): Promise<{ message: string; updatedHtml: string }> {
+  if (!anthropic) {
+    throw new Error('Claude not available');
+  }
+
+  const contextPrompt = `
+## Website Being Edited:
+- Business: ${context.businessName}
+- Industry: ${context.industry || 'Not specified'}
+- Location: ${context.location || 'Not specified'}
+
+## Current Website HTML (excerpt - first 2000 chars):
+\`\`\`html
+${currentHtml.substring(0, 2000)}
+\`\`\`
+
+## User Request:
+${message}
+
+## Your Task:
+1. Understand what the user wants to change
+2. If it's a simple edit request (text, color, style), provide the specific CSS or HTML change needed
+3. If it's a question, answer helpfully
+4. If it's unclear, ask for clarification
+
+Respond naturally as Merlin. If you're suggesting code changes, wrap them in a JSON block like:
+\`\`\`json
+{"action": "replace", "find": "old text", "replace": "new text"}
+\`\`\`
+or
+\`\`\`json
+{"action": "style", "selector": "h1", "css": "color: blue;"}
+\`\`\`
+`;
+
+  const response = await anthropic.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1024,
+    system: MERLIN_SYSTEM_PROMPT,
+    messages: [{ role: 'user', content: contextPrompt }],
+  });
+
+  const content = response.content[0];
+  if (content.type !== 'text') {
+    throw new Error('Unexpected response type');
+  }
+
+  let responseText = content.text;
+  let updatedHtml = currentHtml;
+
+  // Check for JSON action blocks in the response
+  const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/);
+  if (jsonMatch) {
+    try {
+      const action = JSON.parse(jsonMatch[1]);
+      
+      if (action.action === 'replace' && action.find && action.replace) {
+        // Text replacement
+        updatedHtml = currentHtml.replace(action.find, action.replace);
+        responseText = responseText.replace(/```json[\s\S]*?```/, '').trim();
+      } else if (action.action === 'style' && action.selector && action.css) {
+        // Style change - inject into existing style block or create new one
+        const styleTag = `<style>${action.selector} { ${action.css} }</style>`;
+        if (updatedHtml.includes('</head>')) {
+          updatedHtml = updatedHtml.replace('</head>', `${styleTag}\n</head>`);
+        } else {
+          updatedHtml = styleTag + updatedHtml;
+        }
+        responseText = responseText.replace(/```json[\s\S]*?```/, '').trim();
+      }
+    } catch (e) {
+      console.error('[Website Editor] Failed to parse action JSON:', e);
+    }
+  }
+
+  return {
+    message: responseText || "I've made the changes! Check the preview to see the updates.",
+    updatedHtml,
+  };
+}
+
+
+/**
+ * LOCAL FALLBACK - Used when Claude API is not available
+ */
+
 /**
  * Extract all text content from HTML for searching
  */
 function extractTextContent(html: string): string[] {
   const textContent: string[] = [];
-  // Match text between > and < (visible content)
   const matches = html.match(/>([^<]+)</g);
   if (matches) {
     for (const match of matches) {
@@ -34,298 +176,87 @@ function extractTextContent(html: string): string[] {
 }
 
 /**
- * Extract email addresses from HTML
- */
-function extractEmails(html: string): string[] {
-  const emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-  const emails = html.match(emailPattern) || [];
-  return [...new Set(emails)]; // Remove duplicates
-}
-
-/**
- * Find the best matching text in HTML based on user input
- * Uses fuzzy matching and intelligent extraction
+ * Find the best matching text in HTML
  */
 function findBestMatch(html: string, searchTerm: string): string | null {
   const searchLower = searchTerm.toLowerCase();
   const allText = extractTextContent(html);
 
-  // 1. Check for email-related requests
-  if (searchLower.includes('mail') || searchLower.includes('email') || searchLower.includes('@')) {
-    const emails = extractEmails(html);
-    if (emails.length > 0) {
-      // If user mentioned a partial email, find the matching one
-      const partialEmail = searchTerm.match(/[a-zA-Z0-9._%+-]*@?[a-zA-Z0-9.-]*/)?.[0];
-      if (partialEmail) {
-        const matchingEmail = emails.find(email =>
-          email.toLowerCase().includes(partialEmail.toLowerCase().replace(/^the\s+/, '').replace(/\s+mail\s*/, ''))
-        );
-        if (matchingEmail) return matchingEmail;
-      }
-      // Return first email if no specific match
-      return emails[0];
-    }
-  }
-
-  // 2. Check for phone-related requests
-  if (searchLower.includes('phone') || searchLower.includes('call') || searchLower.includes('number')) {
-    const phonePattern = /[\+]?[(]?[0-9]{1,3}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,9}/g;
-    const phones = html.match(phonePattern) || [];
-    if (phones.length > 0) return phones[0];
-  }
-
-  // 3. Exact match (case insensitive)
+  // Exact match
   for (const text of allText) {
-    if (text.toLowerCase() === searchLower) {
-      return text;
-    }
+    if (text.toLowerCase() === searchLower) return text;
   }
-
-  // 4. Partial/Contains match
+  // Partial match
   for (const text of allText) {
-    if (text.toLowerCase().includes(searchLower)) {
-      return text;
-    }
+    if (text.toLowerCase().includes(searchLower)) return text;
   }
-
-  // 5. Check if search term is in any text (reversed - search is contained in text)
-  const cleanSearch = searchLower.replace(/^(the|a|an)\s+/, '').replace(/\s+(please|now|thanks)$/, '');
-  for (const text of allText) {
-    if (text.toLowerCase().includes(cleanSearch)) {
-      return text;
-    }
-  }
-
   return null;
 }
 
 /**
- * Clean up user input to extract the actual search term
- */
-function cleanSearchTerm(input: string): string {
-  let cleaned = input.trim();
-  // Remove common prefixes
-  cleaned = cleaned.replace(/^(the|a|an)\s+/i, '');
-  // Remove "mail" or "email" prefix if followed by actual address
-  cleaned = cleaned.replace(/^(mail|email)\s+/i, '');
-  // Remove trailing words
-  cleaned = cleaned.replace(/\s+(please|now|thanks|thank you)$/i, '');
-  return cleaned.trim();
-}
-
-/**
- * Parse user intent and generate HTML modifications
- */
-async function processWebsiteEdit(
-  userMessage: string,
-  currentHtml: string,
-  context: WebsiteEditRequest['context']
-): Promise<{ updatedHtml: string; responseMessage: string }> {
-  // Local HTML manipulation (NO AI)
-  const messageLower = userMessage.toLowerCase();
-  let updatedHtml = currentHtml;
-  let responseMessage = "I've made the changes you requested! Check the preview to see the updates.";
-  let changesMade = false;
-
-  try {
-    // 1. TEXT REPLACEMENT: "change X to Y", "replace X with Y", "X to Y please"
-    // Handle natural language variations and multi-word phrases
-    // Patterns support: single words OR quoted phrases OR unquoted multi-word phrases
-    const changePatterns = [
-      // Quoted phrases: "change 'Get Started' to 'Learn More'" or 'change "old text" to "new text"'
-      /change\s+["']([^"']+)["']\s+to\s+["']([^"']+)["']/i,
-      // Handle "the mail/email X to Y" pattern - strip descriptor
-      /change\s+(?:the\s+)?(?:mail|email|address|phone|number)\s+(.+?)\s+to\s+(.+?)(?:\s*$|\s+(?:please|now|thanks|for))/i,
-      // "change the name/word/text VILLA to VILLAS" - extract single word after descriptor
-      /change\s+(?:the\s+)?(?:name|word|text)\s+["']?(\S+?)["']?\s+to\s+["']?(.+?)["']?(?:\s*$|\s+(?:please|now|thanks|for))/i,
-      // Simple: "change villa to villas"
-      /change\s+(\w+)\s+to\s+(\w+)/i,
-      // Unquoted multi-word: "change Get Started to Learn More" (greedy match before " to ")
-      /change\s+(.+?)\s+to\s+(.+?)(?:\s*$|\s+(?:please|now|thanks|for))/i,
-      // "replace X with Y"
-      /replace\s+["']?(.+?)["']?\s+(?:with|by)\s+["']?(.+?)["']?(?:\s*$)/i,
-      // "please change X to Y"
-      /please\s+change\s+["']?(.+?)["']?\s+to\s+["']?(.+?)["']?(?:\s*$)/i,
-      // "make X say Y"
-      /make\s+["']?(.+?)["']?\s+say\s+["']?(.+?)["']?(?:\s*$)/i,
-    ];
-
-    for (const pattern of changePatterns) {
-      const match = userMessage.match(pattern);
-      if (match) {
-        let [, oldText, newText] = match;
-        let oldTextClean = oldText.trim();
-        const newTextClean = newText.trim();
-
-        // SMART MATCHING: Try to find the actual content the user is referring to
-        const actualMatch = findBestMatch(currentHtml, oldTextClean);
-        if (actualMatch && actualMatch !== oldTextClean) {
-          console.log(`[Website Editor] Smart match: "${oldTextClean}" -> "${actualMatch}"`);
-          oldTextClean = actualMatch;
-        }
-
-        // Only replace text content, NOT URLs, attributes, or code
-        // Use a smarter replacement that avoids href, src, class, id, and other attributes
-        const safeReplace = (html: string, find: string, replace: string): { html: string; count: number } => {
-          let count = 0;
-
-          // Replace text between > and < (actual visible content)
-          const result = html.replace(/>([^<]*)</g, (match, textContent) => {
-            const regex = new RegExp(escapeRegExp(find), 'gi');
-            const matches = textContent.match(regex);
-            if (matches) {
-              count += matches.length;
-              return '>' + textContent.replace(regex, replace) + '<';
-            }
-            return match;
-          });
-
-          // Also replace in href="mailto:" links
-          let finalResult = result;
-          if (find.includes('@')) {
-            const mailtoRegex = new RegExp(`(href=["']mailto:)${escapeRegExp(find)}`, 'gi');
-            finalResult = finalResult.replace(mailtoRegex, `$1${replace}`);
-          }
-
-          return { html: finalResult, count };
-        };
-
-        const { html: newHtml, count: matchCount } = safeReplace(currentHtml, oldTextClean, newTextClean);
-
-        if (matchCount > 0) {
-          updatedHtml = newHtml;
-          responseMessage = `Done! I changed "${oldTextClean}" to "${newTextClean}" (${matchCount} occurrence${matchCount > 1 ? 's' : ''}).`;
-          changesMade = true;
-        } else {
-          // Provide helpful feedback about what IS in the website
-          const emails = extractEmails(currentHtml);
-          const textSamples = extractTextContent(currentHtml).slice(0, 5);
-
-          let suggestion = `I couldn't find "${oldTextClean}" in your website.`;
-          if (emails.length > 0 && (messageLower.includes('mail') || messageLower.includes('@'))) {
-            suggestion += `\n\nI found these email addresses: ${emails.join(', ')}`;
-          }
-          responseMessage = suggestion;
-        }
-        break;
-      }
-    }
-
-    // 2. COLOR CHANGES
-    if (!changesMade && (messageLower.includes('color') || messageLower.includes('colour'))) {
-      const colorMatch = messageLower.match(/(?:make|change|set)?\s*(?:the\s+)?(?:color|colour)\s*(?:to\s+)?(\w+)/i) ||
-                        messageLower.match(/(?:make|change)\s+(?:it\s+)?(\w+)/i);
-
-      const colorKeywords = ['blue', 'red', 'green', 'yellow', 'orange', 'purple', 'pink', 'black', 'white', 'gold', 'silver', 'navy', 'teal', 'cyan', 'magenta'];
-
-      let targetColor = null;
-      if (colorMatch && colorKeywords.includes(colorMatch[1].toLowerCase())) {
-        targetColor = colorMatch[1].toLowerCase();
-      } else {
-        for (const color of colorKeywords) {
-          if (messageLower.includes(color)) {
-            targetColor = color;
-            break;
-          }
-        }
-      }
-
-      if (targetColor) {
-        updatedHtml = updatedHtml.replace(/color:\s*[^;]+/gi, `color: ${targetColor}`);
-        responseMessage = `Done! I changed the text color to ${targetColor}.`;
-        changesMade = true;
-      } else {
-        responseMessage = "I can change colors! Try saying 'make it blue' or 'change color to red'.";
-      }
-    }
-
-    // 3. BACKGROUND COLOR
-    if (!changesMade && messageLower.includes('background')) {
-      const colorKeywords = ['blue', 'red', 'green', 'yellow', 'orange', 'purple', 'pink', 'black', 'white', 'gold', 'navy', 'teal', 'gray', 'grey'];
-      let targetColor = null;
-      for (const color of colorKeywords) {
-        if (messageLower.includes(color)) {
-          targetColor = color;
-          break;
-        }
-      }
-
-      if (targetColor) {
-        updatedHtml = updatedHtml.replace(/background(?:-color)?:\s*[^;]+/gi, `background-color: ${targetColor}`);
-        responseMessage = `Done! I changed the background color to ${targetColor}.`;
-        changesMade = true;
-      }
-    }
-
-    // 4. FONT SIZE
-    if (!changesMade && (messageLower.includes('bigger') || messageLower.includes('larger') || messageLower.includes('increase size'))) {
-      updatedHtml = updatedHtml.replace(/font-size:\s*(\d+)(px|em|rem)/gi, (match, size, unit) => {
-        return `font-size: ${Math.round(parseInt(size) * 1.2)}${unit}`;
-      });
-      responseMessage = "Done! I made the text bigger.";
-      changesMade = true;
-    }
-
-    if (!changesMade && (messageLower.includes('smaller') || messageLower.includes('decrease size'))) {
-      updatedHtml = updatedHtml.replace(/font-size:\s*(\d+)(px|em|rem)/gi, (match, size, unit) => {
-        return `font-size: ${Math.round(parseInt(size) * 0.8)}${unit}`;
-      });
-      responseMessage = "Done! I made the text smaller.";
-      changesMade = true;
-    }
-
-    // 5. REMOVE ELEMENTS
-    if (!changesMade && (messageLower.includes('remove') || messageLower.includes('delete'))) {
-      if (messageLower.includes('footer')) {
-        updatedHtml = updatedHtml.replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '');
-        responseMessage = "Done! I removed the footer.";
-        changesMade = true;
-      } else if (messageLower.includes('header')) {
-        updatedHtml = updatedHtml.replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '');
-        responseMessage = "Done! I removed the header.";
-        changesMade = true;
-      } else if (messageLower.includes('nav')) {
-        updatedHtml = updatedHtml.replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '');
-        responseMessage = "Done! I removed the navigation.";
-        changesMade = true;
-      } else {
-        responseMessage = "I can remove elements! Try saying 'remove the footer', 'delete the header', or 'remove the navigation'.";
-      }
-    }
-
-    // 6. ADD PAGE (not supported)
-    if (!changesMade && messageLower.includes('add') && messageLower.includes('page')) {
-      responseMessage = "Adding new pages requires going back to the website builder wizard. I can help you edit the content on your current pages. Would you like to:\n\n• Change text (e.g., 'change Hello to Welcome')\n• Update colors (e.g., 'make the color blue')\n• Remove elements (e.g., 'remove the footer')\n\nWhat would you like to do?";
-    }
-
-    // 7. GENERIC ADD (helpful guidance)
-    if (!changesMade && messageLower.includes('add') && !messageLower.includes('page')) {
-      responseMessage = "I can help you with text changes! Try:\n\n• 'Change [text] to [new text]'\n• 'Make the color blue'\n• 'Make the text bigger'\n\nWhat would you like to change?";
-    }
-
-    // 8. If no changes made and no specific help given, provide guidance
-    if (!changesMade && responseMessage === "I've made the changes you requested! Check the preview to see the updates.") {
-      responseMessage = "I'm not sure what you'd like to change. Try:\n\n• **Change text**: 'change Villa to Villas'\n• **Change colors**: 'make the color blue'\n• **Make text bigger/smaller**: 'make the text bigger'\n• **Remove elements**: 'remove the footer'\n\nWhat would you like to do?";
-    }
-
-    return {
-      updatedHtml,
-      responseMessage,
-    };
-  } catch (error) {
-    console.error('[Website Editor] Processing error:', error);
-    return {
-      updatedHtml: currentHtml,
-      responseMessage: 'I encountered an error processing your request. Please try rephrasing it.',
-    };
-  }
-}
-
-/**
- * Escape special regex characters in a string
+ * Escape special regex characters
  */
 function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Process website edit locally (fallback when no AI)
+ */
+function processWebsiteEditLocal(
+  message: string,
+  currentHtml: string,
+  context: { businessName: string; industry?: string; location?: string }
+): { updatedHtml: string; responseMessage: string } {
+  let updatedHtml = currentHtml;
+  let responseMessage = "I've made the changes you requested! Check the preview to see the updates.";
+  const messageLower = message.toLowerCase();
+  let changesMade = false;
+
+  // Color changes
+  const colorMatch = message.match(/(?:make|change|set)?\s*(?:the)?\s*(?:color|colour)\s*(?:to)?\s*(#[a-fA-F0-9]{3,6}|\w+)/i);
+  if (colorMatch) {
+    const newColor = colorMatch[1];
+    updatedHtml = updatedHtml.replace(/--color-primary:\s*[^;]+;/g, `--color-primary: ${newColor};`);
+    responseMessage = `I've updated the primary color to ${newColor}!`;
+    changesMade = true;
+  }
+
+  // Text replacement: "change X to Y"
+  const changeMatch = message.match(/change\s+['"]?(.+?)['"]?\s+to\s+['"]?(.+?)['"]?$/i);
+  if (changeMatch && !changesMade) {
+    const [, oldText, newText] = changeMatch;
+    const found = findBestMatch(updatedHtml, oldText.trim());
+    if (found) {
+      updatedHtml = updatedHtml.replace(found, newText.trim());
+      responseMessage = `I've changed "${found}" to "${newText.trim()}"!`;
+      changesMade = true;
+    }
+  }
+
+  // Size changes
+  if (!changesMade && (messageLower.includes('bigger') || messageLower.includes('larger'))) {
+    updatedHtml = updatedHtml.replace(/font-size:\s*(\d+)px/g, (match, size) => {
+      return `font-size: ${Math.round(parseInt(size) * 1.2)}px`;
+    });
+    responseMessage = "I've made the text bigger!";
+    changesMade = true;
+  }
+
+  if (!changesMade && (messageLower.includes('smaller'))) {
+    updatedHtml = updatedHtml.replace(/font-size:\s*(\d+)px/g, (match, size) => {
+      return `font-size: ${Math.round(parseInt(size) * 0.8)}px`;
+    });
+    responseMessage = "I've made the text smaller!";
+    changesMade = true;
+  }
+
+  // Help message if no changes made
+  if (!changesMade) {
+    responseMessage = "I can help you with:\n\n• **Change text**: 'change Hello to Welcome'\n• **Change colors**: 'make the color blue' or 'color #FF5500'\n• **Size changes**: 'make the text bigger/smaller'\n\nWhat would you like to do?";
+  }
+
+  return { updatedHtml, responseMessage };
 }
 
 /**
@@ -335,75 +266,57 @@ async function handleGeneralConversation(
   message: string,
   context?: { businessName?: string; industry?: string; location?: string }
 ): Promise<string> {
-  // Local responses only (NO AI)
   const lowerMessage = message.toLowerCase();
   
-  if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-    return "Hello! I'm Merlin, your Website Wizard. I'm here to help you with your website. What would you like to do today?";
+  // Try Claude first for natural conversation
+  if (anthropic) {
+    try {
+      const response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 512,
+        system: MERLIN_SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: message }],
+      });
+      const content = response.content[0];
+      if (content.type === 'text') {
+        return content.text;
+      }
+    } catch (error) {
+      console.error('[Website Editor] Claude conversation error:', error);
+    }
   }
-  if (lowerMessage.includes('how are you')) {
-    return "I'm doing great! I'm here to help you with your website. What would you like to work on today?";
-  }
-  if (lowerMessage.includes('see') && (lowerMessage.includes('website') || lowerMessage.includes('site'))) {
-    return "Yes! I can see your website. I can help you make changes to it. What would you like to modify?";
+
+  // Local fallback responses
+  if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+    return "Hello! I'm Merlin, your Website Wizard. What would you like to do today?";
   }
   if (lowerMessage.includes('help')) {
-    return "I can help you with:\n- Making changes to your website (colors, text, images, etc.)\n- Answering questions about your website\n- Providing suggestions for improvements\n\nWhat would you like help with?";
+    return "I can help you with:\n- Changing text, colors, and styles\n- Answering questions about your website\n- Suggesting improvements\n\nWhat would you like help with?";
   }
-  if (lowerMessage.includes('what can you do') || lowerMessage.includes('what do you do')) {
-    return "I'm Merlin, your Website Wizard! I can:\n- Change colors, fonts, and styles\n- Update text content\n- Modify images\n- Add or remove sections\n- Answer questions about your website\n\nJust tell me what you'd like to change!";
+  if (lowerMessage.includes('what can you do')) {
+    return "I'm Merlin! I can change colors, fonts, text content, and more. Just tell me what you'd like to modify!";
   }
   
-  // More helpful fallback
-  return "I'm Merlin, your website assistant! I can help you with:\n\n📝 **Text & Content** - Change headings, paragraphs, or add new text\n🎨 **Colors & Styles** - Update colors, fonts, or visual elements\n🖼️ **Images** - Replace or adjust images\n❌ **Remove** - Delete sections or elements\n\nJust tell me what you'd like to change!";
+  return "I'm Merlin, your website assistant! Tell me what you'd like to change - colors, text, styles, or ask me anything about your website!";
 }
 
 /**
- * Generate a friendly response message based on user request
+ * Register the website editor routes
  */
-function generateResponseMessage(userMessage: string): string {
-  const lowerMessage = userMessage.toLowerCase();
-
-  if (lowerMessage.includes('color') || lowerMessage.includes('colour')) {
-    return "I've updated the colors as requested! The changes should be visible in the preview.";
-  }
-  if (lowerMessage.includes('text') || lowerMessage.includes('title') || lowerMessage.includes('heading')) {
-    return "I've updated the text content as requested! Check the preview to see the changes.";
-  }
-  if (lowerMessage.includes('image') || lowerMessage.includes('photo') || lowerMessage.includes('picture')) {
-    return "I've updated the images as requested! The changes should be visible now.";
-  }
-  if (lowerMessage.includes('remove') || lowerMessage.includes('delete')) {
-    return "I've removed the requested elements from your website.";
-  }
-  if (lowerMessage.includes('add') || lowerMessage.includes('insert')) {
-    return "I've added the requested content to your website!";
-  }
-  if (lowerMessage.includes('size') || lowerMessage.includes('bigger') || lowerMessage.includes('smaller')) {
-    return "I've adjusted the sizes as requested!";
-  }
-  if (lowerMessage.includes('font') || lowerMessage.includes('text size')) {
-    return "I've updated the typography as requested!";
-  }
-
-  return "I've made the changes you requested! Check the preview to see the updates.";
-}
-
 export function registerWebsiteEditorRoutes(app: Express) {
   /**
    * POST /api/website-editor/chat
-   * General conversation OR website editing
-   * If message is about editing website, process it. Otherwise, just chat.
+   * AI-powered website editing and conversation
    */
   app.post('/api/website-editor/chat', async (req, res) => {
     try {
       const { message, currentHtml, context } = req.body as WebsiteEditRequest;
 
-      console.log('[Website Editor] Received request:', {
+      console.log('[Website Editor] Request:', {
         messageLength: message?.length || 0,
         hasHtml: !!currentHtml,
         hasContext: !!context,
-        businessName: context?.businessName,
+        usingClaude: !!anthropic,
       });
 
       if (!message) {
@@ -413,21 +326,19 @@ export function registerWebsiteEditorRoutes(app: Express) {
         });
       }
 
-      // Check if this is a website editing request or just general conversation
+      // Check if this is an edit request or general conversation
       const isEditRequest = currentHtml && context && context.businessName;
       const editKeywords = ['change', 'make', 'update', 'modify', 'add', 'remove', 'delete', 'color', 'text', 'image', 'font', 'size', 'style', 'edit', 'adjust', 'replace'];
       const messageLower = message.toLowerCase();
       const looksLikeEdit = editKeywords.some(keyword => messageLower.includes(keyword));
 
-      // If it's clearly a general conversation (no HTML/context or doesn't look like edit), just chat
+      // General conversation mode
       if (!isEditRequest || !looksLikeEdit) {
-        // General conversation mode - local responses only
         const conversationResponse = await handleGeneralConversation(message, context);
-        console.log('[Website Editor] General conversation response:', conversationResponse.substring(0, 50));
         return res.json({
           success: true,
           message: conversationResponse,
-          updatedHtml: currentHtml || undefined, // Return original HTML if provided, undefined if not
+          updatedHtml: currentHtml || undefined,
         });
       }
 
@@ -435,32 +346,50 @@ export function registerWebsiteEditorRoutes(app: Express) {
       if (!currentHtml || !context || !context.businessName) {
         return res.status(400).json({
           success: false,
-          error: 'Missing required fields for website editing: currentHtml, context.businessName',
+          error: 'Missing required fields for website editing',
         });
       }
 
-      console.log('[Website Editor] Processing edit request (LOCAL):', {
-        messageLength: message.length,
-        htmlLength: currentHtml.length,
-        businessName: context.businessName,
-      });
+      let result: { message: string; updatedHtml: string };
 
-      const result = await processWebsiteEdit(message, currentHtml, context);
-      
-      console.log('[Website Editor] Edit response:', result.responseMessage.substring(0, 50));
+      // Try Claude first, fallback to local
+      if (anthropic) {
+        try {
+          result = await generateClaudeResponse(message, currentHtml, context);
+          console.log('[Website Editor] Claude response generated');
+        } catch (error) {
+          console.error('[Website Editor] Claude error, falling back to local:', error);
+          const localResult = processWebsiteEditLocal(message, currentHtml, context);
+          result = { message: localResult.responseMessage, updatedHtml: localResult.updatedHtml };
+        }
+      } else {
+        const localResult = processWebsiteEditLocal(message, currentHtml, context);
+        result = { message: localResult.responseMessage, updatedHtml: localResult.updatedHtml };
+      }
 
       res.json({
         success: true,
         updatedHtml: result.updatedHtml,
-        message: result.responseMessage,
+        message: result.message,
       });
     } catch (error) {
-      console.error('[Website Editor] Error processing request:', error);
+      console.error('[Website Editor] Error:', error);
       res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to process request',
       });
     }
   });
-}
 
+  /**
+   * GET /api/website-editor/status
+   * Check if Claude AI is available for the chat
+   */
+  app.get('/api/website-editor/status', (_req, res) => {
+    res.json({
+      success: true,
+      claudeEnabled: !!anthropic,
+      mode: anthropic ? 'AI-Powered' : 'Local Processing',
+    });
+  });
+}

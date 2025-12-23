@@ -1,7 +1,7 @@
 {
   "agent": "UX Designer",
   "focus": "Layout, flow, spacing, navigation logic",
-  "score": 9.16,
+  "score": 9.01,
   "strengths": [
     "Clear navigation structure",
     "Clear user journey",
@@ -14,8 +14,9 @@
   "verdict": "World-Class",
   "details": {
     "heuristics": {
-      "score": 7.2,
+      "score": 6.7,
       "violations": [
+        "Inconsistent button styles",
         "Some form fields lack labels"
       ]
     },
@@ -27,11 +28,11 @@
     },
     "headingStructure": {
       "h1": 1,
-      "h2": 2,
+      "h2": 1,
       "h3": 1
     },
     "tapTargets": {
-      "total": 12,
+      "total": 10,
       "adequate": 1
     },
     "layoutRhythm": 0

@@ -20,6 +20,11 @@ import { queryClient } from './lib/queryClient';
 const MainLayout = lazy(() => import('@/components/IDE/MainLayout').then(module => ({ default: module.MainLayout })));
 const TemplatePreviewPage = lazy(() => import('@/components/Templates/TemplatePreviewPage').then(module => ({ default: module.TemplatePreviewPage })));
 
+// Merlin 8.0 Pages
+const BuildChoice = lazy(() => import('@/pages/merlin8/BuildChoice'));
+const QuickIntake = lazy(() => import('@/pages/merlin8/QuickIntake'));
+const GeneratingProgress = lazy(() => import('@/pages/merlin8/GeneratingProgress'));
+
 // Component that syncs URL with MainLayout view state
 function MainLayoutWithRoute() {
   return <MainLayout />;
@@ -41,6 +46,15 @@ function Router() {
       </div>
     }>
       <Switch>
+        {/* Merlin 8.0 Routes */}
+        <Route path="/merlin8" component={BuildChoice} />
+        <Route path="/merlin8/create" component={QuickIntake} />
+        <Route path="/merlin8/generating" component={GeneratingProgress} />
+        <Route path="/merlin8/templates" component={MainLayoutWithRoute} />
+        
+        {/* Editor with dynamic project slug */}
+        <Route path="/editor/:projectSlug" component={MainLayoutWithRoute} />
+        
         <Route path="/template-preview/:id" component={TemplatePreviewPage} />
         <Route path="/stargate-websites" component={MainLayoutWithRoute} />
         <Route path="/merlin" component={MainLayoutWithRoute} />

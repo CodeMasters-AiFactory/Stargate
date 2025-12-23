@@ -1,0 +1,22 @@
+{
+  "title": "Velocity F1 Racing - Business Services",
+  "description": "Professional business services from Velocity F1 Racing. Contact us today for expert solutions.",
+  "keywords": [
+    "business",
+    "business services",
+    "velocity f1 racing"
+  ],
+  "ogTitle": "Velocity F1 Racing",
+  "ogDescription": "Professional business services from Velocity F1 Racing. Contact us today for expert solutions.",
+  "ogImage": "/assets/images/hero-1-hero-1766415729661.png",
+  "schemaLD": {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Velocity F1 Racing",
+    "description": "Professional business services from Velocity F1 Racing. Contact us today for expert solutions.",
+    "url": "https://example.com/velocity-f1-racing"
+  },
+  "slug": "velocity-f1-racing",
+  "seoScore": 70,
+  "readabilityHints": []
+}

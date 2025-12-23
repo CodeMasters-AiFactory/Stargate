@@ -1,6 +1,19 @@
 {
   "permissions": {
     "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Bash(git:*)",
+      "Bash(cd:*)",
+      "Bash(dir:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(type:*)",
+      "Bash(az:*)",
+      "Bash(npm:*)",
+      "Bash(node:*)",
       "Bash(npm run dev:*)",
       "Bash(timeout /t 3 /nobreak)",
       "Bash(exit 0)",

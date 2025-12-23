@@ -10,11 +10,12 @@ console.log('[STARTUP] dotenv loaded');
 
 import fs from "fs";
 import path from "path";
-// import compression from "compression"; // Temporarily disabled for debugging
+import compression from "compression"; // Re-enabled for CDN optimization
 import express, { type Request, Response } from "express";
 // import session from "express-session"; // Temporarily disabled (was causing hangs)
 import helmet from "helmet";
 import { cacheBusterMiddleware } from "./middleware/cacheBuster";
+import { cdnCacheMiddleware } from "./middleware/cdnCache";
 import { populateUser } from "./middleware/permissions";
 import { corsConfig, sanitizeInput, securityLogger, validateRequestSize } from "./middleware/security";
 import { registerRoutes } from "./routes";
@@ -110,6 +111,24 @@ if (process.env.NODE_ENV === "production") {
     })
   );
   log("✅ Security headers enabled (Helmet.js)");
+  
+  // CDN-friendly cache headers for production
+  app.use(cdnCacheMiddleware);
+  log("✅ CDN cache headers enabled");
+  
+  // Compression for smaller payloads (Brotli/Gzip)
+  app.use(compression({
+    level: 6, // Balanced compression
+    threshold: 1024, // Only compress responses > 1KB
+    filter: (req, res) => {
+      // Don't compress already compressed files
+      if (req.path.match(/\.(br|gz|zip|rar|7z|tar|tgz)$/i)) {
+        return false;
+      }
+      return compression.filter(req, res);
+    }
+  }));
+  log("✅ Response compression enabled");
 } else {
   // In development, use minimal security headers to avoid interfering with Vite HMR
   app.use(

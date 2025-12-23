@@ -1,75 +1,160 @@
-# Getting Started with Merlin Website Builder
+# Getting Started with Stargate Portal
 
-**Welcome to Merlin!** This guide will help you create your first website in minutes.
+This guide will walk you through setting up and using Stargate Portal for the first time.
 
----
+## Prerequisites
 
-## Quick Start (5 Minutes)
+Before you begin, ensure you have:
 
-### Step 1: Create an Account
+1. **Node.js 18+** - [Download here](https://nodejs.org/)
+2. **Git** - [Download here](https://git-scm.com/)
+3. **PostgreSQL** (optional for local dev) - SQLite is used by default
 
-1. Sign up for a free account
-2. Verify your email address
-3. Complete your profile
+## Installation
 
-### Step 2: Start Building
+### Step 1: Clone the Repository
 
-1. Click **"Create Website"** from the dashboard
-2. Choose a package (Essential, Professional, SEO, Deluxe, or Ultra)
-3. Answer a few questions about your business
-4. Let AI build your website!
+```bash
+git clone https://github.com/yourusername/stargate-portal.git
+cd stargate-portal
+```
 
-### Step 3: Customize
+### Step 2: Install Dependencies
 
-1. Use the visual editor to customize your site
-2. Add your content and images
-3. Preview on mobile, tablet, and desktop
-4. Publish when ready!
+```bash
+npm install
+```
 
----
+### Step 3: Configure Environment
 
-## Features Overview
+Create a `.env` file in the root directory:
 
-### 🎨 Visual Editor
-- Drag-and-drop components
-- Real-time preview
-- Mobile-responsive editing
-- 200+ pre-built components
+```env
+# Server Configuration
+PORT=5000
+NODE_ENV=development
 
-### 🤖 AI-Powered
-- Automatic website generation
-- Content optimization
-- SEO enhancement
-- Image generation
+# Database (SQLite for development)
+DATABASE_URL=file:./dev.db
 
-### 📱 Responsive Design
-- Mobile-first approach
-- Tablet optimization
-- Desktop layouts
-- Cross-browser compatible
+# AI Services (Optional but recommended)
+OPENAI_API_KEY=your-openai-key
+ANTHROPIC_API_KEY=your-anthropic-key
+LEONARDO_API_KEY=your-leonardo-key
 
-### 🛒 E-Commerce
-- Product catalogs
-- Shopping cart
-- Payment processing
-- Order management
+# Google Search (for research features)
+GOOGLE_SEARCH_API_KEY=your-google-key
+GOOGLE_SEARCH_ENGINE_ID=your-search-engine-id
+```
 
-### 📊 Analytics
-- Visitor tracking
-- Performance monitoring
-- Conversion tracking
-- Custom reports
+### Step 4: Start Development Server
 
----
+```bash
+npm run dev
+```
+
+The application will be available at [http://localhost:5000](http://localhost:5000).
+
+## Creating Your First Website
+
+### Using the Merlin Wizard
+
+1. Click **"Launch Merlin Wizard"** on the homepage
+2. Enter your business information
+3. Select an industry and style
+4. Let AI generate your website structure
+5. Customize using the visual editor
+6. Preview and deploy
+
+### Manual Creation
+
+1. Navigate to **Templates** in the sidebar
+2. Browse or search for a template
+3. Click **Use Template** to start editing
+4. Customize content, colors, and layout
+5. Save and preview your changes
+
+## Understanding the Visual Editor
+
+### Toolbar
+
+| Tool | Description |
+|------|-------------|
+| Device Preview | Switch between mobile, tablet, desktop views |
+| Undo/Redo | Revert or reapply changes |
+| Zoom | Zoom in/out of the canvas |
+| Grid | Toggle alignment grid |
+
+### Component Palette
+
+Drag components from the left panel onto your canvas:
+
+- **Layout**: Sections, containers, grids
+- **Content**: Text, headings, images, videos
+- **Interactive**: Buttons, forms, accordions
+- **Media**: Image galleries, carousels, videos
+- **Navigation**: Menus, breadcrumbs, pagination
+
+### Property Panel
+
+Select any component to edit its properties:
+
+- **Style**: Colors, fonts, spacing
+- **Content**: Text, images, links
+- **Behavior**: Animations, interactions
+- **Responsive**: Breakpoint-specific settings
+
+## AI Agents
+
+Stargate includes 10 specialized AI agents:
+
+| Agent | Role |
+|-------|------|
+| NOVA | Project coordination and orchestration |
+| ATLAS | Technical architecture decisions |
+| SAGE | Content strategy and writing |
+| ORACLE | Analytics and insights |
+| SCOUT | Research and competitive analysis |
+| CIPHER | Security and best practices |
+| PHOENIX | Recovery and troubleshooting |
+| AEGIS | Quality assurance |
+| TEMPO | Performance optimization |
+| GUARDIAN | Accessibility compliance |
+
+Access agents through the AI panel in the editor.
+
+## Deployment
+
+### Deploy to Azure
+
+```bash
+npm run build
+npm run deploy:azure
+```
+
+### Deploy to Vercel
+
+```bash
+npm run build
+vercel deploy
+```
+
+### Deploy to Netlify
+
+```bash
+npm run build
+netlify deploy --prod
+```
 
 ## Next Steps
 
-- [Feature Documentation](./features.md)
-- [API Reference](./api.md)
-- [Best Practices](./best-practices.md)
-- [Troubleshooting](./troubleshooting.md)
+- [API Reference](./api/README.md) - Integrate with external services
+- [Components Guide](./components/README.md) - Deep dive into components
+- [Templates](./templates/README.md) - Create custom templates
+- [Advanced Features](./advanced/README.md) - Power user features
 
----
+## Getting Help
 
-**Need Help?** Contact support or check our [FAQ](./faq.md).
-
+- Check the [FAQ](./faq.md)
+- Search [GitHub Issues](https://github.com/yourusername/stargate-portal/issues)
+- Join our [Discord](https://discord.gg/stargate)

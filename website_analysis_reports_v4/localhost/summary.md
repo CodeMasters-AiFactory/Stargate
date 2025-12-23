@@ -1,10 +1,10 @@
 # Website Analysis Report v4.0
 ## Multi-Expert Panel Evaluation
 
-**Analysis Date:** 2025-12-19T13:20:51.363Z  
+**Analysis Date:** 2025-12-22T15:02:32.295Z  
 **Industry:** default  
 **Final Verdict:** Good  
-**Weighted Score:** 68.2/100
+**Weighted Score:** 65.1/100
 
 ---
 
@@ -12,47 +12,47 @@
 
 | Expert | Score | Verdict | Focus |
 |--------|-------|---------|-------|
-| UX Designer | 9.2/10 | World-Class | Layout, flow, spacing, navigation |
+| UX Designer | 9.0/10 | World-Class | Layout, flow, spacing, navigation |
 | Product Designer | 9.0/10 | World-Class | Visual design, typography, brand identity |
-| Conversion Strategist | 6.0/10 | Good | CTAs, trust, funnels, messaging |
+| Conversion Strategist | 4.5/10 | OK | CTAs, trust, funnels, messaging |
 | SEO Specialist | 10.0/10 | World-Class | Structure, metadata, keywords |
 | Brand Analyst | 9.0/10 | World-Class | Uniqueness, consistency, narrative |
 
-**Expert Agreement:** 81.3%
+**Expert Agreement:** 62.4%
 
 ---
 
 ## Consensus Engine
 
 **Industry:** default  
-**Weighted Score:** 67.4/100  
+**Weighted Score:** 64/100  
 **Verdict:** Good
 
 ### Normalized Scores (with industry weights):
-- ux: 9.2/10
+- ux: 9.0/10
 - visual: 9.0/10
-- conversion: 6.0/10
+- conversion: 4.5/10
 - seo: 10.0/10
 - brand: 9.0/10
 
 
 ### Anomalies Detected:
-- conversion score (6.0) differs significantly from average (8.6)
+- conversion score (4.5) differs significantly from average (8.3)
 
 ---
 
 ## Human Perception Score
 
-**Total:** 70/100
+**Total:** 67.5/100
 
 - **First Impression:** 17.5/25
-- **Emotional Resonance:** 15/25
+- **Emotional Resonance:** 12.5/25
 - **Cohesion:** 20/25
 - **Identity Recognition:** 17.5/25
 
 ### Breakdown:
 - **Trust:** medium
-- **Premium Feel:** medium
+- **Premium Feel:** low
 - **Memorable:** medium
 
 ---
@@ -90,11 +90,11 @@
 
 ### Conversion Strategist
 **Strengths:**
-- Strong CTA present
 - CTA visible above fold
 - Basic funnel present
 
 **Weaknesses:**
+- Weak or missing CTAs
 - Limited trust elements
 - Limited contact options
 

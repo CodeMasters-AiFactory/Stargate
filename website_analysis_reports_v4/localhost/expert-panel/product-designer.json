@@ -21,7 +21,7 @@
         "Inter"
       ],
       "hasModern": true,
-      "sizeVariety": 4,
+      "sizeVariety": 3,
       "hasHierarchy": true
     },
     "premiumIndicators": {
@@ -32,8 +32,8 @@
     },
     "rhythm": 0,
     "consistency": {
-      "sectionCount": 4,
-      "paddingVariety": 3,
+      "sectionCount": 3,
+      "paddingVariety": 2,
       "isConsistent": true
     }
   }

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phoenix F1 Racing | Elite Formula 1 Team</title>
+  <meta name="description" content="Phoenix F1 Racing - Elite Formula 1 racing team competing at the pinnacle of motorsport.">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --primary: #E10600; --secondary: #1E1E1E; --dark: #0D0D0D; --white: #FFFFFF; }
+    body { font-family: 'Inter', sans-serif; background: var(--dark); color: var(--white); }
+    
+    nav { position: fixed; top: 0; width: 100%; z-index: 1000; background: rgba(13,13,13,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(225,6,0,0.3); }
+    .nav-container { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--primary); text-decoration: none; letter-spacing: 2px; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--white); text-decoration: none; font-weight: 500; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; transition: color 0.3s; }
+    .nav-links a:hover { color: var(--primary); }
+    
+    .hero { height: 100vh; position: relative; display: flex; align-items: center; }
+    .hero-bg { position: absolute; inset: 0; z-index: -1; }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6); }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13,13,13,0.9) 0%, rgba(13,13,13,0.4) 50%, transparent 100%); }
+    .hero-content { max-width: 1400px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+    .hero h1 { font-family: 'Orbitron', sans-serif; font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; text-transform: uppercase; }
+    .hero h1 span { color: var(--primary); }
+    .hero p { font-size: 1.25rem; max-width: 500px; margin-bottom: 2rem; color: rgba(255,255,255,0.8); line-height: 1.7; }
+    
+    .btn { display: inline-block; padding: 1rem 2.5rem; background: var(--primary); color: var(--white); text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s; border: 2px solid var(--primary); }
+    .btn:hover { background: transparent; color: var(--primary); }
+    .btn-outline { background: transparent; border: 2px solid var(--white); margin-left: 1rem; }
+    .btn-outline:hover { background: var(--white); color: var(--dark); }
+    
+    .stats-bar { background: var(--secondary); padding: 3rem 0; border-top: 3px solid var(--primary); }
+    .stats-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; text-align: center; }
+    .stat-item h3 { font-family: 'Orbitron', sans-serif; font-size: 3rem; color: var(--primary); margin-bottom: 0.5rem; }
+    .stat-item p { text-transform: uppercase; font-size: 0.9rem; letter-spacing: 2px; color: rgba(255,255,255,0.7); }
+    
+    .services { padding: 6rem 0; background: var(--dark); }
+    .section-header { text-align: center; margin-bottom: 4rem; }
+    .section-header h2 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; margin-bottom: 1rem; text-transform: uppercase; }
+    .section-header p { color: rgba(255,255,255,0.7); max-width: 600px; margin: 0 auto; }
+    .services-grid { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .service-card { background: var(--secondary); border-radius: 8px; overflow: hidden; transition: transform 0.3s; }
+    .service-card:hover { transform: translateY(-10px); }
+    .service-card img { width: 100%; height: 250px; object-fit: cover; }
+    .service-card-content { padding: 1.5rem; }
+    .service-card h3 { font-family: 'Orbitron', sans-serif; margin-bottom: 0.5rem; color: var(--primary); }
+    .service-card p { color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.6; }
+    
+    .team { padding: 6rem 0; background: linear-gradient(135deg, var(--secondary) 0%, var(--dark) 100%); }
+    .team-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .team-image img { width: 100%; border-radius: 8px; border: 3px solid var(--primary); }
+    .team-content h2 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; margin-bottom: 1.5rem; text-transform: uppercase; }
+    .team-content p { color: rgba(255,255,255,0.8); line-height: 1.8; margin-bottom: 1.5rem; }
+    
+    .cta { padding: 6rem 0; background: var(--primary); text-align: center; }
+    .cta h2 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; margin-bottom: 1rem; text-transform: uppercase; }
+    .cta p { margin-bottom: 2rem; font-size: 1.1rem; }
+    .cta .btn { background: var(--white); color: var(--primary); border-color: var(--white); }
+    .cta .btn:hover { background: transparent; color: var(--white); }
+    
+    footer { background: var(--dark); padding: 3rem 0; border-top: 1px solid rgba(255,255,255,0.1); }
+    .footer-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; }
+    .footer-links a:hover { color: var(--primary); }
+    
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.5rem; }
+      .stats-container { grid-template-columns: repeat(2, 1fr); }
+      .services-grid { grid-template-columns: 1fr; }
+      .team-container { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="logo">PHOENIX F1</a>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="hero-bg">
+      <img src="f1-hero-image.jpg" alt="Phoenix F1 Racing Car">
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <h1>Racing at the<br><span>Speed of Light</span></h1>
+      <p>Phoenix F1 Racing - Elite Formula 1 team competing at the pinnacle of motorsport with world-class drivers and cutting-edge technology.</p>
+      <a href="#contact" class="btn">Join the Team</a>
+      <a href="#" class="btn btn-outline">Race Calendar</a>
+    </div>
+  </section>
+
+  <section class="stats-bar">
+    <div class="stats-container">
+      <div class="stat-item"><h3>47</h3><p>Race Wins</p></div>
+      <div class="stat-item"><h3>3</h3><p>Championships</p></div>
+      <div class="stat-item"><h3>156</h3><p>Podium Finishes</p></div>
+      <div class="stat-item"><h3>24</h3><p>Pole Positions</p></div>
+    </div>
+  </section>
+
+  <section class="services" id="services">
+    <div class="section-header">
+      <h2>Our Excellence</h2>
+      <p>From engineering innovation to driver development, we push the boundaries of what's possible in motorsport.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <img src="f1-pitcrew.jpg" alt="Pit Crew">
+        <div class="service-card-content">
+          <h3>Pit Crew Excellence</h3>
+          <p>World-record pit stops under 2 seconds. Our crew trains relentlessly to shave milliseconds that win championships.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <img src="f1-hero-image.jpg" alt="Engineering">
+        <div class="service-card-content">
+          <h3>Engineering Innovation</h3>
+          <p>Cutting-edge aerodynamics and powertrain technology developed by over 1,000 engineers.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <img src="f1-driver.jpg" alt="Driver Academy">
+        <div class="service-card-content">
+          <h3>Driver Academy</h3>
+          <p>Nurturing the next generation of F1 champions through our elite driver development program.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="team" id="team">
+    <div class="team-container">
+      <div class="team-image"><img src="f1-driver.jpg" alt="Phoenix F1 Driver"></div>
+      <div class="team-content">
+        <h2>Meet Our Drivers</h2>
+        <p>Our drivers are among the best in the world, combining raw talent with years of experience at the highest level of motorsport.</p>
+        <p>With multiple championship victories between them, they bring determination, skill, and an unwavering pursuit of perfection to every race weekend.</p>
+        <a href="#" class="btn">Driver Profiles</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Ready to Race?</h2>
+    <p>Join our exclusive partner program and be part of the Phoenix F1 legacy.</p>
+    <a href="#" class="btn">Become a Partner</a>
+  </section>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-logo">PHOENIX F1 RACING</div>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Media</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

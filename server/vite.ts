@@ -318,10 +318,38 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(express.static(distPath));
+  // CDN-optimized static file serving with proper cache headers
+  app.use(express.static(distPath, {
+    maxAge: '1y', // 1 year for hashed assets
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, filePath) => {
+      // Immutable cache for hashed assets (js, css with hash in filename)
+      if (filePath.match(/\.[a-f0-9]{8}\.(js|css)$/)) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      }
+      // Long cache for images and fonts
+      else if (filePath.match(/\.(png|jpg|jpeg|gif|webp|svg|ico|woff|woff2|ttf|eot)$/)) {
+        res.setHeader('Cache-Control', 'public, max-age=2592000'); // 30 days
+      }
+      // Short cache for HTML (allow updates)
+      else if (filePath.match(/\.html$/)) {
+        res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      }
+      // Default moderate cache
+      else {
+        res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 day
+      }
+      
+      // CDN headers for Azure/CloudFlare
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('Vary', 'Accept-Encoding');
+    }
+  }));
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
+    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }

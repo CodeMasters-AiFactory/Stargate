@@ -1,0 +1,382 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - region "Notifications (F8)":
+    - list
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - img [ref=e7]
+        - generic [ref=e9]: Getting Started Guide
+      - button [ref=e10] [cursor=pointer]:
+        - img
+    - generic [ref=e11]:
+      - generic [ref=e12]:
+        - generic [ref=e13]: Step 1 of 6
+        - generic [ref=e14]: 17% complete
+      - progressbar [ref=e15]
+    - generic [ref=e17]:
+      - button "1" [ref=e18] [cursor=pointer]:
+        - generic [ref=e19]: "1"
+      - button "2" [disabled] [ref=e20]:
+        - generic [ref=e21]: "2"
+      - button "3" [disabled] [ref=e22]:
+        - generic [ref=e23]: "3"
+      - button "4" [disabled] [ref=e24]:
+        - generic [ref=e25]: "4"
+      - button "5" [disabled] [ref=e26]:
+        - generic [ref=e27]: "5"
+      - button "6" [disabled] [ref=e28]:
+        - generic [ref=e29]: "6"
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - img [ref=e33]
+        - heading "Welcome to Stargate Portal" [level=2] [ref=e35]
+        - paragraph [ref=e36]: Your AI-powered website building platform. Let us show you how to create stunning websites in minutes with our intelligent tools.
+      - paragraph [ref=e38]:
+        - generic [ref=e39]: "*"
+        - text: "Tip: You can always restart this tour from Settings > Help"
+      - generic [ref=e40]:
+        - button "Previous" [disabled]:
+          - img
+          - text: Previous
+        - button "Skip Tour" [ref=e41] [cursor=pointer]
+        - button "Next" [ref=e42] [cursor=pointer]:
+          - text: Next
+          - img
+  - generic [ref=e46]:
+    - navigation [ref=e47]:
+      - generic [ref=e50]:
+        - link "Services" [ref=e51] [cursor=pointer]:
+          - /url: "#services"
+        - link "Features" [ref=e52] [cursor=pointer]:
+          - /url: "#features"
+        - link "Pricing" [ref=e53] [cursor=pointer]:
+          - /url: "#pricing"
+        - link "Testimonials" [ref=e54] [cursor=pointer]:
+          - /url: "#testimonials"
+        - button "Sign In" [ref=e55] [cursor=pointer]
+        - button "Get Started" [ref=e56] [cursor=pointer]
+    - generic [ref=e57]:
+      - iframe [ref=e58]:
+        - generic "YouTube Video Player" [ref=f1e3]:
+          - link "Watch on www.youtube.com" [ref=f1e8] [cursor=pointer]:
+            - /url: https://www.youtube.com/watch?v=mSDsLpMogtM
+            - img
+      - generic [ref=e59]:
+        - generic [ref=e62]: Trusted by 50,000+ developers worldwide
+        - heading "Complete AI Ecosystem For Modern Development" [level=1] [ref=e63]:
+          - generic [ref=e64]: Complete AI Ecosystem
+          - generic [ref=e65]: For Modern Development
+        - paragraph [ref=e66]: Stargate provides cutting-edge AI-powered solutions across multiple platforms. From website creation with Merlin, to advanced development with Stargate IDE, to revolutionary AI systems - experience the complete ecosystem of intelligent tools.
+        - generic [ref=e67]:
+          - button "Launch Merlin Wizard" [ref=e68] [cursor=pointer]:
+            - img
+            - text: Launch Merlin Wizard
+            - img
+          - button "Watch Demo" [ref=e69] [cursor=pointer]:
+            - img
+            - text: Watch Demo
+        - generic [ref=e70]:
+          - generic [ref=e71]:
+            - img [ref=e72]
+            - generic [ref=e75]: No credit card required
+          - generic [ref=e76]:
+            - img [ref=e77]
+            - generic [ref=e80]: Free tier available
+          - generic [ref=e81]:
+            - img [ref=e82]
+            - generic [ref=e85]: Cancel anytime
+    - generic [ref=e87]:
+      - generic [ref=e88]:
+        - generic [ref=e89]: Our Services
+        - heading "Complete Stargate Ecosystem" [level=2] [ref=e90]
+        - paragraph [ref=e91]: Discover the full suite of Stargate services designed to transform your digital presence and development workflow.
+      - generic [ref=e92]:
+        - generic [ref=e93] [cursor=pointer]:
+          - generic [ref=e95]: Active
+          - img [ref=e97]
+          - heading "Merlin Website Wizard" [level=3] [ref=e100]
+          - paragraph [ref=e101]: AI-powered website builder. Create stunning sites in minutes.
+          - list [ref=e102]:
+            - listitem [ref=e103]:
+              - img [ref=e104]
+              - generic [ref=e107]: 60-second generation
+            - listitem [ref=e108]:
+              - img [ref=e109]
+              - generic [ref=e112]: 1000+ templates
+          - button "Launch Wizard" [ref=e113]
+        - generic [ref=e114] [cursor=pointer]:
+          - generic [ref=e116]: Admin
+          - img [ref=e118]
+          - heading "Stargate IDE" [level=3] [ref=e120]
+          - paragraph [ref=e121]: Advanced AI Development Platform with full IDE capabilities.
+          - list [ref=e122]:
+            - listitem [ref=e123]:
+              - img [ref=e124]
+              - generic [ref=e127]: AI code generation
+            - listitem [ref=e128]:
+              - img [ref=e129]
+              - generic [ref=e132]: Full dev environment
+          - button "Access IDE" [ref=e133]
+        - generic [ref=e134] [cursor=pointer]:
+          - generic [ref=e136]: Soon
+          - img [ref=e138]
+          - heading "PANDORA" [level=3] [ref=e148]
+          - paragraph [ref=e149]: Multi-AI collaboration platform for advanced problem-solving.
+          - list [ref=e150]:
+            - listitem [ref=e151]:
+              - img [ref=e152]
+              - generic [ref=e154]: Multi-AI collaboration
+            - listitem [ref=e155]:
+              - img [ref=e156]
+              - generic [ref=e158]: AI orchestration
+          - button "Coming Soon" [disabled]
+        - generic [ref=e159] [cursor=pointer]:
+          - generic [ref=e161]: Soon
+          - img [ref=e163]
+          - heading "Quantum Core" [level=3] [ref=e167]
+          - paragraph [ref=e168]: Quantum investigations and intelligent decision-making.
+          - list [ref=e169]:
+            - listitem [ref=e170]:
+              - img [ref=e171]
+              - generic [ref=e173]: Quantum investigations
+            - listitem [ref=e174]:
+              - img [ref=e175]
+              - generic [ref=e177]: Pattern analysis
+          - button "Coming Soon" [disabled]
+        - generic [ref=e178] [cursor=pointer]:
+          - generic [ref=e180]: Soon
+          - img [ref=e182]
+          - heading "Regis Core" [level=3] [ref=e186]
+          - paragraph [ref=e187]: AI routing and cost optimization for maximum efficiency.
+          - list [ref=e188]:
+            - listitem [ref=e189]:
+              - img [ref=e190]
+              - generic [ref=e192]: Intelligent routing
+            - listitem [ref=e193]:
+              - img [ref=e194]
+              - generic [ref=e196]: Cost optimization
+          - button "Coming Soon" [disabled]
+        - generic [ref=e197] [cursor=pointer]:
+          - generic [ref=e199]: Soon
+          - img [ref=e201]
+          - heading "Nero Core" [level=3] [ref=e203]
+          - paragraph [ref=e204]: AI firewall and security with intelligent threat protection.
+          - list [ref=e205]:
+            - listitem [ref=e206]:
+              - img [ref=e207]
+              - generic [ref=e209]: AI-powered firewall
+            - listitem [ref=e210]:
+              - img [ref=e211]
+              - generic [ref=e213]: Threat protection
+          - button "Coming Soon" [disabled]
+        - generic [ref=e214] [cursor=pointer]:
+          - generic [ref=e216]: Soon
+          - img [ref=e218]
+          - heading "Titan Ticket Master" [level=3] [ref=e220]
+          - paragraph [ref=e221]: Enterprise ticket management with AI automation.
+          - list [ref=e222]:
+            - listitem [ref=e223]:
+              - img [ref=e224]
+              - generic [ref=e226]: AI ticket automation
+            - listitem [ref=e227]:
+              - img [ref=e228]
+              - generic [ref=e230]: Analytics dashboard
+          - button "Coming Soon" [disabled]
+        - generic [ref=e231] [cursor=pointer]:
+          - generic [ref=e233]: Soon
+          - img [ref=e235]
+          - heading "Titan Support Master" [level=3] [ref=e237]
+          - paragraph [ref=e238]: Customer support with multi-channel AI assistance.
+          - list [ref=e239]:
+            - listitem [ref=e240]:
+              - img [ref=e241]
+              - generic [ref=e243]: Multi-channel support
+            - listitem [ref=e244]:
+              - img [ref=e245]
+              - generic [ref=e247]: AI-powered responses
+          - button "Coming Soon" [disabled]
+        - generic [ref=e248] [cursor=pointer]:
+          - generic [ref=e250]: Soon
+          - img [ref=e252]
+          - heading "AI Factory" [level=3] [ref=e257]
+          - paragraph [ref=e258]: Global marketplace for developers to sell apps worldwide.
+          - list [ref=e259]:
+            - listitem [ref=e260]:
+              - img [ref=e261]
+              - generic [ref=e263]: Global app marketplace
+            - listitem [ref=e264]:
+              - img [ref=e265]
+              - generic [ref=e267]: Developer monetization
+          - button "Coming Soon" [disabled]
+    - generic [ref=e269]:
+      - generic [ref=e270]:
+        - generic [ref=e271]: Why Choose Stargate
+        - heading "Everything you need to build faster" [level=2] [ref=e272]
+        - paragraph [ref=e273]: Powerful tools designed to accelerate your development workflow and bring your ideas to life.
+      - generic [ref=e274]:
+        - generic [ref=e275] [cursor=pointer]:
+          - img [ref=e277]
+          - heading "Merlin AI Wizard" [level=3] [ref=e280]
+          - paragraph [ref=e281]: Create stunning websites in minutes with our AI-powered wizard. No coding required.
+        - generic [ref=e283] [cursor=pointer]:
+          - img [ref=e285]
+          - heading "Multi-Agent AI" [level=3] [ref=e295]
+          - paragraph [ref=e296]: Multiple AI agents collaborate to deliver exceptional results.
+        - generic [ref=e297] [cursor=pointer]:
+          - img [ref=e299]
+          - heading "Lightning Fast" [level=3] [ref=e301]
+          - paragraph [ref=e302]: Generate complete websites in under 60 seconds.
+        - generic [ref=e303] [cursor=pointer]:
+          - img [ref=e305]
+          - heading "Enterprise Security" [level=3] [ref=e307]
+          - paragraph [ref=e308]: Bank-grade encryption and security for all your projects.
+    - generic [ref=e310]:
+      - generic [ref=e311]:
+        - generic [ref=e312]: Simple Pricing
+        - heading "Start free, scale as you grow" [level=2] [ref=e313]
+      - generic [ref=e314]:
+        - generic [ref=e315]:
+          - generic [ref=e316]:
+            - heading "Starter" [level=3] [ref=e317]
+            - generic [ref=e318]:
+              - generic [ref=e319]: Free
+              - generic [ref=e320]: forever
+          - list [ref=e321]:
+            - listitem [ref=e322]:
+              - img [ref=e323]
+              - text: 3 AI-generated websites
+            - listitem [ref=e326]:
+              - img [ref=e327]
+              - text: Basic templates
+            - listitem [ref=e330]:
+              - img [ref=e331]
+              - text: Community support
+            - listitem [ref=e334]:
+              - img [ref=e335]
+              - text: Stargate subdomain
+          - button "Get Started Free" [ref=e338] [cursor=pointer]
+        - generic [ref=e339]:
+          - generic [ref=e340]: Most Popular
+          - generic [ref=e341]:
+            - heading "Pro" [level=3] [ref=e342]
+            - generic [ref=e343]:
+              - generic [ref=e344]: $29
+              - generic [ref=e345]: /month
+          - list [ref=e346]:
+            - listitem [ref=e347]:
+              - img [ref=e348]
+              - text: Unlimited websites
+            - listitem [ref=e351]:
+              - img [ref=e352]
+              - text: Premium templates
+            - listitem [ref=e355]:
+              - img [ref=e356]
+              - text: Priority support
+            - listitem [ref=e359]:
+              - img [ref=e360]
+              - text: Custom domains
+            - listitem [ref=e363]:
+              - img [ref=e364]
+              - text: Analytics dashboard
+            - listitem [ref=e367]:
+              - img [ref=e368]
+              - text: Remove branding
+          - button "Start Pro Trial" [ref=e371] [cursor=pointer]
+        - generic [ref=e372]:
+          - generic [ref=e373]:
+            - heading "Enterprise" [level=3] [ref=e374]
+            - generic [ref=e376]: Custom
+          - list [ref=e377]:
+            - listitem [ref=e378]:
+              - img [ref=e379]
+              - text: Everything in Pro
+            - listitem [ref=e382]:
+              - img [ref=e383]
+              - text: Dedicated support
+            - listitem [ref=e386]:
+              - img [ref=e387]
+              - text: Custom integrations
+            - listitem [ref=e390]:
+              - img [ref=e391]
+              - text: SLA guarantee
+            - listitem [ref=e394]:
+              - img [ref=e395]
+              - text: On-premise option
+          - button "Contact Sales" [ref=e398] [cursor=pointer]
+    - generic [ref=e400]:
+      - generic [ref=e401]:
+        - generic [ref=e402]: Testimonials
+        - heading "Loved by developers" [level=2] [ref=e403]
+      - generic [ref=e404]:
+        - generic [ref=e405]:
+          - generic [ref=e406]:
+            - img [ref=e407]
+            - img [ref=e409]
+            - img [ref=e411]
+            - img [ref=e413]
+            - img [ref=e415]
+          - paragraph [ref=e417]: "\"Merlin AI built my portfolio site in 2 minutes. The quality is incredible - better than what I could code myself in days.\""
+          - generic [ref=e418]:
+            - generic [ref=e419]: SC
+            - generic [ref=e420]:
+              - generic [ref=e421]: Sarah Chen
+              - generic [ref=e422]: Full-Stack Developer
+        - generic [ref=e423]:
+          - generic [ref=e424]:
+            - img [ref=e425]
+            - img [ref=e427]
+            - img [ref=e429]
+            - img [ref=e431]
+            - img [ref=e433]
+          - paragraph [ref=e435]: "\"Finally, an AI that understands design. The websites it generates are not just functional but genuinely beautiful.\""
+          - generic [ref=e436]:
+            - generic [ref=e437]: MW
+            - generic [ref=e438]:
+              - generic [ref=e439]: Marcus Williams
+              - generic [ref=e440]: UX Designer
+        - generic [ref=e441]:
+          - generic [ref=e442]:
+            - img [ref=e443]
+            - img [ref=e445]
+            - img [ref=e447]
+            - img [ref=e449]
+            - img [ref=e451]
+          - paragraph [ref=e453]: "\"We switched from Webflow to Stargate. 10x faster, better results, and our clients are thrilled.\""
+          - generic [ref=e454]:
+            - generic [ref=e455]: AR
+            - generic [ref=e456]:
+              - generic [ref=e457]: Alex Rodriguez
+              - generic [ref=e458]: Agency Owner
+    - generic [ref=e460]:
+      - heading "Ready to build something amazing?" [level=2] [ref=e461]
+      - paragraph [ref=e462]: Join thousands of developers and creators who are building the future with Stargate.
+      - button "Start Building Now" [ref=e464] [cursor=pointer]:
+        - img
+        - text: Start Building Now
+        - img
+    - contentinfo [ref=e465]:
+      - generic [ref=e466]:
+        - generic [ref=e467]:
+          - generic [ref=e469]: Complete AI Development System
+          - generic [ref=e470]:
+            - link "Privacy" [ref=e471] [cursor=pointer]:
+              - /url: "#"
+            - link "Terms" [ref=e472] [cursor=pointer]:
+              - /url: "#"
+            - link "Contact" [ref=e473] [cursor=pointer]:
+              - /url: "#"
+          - generic [ref=e474]:
+            - link [ref=e475] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e476]
+            - link [ref=e479] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e480]
+            - link [ref=e482] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e483]
+        - generic [ref=e487]: © 2024 Complete AI Development System. All rights reserved.
+```

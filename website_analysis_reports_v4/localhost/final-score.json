@@ -1,16 +1,16 @@
 {
-  "url": "http://localhost:5000/website_projects/test-business/generated-v5/index.html",
-  "timestamp": "2025-12-19T13:20:51.362Z",
+  "url": "http://localhost:5000/website_projects/velocity-f1-racing/generated-v5/index.html",
+  "timestamp": "2025-12-22T15:02:32.295Z",
   "expertScores": {
-    "ux": 9.16,
+    "ux": 9.01,
     "visual": 9,
-    "conversion": 6,
+    "conversion": 4.5,
     "seo": 10,
     "brand": 9
   },
-  "consensusScore": 67.4,
-  "perceptionScore": 70,
-  "weightedFinalScore": 68.2,
+  "consensusScore": 64,
+  "perceptionScore": 67.5,
+  "weightedFinalScore": 65.1,
   "verdict": "Good",
   "meetsExcellentCriteria": false
 }

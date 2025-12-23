@@ -1,0 +1,292 @@
+{
+  "version": "6.10-cleanup-hardening",
+  "pipeline": "v6.10-cleanup-hardening",
+  "pipelineVersion": "6.10",
+  "timestamp": "2025-12-22T15:02:37.762Z",
+  "generatedAt": "2025-12-22T15:02:37.762Z",
+  "projectSlug": "velocity-f1-racing",
+  "sectionPlan": {
+    "sections": [
+      {
+        "key": "hero-1",
+        "type": "hero",
+        "importance": "high",
+        "notes": "Primary value proposition and call-to-action",
+        "order": 1
+      },
+      {
+        "key": "value-1",
+        "type": "value-proposition",
+        "importance": "high",
+        "notes": "Unique selling points and differentiators",
+        "order": 2
+      },
+      {
+        "key": "services-1",
+        "type": "services",
+        "importance": "high",
+        "notes": "Core services offered",
+        "order": 3
+      },
+      {
+        "key": "testimonials-1",
+        "type": "testimonials",
+        "importance": "medium",
+        "notes": "Social proof and client testimonials",
+        "order": 4
+      },
+      {
+        "key": "about-1",
+        "type": "about",
+        "importance": "medium",
+        "notes": "Company background and mission",
+        "order": 5
+      },
+      {
+        "key": "contact-1",
+        "type": "contact",
+        "importance": "high",
+        "notes": "Contact information and form",
+        "order": 6
+      }
+    ],
+    "rationale": "Rule-based fallback section plan based on industry and services",
+    "totalSections": 6
+  },
+  "modules": {
+    "sectionPlanner": "6.1",
+    "styleDesigner": "6.2",
+    "sectionVariants": "6.3",
+    "responsiveEngine": "6.4",
+    "imagePlanner": "6.5",
+    "copywriter": "6.6",
+    "seoEngine": "6.7",
+    "multiPage": "6.8",
+    "themeEngine": "6.9"
+  },
+  "multiPageVersion": "6.8",
+  "pages": [
+    {
+      "id": "home",
+      "slug": "/",
+      "title": "Home",
+      "sectionCount": 3
+    },
+    {
+      "id": "services",
+      "slug": "/services",
+      "title": "Services",
+      "sectionCount": 1
+    },
+    {
+      "id": "about",
+      "slug": "/about",
+      "title": "About",
+      "sectionCount": 1
+    },
+    {
+      "id": "contact",
+      "slug": "/contact",
+      "title": "Contact",
+      "sectionCount": 1
+    }
+  ],
+  "navigation": {
+    "items": [
+      {
+        "id": "home",
+        "slug": "/index.html",
+        "title": "Home"
+      },
+      {
+        "id": "services",
+        "slug": "services.html",
+        "title": "Services"
+      },
+      {
+        "id": "about",
+        "slug": "about.html",
+        "title": "About"
+      },
+      {
+        "id": "contact",
+        "slug": "contact.html",
+        "title": "Contact"
+      }
+    ],
+    "home": "/index.html"
+  },
+  "styleSystem": {
+    "final": {
+      "colors": {
+        "primary": "#EA580C",
+        "secondary": "#C2410C",
+        "accent": "#F97316",
+        "neutrals": [
+          "#FFF7ED",
+          "#FFEDD5",
+          "#78716C",
+          "#292524"
+        ],
+        "background": "#FFF7ED",
+        "text": "#292524"
+      },
+      "gradients": {
+        "primary": "linear-gradient(135deg, #EA580C 0%, #C2410C 100%)",
+        "secondary": "linear-gradient(135deg, #C2410C 0%, #F97316 100%)",
+        "hero": "linear-gradient(135deg, #EA580C 0%, #C2410C 50%, #F97316 100%)",
+        "accent": "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
+        "mesh": "radial-gradient(circle at 20% 30%, #EA580C30 0%, transparent 50%),\n        radial-gradient(circle at 80% 70%, #C2410C30 0%, transparent 50%),\n        radial-gradient(circle at 50% 50%, #F9731620 0%, transparent 70%)"
+      },
+      "typography": {
+        "id": "inter-system",
+        "heading": {
+          "font": "Inter",
+          "weights": [
+            700,
+            600
+          ],
+          "sizes": [
+            48,
+            36,
+            24,
+            18
+          ]
+        },
+        "body": {
+          "font": "Inter",
+          "weights": [
+            400,
+            500
+          ],
+          "sizes": [
+            16,
+            14
+          ],
+          "lineHeight": 1.6
+        },
+        "useCase": "Modern, clean, versatile"
+      },
+      "spacing": {
+        "scale": [
+          4,
+          8,
+          12,
+          16,
+          24,
+          32,
+          48,
+          64,
+          96,
+          128
+        ],
+        "system": "8px base"
+      },
+      "borderRadius": {
+        "small": "4px",
+        "medium": "8px",
+        "large": "16px",
+        "full": "9999px"
+      },
+      "shadows": {
+        "small": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        "medium": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        "large": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+      },
+      "icons": {
+        "style": "outline",
+        "library": "heroicons"
+      }
+    },
+    "aiOverride": false,
+    "industry": "Sports & Racing",
+    "isKnownIndustry": false
+  },
+  "responsiveEngineVersion": "6.4",
+  "imagePlannerVersion": "6.5",
+  "copywriterVersion": "6.6",
+  "seoEngineVersion": "6.7",
+  "plannedImages": [
+    {
+      "sectionKey": "hero-1",
+      "purpose": "hero",
+      "prompt": "Professional business hero image",
+      "alt": "business hero image"
+    },
+    {
+      "sectionKey": "services-1",
+      "purpose": "icon",
+      "prompt": "Simple icon-style illustration representing business features",
+      "alt": "business feature icon"
+    },
+    {
+      "sectionKey": "about-1",
+      "purpose": "supporting",
+      "prompt": "Professional business team or office environment",
+      "alt": "business about image"
+    }
+  ],
+  "generatedImages": [
+    {
+      "sectionKey": "hero-1",
+      "url": "/assets/images/hero-1-hero-1766415729661.png",
+      "alt": "business hero image",
+      "purpose": "hero"
+    },
+    {
+      "sectionKey": "services-1",
+      "url": "/assets/images/services-1-icon-1766415729661.png",
+      "alt": "business feature icon",
+      "purpose": "icon"
+    }
+  ],
+  "sectionsWithCopy": [
+    "hero-1",
+    "audience-2",
+    "services-1",
+    "case-studies-4",
+    "team-5",
+    "value-1",
+    "process-7",
+    "faq-8",
+    "contact-1"
+  ],
+  "seo": {
+    "title": "Velocity F1 Racing - Business Services",
+    "description": "Professional business services from Velocity F1 Racing. Contact us today for expert solutions.",
+    "keywords": [
+      "business",
+      "business services",
+      "velocity f1 racing"
+    ],
+    "ogTitle": "Velocity F1 Racing",
+    "ogDescription": "Professional business services from Velocity F1 Racing. Contact us today for expert solutions.",
+    "ogImage": "/assets/images/hero-1-hero-1766415729661.png",
+    "schemaLD": {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Velocity F1 Racing",
+      "description": "Professional business services from Velocity F1 Racing. Contact us today for expert solutions.",
+      "url": "https://example.com/velocity-f1-racing"
+    },
+    "slug": "velocity-f1-racing",
+    "seoScore": 70,
+    "readabilityHints": []
+  },
+  "slug": "velocity-f1-racing",
+  "features": [
+    "v5.1-llm-content-all-sections",
+    "v5.1-dalle-image-generation",
+    "v5.1-modern-css",
+    "v6.0-foundations",
+    "v6.1-ai-section-planner",
+    "v6.2-ai-style-designer",
+    "v6.3-component-variants",
+    "v6.4-responsive-engine",
+    "v6.5-ai-image-planner",
+    "v6.6-ai-copywriting-3.0",
+    "v6.7-ai-seo-engine",
+    "v6.8-multi-page-architecture",
+    "v6.9-global-theme-engine"
+  ]
+}

@@ -1,19 +1,19 @@
 {
   "agent": "Conversion Strategist",
   "focus": "CTAs, trust, funnels, messaging clarity",
-  "score": 6,
+  "score": 4.5,
   "strengths": [
-    "Strong CTA present",
     "CTA visible above fold",
     "Basic funnel present"
   ],
   "weaknesses": [
+    "Weak or missing CTAs",
     "Limited trust elements",
     "Limited contact options"
   ],
-  "verdict": "Good",
+  "verdict": "OK",
   "details": {
-    "strongCTAs": 1,
+    "strongCTAs": 0,
     "aboveFoldCTA": true,
     "trustElements": {
       "testimonials": false,
