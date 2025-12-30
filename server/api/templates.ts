@@ -10,8 +10,6 @@ import {
   TEMPLATE_LIBRARY,
   getTemplatesByCategory,
   getTemplatesByIndustry,
-  getPopularTemplates,
-  getTemplateById,
   searchTemplates,
   getAllTemplates,
 } from '../services/templateLibrary';
@@ -20,15 +18,13 @@ import {
   getBrandTemplatesByCategory,
   getBrandTemplatesByIndustry,
   getBrandTemplateById,
-  searchBrandTemplates,
-  getAllIndustries,
-  getTemplatesByIndustry as getBrandTemplatesByIndustryAlt,
   getAllBrandTemplates,
 } from '../services/brandTemplateLibrary';
 import { db } from '../db';
 import { brandTemplates } from '@shared/schema';
 import { eq } from 'drizzle-orm';
-import { generateTemplatePreviewSVG, generateTemplatePreviewDataURI } from '../services/templatePreviewGenerator';
+import { generateTemplatePreviewSVG } from '../services/templatePreviewGenerator';
+import { getErrorMessage } from '../utils/errorHandler';
 import { getTemplateIndex, updateTemplateIndex, fastSearch, fastCategoryFilter, fastIndustryFilter } from '../services/templateIndex';
 import {
   generateTemplate,
@@ -48,9 +44,9 @@ export function registerTemplateRoutes(app: Express) {
       console.log('[Templates API] GET /api/templates - Request received');
       const { category, industry, search, limit, generated, page, pageSize, ranked, brand, country, state, city, isDesignQuality, designCategory, isPremium, freeOnly } = req.query;
       const includeGenerated = generated !== 'false'; // Default to true
-      const includeBrand = brand !== 'false'; // Default to true
+      // Note: brand and limit params reserved for future filtering
+      void brand; void limit; // Acknowledge params
       const includeRanked = ranked === 'true'; // Only include ranked templates
-      const generatedCount = limit ? parseInt(limit as string, 10) : 10000;
       
       // Pagination parameters
       const pageNum = page ? Math.max(1, parseInt(page as string, 10)) : 1;
@@ -156,7 +152,7 @@ export function registerTemplateRoutes(app: Express) {
           
           // Always use preview endpoint for thumbnails (it will serve actual images or generate SVG)
           // Force override thumbnail to use preview endpoint, ignoring any stored thumbnail value
-          const templatesWithThumbnails = dbTemplates.map(t => {
+          const templatesWithThumbnails = dbTemplates.map((t: typeof brandTemplates.$inferSelect) => {
             const template = { ...t };
             // Always use preview endpoint - it will find actual images or generate SVG
             template.thumbnail = `/api/templates/${t.id}/preview?size=thumb`;
@@ -246,7 +242,7 @@ export function registerTemplateRoutes(app: Express) {
       });
 
       console.log(`[Templates API] Returning ${finalTemplates.length} templates (page ${pageNum}/${totalPages})`);
-      res.json({
+      return res.json({
         success: true,
         templates: finalTemplates,
         pagination: {
@@ -263,7 +259,7 @@ export function registerTemplateRoutes(app: Express) {
       });
     } catch (error) {
       console.error('[Templates API] Error fetching templates:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to fetch templates',
       });
@@ -315,7 +311,7 @@ export function registerTemplateRoutes(app: Express) {
       });
     } catch (error) {
       console.error('[Templates API] Error loading template:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to load template',
       });
@@ -363,7 +359,7 @@ export function registerTemplateRoutes(app: Express) {
       });
     } catch (error) {
       console.error('[Templates API] Error loading template HTML:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to load template HTML',
       });
@@ -371,7 +367,7 @@ export function registerTemplateRoutes(app: Express) {
   });
 
   // Get popular templates - DISABLED
-  app.get('/api/templates/popular/:limit?', async (req, res) => {
+  app.get('/api/templates/popular/:limit?', async (_req, res) => {
     return res.json({
       success: true,
       templates: [],
@@ -380,7 +376,7 @@ export function registerTemplateRoutes(app: Express) {
   });
 
   // Get templates by category - DISABLED
-  app.get('/api/templates/category/:category', async (req, res) => {
+  app.get('/api/templates/category/:category', async (_req, res) => {
     return res.json({
       success: true,
       templates: [],
@@ -389,7 +385,7 @@ export function registerTemplateRoutes(app: Express) {
   });
 
   // Get templates by industry - DISABLED
-  app.get('/api/templates/industry/:industry', async (req, res) => {
+  app.get('/api/templates/industry/:industry', async (_req, res) => {
     return res.json({
       success: true,
       templates: [],
@@ -533,14 +529,14 @@ export function registerTemplateRoutes(app: Express) {
       }
       
       console.log(`[Templates API] Fixed HTML paths for template: ${id}`);
-      
+
       // Remove X-Frame-Options to allow iframe embedding
       res.removeHeader('X-Frame-Options');
       res.setHeader('Content-Type', 'text/html');
-      res.send(result.html);
+      return res.send(result.html);
     } catch (error) {
       console.error('[Templates API] Error serving HTML preview:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to load template HTML',
       });
@@ -565,13 +561,13 @@ export function registerTemplateRoutes(app: Express) {
       
       console.log(`[Templates API] Fixed HTML paths for template: ${id}`);
       
-      res.json({
+      return res.json({
         success: true,
         html: result.html,
       });
     } catch (error) {
       console.error('[Templates API] Error serving HTML preview JSON:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to load template HTML',
       });
@@ -582,7 +578,7 @@ export function registerTemplateRoutes(app: Express) {
   app.get('/api/templates/:id/assets/*', async (req, res) => {
     try {
       const { id } = req.params;
-      const assetPath = req.params[0]; // Everything after /assets/
+      const assetPath = (req.params as Record<string, string>)[0]; // Everything after /assets/
       
       // Get template directory
       let template: any = null;
@@ -681,10 +677,10 @@ export function registerTemplateRoutes(app: Express) {
       const contentType = contentTypeMap[ext] || 'application/octet-stream';
       res.setHeader('Content-Type', contentType);
       res.setHeader('Cache-Control', 'public, max-age=3600');
-      res.sendFile(assetFile);
+      return res.sendFile(assetFile);
     } catch (error) {
       console.error('[Templates API] Error serving asset:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to load asset',
       });
@@ -774,7 +770,7 @@ export function registerTemplateRoutes(app: Express) {
                   // 3. Largest images (likely to be hero/landing images)
                   
                   // Try to find images referenced in index.html first (landing page)
-                  let landingPageImages: string[] = [];
+                  const landingPageImages: string[] = [];
                   try {
                     const indexHtmlPath = path.join(templateDir, 'index.html');
                     if (fs.existsSync(indexHtmlPath)) {
@@ -908,7 +904,7 @@ export function registerTemplateRoutes(app: Express) {
       res.send(svg.replace('width="800"', `width="${width}"`).replace('height="600"', `height="${height}"`));
     } catch (error) {
       console.error('[Templates API] Error generating preview:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to generate preview',
       });
@@ -920,10 +916,10 @@ export function registerTemplateRoutes(app: Express) {
   // ============================================
 
   // Get template generator statistics
-  app.get('/api/templates/ai/stats', async (req, res) => {
+  app.get('/api/templates/ai/stats', async (_req, res) => {
     try {
       const stats = getTemplateStats();
-      res.json({
+      return res.json({
         success: true,
         stats: {
           ...stats,
@@ -932,7 +928,7 @@ export function registerTemplateRoutes(app: Express) {
         },
       });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get template stats',
       });
@@ -960,12 +956,12 @@ export function registerTemplateRoutes(app: Express) {
       
       const template = await generateTemplate(industry as Industry, style as Style, variant || 0);
       
-      res.json({
+      return res.json({
         success: true,
         template,
       });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to generate template',
       });
@@ -997,12 +993,12 @@ export function registerTemplateRoutes(app: Express) {
         businessName || 'Your Business'
       );
       
-      res.json({
+      return res.json({
         success: true,
         template,
       });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to generate enhanced template',
       });
@@ -1026,13 +1022,13 @@ export function registerTemplateRoutes(app: Express) {
         count || 10
       );
       
-      res.json({
+      return res.json({
         success: true,
         count: templates.length,
         templates,
       });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to generate industry templates',
       });
@@ -1040,9 +1036,9 @@ export function registerTemplateRoutes(app: Express) {
   });
 
   // Get available industries and styles
-  app.get('/api/templates/ai/options', async (req, res) => {
+  app.get('/api/templates/ai/options', async (_req, res) => {
     try {
-      res.json({
+      return res.json({
         success: true,
         industries: INDUSTRIES,
         styles: STYLES,
@@ -1050,7 +1046,7 @@ export function registerTemplateRoutes(app: Express) {
         potentialTemplates: INDUSTRIES.length * STYLES.length * 5,
       });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get options',
       });
@@ -1061,7 +1057,7 @@ export function registerTemplateRoutes(app: Express) {
    * Get template counts by industry
    * GET /api/templates/counts-by-industry
    */
-  app.get('/api/templates/counts-by-industry', async (req, res) => {
+  app.get('/api/templates/counts-by-industry', async (_req, res) => {
     try {
       const counts: Record<string, number> = {};
 
@@ -1076,7 +1072,7 @@ export function registerTemplateRoutes(app: Express) {
             .where(eq(brandTemplates.isActive, true));
 
           // Count by industry
-          dbTemplates.forEach(template => {
+          dbTemplates.forEach((template: { industry: string | null }) => {
             const industry = template.industry || 'general';
             counts[industry] = (counts[industry] || 0) + 1;
           });
@@ -1097,14 +1093,14 @@ export function registerTemplateRoutes(app: Express) {
         console.log('[Templates API] No brand templates in library');
       }
 
-      res.json({
+      return res.json({
         success: true,
         counts,
         total: Object.values(counts).reduce((sum, count) => sum + count, 0),
       });
     } catch (error) {
       console.error('[Templates API] Error fetching industry counts:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1182,13 +1178,13 @@ export function registerTemplateRoutes(app: Express) {
         console.log(`[Templates API] No zipName found for template, skipping directory cleanup`);
       }
 
-      res.json({
+      return res.json({
         success: true,
         message: `Template ${id} deleted successfully`,
       });
     } catch (error) {
       console.error('[Templates API] Error deleting template:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to delete template',
       });
@@ -1196,15 +1192,14 @@ export function registerTemplateRoutes(app: Express) {
   });
 
   // Upload template ZIP file
-  app.post('/api/templates/upload', async (req, res) => {
+  app.post('/api/templates/upload', async (_req, res) => {
     try {
       // Save uploaded file to Downloads folder, then import it
       const DOWNLOADS_DIR = path.join(process.env.USERPROFILE || process.env.HOME || '', 'Downloads');
-      const TEMP_EXTRACT_DIR = path.join(process.cwd(), 'temp_extracted_templates');
-      
+
       // For now, provide instructions - full upload will be implemented with multer
       // User can place files in Downloads folder and we'll import them
-      res.json({
+      return res.json({
         success: true,
         message: 'Please place template ZIP files in your Downloads folder',
         instructions: '1. Place ZIP files in Downloads folder\n2. Run: npm run import-templates\n3. Refresh this page',
@@ -1212,7 +1207,7 @@ export function registerTemplateRoutes(app: Express) {
       });
     } catch (error) {
       console.error('[Templates API] Error uploading template:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to upload template',
       });
@@ -1254,7 +1249,7 @@ export function registerTemplateRoutes(app: Express) {
       };
       
       // Fix paths in HTML
-      let fixedHtml = result.html
+      const fixedHtml = result.html
         .replace(/href=(["'])(?!https?:\/\/|#|data:|mailto:|tel:)([^"']+)\1/gi, (match, quote, url) => {
           if (url.startsWith('#') || url.startsWith('http') || url.startsWith('data:') || url.startsWith('mailto:') || url.startsWith('tel:')) {
             return match;
@@ -1278,7 +1273,7 @@ export function registerTemplateRoutes(app: Express) {
         });
       
       // Fix paths in CSS
-      let fixedCss = result.css.replace(/url\((["']?)(?!https?:\/\/|data:)([^"')]+)\1\)/gi, (match, quote, url) => {
+      const fixedCss = result.css.replace(/url\((["']?)(?!https?:\/\/|data:)([^"')]+)\1\)/gi, (match, quote, url) => {
         if (url.startsWith('http') || url.startsWith('data:')) {
           return match;
         }
@@ -1286,7 +1281,7 @@ export function registerTemplateRoutes(app: Express) {
         return `url(${quote}${baseUrl}/${cleanUrl}${quote})`;
       });
 
-      res.json({
+      return res.json({
         success: true,
         html: fixedHtml,
         css: fixedCss,
@@ -1295,7 +1290,7 @@ export function registerTemplateRoutes(app: Express) {
       });
     } catch (error) {
       console.error('[Templates API] Error transforming template:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to transform template',
       });

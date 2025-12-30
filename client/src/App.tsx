@@ -4,7 +4,7 @@ import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AutomationCursor } from '@/components/ui/AutomationCursor';
-import { OnboardingTour } from '@/components/Onboarding/OnboardingTour';
+import { AdminRoute } from '@/components/Auth/ProtectedRoute';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { InvestigationProvider } from '@/contexts/InvestigationContext';
 import { ResearchStatusProvider } from '@/contexts/ResearchStatusContext';
@@ -13,7 +13,7 @@ import NotFound from '@/pages/not-found';
 import { trackRender } from '@/utils/renderTracker';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { lazy, Suspense, useEffect } from 'react';
-import { Route, Switch } from 'wouter';
+import { Route, Switch, useLocation, Redirect } from 'wouter';
 import { queryClient } from './lib/queryClient';
 
 // Lazy load heavy components for better code splitting
@@ -24,10 +24,53 @@ const TemplatePreviewPage = lazy(() => import('@/components/Templates/TemplatePr
 const BuildChoice = lazy(() => import('@/pages/merlin8/BuildChoice'));
 const QuickIntake = lazy(() => import('@/pages/merlin8/QuickIntake'));
 const GeneratingProgress = lazy(() => import('@/pages/merlin8/GeneratingProgress'));
+const TemplatesPage = lazy(() => import('@/pages/merlin8/Templates'));
+const MerlinPackages = lazy(() => import('@/pages/merlin8/Packages'));
+const ProfessionalDesign = lazy(() => import('@/pages/merlin8/ProfessionalDesign'));
+
+// Onboarding Page
+const OnboardingPage = lazy(() => import('@/pages/Onboarding'));
+
+// Home Landing Page
+const HomePage = lazy(() => import('@/pages/Home'));
+
+// Contact Page (Workflow 3)
+const ContactPage = lazy(() => import('@/pages/Contact'));
+
+// Pricing Page
+const PricingPageComponent = lazy(() => import('@/components/PricingPage').then(module => ({ default: module.PricingPage })));
+
+// Wrapper for PricingPage to work with wouter routes
+function PricingPageWithRoute() {
+  return <PricingPageComponent />;
+}
 
 // Component that syncs URL with MainLayout view state
 function MainLayoutWithRoute() {
   return <MainLayout />;
+}
+
+// Protected admin route - requires administrator role
+function ProtectedAdminLayout() {
+  return (
+    <AdminRoute fallbackPath="/">
+      <MainLayout />
+    </AdminRoute>
+  );
+}
+
+// Component that redirects first-time users to onboarding
+function HomeWithOnboardingRedirect() {
+  const [location] = useLocation();
+  const isOnboardingCompleted = localStorage.getItem('stargate-tour-completed') === 'true';
+
+  // Only redirect from root path, and only if onboarding not completed
+  if (location === '/' && !isOnboardingCompleted) {
+    return <Redirect to="/onboarding" />;
+  }
+
+  // Show the Landing Page (Home.tsx) at root URL
+  return <HomePage />;
 }
 
 function Router() {
@@ -46,11 +89,16 @@ function Router() {
       </div>
     }>
       <Switch>
+        {/* Onboarding Route */}
+        <Route path="/onboarding" component={OnboardingPage} />
+
         {/* Merlin 8.0 Routes */}
+        <Route path="/merlin8/packages" component={MerlinPackages} />
         <Route path="/merlin8" component={BuildChoice} />
         <Route path="/merlin8/create" component={QuickIntake} />
         <Route path="/merlin8/generating" component={GeneratingProgress} />
-        <Route path="/merlin8/templates" component={MainLayoutWithRoute} />
+        <Route path="/merlin8/templates" component={TemplatesPage} />
+        <Route path="/merlin8/professional" component={ProfessionalDesign} />
         
         {/* Editor with dynamic project slug */}
         <Route path="/editor/:projectSlug" component={MainLayoutWithRoute} />
@@ -59,7 +107,7 @@ function Router() {
         <Route path="/stargate-websites" component={MainLayoutWithRoute} />
         <Route path="/merlin" component={MainLayoutWithRoute} />
         <Route path="/wizard" component={MainLayoutWithRoute} />
-        <Route path="/admin" component={MainLayoutWithRoute} />
+        <Route path="/admin" component={ProtectedAdminLayout} />
         {/* Additional routes for direct URL access */}
         <Route path="/dashboard" component={MainLayoutWithRoute} />
         <Route path="/editor" component={MainLayoutWithRoute} />
@@ -72,7 +120,9 @@ function Router() {
         <Route path="/services" component={MainLayoutWithRoute} />
         <Route path="/apps" component={MainLayoutWithRoute} />
         <Route path="/deployments" component={MainLayoutWithRoute} />
-        <Route path="/" component={MainLayout} />
+        <Route path="/contact" component={ContactPage} />
+        <Route path="/pricing" component={PricingPageWithRoute} />
+        <Route path="/" component={HomeWithOnboardingRedirect} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>
@@ -97,7 +147,6 @@ function App() {
                     <ResearchStatusProvider>
                       <Toaster />
                       <AutomationCursor enabled={true} />
-                      <OnboardingTour />
                       <Router />
                     </ResearchStatusProvider>
                   </InvestigationProvider>

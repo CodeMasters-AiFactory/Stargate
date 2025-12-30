@@ -5,8 +5,8 @@
 
 import { db } from '../db';
 import { brandTemplates } from '@shared/schema';
-import { eq, sql } from 'drizzle-orm';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { eq } from 'drizzle-orm';
+import { logError } from '../utils/errorHandler';
 
 export interface IndustryInsights {
   industry: string;
@@ -64,9 +64,9 @@ export async function getIndustryInsights(
 
     // Get top keywords for industry
     const keywords = INDUSTRY_KEYWORDS[industry.toLowerCase()] || [];
-    const topKeywords = keywords.slice(0, 10).map((keyword, index) => ({
+    const topKeywords = keywords.slice(0, 10).map((keyword, _index) => ({
       keyword,
-      frequency: 10 - index, // Simulated frequency
+      frequency: 10 - _index, // Simulated frequency
     }));
 
     // Get best performing templates for this industry
@@ -80,7 +80,7 @@ export async function getIndustryInsights(
       .where(eq(brandTemplates.industry, industry))
       .limit(5);
 
-    const bestPerformingTemplates = templates.map(t => ({
+    const bestPerformingTemplates = templates.map((t): { templateId: string; name: string; score: number } => ({
       templateId: t.id,
       name: t.name || t.id,
       score: parseInt(t.designScore || '0'),
@@ -123,9 +123,9 @@ export async function getIndustryInsights(
       competitorAnalysis,
       benchmarks,
     };
-  } catch (error) {
-    logError(error, 'IndustryInsights');
-    throw error;
+  } catch (_error: unknown) {
+    logError(_error, 'IndustryInsights');
+    throw _error;
   }
 }
 

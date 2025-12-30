@@ -42,8 +42,8 @@ async function downloadAndSaveImage(
     
     // Return relative path for use in HTML
     return `/assets/images/${filename}`;
-  } catch (error) {
-    console.error(`[AI Farm Image Download] Failed to download image from ${imageUrl.substring(0, 50)}:`, error);
+  } catch (_error: unknown) {
+    console.error(`[AI Farm Image Download] Failed to download image from ${imageUrl.substring(0, 50)}:`, _error);
     // Return original URL as fallback
     return imageUrl;
   }
@@ -95,13 +95,11 @@ export async function generateImagesInParallel(
     styleSystem.colors.neutrals?.[0]
   ].filter(Boolean) as string[];
 
-  const styleKeywords = designContext.brandVoice?.visualIdentityKeywords?.length
-    ? designContext.brandVoice.visualIdentityKeywords
-    : [
-        designContext.emotionalTone,
-        designContext.brandVoice?.modernity,
-        designContext.brandVoice?.boldness
-      ].filter(Boolean) as string[];
+  const styleKeywords = [
+    designContext.emotionalTone,
+    designContext.brandVoice?.modernity,
+    designContext.brandVoice?.boldness
+  ].filter(Boolean) as string[];
 
   const businessContext = {
     name: projectConfig.projectName,
@@ -203,11 +201,11 @@ export async function generateImagesInParallel(
             
             // Generate image
             const image = await generateStunningImage({
-              style: imageStyle as any,
+              style: imageStyle as 'illustration' | 'background' | 'hero' | 'product',
               businessContext,
               prompt: task.plan.prompt,
               quality: (task.plan.purpose === 'icon' || task.plan.purpose === 'background') ? 'standard' : 'hd',
-              artisticStyle: task.plan.styleHint?.includes('modern') ? 'modern' : 'photorealistic'
+              artisticStyle: task.plan.styleHint?.includes('modern') ? 'minimalist' : 'photorealistic'
             });
 
             // Download and save image locally
@@ -242,7 +240,7 @@ export async function generateImagesInParallel(
                 purpose: task.plan.purpose,
                 localPath: '',
                 success: false,
-                error: error?.message || 'Unknown error'
+                error: errorMessage
               } as ImageGenerationResult;
             } else {
               console.warn(`[AI Farm] ⚠️ Image generation failed, retrying... (${retries - attempt} attempts left)`);

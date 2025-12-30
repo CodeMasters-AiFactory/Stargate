@@ -3,8 +3,6 @@
  * AI-powered content recommendations, design suggestions, and optimization tips
  */
 
-import type { ProjectConfig } from './projectConfig';
-
 export interface ContentSuggestion {
   id: string;
   type: 'headline' | 'cta' | 'description' | 'image' | 'layout' | 'color';
@@ -21,8 +19,8 @@ export interface DesignSuggestion {
   id: string;
   type: 'spacing' | 'typography' | 'color' | 'layout' | 'animation';
   element: string;
-  current: any;
-  suggested: any;
+  current: string | number | Record<string, unknown>;
+  suggested: string | number | Record<string, unknown>;
   reasoning: string;
   expectedImpact: number;
   confidence: number;
@@ -44,7 +42,7 @@ class AIContentSuggestionsService {
    * Generate content suggestions
    */
   async generateContentSuggestions(
-    websiteId: string,
+    _websiteId: string,
     currentContent: {
       headlines: Array<{ id: string; text: string; element: string }>;
       ctas: Array<{ id: string; text: string; element: string }>;
@@ -117,7 +115,7 @@ class AIContentSuggestionsService {
    * Generate design suggestions
    */
   async generateDesignSuggestions(
-    websiteId: string,
+    _websiteId: string,
     currentDesign: {
       colors: { primary: string; secondary: string; accent: string };
       typography: { heading: string; body: string };
@@ -163,7 +161,7 @@ class AIContentSuggestionsService {
    * Generate optimization tips
    */
   async generateOptimizationTips(
-    websiteId: string,
+    _websiteId: string,
     analytics: {
       pageLoadTime: number;
       bounceRate: number;
@@ -215,12 +213,12 @@ class AIContentSuggestionsService {
     return tips.sort((a, b) => b.expectedImpact - a.expectedImpact);
   }
 
-  private generateHeadlineSuggestion(current: string, context: any): string {
+  private generateHeadlineSuggestion(current: string, context: { industry: string; targetAudience: string; goals: string[] }): string {
     // In production, use AI to generate better headlines
     return `${current} - ${context.industry} Solutions`;
   }
 
-  private generateCTASuggestion(current: string, context: any): string {
+  private generateCTASuggestion(_current: string, _context: { industry: string; targetAudience: string; goals: string[] }): string {
     // In production, use AI to generate better CTAs
     const actionWords = ['Get Started', 'Start Free Trial', 'Request Demo', 'Get Quote'];
     return actionWords[Math.floor(Math.random() * actionWords.length)];

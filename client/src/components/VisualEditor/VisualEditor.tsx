@@ -4,7 +4,7 @@
  * Improves visual customization from 0% → 90%
  */
 
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 // Removed unused import: Card
@@ -64,6 +64,8 @@ export function VisualEditor({ website, onSave, onClose }: VisualEditorProps) {
   const [previewZoom, setPreviewZoom] = useState(100);
   const [showPreview, setShowPreview] = useState(false);
 
+  const currentWebsite = useMemo(() => history[historyIndex], [history, historyIndex]);
+
   // Neural learning tracking
   const userId = 'user-1'; // TODO: Get from auth context
   const projectId = currentWebsite.manifest?.siteName || 'untitled-project';
@@ -72,9 +74,9 @@ export function VisualEditor({ website, onSave, onClose }: VisualEditorProps) {
   const trackDecision = useCallback(async (
     decisionType: string,
     action: string,
-    before: any,
-    after: any,
-    context: any
+    before: Record<string, unknown>,
+    after: Record<string, unknown>,
+    context: Record<string, unknown>
   ) => {
     try {
       await fetch('/api/visual-editor/track-decision', {
@@ -90,13 +92,11 @@ export function VisualEditor({ website, onSave, onClose }: VisualEditorProps) {
           context,
         }),
       });
-    } catch (error) {
-      console.error('Failed to track decision:', error);
+    } catch (_error) {
+      console.error('Failed to track decision:', _error);
       // Don't block user action if tracking fails
     }
   }, [userId, projectId]);
-
-  const currentWebsite = useMemo(() => history[historyIndex], [history, historyIndex]);
 
   const handleElementSelect = useCallback((element: SelectedElement | null) => {
     setSelectedElement(element);
@@ -145,8 +145,8 @@ export function VisualEditor({ website, onSave, onClose }: VisualEditorProps) {
 
       // Show success message (in production, use toast)
       console.log('Website saved successfully');
-    } catch (error) {
-      console.error('Failed to save:', error);
+    } catch (_error) {
+      console.error('Failed to save:', _error);
       // Show error message (in production, use toast)
     }
   }, [currentWebsite, onSave]);
@@ -180,8 +180,8 @@ export function VisualEditor({ website, onSave, onClose }: VisualEditorProps) {
         const data = await response.json();
         console.log('Export data:', data);
       }
-    } catch (error) {
-      console.error('Failed to export:', error);
+    } catch (_error) {
+      console.error('Failed to export:', _error);
     }
   }, [currentWebsite]);
 
@@ -210,7 +210,7 @@ export function VisualEditor({ website, onSave, onClose }: VisualEditorProps) {
       [pageFileKey]: {
         ...(typeof currentPageFile === 'object' ? currentPageFile : {}),
         path: pageFileKey,
-        type: 'html',
+        type: 'html' as const,
         content: newHTML,
         checksum: '',
       },
@@ -265,7 +265,7 @@ export function VisualEditor({ website, onSave, onClose }: VisualEditorProps) {
       [pageFileKey]: {
         ...(typeof currentPageFile === 'object' ? currentPageFile : {}),
         path: pageFileKey,
-        type: 'html',
+        type: 'html' as const,
         content: newHTML,
         checksum: '',
       },
@@ -322,13 +322,13 @@ export function VisualEditor({ website, onSave, onClose }: VisualEditorProps) {
     if (bodyMatch) {
       const newBodyContent = bodyMatch[1] + '\n' + newComponentHTML;
       const newHTML = currentHTML.replace(/<body[^>]*>[\s\S]*<\/body>/i, `<body>${newBodyContent}</body>`);
-      
+
       const updatedFiles = {
         ...currentWebsite.files,
         [pageFileKey]: {
           ...(typeof currentPageFile === 'object' ? currentPageFile : {}),
           path: pageFileKey,
-          type: 'html',
+          type: 'html' as const,
           content: newHTML,
           checksum: '',
         },
@@ -534,7 +534,7 @@ export function VisualEditor({ website, onSave, onClose }: VisualEditorProps) {
                         [pageFileKey]: {
                           ...(typeof currentPageFile === 'object' ? currentPageFile : {}),
                           path: pageFileKey,
-                          type: 'html',
+                          type: 'html' as const,
                           content: recommendation.suggestedFix.html,
                           checksum: '',
                         },
@@ -608,7 +608,7 @@ export function VisualEditor({ website, onSave, onClose }: VisualEditorProps) {
                     [pageFileKey]: {
                       ...(typeof currentPageFile === 'object' ? currentPageFile : {}),
                       path: pageFileKey,
-                      type: 'html',
+                      type: 'html' as const,
                       content: updatedHTML,
                       checksum: '',
                     },

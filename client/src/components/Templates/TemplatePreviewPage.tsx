@@ -46,7 +46,14 @@ export function TemplatePreviewPage() {
   }, [templateId]);
 
   const handleBack = () => {
-    setLocation('/?view=template-marketplace');
+    // Use browser history to go back to where the user came from
+    // This works correctly whether they came from /merlin8/templates, marketplace, or elsewhere
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      // Fallback to templates page if no history
+      setLocation('/merlin8/templates');
+    }
   };
 
   const handleIframeLoad = () => {
@@ -82,7 +89,7 @@ export function TemplatePreviewPage() {
               className="bg-slate-800 text-white border-purple-700 hover:bg-slate-700"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Marketplace
+              Back
             </Button>
             <div>
               <h1 className="text-xl font-bold text-white">{templateName}</h1>

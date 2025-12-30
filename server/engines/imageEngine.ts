@@ -7,11 +7,9 @@
 import OpenAI from 'openai';
 import * as fs from 'fs';
 import * as path from 'path';
-import type { ProjectConfig } from '../services/projectConfig';
 import type { ImagePlan, GeneratedImage, ImageOptimization } from '../types/imagePlan';
-import type { DesignTokens } from '../types/designTokens';
 import type { GeneratedSection } from './layoutEngine';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
 
 /**
  * Create OpenAI client
@@ -34,8 +32,8 @@ function createOpenAIClient(): OpenAI | null {
  */
 export async function generateImages(
   imagePlans: ImagePlan[],
-  projectConfig: ProjectConfig,
-  designTokens: DesignTokens,
+  _projectConfig: Record<string, unknown>,
+  _designTokens: Record<string, unknown>,
   projectSlug: string
 ): Promise<GeneratedImage[]> {
   const openai = createOpenAIClient();
@@ -121,7 +119,7 @@ async function generateDALLEImage(plan: ImagePlan, openai: OpenAI): Promise<{ ur
   const requestedSize = `${plan.dimensions.width}x${plan.dimensions.height}`;
   let size: '1024x1024' | '1792x1024' | '1024x1792' = '1024x1024';
   
-  if (allowedSizes.includes(requestedSize as any)) {
+  if (allowedSizes.includes(requestedSize as '1024x1024' | '1792x1024' | '1024x1792')) {
     size = requestedSize as '1024x1024' | '1792x1024' | '1024x1792';
   } else {
     // Default to square if size doesn't match
@@ -172,7 +170,7 @@ async function downloadAndSaveImage(
  */
 async function optimizeImage(
   imagePath: string,
-  plan: ImagePlan
+  _plan: ImagePlan
 ): Promise<ImageOptimization> {
   // In production, use Sharp library for optimization
   // For now, return metadata
@@ -181,7 +179,7 @@ async function optimizeImage(
   return {
     originalSize: stats.size,
     optimizedSize: stats.size, // Would be smaller after WebP conversion
-    format: plan.dimensions.format,
+    format: _plan.dimensions.format,
     compression: 80,
     quality: 85,
   };
@@ -209,7 +207,7 @@ function generatePlaceholder(plan: ImagePlan, imagesDir: string): string {
 /**
  * Generate automatic alt text for images
  */
-export function generateAltText(plan: ImagePlan, section: GeneratedSection): string {
+export function generateAltText(plan: ImagePlan, _section: GeneratedSection): string {
   if (plan.alt) {
     return plan.alt;
   }

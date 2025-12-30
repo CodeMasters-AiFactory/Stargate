@@ -9,7 +9,7 @@
  * - Reorder suggestions
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import {
   upsertProduct,
   getProduct,
@@ -27,7 +27,7 @@ import {
 
 export function registerInventoryRoutes(app: Express) {
   // Get inventory statistics
-  app.get('/api/inventory/stats', async (req, res) => {
+  app.get('/api/inventory/stats', async (req: Request, res: Response): Promise<void> => {
     try {
       const stats = getInventoryStats();
       res.json({ success: true, stats });
@@ -40,42 +40,43 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get all products
-  app.get('/api/inventory/products', async (req, res) => {
+  app.get('/api/inventory/products', async (req: Request, res: Response): Promise<void> => {
     try {
       const { status, category, warehouse, lowStock } = req.query;
-      
+
       const products = getAllProducts({
         status: status as Product['status'],
         category: category as string,
         warehouse: warehouse as string,
         lowStock: lowStock === 'true',
       });
-      
+
       res.json({
         success: true,
         count: products.length,
         products,
       });
-    } catch (error) {
+    } catch (_error) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get products',
+        error: _error instanceof Error ? _error.message : 'Failed to get products',
       });
     }
   });
 
   // Get single product
-  app.get('/api/inventory/products/:id', async (req, res) => {
+  app.get('/api/inventory/products/:id', async (req: Request, res: Response): Promise<void> => {
     try {
       const product = getProduct(req.params.id);
-      
+
       if (!product) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Product not found',
         });
+        return;
       }
-      
+
       res.json({ success: true, product });
     } catch (error) {
       res.status(500).json({
@@ -86,17 +87,18 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Create or update product
-  app.post('/api/inventory/products', async (req, res) => {
+  app.post('/api/inventory/products', async (req: Request, res: Response): Promise<void> => {
     try {
       const productData = req.body;
-      
+
       if (!productData.id || !productData.sku || !productData.name) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Missing required fields: id, sku, name',
         });
+        return;
       }
-      
+
       const product = upsertProduct(productData);
       res.json({ success: true, product });
     } catch (error) {
@@ -108,26 +110,28 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Adjust inventory
-  app.post('/api/inventory/adjust', async (req, res) => {
+  app.post('/api/inventory/adjust', async (req: Request, res: Response): Promise<void> => {
     try {
       const { productId, quantity, reason, type, reference, variantId } = req.body;
-      
+
       if (!productId || quantity === undefined || !reason) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Missing required fields: productId, quantity, reason',
         });
+        return;
       }
-      
+
       const movement = adjustInventory(productId, quantity, reason, type, reference, variantId);
-      
+
       if (!movement) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Product not found',
         });
+        return;
       }
-      
+
       res.json({ success: true, movement });
     } catch (error) {
       res.status(500).json({
@@ -138,26 +142,28 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Reserve inventory for order
-  app.post('/api/inventory/reserve', async (req, res) => {
+  app.post('/api/inventory/reserve', async (req: Request, res: Response): Promise<void> => {
     try {
       const { productId, quantity, orderId, variantId } = req.body;
-      
+
       if (!productId || !quantity || !orderId) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Missing required fields: productId, quantity, orderId',
         });
+        return;
       }
-      
+
       const success = reserveInventory(productId, quantity, orderId, variantId);
-      
+
       if (!success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Insufficient inventory to reserve',
         });
+        return;
       }
-      
+
       res.json({ success: true, message: 'Inventory reserved successfully' });
     } catch (error) {
       res.status(500).json({
@@ -168,26 +174,28 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Fulfill order
-  app.post('/api/inventory/fulfill', async (req, res) => {
+  app.post('/api/inventory/fulfill', async (req: Request, res: Response): Promise<void> => {
     try {
       const { productId, quantity, orderId, variantId } = req.body;
-      
+
       if (!productId || !quantity || !orderId) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Missing required fields: productId, quantity, orderId',
         });
+        return;
       }
-      
+
       const success = fulfillOrder(productId, quantity, orderId, variantId);
-      
+
       if (!success) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Failed to fulfill order',
         });
+        return;
       }
-      
+
       res.json({ success: true, message: 'Order fulfilled successfully' });
     } catch (error) {
       res.status(500).json({
@@ -198,7 +206,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get low stock alerts
-  app.get('/api/inventory/alerts', async (req, res) => {
+  app.get('/api/inventory/alerts', async (req: Request, res: Response): Promise<void> => {
     try {
       const alerts = getLowStockAlerts();
       res.json({
@@ -215,7 +223,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get inventory valuation
-  app.get('/api/inventory/valuation', async (req, res) => {
+  app.get('/api/inventory/valuation', async (req: Request, res: Response): Promise<void> => {
     try {
       const valuation = getInventoryValuation();
       res.json({ success: true, valuation });
@@ -228,7 +236,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get reorder suggestions
-  app.get('/api/inventory/reorder-suggestions', async (req, res) => {
+  app.get('/api/inventory/reorder-suggestions', async (req: Request, res: Response): Promise<void> => {
     try {
       const suggestions = getReorderSuggestions();
       res.json({
@@ -245,10 +253,10 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get movement history
-  app.get('/api/inventory/movements', async (req, res) => {
+  app.get('/api/inventory/movements', async (req: Request, res: Response): Promise<void> => {
     try {
       const { productId, type, startDate, endDate, limit } = req.query;
-      
+
       const movements = getMovementHistory({
         productId: productId as string,
         type: type as any,
@@ -256,7 +264,7 @@ export function registerInventoryRoutes(app: Express) {
         endDate: endDate ? new Date(endDate as string) : undefined,
         limit: limit ? parseInt(limit as string, 10) : undefined,
       });
-      
+
       res.json({
         success: true,
         count: movements.length,

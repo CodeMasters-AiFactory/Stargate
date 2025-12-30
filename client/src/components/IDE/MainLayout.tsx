@@ -16,7 +16,6 @@ const DeploymentsScreen = lazy(() => import('./DeploymentsScreen').then(m => ({ 
 const UsageScreen = lazy(() => import('./UsageScreen').then(m => ({ default: m.UsageScreen })));
 const AIAgentSidebar = lazy(() => import('./AIAgentSidebar').then(m => ({ default: m.AIAgentSidebar })));
 const StargateIDEPage = lazy(() => import('./StargateIDEPage').then(m => ({ default: m.StargateIDEPage })));
-const ServicesDashboard = lazy(() => import('./ServicesDashboard').then(m => ({ default: m.ServicesDashboard })));
 const ProjectCreationPage = lazy(() => import('./ProjectCreationPage').then(m => ({ default: m.ProjectCreationPage })));
 const MarketingLandingPage = lazy(() => import('./MarketingLandingPage').then(m => ({ default: m.MarketingLandingPage })));
 const ServicesScreen = lazy(() => import('./ServicesScreen').then(m => ({ default: m.ServicesScreen })));
@@ -86,6 +85,39 @@ export const MainLayout = memo(function MainLayout() {
       return;
     }
     
+    // Handle /editor/:projectSlug routes - restore wizard state for refresh persistence
+    if (location.startsWith('/editor/')) {
+      const projectSlug = location.replace('/editor/', '');
+      console.log(`[MainLayout] Editor route detected with project: ${projectSlug}`);
+
+      // Try to restore wizard state from localStorage
+      const savedState = localStorage.getItem('stargate-wizard-state');
+      if (savedState) {
+        try {
+          const wizardState = JSON.parse(savedState);
+          // If the saved state has the same project (by comparing business name slug)
+          // Check both businessInfo (new) and requirements.businessName (legacy)
+          const businessName = wizardState.businessInfo?.businessName ||
+                               wizardState.requirements?.businessName || '';
+          const savedSlug = businessName
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+
+          if (savedSlug === projectSlug || wizardState.stage === 'final-website') {
+            console.log(`[MainLayout] Restoring wizard state for project: ${projectSlug}, stage: ${wizardState.stage}`);
+            setState(prev => ({ ...prev, currentView: 'stargate-websites' as any }));
+            return;
+          }
+        } catch (e) {
+          console.error('[MainLayout] Failed to parse wizard state:', e);
+        }
+      }
+      // Default to stargate-websites for any editor route
+      setState(prev => ({ ...prev, currentView: 'stargate-websites' as any }));
+      return;
+    }
+
     // Map URL paths to views
     const pathToView: Record<string, string> = {
       '/dashboard': 'dashboard',
@@ -176,8 +208,8 @@ export const MainLayout = memo(function MainLayout() {
   };
 
   const switchToDashboard = () => {
-    // Services Dashboard - Main dashboard for authenticated users
-    setState(prev => ({ ...prev, currentView: 'dashboard' }));
+    // Redirect to Merlin Website Wizard (no longer using Services Dashboard)
+    setState(prev => ({ ...prev, currentView: 'stargate-websites' }));
   };
 
   const switchToDeployments = () => {
@@ -364,8 +396,8 @@ root.render(<App />);`,
       (location === '/' || !state.currentView)
     ) {
       hasSetDefaultViewRef.current = true;
-      // Authenticated users default to packages page, non-authenticated default to landing page
-      const defaultView = isAuthenticated ? 'merlin-packages' : 'landing';
+      // Authenticated users default to website wizard, non-authenticated default to landing page
+      const defaultView = isAuthenticated ? 'stargate-websites' : 'landing';
       setState(prev => {
         // ONLY set default view if view is empty/undefined
         // NEVER override if user has explicitly set a view (e.g., via BackButton)
@@ -429,7 +461,7 @@ root.render(<App />);`,
           }}
           onPanelChange={panel => {
             console.log('Panel change:', panel); // Debug log
-            if (panel === 'dashboard') setState(prev => ({ ...prev, currentView: 'dashboard' }));
+            if (panel === 'dashboard') setState(prev => ({ ...prev, currentView: 'stargate-websites' }));
             if (panel === 'landing') switchToLanding();
             if (panel === 'stargate-ide') switchToIDE();
             if (panel === 'home') switchToDashboard(); // Legacy support
@@ -536,8 +568,8 @@ root.render(<App />);`,
         <div className="flex-1 overflow-y-auto h-full">
           <Suspense fallback={<LoadingFallback />}>
             {state.currentView === 'dashboard' ? (
-            /* Services Dashboard - Main dashboard for authenticated users */
-            <ServicesDashboard />
+            /* Redirect dashboard to Merlin Website Wizard */
+            <StargateWebsitesScreen />
           ) : state.currentView === 'ide' ? (
             /* Stargate IDE - Full IDE Interface with code editor */
             <StargateIDEPage />

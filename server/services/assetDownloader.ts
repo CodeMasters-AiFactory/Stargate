@@ -6,7 +6,7 @@
 
 import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
 
 export interface DownloadedAsset {
   originalUrl: string;
@@ -60,7 +60,7 @@ async function downloadResource(
       const mimeType = response.headers.get('content-type') || 'application/octet-stream';
 
       return { content: buffer, mimeType };
-    } catch (error) {
+    } catch (error: unknown) {
       if (attempt === retries) {
         logError(error, `AssetDownloader - Failed to download ${url} after ${retries} attempts`);
         return null;
@@ -94,7 +94,7 @@ function extractCSSUrls(html: string, baseUrl: string): string[] {
       try {
         const absoluteUrl = new URL(href, baseUrl).href;
         cssUrls.push(absoluteUrl);
-      } catch (e) {
+      } catch (_e: unknown) {
         // Invalid URL, skip
       }
     }
@@ -111,7 +111,7 @@ function extractCSSUrls(html: string, baseUrl: string): string[] {
           try {
             const absoluteUrl = new URL(urlMatch[1], baseUrl).href;
             cssUrls.push(absoluteUrl);
-          } catch (e) {
+          } catch (_e: unknown) {
             // Invalid URL, skip
           }
         }
@@ -135,7 +135,7 @@ function extractJSUrls(html: string, baseUrl: string): string[] {
       try {
         const absoluteUrl = new URL(src, baseUrl).href;
         jsUrls.push(absoluteUrl);
-      } catch (e) {
+      } catch (_e: unknown) {
         // Invalid URL, skip
       }
     }
@@ -159,7 +159,7 @@ function extractFontUrls(css: string, baseUrl: string): string[] {
       try {
         const absoluteUrl = new URL(fontUrl, baseUrl).href;
         fontUrls.push(absoluteUrl);
-      } catch (e) {
+      } catch (_e: unknown) {
         // Invalid URL, skip
       }
     }
@@ -172,7 +172,7 @@ function extractFontUrls(css: string, baseUrl: string): string[] {
     try {
       const absoluteUrl = new URL(fontUrl, baseUrl).href;
       fontUrls.push(absoluteUrl);
-    } catch (e) {
+    } catch (_e: unknown) {
       // Invalid URL, skip
     }
   }
@@ -308,7 +308,7 @@ export async function downloadAllAssets(
 
   // Download CSS files
   onProgress?.('css', 0, 1);
-  const { cssFiles, errors: cssErrors } = await downloadCSSFiles(html, baseUrl, (current, total, url) => {
+  const { cssFiles, errors: cssErrors } = await downloadCSSFiles(html, baseUrl, (current, total, _url) => {
     onProgress?.('css', current, total);
   });
   errors.push(...cssErrors);
@@ -316,7 +316,7 @@ export async function downloadAllAssets(
 
   // Download JS files
   onProgress?.('js', 0, 1);
-  const { jsFiles, errors: jsErrors } = await downloadJSFiles(html, baseUrl, (current, total, url) => {
+  const { jsFiles, errors: jsErrors } = await downloadJSFiles(html, baseUrl, (current, total, _url) => {
     onProgress?.('js', current, total);
   });
   errors.push(...jsErrors);
@@ -324,7 +324,7 @@ export async function downloadAllAssets(
 
   // Download fonts from CSS
   onProgress?.('fonts', 0, 1);
-  const { fonts, errors: fontErrors } = await downloadFonts(css, baseUrl, (current, total, url) => {
+  const { fonts, errors: fontErrors } = await downloadFonts(css, baseUrl, (current, total, _url) => {
     onProgress?.('fonts', current, total);
   });
   errors.push(...fontErrors);
@@ -358,7 +358,7 @@ export async function downloadAsset(url: string): Promise<string> {
  * Embed fonts in HTML by downloading and converting to base64
  * Used by websiteCloner
  */
-export async function embedFonts(html: string, baseUrl: string, fontsDir?: string): Promise<string> {
+export async function embedFonts(html: string, baseUrl: string, _fontsDir?: string): Promise<string> {
   const $ = cheerio.load(html);
   
   // Extract font URLs from inline styles and stylesheets
@@ -377,7 +377,7 @@ export async function embedFonts(html: string, baseUrl: string, fontsDir?: strin
           $(el).html(styleHtml.replace(new RegExp(fontUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), dataUri));
         });
       }
-    } catch (e) {
+    } catch (_e: unknown) {
       // Continue if font download fails
     }
   }

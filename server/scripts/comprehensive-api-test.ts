@@ -15,7 +15,14 @@ interface TestResult {
 
 const results: TestResult[] = [];
 
-async function httpRequest(url: string, options: any = {}): Promise<any> {
+interface HttpResponse {
+  ok: boolean;
+  status: number | undefined;
+  json: () => Promise<Record<string, unknown>>;
+  text: () => Promise<string>;
+}
+
+async function httpRequest(url: string, options: Record<string, unknown> = {}): Promise<HttpResponse> {
   const http = await import('http');
   return new Promise((resolve, reject) => {
     const urlObj = new URL(url);
@@ -23,31 +30,31 @@ async function httpRequest(url: string, options: any = {}): Promise<any> {
       hostname: urlObj.hostname,
       port: urlObj.port || 5000,
       path: urlObj.pathname + urlObj.search,
-      method: options.method || 'GET',
-      headers: options.headers || {},
+      method: (options.method as string) || 'GET',
+      headers: (options.headers as Record<string, string>) || {},
     }, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
         try {
           resolve({
-            ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 300,
+            ok: res.statusCode !== undefined && res.statusCode >= 200 && res.statusCode < 300,
             status: res.statusCode,
-            json: () => Promise.resolve(JSON.parse(data)),
+            json: () => Promise.resolve(JSON.parse(data) as Record<string, unknown>),
             text: () => Promise.resolve(data),
           });
-        } catch {
+        } catch (_error: unknown) {
           resolve({
-            ok: res.statusCode && res.statusCode >= 200 && res.statusCode < 300,
+            ok: res.statusCode !== undefined && res.statusCode >= 200 && res.statusCode < 300,
             status: res.statusCode,
-            json: () => Promise.resolve({}),
+            json: () => Promise.resolve({} as Record<string, unknown>),
             text: () => Promise.resolve(data),
           });
         }
       });
     });
     req.on('error', reject);
-    if (options.body) req.write(options.body);
+    if (options.body) req.write(options.body as string);
     req.end();
   });
 }
@@ -58,31 +65,31 @@ function log(endpoint: string, method: string, status: 'pass' | 'fail' | 'error'
   results.push({ endpoint, method, status, message, duration });
 }
 
-async function waitForServer() {
+async function waitForServer(): Promise<boolean> {
   console.log('\n🔍 Waiting for server...\n');
   for (let i = 0; i < 30; i++) {
     try {
-      const res: any = await httpRequest(`${BASE_URL}/api/health`);
+      const res: HttpResponse = await httpRequest(`${BASE_URL}/api/health`);
       if (res.ok) {
         console.log('✅ Server is running\n');
         return true;
       }
-    } catch {}
+    } catch (_error: unknown) {}
     await new Promise(r => setTimeout(r, 1000));
   }
   return false;
 }
 
-async function testEndpoint(endpoint: string, method: string, body?: any) {
+async function testEndpoint(endpoint: string, method: string, body?: Record<string, unknown>): Promise<boolean> {
   const start = Date.now();
   try {
-    const res: any = await httpRequest(`${BASE_URL}${endpoint}`, {
+    const res: HttpResponse = await httpRequest(`${BASE_URL}${endpoint}`, {
       method,
       headers: body ? { 'Content-Type': 'application/json' } : {},
       body: body ? JSON.stringify(body) : undefined,
     });
     const duration = Date.now() - start;
-    
+
     // 400 = bad request (expected for test data), 500 = server error (bad)
     if (res.status === 400) {
       log(endpoint, method, 'pass', 'Endpoint exists and validates input', duration);
@@ -97,14 +104,15 @@ async function testEndpoint(endpoint: string, method: string, body?: any) {
       log(endpoint, method, 'fail', `Status: ${res.status}`, duration);
       return false;
     }
-  } catch (e: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - start;
-    log(endpoint, method, 'error', e.message || String(e), duration);
+    const msg = error instanceof Error ? error.message : String(error);
+    log(endpoint, method, 'error', msg, duration);
     return false;
   }
 }
 
-async function runTests() {
+async function runTests(): Promise<boolean> {
   console.log('\n═══════════════════════════════════════════════════════════');
   console.log('🧪 COMPREHENSIVE API TEST SUITE');
   console.log('═══════════════════════════════════════════════════════════\n');
@@ -163,8 +171,9 @@ async function runTests() {
 
 runTests().then(success => {
   process.exit(success ? 0 : 1);
-}).catch(err => {
-  console.error('Test runner error:', err);
+}).catch((err: unknown) => {
+  const msg = err instanceof Error ? err.message : String(err);
+  console.error('Test runner error:', msg);
   process.exit(1);
 });
 

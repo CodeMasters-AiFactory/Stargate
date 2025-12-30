@@ -1,0 +1,28 @@
+{
+  "businessName": "Wellness Medical",
+  "industry": "medical",
+  "industryName": "Medical & Healthcare",
+  "generatedAt": "2025-12-29T09:49:30.214Z",
+  "version": "8.0",
+  "images": [],
+  "userPreferences": {
+    "businessType": "small",
+    "targetAudience": {
+      "audienceType": "b2c",
+      "incomeLevel": "mid"
+    },
+    "designPreferences": {
+      "colorMood": "professional"
+    },
+    "features": [
+      "contact-form",
+      "testimonials"
+    ],
+    "pages": [
+      "home",
+      "services",
+      "about",
+      "contact"
+    ]
+  }
+}

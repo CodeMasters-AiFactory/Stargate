@@ -3,7 +3,7 @@
  * Complete content management system API
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import {
   createContentType,
   getContentTypes,
@@ -30,15 +30,16 @@ export function registerCMSRoutes(app: Express) {
   // ============================================
 
   // Create content type
-  app.post('/api/cms/content-types', async (req, res) => {
+  app.post('/api/cms/content-types', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, name, fields } = req.body;
 
       if (!websiteId || !name || !fields || !Array.isArray(fields)) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId, name, and fields array are required',
         });
+        return;
       }
 
       const contentTypeId = await createContentType(websiteId, name, fields as ContentTypeField[]);
@@ -56,7 +57,7 @@ export function registerCMSRoutes(app: Express) {
   });
 
   // Get content types
-  app.get('/api/cms/content-types/:websiteId', async (req, res) => {
+  app.get('/api/cms/content-types/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const contentTypes = await getContentTypes(websiteId);
@@ -74,16 +75,17 @@ export function registerCMSRoutes(app: Express) {
   });
 
   // Get single content type
-  app.get('/api/cms/content-types/:websiteId/:contentTypeId', async (req, res) => {
+  app.get('/api/cms/content-types/:websiteId/:contentTypeId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { contentTypeId } = req.params;
       const contentType = await getContentTypeById(contentTypeId);
 
       if (!contentType) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Content type not found',
         });
+        return;
       }
 
       res.json({
@@ -99,7 +101,7 @@ export function registerCMSRoutes(app: Express) {
   });
 
   // Update content type
-  app.patch('/api/cms/content-types/:contentTypeId', async (req, res) => {
+  app.patch('/api/cms/content-types/:contentTypeId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { contentTypeId } = req.params;
       const updates = req.body;
@@ -107,10 +109,11 @@ export function registerCMSRoutes(app: Express) {
       const success = await updateContentType(contentTypeId, updates);
 
       if (!success) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Content type not found',
         });
+        return;
       }
 
       res.json({
@@ -126,16 +129,17 @@ export function registerCMSRoutes(app: Express) {
   });
 
   // Delete content type
-  app.delete('/api/cms/content-types/:contentTypeId', async (req, res) => {
+  app.delete('/api/cms/content-types/:contentTypeId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { contentTypeId } = req.params;
       const success = await deleteContentType(contentTypeId);
 
       if (!success) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Content type not found',
         });
+        return;
       }
 
       res.json({
@@ -155,15 +159,16 @@ export function registerCMSRoutes(app: Express) {
   // ============================================
 
   // Create content entry
-  app.post('/api/cms/entries', async (req, res) => {
+  app.post('/api/cms/entries', async (req: Request, res: Response): Promise<void> => {
     try {
       const { contentTypeId, websiteId, data, status, publishedAt } = req.body;
 
       if (!contentTypeId || !websiteId || !data) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'contentTypeId, websiteId, and data are required',
         });
+        return;
       }
 
       const entryId = await createContentEntry(
@@ -187,7 +192,7 @@ export function registerCMSRoutes(app: Express) {
   });
 
   // Get content entries
-  app.get('/api/cms/entries/:websiteId', async (req, res) => {
+  app.get('/api/cms/entries/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const {
@@ -200,7 +205,7 @@ export function registerCMSRoutes(app: Express) {
 
       const entries = await getContentEntries(websiteId, {
         contentTypeId: contentTypeId as string,
-        status: status as any,
+        status: status as string | undefined,
         search: search as string,
         limit: limit ? parseInt(limit as string) : undefined,
         offset: offset ? parseInt(offset as string) : undefined,
@@ -219,16 +224,17 @@ export function registerCMSRoutes(app: Express) {
   });
 
   // Get single content entry
-  app.get('/api/cms/entries/:websiteId/:entryId', async (req, res) => {
+  app.get('/api/cms/entries/:websiteId/:entryId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { entryId } = req.params;
       const entry = await getContentEntry(entryId);
 
       if (!entry) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Content entry not found',
         });
+        return;
       }
 
       res.json({
@@ -244,7 +250,7 @@ export function registerCMSRoutes(app: Express) {
   });
 
   // Update content entry
-  app.patch('/api/cms/entries/:entryId', async (req, res) => {
+  app.patch('/api/cms/entries/:entryId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { entryId } = req.params;
       const updates = req.body;
@@ -252,10 +258,11 @@ export function registerCMSRoutes(app: Express) {
       const success = await updateContentEntry(entryId, updates);
 
       if (!success) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Content entry not found',
         });
+        return;
       }
 
       res.json({
@@ -271,16 +278,17 @@ export function registerCMSRoutes(app: Express) {
   });
 
   // Delete content entry
-  app.delete('/api/cms/entries/:entryId', async (req, res) => {
+  app.delete('/api/cms/entries/:entryId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { entryId } = req.params;
       const success = await deleteContentEntry(entryId);
 
       if (!success) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Content entry not found',
         });
+        return;
       }
 
       res.json({
@@ -300,15 +308,16 @@ export function registerCMSRoutes(app: Express) {
   // ============================================
 
   // Create content relation
-  app.post('/api/cms/relations', async (req, res) => {
+  app.post('/api/cms/relations', async (req: Request, res: Response): Promise<void> => {
     try {
       const { entryId, relatedEntryId, relationType } = req.body;
 
       if (!entryId || !relatedEntryId || !relationType) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'entryId, relatedEntryId, and relationType are required',
         });
+        return;
       }
 
       const relationId = await createContentRelation(entryId, relatedEntryId, relationType);
@@ -326,7 +335,7 @@ export function registerCMSRoutes(app: Express) {
   });
 
   // Get content relations
-  app.get('/api/cms/relations/:entryId', async (req, res) => {
+  app.get('/api/cms/relations/:entryId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { entryId } = req.params;
       const relations = await getContentRelations(entryId);
@@ -344,16 +353,17 @@ export function registerCMSRoutes(app: Express) {
   });
 
   // Delete content relation
-  app.delete('/api/cms/relations/:relationId', async (req, res) => {
+  app.delete('/api/cms/relations/:relationId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { relationId } = req.params;
       const success = await deleteContentRelation(relationId);
 
       if (!success) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Content relation not found',
         });
+        return;
       }
 
       res.json({
@@ -373,7 +383,7 @@ export function registerCMSRoutes(app: Express) {
   // ============================================
 
   // Get content revisions
-  app.get('/api/cms/revisions/:entryId', async (req, res) => {
+  app.get('/api/cms/revisions/:entryId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { entryId } = req.params;
       const revisions = await getContentRevisions(entryId);
@@ -391,16 +401,17 @@ export function registerCMSRoutes(app: Express) {
   });
 
   // Restore content revision
-  app.post('/api/cms/revisions/:entryId/restore/:revisionId', async (req, res) => {
+  app.post('/api/cms/revisions/:entryId/restore/:revisionId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { entryId, revisionId } = req.params;
       const success = await restoreContentRevision(entryId, revisionId);
 
       if (!success) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Entry or revision not found',
         });
+        return;
       }
 
       res.json({
@@ -415,4 +426,3 @@ export function registerCMSRoutes(app: Express) {
     }
   });
 }
-

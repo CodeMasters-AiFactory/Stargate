@@ -28,169 +28,85 @@ import {
   healScraper,
   runWithAutoHealing,
   type ScraperConfig,
-  type HealingResult,
 } from '../services/selfHealingScraper';
-import {
-  detectTechStack,
-  type TechStack,
-} from '../services/techStackDetector';
-import {
-  analyzeCompetitorDNA,
-  type CompetitorDNA,
-} from '../services/competitorDNAAnalyzer';
-import {
-  auditSEO,
-  type SEOAudit,
-} from '../services/seoAuditEngine';
+import { detectTechStack } from '../services/techStackDetector';
+import { analyzeCompetitorDNA } from '../services/competitorDNAAnalyzer';
+import { auditSEO } from '../services/seoAuditEngine';
 import {
   getAvailableSnapshots,
   scrapeFromDate,
   compareVersions,
-  type WaybackSnapshot,
-  type HistoricalScrape,
 } from '../services/timeMachineScraper';
-import {
-  extractBrandAssets,
-  generateBrandGuidelines,
-  type BrandAssets,
-} from '../services/brandAssetExtractor';
+import { extractBrandAssets } from '../services/brandAssetExtractor';
 import {
   generateComplianceReport,
   parseRobotsTxt,
-  analyzeTermsOfService,
-  checkGDPRCompliance,
-  type ComplianceReport,
 } from '../services/legalComplianceEngine';
 import {
   registerMonitor,
   checkForChanges,
-  sendAlert,
   type MonitorConfig,
-  type ChangeDetection,
 } from '../services/changeMonitor';
 import {
   benchmarkPerformance,
   compareToBenchmarks,
-  type PerformanceMetrics,
 } from '../services/performanceBenchmarker';
-import {
-  extractStructuredData,
-  type StructuredData,
-} from '../services/structuredDataExtractor';
-import {
-  calculateCarbonFootprint,
-  type CarbonFootprint,
-} from '../services/carbonCalculator';
-import {
-  auditAccessibility,
-  type AccessibilityAudit,
-} from '../services/accessibilityAuditor';
-import {
-  analyzeMultiLanguage,
-  type MultiLanguageAnalysis,
-} from '../services/multiLanguageDetector';
-import {
-  scoreDataQuality,
-  type DataQualityScore,
-} from '../services/dataQualityScorer';
-import {
-  generateVisualDiffReport,
-  type VisualDiffReport,
-} from '../services/visualDiffReport';
+import { extractStructuredData } from '../services/structuredDataExtractor';
+import { calculateCarbonFootprint } from '../services/carbonCalculator';
+import { auditAccessibility } from '../services/accessibilityAuditor';
+import { analyzeMultiLanguage } from '../services/multiLanguageDetector';
+import { scoreDataQuality } from '../services/dataQualityScorer';
+import { generateVisualDiffReport } from '../services/visualDiffReport';
 import {
   configureProxyProvider,
   testProxyConnection,
-  getProxyUrl,
-  type ProxyConfig,
 } from '../services/enterpriseProxyIntegration';
 import {
   solveCaptcha,
   detectCaptcha,
   type CaptchaProvider,
-  type CaptchaSolution,
 } from '../services/captchaSolver';
-import {
-  exportData,
-  type ExportOptions,
-} from '../services/exportIntegrations';
+import { exportData } from '../services/exportIntegrations';
 import {
   registerWebhook,
   triggerWebhook,
-  triggerWebhooksForEvent,
   handleIncomingWebhook,
   type WebhookConfig,
-  type WebhookEvent,
 } from '../services/webhookAutomation';
-import {
-  navigateWebsite,
-  type NavigationResult,
-} from '../services/aiWebsiteNavigator';
-import {
-  chatWithWebsite,
-  type ChatMessage,
-  type ChatResponse,
-} from '../services/websiteChatbot';
-import {
-  predictWebsiteChange,
-  type ChangePrediction,
-} from '../services/changePredictor';
-import {
-  detectContentFreshness,
-  type FreshnessAnalysis,
-} from '../services/contentFreshnessDetector';
-import {
-  cloneWebsite,
-  type CloneResult,
-} from '../services/websiteCloner';
+import { navigateWebsite } from '../services/aiWebsiteNavigator';
+import { chatWithWebsite } from '../services/websiteChatbot';
+import { predictWebsiteChange } from '../services/changePredictor';
+import { detectContentFreshness } from '../services/contentFreshnessDetector';
+import { cloneWebsite } from '../services/websiteCloner';
 import {
   getTimeMachineView,
   compareSnapshots,
-  type TimeMachineView,
 } from '../services/timeMachineViewer';
 import {
   applyStealthMode,
   createStealthBrowser,
-  randomDelay,
-  type StealthConfig,
 } from '../services/stealthEngine';
 import {
   getResidentialProxy,
-  rotateResidentialProxy,
   testResidentialProxy,
   type ResidentialProxyConfig,
-  type ProxyEndpoint,
 } from '../services/residentialProxyMesh';
 import {
   transformContent,
   generateVariations,
-  type TransformOptions,
-  type TransformResult,
 } from '../services/contentTransformer';
 import {
   analyzeImage,
   analyzeImages,
-  type ImageAnalysis,
 } from '../services/aiImageAnalyzer';
 import {
   createAuditTrail,
   addAuditEntry,
   exportAuditTrail,
-  getAuditTrail,
-  type AuditTrail,
 } from '../services/auditTrailGenerator';
-import {
-  detectPII,
-  anonymizeData,
-  type AnonymizationResult,
-} from '../services/dataAnonymizer';
-import {
-  estimateWebsiteRevenue,
-  type RevenueEstimate,
-} from '../services/revenueEstimator';
-import {
-  analyzePricingIntelligence,
-  type PricingIntelligence,
-} from '../services/pricingIntelligence';
+import { anonymizeData } from '../services/dataAnonymizer';
+import { estimateWebsiteRevenue } from '../services/revenueEstimator';
+import { analyzePricingIntelligence } from '../services/pricingIntelligence';
 
 export function registerAdvancedScraperRoutes(app: Express) {
   console.log('[Advanced Scraper Routes] ✅ Registering advanced scraper routes...');
@@ -218,8 +134,7 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await extractWithVision(request);
-
-      res.json({
+return res.json({
         success: true,
         data: result.fields,
         confidence: result.confidence,
@@ -227,7 +142,7 @@ export function registerAdvancedScraperRoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Vision Extract');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -250,15 +165,14 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await extractCommonData(url);
-
-      res.json({
+return res.json({
         success: true,
         data: result.fields,
         confidence: result.confidence,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Vision Common');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -281,15 +195,14 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await extractProductData(url);
-
-      res.json({
+return res.json({
         success: true,
         data: result.fields,
         confidence: result.confidence,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Vision Products');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -312,15 +225,14 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await extractContactInfo(url);
-
-      res.json({
+return res.json({
         success: true,
         data: result.fields,
         confidence: result.confidence,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Vision Contact');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -343,14 +255,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const config = await parseNaturalLanguageIntent(request);
-
-      res.json({
+return res.json({
         success: true,
         config,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Natural Language Parse');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -373,15 +284,14 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await scrapeWithNaturalLanguage(request);
-
-      res.json({
+return res.json({
         success: true,
         data: result.fields,
         confidence: result.confidence,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Natural Language Scrape');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -404,14 +314,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const baseline = await createBaseline(config);
-
-      res.json({
+return res.json({
         success: true,
         baseline,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Self-Healing Baseline');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -434,14 +343,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const changes = await detectChanges(config);
-
-      res.json({
+return res.json({
         success: true,
         ...changes,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Self-Healing Detect Changes');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -464,14 +372,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await healScraper(config);
-
-      res.json({
+return res.json({
         success: result.success,
         result,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Self-Healing Heal');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -494,14 +401,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await runWithAutoHealing(config);
-
-      res.json({
+return res.json({
         success: true,
         ...result,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Self-Healing Run');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -524,14 +430,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const stack = await detectTechStack(url);
-
-      res.json({
+return res.json({
         success: true,
         stack,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Tech Stack');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -554,14 +459,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const dna = await analyzeCompetitorDNA(url);
-
-      res.json({
+return res.json({
         success: true,
         dna,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Competitor DNA');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -584,14 +488,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const audit = await auditSEO(url);
-
-      res.json({
+return res.json({
         success: true,
         audit,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - SEO Audit');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -617,14 +520,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       const end = endDate ? new Date(endDate) : undefined;
 
       const snapshots = await getAvailableSnapshots(url, start, end);
-
-      res.json({
+return res.json({
         success: true,
         snapshots,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Time Machine Snapshots');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -648,14 +550,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
 
       const targetDate = new Date(date);
       const result = await scrapeFromDate(url, targetDate);
-
-      res.json({
+return res.json({
         success: true,
         result,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Time Machine Scrape');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -678,14 +579,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const comparison = await compareVersions(url, new Date(date1), new Date(date2));
-
-      res.json({
+return res.json({
         success: true,
         comparison,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Time Machine Compare');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -708,14 +608,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const assets = await extractBrandAssets(url);
-
-      res.json({
+return res.json({
         success: true,
         assets,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Brand Assets');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -738,14 +637,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const report = await generateComplianceReport(url);
-
-      res.json({
+return res.json({
         success: true,
         report,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Compliance Report');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -768,14 +666,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const analysis = await parseRobotsTxt(url, userAgent);
-
-      res.json({
+return res.json({
         success: true,
         analysis,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Robots.txt');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -798,14 +695,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       await registerMonitor(config);
-
-      res.json({
+return res.json({
         success: true,
         message: 'Monitor registered successfully',
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Monitor Register');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -828,14 +724,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const detection = await checkForChanges(monitorId);
-
-      res.json({
+return res.json({
         success: true,
         detection,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Monitor Check');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -859,15 +754,14 @@ export function registerAdvancedScraperRoutes(app: Express) {
 
       const metrics = await benchmarkPerformance(url, device || 'desktop');
       const comparison = compareToBenchmarks(metrics);
-
-      res.json({
+return res.json({
         success: true,
         metrics,
         comparison,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Performance Benchmark');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -890,14 +784,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const structuredData = extractStructuredData(html);
-
-      res.json({
+return res.json({
         success: true,
         data: structuredData,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Structured Data');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -920,14 +813,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const footprint = await calculateCarbonFootprint(url);
-
-      res.json({
+return res.json({
         success: true,
         footprint,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Carbon Calculator');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -950,14 +842,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const audit = await auditAccessibility(url);
-
-      res.json({
+return res.json({
         success: true,
         audit,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Accessibility Auditor');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -980,14 +871,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const analysis = await analyzeMultiLanguage(url);
-
-      res.json({
+return res.json({
         success: true,
         analysis,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Multi-Language');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1010,14 +900,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const score = await scoreDataQuality(extractedData, expectedFields);
-
-      res.json({
+return res.json({
         success: true,
         score,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Data Quality');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1040,14 +929,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const report = await generateVisualDiffReport(originalUrl, scrapedUrl);
-
-      res.json({
+return res.json({
         success: true,
         report,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Visual Diff');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1069,23 +957,22 @@ export function registerAdvancedScraperRoutes(app: Express) {
         });
       }
 
-      const proxyProvider: CaptchaProvider = {
+      const proxyProvider = {
         name: provider,
         apiKey,
         enabled: true,
       };
 
-      const config = configureProxyProvider(proxyProvider);
+      const config = configureProxyProvider(proxyProvider as any);
       const test = await testProxyConnection(config);
-
-      res.json({
+return res.json({
         success: test.success,
         config,
         test,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Proxy Configure');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1119,14 +1006,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
         pageUrl,
         captchaType || 'recaptcha2'
       );
-
-      res.json({
+return res.json({
         success: solution.success,
         solution,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - CAPTCHA Solve');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1149,14 +1035,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const detection = detectCaptcha(html);
-
-      res.json({
+return res.json({
         success: true,
         detection,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - CAPTCHA Detect');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1179,14 +1064,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await exportData(data, options);
-
-      res.json({
+return res.json({
         success: result.success,
         result,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Export');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1209,14 +1093,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       registerWebhook(config);
-
-      res.json({
+return res.json({
         success: true,
         message: 'Webhook registered successfully',
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Webhook Register');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1239,14 +1122,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await triggerWebhook(webhookId, event);
-
-      res.json({
+return res.json({
         success: result.success,
         result,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Webhook Trigger');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1263,14 +1145,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       const payload = req.body;
 
       const result = handleIncomingWebhook(webhookId, payload);
-
-      res.json({
+return res.json({
         success: result.success,
         result,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Incoming Webhook');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1293,14 +1174,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await navigateWebsite(url, goal, maxSteps || 20);
-
-      res.json({
+return res.json({
         success: result.success,
         result,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - AI Navigator');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1323,14 +1203,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const response = await chatWithWebsite(url, question, conversationHistory);
-
-      res.json({
+return res.json({
         success: true,
         response,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Website Chat');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1353,14 +1232,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const prediction = await predictWebsiteChange(url);
-
-      res.json({
+return res.json({
         success: true,
         prediction,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Change Predictor');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1383,14 +1261,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const analysis = await detectContentFreshness(url);
-
-      res.json({
+return res.json({
         success: true,
         analysis,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Freshness Detector');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1413,14 +1290,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await cloneWebsite(url, outputDir);
-
-      res.json({
+return res.json({
         success: result.success,
         result,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Website Cloner');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1437,14 +1313,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       const limit = parseInt(req.query.limit as string) || 100;
 
       const view = await getTimeMachineView(url, limit);
-
-      res.json({
+return res.json({
         success: true,
         view,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Time Machine Viewer');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1467,14 +1342,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const comparison = await compareSnapshots(url, timestamp1, timestamp2);
-
-      res.json({
+return res.json({
         success: true,
         comparison,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Time Machine Compare');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1492,14 +1366,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       const browser = await createStealthBrowser();
       const page = await browser.newPage();
       await applyStealthMode(page, config);
-
-      res.json({
+return res.json({
         success: true,
         message: 'Stealth mode applied',
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Stealth Mode');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1523,15 +1396,14 @@ export function registerAdvancedScraperRoutes(app: Express) {
 
       const endpoint = getResidentialProxy(config);
       const test = await testResidentialProxy(endpoint);
-
-      res.json({
+return res.json({
         success: test.success,
         endpoint,
         test,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Residential Proxy');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1554,14 +1426,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await transformContent(content, options);
-
-      res.json({
+return res.json({
         success: true,
         result,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Content Transformer');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1584,14 +1455,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const variations = await generateVariations(content, count || 3);
-
-      res.json({
+return res.json({
         success: true,
         variations,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Content Variations');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1615,20 +1485,20 @@ export function registerAdvancedScraperRoutes(app: Express) {
 
       if (imageUrls) {
         const analyses = await analyzeImages(imageUrls);
-        res.json({
+        return res.json({
           success: true,
           analyses,
         });
       } else {
         const analysis = await analyzeImage(imageUrl);
-        res.json({
+        return res.json({
           success: true,
           analysis,
         });
       }
     } catch (error) {
       logError(error, 'Advanced Scraper - Image Analyzer');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1651,14 +1521,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const trailId = createAuditTrail(url);
-
-      res.json({
+return res.json({
         success: true,
         trailId,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Audit Trail Create');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1681,14 +1550,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       await addAuditEntry(trailId, action, url, details);
-
-      res.json({
+return res.json({
         success: true,
         message: 'Entry added',
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Audit Trail Entry');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1711,14 +1579,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const filepath = await exportAuditTrail(trailId, format || 'json');
-
-      res.json({
+return res.json({
         success: true,
         filepath,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Audit Trail Export');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1741,14 +1608,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const result = await anonymizeData(data, options);
-
-      res.json({
+return res.json({
         success: true,
         result,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Data Anonymizer');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1771,14 +1637,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const estimate = await estimateWebsiteRevenue(url);
-
-      res.json({
+return res.json({
         success: true,
         estimate,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Revenue Estimator');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1801,14 +1666,13 @@ export function registerAdvancedScraperRoutes(app: Express) {
       }
 
       const intelligence = await analyzePricingIntelligence(url, previousData);
-
-      res.json({
+return res.json({
         success: true,
         intelligence,
       });
     } catch (error) {
       logError(error, 'Advanced Scraper - Pricing Intelligence');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });

@@ -87,8 +87,8 @@ export function requireAuth(req: Request, res: Response, next: NextFunction): vo
 /**
  * Require specific permission
  */
-export function requirePermission(permission: string) {
-  return (req: Request, res: Response, next: NextFunction): void => {
+export function requirePermission(_permission: string) {
+  return (_req: Request, _res: Response, next: NextFunction): void => {
     // In production, check actual user permissions from session/database
     // For now, allow all requests (development mode)
     next();
@@ -116,8 +116,8 @@ export function getUserId(req: Request): string | null {
 /**
  * Require workspace member permissions
  */
-export function requireWorkspaceMember(workspaceId: string) {
-  return (req: Request, res: Response, next: NextFunction): void => {
+export function requireWorkspaceMember(_workspaceId: string) {
+  return (_req: Request, _res: Response, next: NextFunction): void => {
     // In production, check if user is member of workspace
     // For now, allow all requests (development mode)
     next();

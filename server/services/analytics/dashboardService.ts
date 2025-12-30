@@ -139,8 +139,8 @@ export async function getDashboardMetrics(
     : 'stable';
   
   // Get top pages with changes
-  const topPages = currentMetrics.pageViews.topPages.map(page => {
-    const previousPage = previousMetrics.pageViews.topPages.find(p => p.path === page.path);
+  const topPages = currentMetrics.pageViews.topPages.map((page: { path: string; views: number }) => {
+    const previousPage = previousMetrics.pageViews.topPages.find((p: { path: string }) => p.path === page.path);
     return {
       ...page,
       change: calculateChange(page.views, previousPage?.views || 0),
@@ -148,14 +148,15 @@ export async function getDashboardMetrics(
   });
   
   // Get traffic sources with changes
-  const sources = Object.entries(currentMetrics.traffic.sources)
+  const sourcesEntries = Object.entries(currentMetrics.traffic.sources) as [string, number][];
+  const sourcesTotal = sourcesEntries.reduce((sum, [, v]) => sum + v, 0);
+  const sources = sourcesEntries
     .map(([source, visitors]) => {
-      const previous = previousMetrics.traffic.sources[source] || 0;
-      const total = Object.values(currentMetrics.traffic.sources).reduce((sum, v) => sum + v, 0);
+      const previous = (previousMetrics.traffic.sources[source] || 0) as number;
       return {
         source,
         visitors,
-        percentage: total > 0 ? (visitors / total) * 100 : 0,
+        percentage: sourcesTotal > 0 ? (visitors / sourcesTotal) * 100 : 0,
         change: calculateChange(visitors, previous),
       };
     })
@@ -179,14 +180,15 @@ export async function getDashboardMetrics(
   });
   
   // Get countries with changes
-  const countries = Object.entries(currentMetrics.traffic.countries)
+  const countriesEntries = Object.entries(currentMetrics.traffic.countries) as [string, number][];
+  const countriesTotal = countriesEntries.reduce((sum, [, v]) => sum + v, 0);
+  const countries = countriesEntries
     .map(([country, visitors]) => {
-      const previous = previousMetrics.traffic.countries[country] || 0;
-      const total = Object.values(currentMetrics.traffic.countries).reduce((sum, v) => sum + v, 0);
+      const previous = (previousMetrics.traffic.countries[country] || 0) as number;
       return {
         country,
         visitors,
-        percentage: total > 0 ? (visitors / total) * 100 : 0,
+        percentage: countriesTotal > 0 ? (visitors / countriesTotal) * 100 : 0,
         change: calculateChange(visitors, previous),
       };
     })

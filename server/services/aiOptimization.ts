@@ -3,8 +3,8 @@
  * Automatic A/B testing, conversion rate optimization, and AI-driven improvements
  */
 
-import { db } from '../db';
-import type { ProjectConfig } from './projectConfig';
+void import('../db');
+void import('./projectConfig');
 
 export interface ABTest {
   id: string;
@@ -59,7 +59,7 @@ class AIOptimizationService {
    * Generate A/B test variants automatically
    */
   async generateABTestVariants(
-    elementSelector: string,
+    _elementSelector: string,
     currentContent: string,
     count: number = 3
   ): Promise<Array<{ id: string; name: string; content: string; css?: string }>> {
@@ -103,10 +103,10 @@ class AIOptimizationService {
    * Create A/B test
    */
   async createABTest(
-    websiteId: string,
-    name: string,
-    elementSelector: string,
-    variants: Array<{ id: string; name: string; content: string; css?: string }>
+    _websiteId: string,
+    _name: string,
+    _elementSelector: string,
+    _variants: Array<{ id: string; name: string; content: string; css?: string }>
   ): Promise<string> {
     const testId = `test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -119,7 +119,7 @@ class AIOptimizationService {
   /**
    * Analyze A/B test results
    */
-  async analyzeABTestResults(testId: string): Promise<{
+  async analyzeABTestResults(_testId: string): Promise<{
     winner: string | null;
     confidence: number;
     improvement: number;
@@ -137,7 +137,7 @@ class AIOptimizationService {
    * Generate optimization suggestions
    */
   async generateOptimizationSuggestions(
-    websiteId: string,
+    _websiteId: string,
     analytics: {
       pageViews: number;
       conversions: number;
@@ -181,7 +181,7 @@ class AIOptimizationService {
    * Optimize color scheme
    */
   async optimizeColorScheme(
-    currentColors: { primary: string; secondary: string; accent: string },
+    _currentColors: { primary: string; secondary: string; accent: string },
     industry: string
   ): Promise<{ primary: string; secondary: string; accent: string; reasoning: string }> {
     // In production, use AI to suggest optimal colors based on industry and psychology
@@ -205,7 +205,7 @@ class AIOptimizationService {
    */
   async optimizeLayout(
     currentLayout: string,
-    analytics: { scrollDepth: number; clickHeatmap: any }
+    _analytics: { scrollDepth: number; clickHeatmap: any }
   ): Promise<{ layout: string; reasoning: string }> {
     // In production, use AI to suggest layout improvements
     return {
@@ -218,9 +218,9 @@ class AIOptimizationService {
    * Create conversion funnel
    */
   async createConversionFunnel(
-    websiteId: string,
-    name: string,
-    steps: Array<{ name: string; selector: string }>
+    _websiteId: string,
+    _name: string,
+    _steps: Array<{ name: string; selector: string }>
   ): Promise<string> {
     const funnelId = `funnel-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -233,7 +233,7 @@ class AIOptimizationService {
   /**
    * Analyze funnel performance
    */
-  async analyzeFunnel(funnelId: string): Promise<ConversionFunnel | null> {
+  async analyzeFunnel(_funnelId: string): Promise<ConversionFunnel | null> {
     // In production, fetch from database and calculate metrics
     return null;
   }

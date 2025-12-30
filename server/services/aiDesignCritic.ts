@@ -4,7 +4,8 @@
  * Uses GPT-4o, Claude 3.5 Sonnet, Gemini 2.0, and Grok-2 for consensus voting
  */
 
-import { multiModelAI } from '../ai/multi-model-assistant';
+// multiModelAI reserved for multi-model consensus feature
+void import('../ai/multi-model-assistant');
 
 export interface AIRecommendation {
   id: string;
@@ -140,8 +141,8 @@ export async function getAIDesignRecommendations(
  */
 async function analyzeAccessibility(
   html: string,
-  css: string,
-  selectedElement?: any
+  _css: string,
+  _selectedElement?: any
 ): Promise<AIRecommendation | null> {
   // Simulate multi-model analysis
   const models: AIModel[] = [
@@ -199,8 +200,8 @@ async function analyzeAccessibility(
  * Analyze color contrast
  */
 async function analyzeColorContrast(
-  html: string,
-  css: string
+  _html: string,
+  _css: string
 ): Promise<AIRecommendation | null> {
   const models: AIModel[] = [
     {
@@ -251,10 +252,11 @@ async function analyzeColorContrast(
  * Analyze typography
  */
 async function analyzeTypography(
-  html: string,
-  css: string
+  _html: string,
+  _css: string
 ): Promise<AIRecommendation | null> {
-  const models: AIModel[] = [
+  // Simulated analysis - models used for demonstration
+  void [
     {
       id: 'gpt-4o',
       name: 'GPT-4o',
@@ -286,8 +288,8 @@ async function analyzeTypography(
  * Analyze layout structure
  */
 async function analyzeLayout(
-  html: string,
-  selectedElement?: any
+  _html: string,
+  _selectedElement?: any
 ): Promise<AIRecommendation | null> {
   const models: AIModel[] = [
     {
@@ -344,10 +346,11 @@ async function analyzeLayout(
  * Analyze spacing consistency
  */
 async function analyzeSpacing(
-  html: string,
-  css: string
+  _html: string,
+  _css: string
 ): Promise<AIRecommendation | null> {
-  const models: AIModel[] = [
+  // Simulated analysis - models used for demonstration
+  void [
     {
       id: 'gpt-4o',
       name: 'GPT-4o',
@@ -379,8 +382,8 @@ async function analyzeSpacing(
  * Vote on a specific design decision using multi-model consensus
  */
 export async function voteOnDesignDecision(
-  prompt: string,
-  context: any
+  _prompt: string,
+  _context: any
 ): Promise<{
   consensusVote: 'approve' | 'reject' | 'neutral';
   consensusPercentage: number;

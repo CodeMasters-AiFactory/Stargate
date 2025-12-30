@@ -64,8 +64,8 @@ Keep it professional, SEO-optimized, and under 80 characters. Return only the re
           changesCount++;
           rewrittenSections.push(`headline-${index}`);
         }
-      } catch (error) {
-        console.warn(`[ContentRewriter] Failed to rewrite headline "${originalText}":`, getErrorMessage(error));
+      } catch (_error: unknown) {
+        console.warn(`[ContentRewriter] Failed to rewrite headline "${originalText}":`, getErrorMessage(_error));
       }
     }
 
@@ -99,8 +99,8 @@ Keep it professional, SEO-optimized, and 2-4 sentences. Return only the rewritte
           changesCount++;
           rewrittenSections.push(`paragraph-${index}`);
         }
-      } catch (error) {
-        console.warn(`[ContentRewriter] Failed to rewrite paragraph:`, getErrorMessage(error));
+      } catch (_error: unknown) {
+        console.warn(`[ContentRewriter] Failed to rewrite paragraph:`, getErrorMessage(_error));
       }
     }
 
@@ -132,8 +132,8 @@ Keep it action-oriented, under 5 words, and compelling. Return only the rewritte
           changesCount++;
           rewrittenSections.push(`cta-${index}`);
         }
-      } catch (error) {
-        console.warn(`[ContentRewriter] Failed to rewrite CTA:`, getErrorMessage(error));
+      } catch (_error: unknown) {
+        console.warn(`[ContentRewriter] Failed to rewrite CTA:`, getErrorMessage(_error));
       }
     }
 
@@ -141,19 +141,19 @@ Keep it action-oriented, under 5 words, and compelling. Return only the rewritte
     const phoneRegex = /(\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g;
     const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
     
-    $('body').html((_, html) => {
+    $('body').html((_: number, html: string) => {
       return html
         ?.replace(phoneRegex, clientInfo.phone) || '';
     });
 
-    $('body').html((_, html) => {
+    $('body').html((_: number, html: string) => {
       return html
         ?.replace(emailRegex, clientInfo.email) || '';
     });
 
     // Replace business name mentions
-    const businessNameRegex = new RegExp(clientInfo.businessName, 'gi');
-    $('body').html((_, html) => {
+    const _businessNameRegex = new RegExp(clientInfo.businessName, 'gi');
+    $('body').html((_: number, html: string) => {
       return html || '';
     });
 
@@ -164,7 +164,7 @@ Keep it action-oriented, under 5 words, and compelling. Return only the rewritte
       changesCount,
       rewrittenSections,
     };
-  } catch (error) {
+  } catch (error: unknown) {
     logError(error, 'ContentRewriter');
     return {
       html,

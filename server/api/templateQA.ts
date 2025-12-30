@@ -42,7 +42,7 @@ async function loadAllTemplates(): Promise<any[]> {
     try {
       const dbTemplates = await db.select().from(brandTemplates);
       // Map database templates to expected format
-      templates.push(...dbTemplates.map(t => {
+      templates.push(...dbTemplates.map((t: typeof brandTemplates.$inferSelect) => {
         const contentData = (t.contentData as any) || {};
         const html = contentData.html || '';
         
@@ -144,7 +144,7 @@ async function saveTemplate(template: any): Promise<void> {
  * Get QA status for all templates
  */
 export function registerTemplateQARoutes(app: Express) {
-  app.get('/api/admin/templates/qa/status', requireAdmin, async (req, res) => {
+  app.get('/api/admin/templates/qa/status', requireAdmin, async (_req, res) => {
     try {
       const templates = await loadAllTemplates();
 
@@ -164,10 +164,10 @@ export function registerTemplateQARoutes(app: Express) {
         };
       });
 
-      res.json({ success: true, templates: status });
+      return res.json({ success: true, templates: status });
     } catch (error) {
       logError(error, 'TemplateQA Status');
-      res.status(500).json({ success: false, error: getErrorMessage(error) });
+      return res.status(500).json({ success: false, error: getErrorMessage(error) });
     }
   });
 
@@ -265,7 +265,7 @@ export function registerTemplateQARoutes(app: Express) {
           status: 'completed',
         },
       })}\n\n`);
-      res.end();
+      return res.end();
     } catch (error) {
       logError(error, 'TemplateQA Rewrite Content');
       res.write(`data: ${JSON.stringify({
@@ -274,7 +274,7 @@ export function registerTemplateQARoutes(app: Express) {
           status: 'error',
         },
       })}\n\n`);
-      res.end();
+      return res.end();
     }
   });
 
@@ -369,7 +369,7 @@ export function registerTemplateQARoutes(app: Express) {
 
       console.log(`[TemplateQA] ✅ Rewritten template ${templateId} with ${changesCount} changes (local method)`);
 
-      res.json({
+      return res.json({
         success: true,
         message: `Content rewritten for template ${templateId} (${changesCount} changes)`,
         template: {
@@ -381,7 +381,7 @@ export function registerTemplateQARoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'TemplateQA Rewrite Single Template');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -391,7 +391,7 @@ export function registerTemplateQARoutes(app: Express) {
   /**
    * Regenerate images for all templates
    */
-  app.post('/api/admin/templates/qa/regenerate-images', requireAdmin, async (req, res) => {
+  app.post('/api/admin/templates/qa/regenerate-images', requireAdmin, async (_req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
@@ -444,10 +444,11 @@ export function registerTemplateQARoutes(app: Express) {
 
               const generatedImage = await generateAIImage({
                 prompt: imagePrompt,
-                style: 'professional',
+                style: 'hero',
                 businessContext: {
+                  name: template.brand || 'Business',
                   industry: template.industry || 'General',
-                  businessName: template.brand || 'Business',
+                  colorScheme: [],
                 },
               });
 
@@ -491,7 +492,7 @@ export function registerTemplateQARoutes(app: Express) {
           status: 'completed',
         },
       })}\n\n`);
-      res.end();
+      return res.end();
     } catch (error) {
       logError(error, 'TemplateQA Regenerate Images');
       res.write(`data: ${JSON.stringify({
@@ -500,7 +501,7 @@ export function registerTemplateQARoutes(app: Express) {
           status: 'error',
         },
       })}\n\n`);
-      res.end();
+      return res.end();
     }
   });
 
@@ -561,10 +562,11 @@ export function registerTemplateQARoutes(app: Express) {
 
             const generatedImage = await generateAIImage({
               prompt: imagePrompt,
-              style: 'professional',
+              style: 'hero',
               businessContext: {
+                name: businessName,
                 industry: industry,
-                businessName: businessName,
+                colorScheme: [],
               },
             });
 
@@ -606,7 +608,7 @@ export function registerTemplateQARoutes(app: Express) {
 
       console.log(`[TemplateQA] ✅ Reimaged template ${templateId} with ${imagesProcessed} images (${hasLeonardoKey ? 'Leonardo AI' : 'Unsplash'})`);
 
-      res.json({
+      return res.json({
         success: true,
         message: `Images regenerated for template ${templateId} (${imagesProcessed} images)`,
         template: {
@@ -619,7 +621,7 @@ export function registerTemplateQARoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'TemplateQA Regenerate Single Image');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -629,7 +631,7 @@ export function registerTemplateQARoutes(app: Express) {
   /**
    * Evaluate and improve SEO for all templates
    */
-  app.post('/api/admin/templates/qa/evaluate-seo', requireAdmin, async (req, res) => {
+  app.post('/api/admin/templates/qa/evaluate-seo', requireAdmin, async (_req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
@@ -692,7 +694,6 @@ export function registerTemplateQARoutes(app: Express) {
           // 5. Add alt text to images without it
           $('img[src]:not([alt])').each((_, img) => {
             const $img = $(img);
-            const src = $img.attr('src') || '';
             const altText = `${template.industry || 'Business'} image`;
             $img.attr('alt', altText);
             improvements.push('Added alt text to images');
@@ -736,7 +737,7 @@ export function registerTemplateQARoutes(app: Express) {
           status: 'completed',
         },
       })}\n\n`);
-      res.end();
+      return res.end();
     } catch (error) {
       logError(error, 'TemplateQA Evaluate SEO');
       res.write(`data: ${JSON.stringify({
@@ -745,7 +746,7 @@ export function registerTemplateQARoutes(app: Express) {
           status: 'error',
         },
       })}\n\n`);
-      res.end();
+      return res.end();
     }
   });
 
@@ -807,14 +808,14 @@ export function registerTemplateQARoutes(app: Express) {
       await saveTemplate(template);
       console.log(`[TemplateQA] ✅ SEO evaluated for ${templateId} (${improvements.length} improvements)`);
 
-      res.json({
+      return res.json({
         success: true,
         message: `SEO evaluated for ${templateId}`,
         improvements: improvements.length,
       });
     } catch (error) {
       logError(error, 'TemplateQA Evaluate Single SEO');
-      res.status(500).json({ success: false, error: getErrorMessage(error) });
+      return res.status(500).json({ success: false, error: getErrorMessage(error) });
     }
   });
 
@@ -850,21 +851,21 @@ export function registerTemplateQARoutes(app: Express) {
       await saveTemplate(template);
       console.log(`[TemplateQA] ✅ Verified template ${templateId}: ${errors.length === 0 ? 'PASSED' : 'FAILED'}`);
 
-      res.json({
+      return res.json({
         success: true,
         verified: errors.length === 0,
         errors,
       });
     } catch (error) {
       logError(error, 'TemplateQA Verify Single');
-      res.status(500).json({ success: false, error: getErrorMessage(error) });
+      return res.status(500).json({ success: false, error: getErrorMessage(error) });
     }
   });
 
   /**
    * Verify all templates are working correctly
    */
-  app.post('/api/admin/templates/qa/verify', requireAdmin, async (req, res) => {
+  app.post('/api/admin/templates/qa/verify', requireAdmin, async (_req, res) => {
     try {
       const templates = await loadAllTemplates();
       let verified = 0;
@@ -930,7 +931,7 @@ export function registerTemplateQARoutes(app: Express) {
         }
       }
 
-      res.json({
+      return res.json({
         success: true,
         verified,
         errors,
@@ -938,7 +939,7 @@ export function registerTemplateQARoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'TemplateQA Verify');
-      res.status(500).json({ success: false, error: getErrorMessage(error) });
+      return res.status(500).json({ success: false, error: getErrorMessage(error) });
     }
   });
 
@@ -1081,7 +1082,7 @@ export function registerTemplateQARoutes(app: Express) {
         }
       });
 
-      res.json({
+      return res.json({
         success: true,
         template: {
           id: template.id,
@@ -1099,7 +1100,7 @@ export function registerTemplateQARoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'TemplateQA Get Details');
-      res.status(500).json({ success: false, error: getErrorMessage(error) });
+      return res.status(500).json({ success: false, error: getErrorMessage(error) });
     }
   });
 
@@ -1109,7 +1110,7 @@ export function registerTemplateQARoutes(app: Express) {
   app.post('/api/admin/templates/qa/rewrite-section/:templateId', requireAdmin, async (req, res) => {
     try {
       const { templateId } = req.params;
-      const { sectionId, selector, newText } = req.body;
+      const { sectionId: _sectionId, selector, newText } = req.body;
 
       const templates = await loadAllTemplates();
       const template = templates.find(t => t.id === templateId);
@@ -1143,7 +1144,7 @@ export function registerTemplateQARoutes(app: Express) {
 
       console.log(`[TemplateQA] ✅ Section rewritten in ${templateId}: ${selector}`);
 
-      res.json({
+      return res.json({
         success: true,
         message: `Section updated in ${templateId}`,
         oldText: oldText.substring(0, 100),
@@ -1151,7 +1152,7 @@ export function registerTemplateQARoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'TemplateQA Rewrite Section');
-      res.status(500).json({ success: false, error: getErrorMessage(error) });
+      return res.status(500).json({ success: false, error: getErrorMessage(error) });
     }
   });
 
@@ -1161,7 +1162,7 @@ export function registerTemplateQARoutes(app: Express) {
   app.post('/api/admin/templates/qa/reimage-single/:templateId', requireAdmin, async (req, res) => {
     try {
       const { templateId } = req.params;
-      const { imageId, selector, prompt } = req.body;
+      const { imageId: _imageId, selector, prompt } = req.body;
 
       const templates = await loadAllTemplates();
       const template = templates.find(t => t.id === templateId);
@@ -1190,8 +1191,8 @@ export function registerTemplateQARoutes(app: Express) {
       if (hasLeonardoKey) {
         const generatedImage = await generateAIImage({
           prompt: prompt || alt || `Professional ${industry} image`,
-          style: 'professional',
-          businessContext: { industry, businessName: template.brand || 'Business' },
+          style: 'hero',
+          businessContext: { name: template.brand || 'Business', industry, colorScheme: [] },
         });
         newSrc = generatedImage.url || oldSrc;
       } else {
@@ -1215,7 +1216,7 @@ export function registerTemplateQARoutes(app: Express) {
 
       console.log(`[TemplateQA] ✅ Image reimaged in ${templateId}: ${selector}`);
 
-      res.json({
+      return res.json({
         success: true,
         message: `Image updated in ${templateId}`,
         oldSrc: oldSrc.substring(0, 100),
@@ -1224,7 +1225,7 @@ export function registerTemplateQARoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'TemplateQA Reimage Single');
-      res.status(500).json({ success: false, error: getErrorMessage(error) });
+      return res.status(500).json({ success: false, error: getErrorMessage(error) });
     }
   });
 
@@ -1276,7 +1277,7 @@ export function registerTemplateQARoutes(app: Express) {
 
       console.log(`[TemplateQA] ✅ Custom image uploaded in ${templateId}: ${selector}`);
 
-      res.json({
+      return res.json({
         success: true,
         message: `Custom image uploaded to ${templateId}`,
         oldSrc: oldSrc.substring(0, 100),
@@ -1284,7 +1285,7 @@ export function registerTemplateQARoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'TemplateQA Upload Image');
-      res.status(500).json({ success: false, error: getErrorMessage(error) });
+      return res.status(500).json({ success: false, error: getErrorMessage(error) });
     }
   });
 
@@ -1530,18 +1531,18 @@ export function registerTemplateQARoutes(app: Express) {
           status: 'completed',
         },
       })}\n\n`);
-      res.end();
+      return res.end();
     } catch (error) {
       logError(error, 'TemplateQA Verify');
       res.write(`data: ${JSON.stringify({
         error: getErrorMessage(error),
         progress: { status: 'error' },
       })}\n\n`);
-      res.end();
+      return res.end();
     }
   });
 
-  app.get('/api/admin/templates/qa/verified-list', requireAdmin, async (req, res) => {
+  app.get('/api/admin/templates/qa/verified-list', requireAdmin, async (_req, res) => {
     try {
       const templates = await loadAllTemplates();
       
@@ -1582,7 +1583,7 @@ export function registerTemplateQARoutes(app: Express) {
 
       console.log(`[TemplateQA] Verified List: ${verifiedTemplates.length} templates passed ALL QA checks`);
 
-      res.json({
+      return res.json({
         success: true,
         templates: verifiedTemplates,
         total: verifiedTemplates.length,
@@ -1590,7 +1591,7 @@ export function registerTemplateQARoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'TemplateQA Verified List');
-      res.status(500).json({ success: false, error: getErrorMessage(error) });
+      return res.status(500).json({ success: false, error: getErrorMessage(error) });
     }
   });
 
@@ -1619,7 +1620,7 @@ export function registerTemplateQARoutes(app: Express) {
       const allIssues = [...result.errors, ...smokeTest.issues];
       const allWarnings = [...result.warnings, ...smokeTest.warnings];
 
-      res.json({
+      return res.json({
         success: true,
         fixedHtml,
         result: {
@@ -1632,7 +1633,7 @@ export function registerTemplateQARoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'TemplateAutoFix');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1693,7 +1694,7 @@ export function registerTemplateQARoutes(app: Express) {
 
       console.log(`[TemplateQA] ✅ Deep inspection completed for ${templateId}: Score ${inspectionResult.score}/100, ${inspectionResult.passedChecks}/${inspectionResult.totalChecks} passed`);
 
-      res.json({
+      return res.json({
         success: true,
         inspection: inspectionResult,
         autoFix: {
@@ -1704,7 +1705,7 @@ export function registerTemplateQARoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'TemplateQA Deep Inspection');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1714,7 +1715,7 @@ export function registerTemplateQARoutes(app: Express) {
   /**
    * Batch deep inspection for all templates
    */
-  app.post('/api/admin/templates/qa/deep-inspect-all', requireAdmin, async (req, res) => {
+  app.post('/api/admin/templates/qa/deep-inspect-all', requireAdmin, async (_req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
@@ -1806,7 +1807,7 @@ export function registerTemplateQARoutes(app: Express) {
           status: 'completed',
         },
       })}\n\n`);
-      res.end();
+      return res.end();
     } catch (error) {
       logError(error, 'TemplateQA Batch Deep Inspection');
       res.write(`data: ${JSON.stringify({
@@ -1815,7 +1816,7 @@ export function registerTemplateQARoutes(app: Express) {
           status: 'error',
         },
       })}\n\n`);
-      res.end();
+      return res.end();
     }
   });
 }

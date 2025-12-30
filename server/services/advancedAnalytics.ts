@@ -5,7 +5,7 @@
 
 import { db } from '../db';
 import { analyticsEvents } from '@shared/schema';
-import { eq, and, gte, desc, sql } from 'drizzle-orm';
+import { eq, and, gte, sql } from 'drizzle-orm';
 
 export interface HeatmapData {
   element: string; // CSS selector
@@ -100,8 +100,8 @@ class AdvancedAnalyticsService {
       // Aggregate by element position
       const heatmapMap = new Map<string, { clicks: number; x: number; y: number; timestamps: number[] }>();
 
-      events.forEach(event => {
-        const metadata = event.metadata as any;
+      events.forEach((event: { metadata: unknown; timestamp: Date }) => {
+        const metadata = event.metadata as Record<string, unknown>;
         const element = metadata?.element || 'unknown';
         const x = metadata?.x || 0;
         const y = metadata?.y || 0;
@@ -143,9 +143,9 @@ class AdvancedAnalyticsService {
    * Record session
    */
   async recordSession(
-    websiteId: string,
-    sessionId: string,
-    events: Array<{ type: string; timestamp: number; data: any }>
+    _websiteId: string,
+    _sessionId: string,
+    events: Array<{ type: string; timestamp: number; data: unknown }>
   ): Promise<string> {
     if (!db) {
       return 'recording-id';
@@ -173,7 +173,7 @@ class AdvancedAnalyticsService {
   /**
    * Get session recording
    */
-  async getSessionRecording(recordingId: string): Promise<SessionRecording | null> {
+  async getSessionRecording(_recordingId: string): Promise<SessionRecording | null> {
     // In production, fetch from database/blob storage
     return null;
   }
@@ -207,10 +207,10 @@ class AdvancedAnalyticsService {
       const visitorSteps = new Map<string, Set<string>>(); // sessionId -> step IDs reached
       const stepVisitors = new Map<string, Set<string>>(); // stepId -> sessionIds
 
-      events.forEach(event => {
+      events.forEach((event: { sessionId: string; metadata: unknown }) => {
         const sessionId = event.sessionId;
-        const metadata = event.metadata as any;
-        const element = metadata?.element;
+        const metadata = event.metadata as Record<string, unknown>;
+        const element = metadata?.element as string | undefined;
 
         steps.forEach(step => {
           if (element && element.includes(step.selector)) {
@@ -228,7 +228,7 @@ class AdvancedAnalyticsService {
       });
 
       // Calculate funnel metrics
-      const totalVisitors = new Set(events.map(e => e.sessionId)).size;
+      const totalVisitors = new Set(events.map((e: { sessionId: string }) => e.sessionId)).size;
       const funnelSteps: FunnelStep[] = steps.map((step, index) => {
         const visitors = stepVisitors.get(step.id)?.size || 0;
         const previousVisitors = index > 0
@@ -282,9 +282,9 @@ class AdvancedAnalyticsService {
    * Create user segment
    */
   async createUserSegment(
-    websiteId: string,
-    name: string,
-    criteria: UserSegment['criteria']
+    _websiteId: string,
+    _name: string,
+    _criteria: UserSegment['criteria']
   ): Promise<string> {
     const segmentId = `segment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -298,8 +298,8 @@ class AdvancedAnalyticsService {
    * Analyze user segment
    */
   async analyzeUserSegment(
-    websiteId: string,
-    segmentId: string
+    _websiteId: string,
+    _segmentId: string
   ): Promise<UserSegment | null> {
     // In production, fetch from database and calculate metrics
     return null;
@@ -308,7 +308,7 @@ class AdvancedAnalyticsService {
   /**
    * Get all segments for a website
    */
-  async getUserSegments(websiteId: string): Promise<UserSegment[]> {
+  async getUserSegments(_websiteId: string): Promise<UserSegment[]> {
     // In production, fetch from database
     return [];
   }

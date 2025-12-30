@@ -5,7 +5,7 @@
  * pixel-diff highlighting, change percentage, exportable report.
  */
 
-import puppeteer, { Page } from 'puppeteer';
+import puppeteer from 'puppeteer';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -46,6 +46,7 @@ export async function generateVisualDiffReport(
     const timestamp = Date.now();
     const originalScreenshot = path.join(screenshotDir, `original-${timestamp}.png`);
     const scrapedScreenshot = path.join(screenshotDir, `scraped-${timestamp}.png`);
+    const diffScreenshot = path.join(screenshotDir, `diff-${timestamp}.png`);
 
     // Take screenshots
     const browser = await puppeteer.launch({
@@ -57,7 +58,7 @@ export async function generateVisualDiffReport(
     const page1 = await browser.newPage();
     await page1.setViewport({ width: 1920, height: 1080 });
     await page1.goto(originalUrl, { waitUntil: 'networkidle2', timeout: 60000 });
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve: (value: unknown) => void) => setTimeout(resolve, 2000));
     await takeScreenshot(page1, originalScreenshot);
     await page1.close();
 
@@ -65,23 +66,23 @@ export async function generateVisualDiffReport(
     const page2 = await browser.newPage();
     await page2.setViewport({ width: 1920, height: 1080 });
     await page2.goto(scrapedUrl, { waitUntil: 'networkidle2', timeout: 60000 });
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve: (value: unknown) => void) => setTimeout(resolve, 2000));
     await takeScreenshot(page2, scrapedScreenshot);
     await page2.close();
 
     await browser.close();
 
     // Compare images
-    const similarity = await compareImages(originalScreenshot, scrapedScreenshot);
-    const changePercentage = (1 - similarity) * 100;
+    const comparisonResult = compareImages(originalScreenshot, scrapedScreenshot, diffScreenshot);
+    const changePercentage = (1 - (comparisonResult.similarity / 100)) * 100;
 
-    // Calculate pixel diff (simplified)
-    const pixelDiff = Math.round(changePercentage * 10000); // Estimate
+    // Calculate pixel diff
+    const pixelDiff = comparisonResult.diffPixels;
 
     return {
       originalUrl,
       scrapedUrl,
-      similarity: Math.round(similarity * 100),
+      similarity: Math.round(comparisonResult.similarity),
       differences: {
         pixelDiff,
         changePercentage: Math.round(changePercentage),
@@ -90,12 +91,13 @@ export async function generateVisualDiffReport(
       screenshots: {
         original: originalScreenshot,
         scraped: scrapedScreenshot,
+        diff: diffScreenshot,
       },
       timestamp: new Date(),
     };
-  } catch (error) {
-    logError(error, 'Visual Diff Report');
-    throw new Error(`Visual diff report generation failed: ${getErrorMessage(error)}`);
+  } catch (_error: unknown) {
+    logError(_error, 'Visual Diff Report');
+    throw new Error(`Visual diff report generation failed: ${getErrorMessage(_error)}`);
   }
 }
 

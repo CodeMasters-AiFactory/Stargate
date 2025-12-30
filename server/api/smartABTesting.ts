@@ -20,14 +20,15 @@ export function registerSmartABTestingRoutes(app: Express): void {
    * POST /api/ab-testing/generate-variations
    * Generate A/B test variations
    */
-  app.post('/api/ab-testing/generate-variations', standardRateLimit(), async (req: Request, res: Response) => {
+  app.post('/api/ab-testing/generate-variations', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       const { originalHtml, elementSelector, clientInfo, variationCount } = req.body;
 
       if (!originalHtml || !elementSelector) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'originalHtml and elementSelector are required',
         });
+        return;
       }
 
       const variations = await generateABTestVariations(
@@ -53,14 +54,15 @@ export function registerSmartABTestingRoutes(app: Express): void {
    * POST /api/ab-testing/start
    * Start an A/B test
    */
-  app.post('/api/ab-testing/start', standardRateLimit(), async (req: Request, res: Response) => {
+  app.post('/api/ab-testing/start', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       const { name, elementSelector, originalHtml, variations, clientInfo } = req.body;
 
       if (!name || !elementSelector || !originalHtml || !variations) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'name, elementSelector, originalHtml, and variations are required',
         });
+        return;
       }
 
       const test = await startABTest(name, elementSelector, originalHtml, variations, clientInfo || {});
@@ -81,14 +83,15 @@ export function registerSmartABTestingRoutes(app: Express): void {
    * POST /api/ab-testing/record-result
    * Record a test result
    */
-  app.post('/api/ab-testing/record-result', standardRateLimit(), async (req: Request, res: Response) => {
+  app.post('/api/ab-testing/record-result', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       const { testId, variationId, converted } = req.body;
 
       if (!testId || !variationId || typeof converted !== 'boolean') {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'testId, variationId, and converted are required',
         });
+        return;
       }
 
       recordTestResult(testId, variationId, converted);
@@ -108,14 +111,15 @@ export function registerSmartABTestingRoutes(app: Express): void {
    * POST /api/ab-testing/analyze
    * Analyze test results
    */
-  app.post('/api/ab-testing/analyze', standardRateLimit(), async (req: Request, res: Response) => {
+  app.post('/api/ab-testing/analyze', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       const { testId } = req.body;
 
       if (!testId) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'testId is required',
         });
+        return;
       }
 
       const results = await analyzeTestResults(testId);
@@ -136,14 +140,15 @@ export function registerSmartABTestingRoutes(app: Express): void {
    * POST /api/ab-testing/implement-winner
    * Implement winning variation
    */
-  app.post('/api/ab-testing/implement-winner', standardRateLimit(), async (req: Request, res: Response) => {
+  app.post('/api/ab-testing/implement-winner', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       const { testId, originalHtml } = req.body;
 
       if (!testId || !originalHtml) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'testId and originalHtml are required',
         });
+        return;
       }
 
       const updatedHtml = await implementWinner(testId, originalHtml);
@@ -164,7 +169,7 @@ export function registerSmartABTestingRoutes(app: Express): void {
    * GET /api/ab-testing/active
    * Get active tests
    */
-  app.get('/api/ab-testing/active', standardRateLimit(), async (req: Request, res: Response) => {
+  app.get('/api/ab-testing/active', standardRateLimit(), async (_req: Request, res: Response): Promise<void> => {
     try {
       const tests = getActiveTests();
 
@@ -184,15 +189,16 @@ export function registerSmartABTestingRoutes(app: Express): void {
    * GET /api/ab-testing/:testId
    * Get test by ID
    */
-  app.get('/api/ab-testing/:testId', standardRateLimit(), async (req: Request, res: Response) => {
+  app.get('/api/ab-testing/:testId', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       const { testId } = req.params;
       const test = getTest(testId);
 
       if (!test) {
-        return res.status(404).json({
+        res.status(404).json({
           error: 'Test not found',
         });
+        return;
       }
 
       res.json({

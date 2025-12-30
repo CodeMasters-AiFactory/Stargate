@@ -3,7 +3,7 @@
  * Complete blog system with posts, categories, tags, comments, and authors
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import {
   createBlogPost,
   getBlogPosts,
@@ -31,7 +31,7 @@ export function registerBlogRoutes(app: Express) {
   // ============================================
 
   // Create blog post
-  app.post('/api/blog/posts', async (req, res) => {
+  app.post('/api/blog/posts', async (req: Request, res: Response): Promise<void> => {
     try {
       const {
         websiteId,
@@ -49,10 +49,11 @@ export function registerBlogRoutes(app: Express) {
       } = req.body;
 
       if (!websiteId || !title || !content || !authorId) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId, title, content, and authorId are required',
         });
+        return;
       }
 
       const postId = await createBlogPost(websiteId, title, content, authorId, {
@@ -79,7 +80,7 @@ export function registerBlogRoutes(app: Express) {
   });
 
   // Get blog posts
-  app.get('/api/blog/posts/:websiteId', async (req, res) => {
+  app.get('/api/blog/posts/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const {
@@ -115,16 +116,17 @@ export function registerBlogRoutes(app: Express) {
   });
 
   // Get single blog post
-  app.get('/api/blog/posts/:websiteId/:slug', async (req, res) => {
+  app.get('/api/blog/posts/:websiteId/:slug', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, slug } = req.params;
       const post = await getBlogPostBySlug(websiteId, slug);
 
       if (!post) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Blog post not found',
         });
+        return;
       }
 
       // Increment view count
@@ -143,7 +145,7 @@ export function registerBlogRoutes(app: Express) {
   });
 
   // Update blog post
-  app.patch('/api/blog/posts/:postId', async (req, res) => {
+  app.patch('/api/blog/posts/:postId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { postId } = req.params;
       const updates = req.body;
@@ -151,10 +153,11 @@ export function registerBlogRoutes(app: Express) {
       const success = await updateBlogPost(postId, updates);
 
       if (!success) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Blog post not found',
         });
+        return;
       }
 
       res.json({
@@ -170,16 +173,17 @@ export function registerBlogRoutes(app: Express) {
   });
 
   // Delete blog post
-  app.delete('/api/blog/posts/:postId', async (req, res) => {
+  app.delete('/api/blog/posts/:postId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { postId } = req.params;
       const success = await deleteBlogPost(postId);
 
       if (!success) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Blog post not found',
         });
+        return;
       }
 
       res.json({
@@ -199,15 +203,16 @@ export function registerBlogRoutes(app: Express) {
   // ============================================
 
   // Create category
-  app.post('/api/blog/categories', async (req, res) => {
+  app.post('/api/blog/categories', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, name, description } = req.body;
 
       if (!websiteId || !name) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId and name are required',
         });
+        return;
       }
 
       const categoryId = await createBlogCategory(websiteId, name, description);
@@ -225,7 +230,7 @@ export function registerBlogRoutes(app: Express) {
   });
 
   // Get categories
-  app.get('/api/blog/categories/:websiteId', async (req, res) => {
+  app.get('/api/blog/categories/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const categories = await getBlogCategories(websiteId);
@@ -247,15 +252,16 @@ export function registerBlogRoutes(app: Express) {
   // ============================================
 
   // Create tag
-  app.post('/api/blog/tags', async (req, res) => {
+  app.post('/api/blog/tags', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, name } = req.body;
 
       if (!websiteId || !name) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId and name are required',
         });
+        return;
       }
 
       const tagId = await createBlogTag(websiteId, name);
@@ -273,7 +279,7 @@ export function registerBlogRoutes(app: Express) {
   });
 
   // Get tags
-  app.get('/api/blog/tags/:websiteId', async (req, res) => {
+  app.get('/api/blog/tags/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const tags = await getBlogTags(websiteId);
@@ -295,15 +301,16 @@ export function registerBlogRoutes(app: Express) {
   // ============================================
 
   // Create comment
-  app.post('/api/blog/comments', async (req, res) => {
+  app.post('/api/blog/comments', async (req: Request, res: Response): Promise<void> => {
     try {
       const { postId, authorName, authorEmail, content, parentId } = req.body;
 
       if (!postId || !authorName || !authorEmail || !content) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'postId, authorName, authorEmail, and content are required',
         });
+        return;
       }
 
       const commentId = await createBlogComment(postId, authorName, authorEmail, content, parentId);
@@ -321,7 +328,7 @@ export function registerBlogRoutes(app: Express) {
   });
 
   // Get comments
-  app.get('/api/blog/comments/:postId', async (req, res) => {
+  app.get('/api/blog/comments/:postId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { postId } = req.params;
       const { status } = req.query;
@@ -341,25 +348,27 @@ export function registerBlogRoutes(app: Express) {
   });
 
   // Update comment status
-  app.patch('/api/blog/comments/:commentId/status', async (req, res) => {
+  app.patch('/api/blog/comments/:commentId/status', async (req: Request, res: Response): Promise<void> => {
     try {
       const { commentId } = req.params;
       const { status } = req.body;
 
       if (!status || !['pending', 'approved', 'spam', 'rejected'].includes(status)) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Valid status is required',
         });
+        return;
       }
 
       const success = await updateCommentStatus(commentId, status);
 
       if (!success) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Comment not found',
         });
+        return;
       }
 
       res.json({
@@ -379,15 +388,16 @@ export function registerBlogRoutes(app: Express) {
   // ============================================
 
   // Create author
-  app.post('/api/blog/authors', async (req, res) => {
+  app.post('/api/blog/authors', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, name, email, bio, avatar, userId } = req.body;
 
       if (!websiteId || !name || !email) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId, name, and email are required',
         });
+        return;
       }
 
       const authorId = await createBlogAuthor(websiteId, name, email, bio, avatar, userId);
@@ -405,7 +415,7 @@ export function registerBlogRoutes(app: Express) {
   });
 
   // Get authors
-  app.get('/api/blog/authors/:websiteId', async (req, res) => {
+  app.get('/api/blog/authors/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const authors = await getBlogAuthors(websiteId);
@@ -427,7 +437,7 @@ export function registerBlogRoutes(app: Express) {
   // ============================================
 
   // Publish scheduled posts
-  app.post('/api/blog/publish-scheduled/:websiteId', async (req, res) => {
+  app.post('/api/blog/publish-scheduled/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const published = await publishScheduledPosts(websiteId);
@@ -450,7 +460,7 @@ export function registerBlogRoutes(app: Express) {
   // ============================================
 
   // Generate RSS feed
-  app.get('/api/blog/rss/:websiteId', async (req, res) => {
+  app.get('/api/blog/rss/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const rssFeed = await generateRSSFeed(websiteId);

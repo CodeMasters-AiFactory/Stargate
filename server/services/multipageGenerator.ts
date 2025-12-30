@@ -15,19 +15,20 @@
  */
 
 import OpenAI from 'openai';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import type {
   WebsiteManifest,
   PageSpec,
   MultiPageWebsite,
   GenerationProgress,
-  WebsiteFile
+  WebsiteFile,
+  SectionSpec
 } from './types/multipage';
 import type { InvestigationResults } from './websiteInvestigation';
 import { generateDesignTokens, generateDesignSystemCSS } from './designSystem';
 import { generateAnalyticsScript } from './analyticsTracking';
 import { generateSchemaMarkup, generateSEOMetaTags } from './seoOptimization';
-import { minifyCSS, minifyJS, extractCriticalCSS, inlineCriticalCSS, addResourceHintsToHTML, optimizeScripts } from './performanceOptimizer';
+import { minifyCSS, minifyJS, extractCriticalCSS, addResourceHintsToHTML, optimizeScripts } from './performanceOptimizer';
 import { optimizeImagesInHTML } from './imageOptimization';
 import { optimizeCoreWebVitals, optimizeFontLoading } from './coreWebVitals';
 import { generateBreadcrumbHTML, generateBreadcrumbSchema, generateBreadcrumbsForPage, generateBreadcrumbCSS } from './breadcrumbs';
@@ -37,15 +38,12 @@ import { generateFormCSS } from './formOptimizer';
 import { generateDefaultFunnels, generateFunnelTrackingScript } from './funnelMapper';
 import { generatePrivacyPolicy, generateTermsOfService, generateCookieConsent, generateTrustElementsCSS } from './trustElements';
 import { generateMicroAnimationsCSS, generateMobileOptimizationCSS, applyUXEnhancements } from './uxEnhancements';
-import { generateAIImage, generateHeroImage, generateWebsiteImages } from './aiImageGenerator';
-import { generateDeepContent, generateFAQSection, generateProductDescriptions, generateServiceExplanations } from './aiContentGenerator';
-import { generateAIChatbot } from './chatbotGenerator';
-import { getLivePreviewService } from './livePreviewService';
 import { generateStunningImage } from './advancedImageService';
-// Removed unused import: generateAdvancedSEOContent
 import { generateAdvancedGridSystem } from './advancedLayoutSystem';
 import { generateStunningColorScheme, generateColorSchemeCSS } from './advancedColorSchemes';
 import { generateEffectsLibraryCSS, generateGradientMeshEffect, generateParticleEffect } from './advancedEffectsLibrary';
+import { generateAIChatbot } from './chatbotGenerator';
+import { getLivePreviewService } from './livePreviewService';
 
 /**
  * OpenAI Client Factory with dual key support and mock fallback
@@ -126,15 +124,15 @@ function emitProgress(progress: GenerationProgress, onProgress?: (progress: Gene
  * Generate mock manifest when OpenAI unavailable
  * Derives values from user requirements to maintain personalization
  */
-function generateMockManifest(requirements: any, investigation: InvestigationResults | null): WebsiteManifest {
-  const businessName = requirements.businessName || 'Professional Business';
-  const businessType = requirements.businessType || 'Professional services';
-  const targetAudience = requirements.targetAudience || 'clients';
-  const services = requirements.services || [];
-  const pages = requirements.desiredPages || ['Home', 'Services', 'About', 'Contact'];
+function generateMockManifest(requirements: Record<string, unknown>, investigation: InvestigationResults | null): WebsiteManifest {
+  const businessName = (requirements.businessName as string) || 'Professional Business';
+  const businessType = (requirements.businessType as string) || 'Professional services';
+  const targetAudience = (requirements.targetAudience as string) || 'clients';
+  const services = (requirements.services as Array<{ name: string; description?: string }>) || [];
+  const pages = (requirements.desiredPages as string[]) || ['Home', 'Services', 'About', 'Contact'];
   
   // Generate page-specific content based on page type
-  const getPageSections = (pageName: string): any[] => {
+  const getPageSections = (pageName: string): SectionSpec[] => {
     const pageLower = pageName.toLowerCase();
     
     if (pageLower === 'home') {
@@ -150,7 +148,7 @@ function generateMockManifest(requirements: any, investigation: InvestigationRes
           id: 'features',
           type: 'features',
           title: 'Why Choose Us',
-          content: services.length > 0 
+          content: Array.isArray(services) && services.length > 0
             ? `We offer ${services.length} specialized ${services.length === 1 ? 'service' : 'services'} designed for ${targetAudience}.`
             : `Experience the difference with our commitment to excellence and customer satisfaction.`,
           order: 2
@@ -158,9 +156,9 @@ function generateMockManifest(requirements: any, investigation: InvestigationRes
         {
           id: 'services',
           type: 'services',
-          title: services.length > 0 ? 'Our Services' : 'What We Offer',
-          content: services.length > 0
-            ? services.map((s: any) => s.name).join(', ')
+          title: Array.isArray(services) && services.length > 0 ? 'Our Services' : 'What We Offer',
+          content: Array.isArray(services) && services.length > 0
+            ? services.map((s) => s.name).join(', ')
             : `Comprehensive ${businessType} solutions tailored to your needs.`,
           order: 3
         },
@@ -185,8 +183,8 @@ function generateMockManifest(requirements: any, investigation: InvestigationRes
           id: 'services',
           type: 'services',
           title: 'What We Offer',
-          content: services.length > 0
-            ? services.map((s: any, i: number) => `${i + 1}. ${s.name}: ${s.description || 'Professional service'}`).join('\n')
+          content: Array.isArray(services) && services.length > 0
+            ? services.map((s: { name: string; description?: string }, i: number) => `${i + 1}. ${s.name}: ${s.description || 'Professional service'}`).join('\n')
             : `We provide top-quality ${businessType.toLowerCase()} with attention to detail and customer satisfaction.`,
           order: 2
         },
@@ -278,7 +276,7 @@ function generateMockManifest(requirements: any, investigation: InvestigationRes
       sections: getPageSections(pageName),
       seo: {
         title: `${pageName} | ${businessName}`,
-        description: `${businessName} ${pageName.toLowerCase()} - ${requirements.targetAudience || 'Professional services'}`,
+        description: `${businessName} ${pageName.toLowerCase()} - ${(requirements.targetAudience as string) || 'Professional services'}`,
         keywords: investigation?.seoStrategy?.primaryKeywords || []
       },
       order: index + 1
@@ -304,14 +302,14 @@ function generateMockManifest(requirements: any, investigation: InvestigationRes
     },
     designSystem: {
       colors: {
-        primary: requirements.primaryColor || '#3B82F6',
-        accent: requirements.accentColor || '#10B981',
+        primary: (requirements.primaryColor as string) || '#3B82F6',
+        accent: (requirements.accentColor as string) || '#10B981',
         background: '#FFFFFF',
         text: '#1F2937'
       },
       typography: {
-        headingFont: requirements.fontFamily || 'Inter, sans-serif',
-        bodyFont: requirements.fontFamily || 'Inter, sans-serif',
+        headingFont: (requirements.fontFamily as string) || 'Inter, sans-serif',
+        bodyFont: (requirements.fontFamily as string) || 'Inter, sans-serif',
         sizes: {
           h1: '3rem',
           h2: '2rem',
@@ -340,7 +338,7 @@ function generateMockPageHTML(page: PageSpec, manifest: WebsiteManifest): string
   ).join('\n      ');
   
   // Generate sections with proper design system classes
-  const generateSectionHTML = (section: any): string => {
+  const generateSectionHTML = (section: SectionSpec): string => {
     const sectionType = section.type;
     
     if (sectionType === 'hero') {
@@ -577,7 +575,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
  * Phase 1: Generate Site Planning & Manifest
  */
 export async function generateSiteManifest(
-  requirements: any,
+  requirements: Record<string, unknown>,
   investigation: InvestigationResults | null,
   onProgress?: (progress: GenerationProgress) => void
 ): Promise<WebsiteManifest> {
@@ -613,9 +611,9 @@ export async function generateSiteManifest(
 
   const planningPrompt = `You are an elite web architect creating Apple/Stripe/Linear quality websites.
 
-BUSINESS: ${requirements.businessName || 'Business'} (${requirements.businessType || 'General'})
-TARGET AUDIENCE: ${requirements.targetAudience || 'General audience'}
-PAGES REQUESTED: ${requirements.desiredPages?.join(', ') || 'Home, About, Services, Contact'}
+BUSINESS: ${(requirements.businessName as string) || 'Business'} (${(requirements.businessType as string) || 'General'})
+TARGET AUDIENCE: ${(requirements.targetAudience as string) || 'General audience'}
+PAGES REQUESTED: ${(requirements.desiredPages as string[] | undefined)?.join(', ') || 'Home, About, Services, Contact'}
 
 SEO RESEARCH:
 - Primary Keywords: ${investigation?.seoStrategy?.primaryKeywords?.slice(0, 5).join(', ') || 'professional, quality, services'}
@@ -623,9 +621,9 @@ SEO RESEARCH:
 - Content Gaps: ${investigation?.seoStrategy?.contentGaps?.join(', ') || 'none identified'}
 
 DESIGN SPECS:
-- Primary Color: ${requirements.primaryColor || investigation?.designRecommendations?.colorScheme?.primary || '#3B82F6'}
-- Accent Color: ${requirements.accentColor || investigation?.designRecommendations?.colorScheme?.accent || '#10B981'}
-- Font: ${requirements.fontFamily || investigation?.designRecommendations?.typography?.heading || 'Inter, sans-serif'}
+- Primary Color: ${(requirements.primaryColor as string) || investigation?.designRecommendations?.colorScheme?.primary || '#3B82F6'}
+- Accent Color: ${(requirements.accentColor as string) || investigation?.designRecommendations?.colorScheme?.accent || '#10B981'}
+- Font: ${(requirements.fontFamily as string) || investigation?.designRecommendations?.typography?.heading || 'Inter, sans-serif'}
 
 PROFESSIONAL TEMPLATE SYSTEM:
 Use these section types (we have pre-built professional templates):
@@ -705,7 +703,7 @@ Output JSON manifest with:
     max_tokens: 8000,
   });
 
-  const manifest = JSON.parse(completion.choices[0].message.content || '{}');
+  const manifest = JSON.parse(completion.choices[0].message.content || '{}') as WebsiteManifest;
 
   emitProgress({
     phase: 'planning',
@@ -841,14 +839,14 @@ OUTPUT: Complete, production-ready HTML with advanced effects classes. No explan
  */
 export async function generateSharedAssets(
   manifest: WebsiteManifest,
-  requirements: any,
+  requirements: Record<string, unknown>,
   onProgress?: (progress: GenerationProgress) => void
 ): Promise<{ css: string; js: string }> {
   // Generate professional design tokens from user preferences
   const designTokens = generateDesignTokens(
-    requirements.primaryColor || manifest.designSystem.colors.primary,
-    requirements.accentColor || manifest.designSystem.colors.accent,
-    requirements.fontStyle || manifest.designSystem.typography.headingFont
+    (requirements.primaryColor as string) || manifest.designSystem.colors.primary,
+    (requirements.accentColor as string) || manifest.designSystem.colors.accent,
+    (requirements.fontStyle as string) || manifest.designSystem.typography.headingFont
   );
   
   // Use professional CSS from design system
@@ -966,7 +964,7 @@ OUTPUT: Complete, production-ready JavaScript. No explanations.`;
  * Phase 4: Assemble Complete Multi-Page Website
  */
 export async function generateMultiPageWebsite(
-  requirements: any,
+  requirements: Record<string, unknown>,
   investigation: InvestigationResults | null,
   onProgress?: (progress: GenerationProgress) => void,
   generationId?: string
@@ -993,18 +991,18 @@ export async function generateMultiPageWebsite(
   
   // Generate AI images for the website (hero, products, icons)
   const businessContext = {
-    name: requirements.businessName || 'Business',
-    industry: requirements.businessType || 'Professional Services',
+    name: (requirements.businessName as string) || 'Business',
+    industry: (requirements.businessType as string) || 'Professional Services',
     colorScheme: [
       manifest.designSystem.colors.primary || '#3B82F6',
       manifest.designSystem.colors.accent || '#10B981'
     ],
-    styleKeywords: requirements.styleKeywords || ['modern', 'professional'],
+    styleKeywords: (requirements.styleKeywords as string[]) || ['modern', 'professional'],
   };
 
   // Generate hero images for pages with hero sections
-  const heroPages = manifest.pages.filter(p => 
-    p.sections.some((s: any) => s.type === 'hero')
+  const heroPages = manifest.pages.filter(p =>
+    p.sections.some((s) => s.type === 'hero')
   );
   
   const generatedImages: Map<string, string> = new Map();
@@ -1012,13 +1010,14 @@ export async function generateMultiPageWebsite(
   for (const pageSpec of heroPages) {
     try {
       // Use advanced image service for STUNNING images
+      const styleKeywords = (requirements.styleKeywords as string[]) || [];
       const heroImage = await generateStunningImage({
         style: 'hero',
         businessContext: {
           ...businessContext,
-          mood: requirements.styleKeywords?.includes('elegant') ? 'elegant' : 
-                requirements.styleKeywords?.includes('bold') ? 'bold' : 
-                requirements.styleKeywords?.includes('luxury') ? 'luxury' : 'modern',
+          mood: styleKeywords.includes('elegant') ? 'elegant' :
+                styleKeywords.includes('bold') ? 'bold' :
+                styleKeywords.includes('luxury') ? 'luxury' : 'modern',
         },
         quality: 'hd',
         artisticStyle: 'photorealistic',
@@ -1030,7 +1029,7 @@ export async function generateMultiPageWebsite(
         progress: 20 + (pageSpec.order * 5),
         message: `Stunning AI-generated hero image created`,
       }, onProgress);
-    } catch (error) {
+    } catch (_error) {
       console.log(`[MultipageGenerator] Using placeholder for ${pageSpec.slug} hero image`);
     }
   }
@@ -1060,10 +1059,8 @@ export async function generateMultiPageWebsite(
     });
     
     // Extract critical CSS and inline it
-    const criticalCSS = extractCriticalCSS(sharedAssets.css);
-    if (criticalCSS) {
-      html = inlineCriticalCSS(html, criticalCSS);
-    }
+    const criticalCSSResult = extractCriticalCSS(html, sharedAssets.css);
+    html = criticalCSSResult.html;
     
     // Add resource hints (preload fonts, prefetch next pages)
     const nextPage = manifest.pages.find(p => p.order === pageSpec.order + 1);
@@ -1071,7 +1068,7 @@ export async function generateMultiPageWebsite(
       styles: nextPage ? [`./assets/styles/main.css`] : [],
       scripts: [`./assets/scripts/app.js`],
       images: pageSpec.sections
-        .filter((s: any) => s.type === 'hero')
+        .filter((s) => s.type === 'hero')
         .map(() => 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&h=600&fit=crop&q=80'),
       domains: ['images.unsplash.com']
     };
@@ -1082,7 +1079,7 @@ export async function generateMultiPageWebsite(
     
     // Apply Core Web Vitals optimizations
     const heroImage = pageSpec.sections
-      .find((s: any) => s.type === 'hero')
+      .find((s) => s.type === 'hero')
       ? 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&h=600&fit=crop&q=80'
       : undefined;
     
@@ -1105,7 +1102,7 @@ export async function generateMultiPageWebsite(
     const breadcrumbs = generateBreadcrumbsForPage(
       pageSpec.slug,
       manifest.pages.map(p => ({ slug: p.slug, title: p.title, order: p.order })),
-      requirements.domainName ? `https://${requirements.domainName}` : ''
+      requirements.domainName ? `https://${requirements.domainName as string}` : ''
     );
     
     const breadcrumbHTML = generateBreadcrumbHTML(breadcrumbs);
@@ -1146,7 +1143,7 @@ export async function generateMultiPageWebsite(
     
     // Generate and add conversion-optimized CTAs
     const heroCTAs = generateCTAVariations('Get Started', 'hero');
-    if (heroCTAs.length > 0 && pageSpec.sections.some((s: any) => s.type === 'hero')) {
+    if (heroCTAs.length > 0 && pageSpec.sections.some((s) => s.type === 'hero')) {
       const primaryCTA = generateOptimizedCTA(heroCTAs[0], './contact.html');
       const trackedCTA = addConversionTracking(primaryCTA, 'hero_cta_click');
       // Add CTA to hero section if not already present
@@ -1160,7 +1157,7 @@ export async function generateMultiPageWebsite(
     
     // Generate funnel tracking if business type is known
     if (requirements.businessType) {
-      const funnels = generateDefaultFunnels(requirements.businessType);
+      const funnels = generateDefaultFunnels(requirements.businessType as string);
       if (funnels.length > 0) {
         const funnelScript = generateFunnelTrackingScript(funnels[0], websiteId);
         html = html.replace('</body>', `${funnelScript}\n</body>`);
@@ -1168,7 +1165,7 @@ export async function generateMultiPageWebsite(
     }
     
     // Add advanced effects to hero sections (glassmorphism, particles, etc.)
-    if (pageSpec.sections.some((s: any) => s.type === 'hero')) {
+    if (pageSpec.sections.some((s) => s.type === 'hero')) {
       // Add glassmorphism class to hero section
       html = html.replace(
         /<section[^>]*class="([^"]*hero[^"]*)"[^>]*>/gi,
@@ -1207,13 +1204,14 @@ export async function generateMultiPageWebsite(
     // Generate and add AI chatbot to homepage
     if (pageSpec.slug === 'home' && requirements.businessName) {
       try {
+        const services = requirements.services as Array<{ name: string }> | string[] | undefined;
         const chatbot = await generateAIChatbot({
           businessInfo: {
-            name: requirements.businessName,
-            industry: requirements.businessType || 'Professional Services',
-            services: requirements.services?.map((s: any) => typeof s === 'string' ? s : s.name) || [],
-            contactEmail: requirements.businessEmail,
-            contactPhone: requirements.businessPhone,
+            name: requirements.businessName as string,
+            industry: (requirements.businessType as string) || 'Professional Services',
+            services: services ? (Array.isArray(services) ? services.map((s) => typeof s === 'string' ? s : s.name) : []) : [],
+            contactEmail: requirements.businessEmail as string | undefined,
+            contactPhone: requirements.businessPhone as string | undefined,
           },
           colorScheme: {
             primary: manifest.designSystem.colors.primary || '#3B82F6',
@@ -1222,10 +1220,10 @@ export async function generateMultiPageWebsite(
           },
           enableLeadQualification: true,
         });
-        
+
         // Inject chatbot HTML, CSS, and JS
         html = html.replace('</body>', `${chatbot.html}\n${chatbot.css}\n${chatbot.javascript}\n</body>`);
-      } catch (error) {
+      } catch (_error) {
         console.log('[MultipageGenerator] Chatbot generation failed, continuing without it');
       }
     }
@@ -1236,13 +1234,13 @@ export async function generateMultiPageWebsite(
     // Inject SEO schema markup if available
     if (requirements.businessName) {
       const schema = generateSchemaMarkup('Organization', {
-        name: requirements.businessName,
+        name: requirements.businessName as string,
         description: pageSpec.description,
-        url: requirements.domainName ? `https://${requirements.domainName}` : undefined,
-        email: requirements.businessEmail,
-        phone: requirements.businessPhone,
+        url: requirements.domainName ? `https://${requirements.domainName as string}` : undefined,
+        email: requirements.businessEmail as string | undefined,
+        phone: requirements.businessPhone as string | undefined,
         address: requirements.businessAddress ? {
-          street: requirements.businessAddress,
+          street: requirements.businessAddress as string,
         } : undefined,
       });
       html = html.replace('</head>', `${schema}\n</head>`);
@@ -1259,8 +1257,8 @@ export async function generateMultiPageWebsite(
   // Generate legal pages if business name is provided
   if (requirements.businessName) {
     const privacyPolicyHTML = generatePrivacyPolicy(
-      requirements.businessName,
-      requirements.businessEmail
+      requirements.businessName as string,
+      requirements.businessEmail as string | undefined
     );
     files['pages/privacy-policy.html'] = {
       path: 'pages/privacy-policy.html',
@@ -1269,7 +1267,7 @@ export async function generateMultiPageWebsite(
       checksum: createChecksum(privacyPolicyHTML)
     };
 
-    const termsOfServiceHTML = generateTermsOfService(requirements.businessName);
+    const termsOfServiceHTML = generateTermsOfService(requirements.businessName as string);
     files['pages/terms-of-service.html'] = {
       path: 'pages/terms-of-service.html',
       type: 'html',
@@ -1282,11 +1280,12 @@ export async function generateMultiPageWebsite(
   const assets = sharedAssets;
 
   // Generate stunning color scheme
+  const styleKeywords = (requirements.styleKeywords as string[]) || [];
   const colorScheme = generateStunningColorScheme({
-    industry: requirements.businessType,
-    mood: requirements.styleKeywords?.includes('elegant') ? 'elegant' : 
-          requirements.styleKeywords?.includes('bold') ? 'bold' : 
-          requirements.styleKeywords?.includes('minimalist') ? 'minimalist' : 'modern',
+    industry: requirements.businessType as string | undefined,
+    mood: styleKeywords.includes('elegant') ? 'elegant' :
+          styleKeywords.includes('bold') ? 'bold' :
+          styleKeywords.includes('minimalist') ? 'minimalist' : 'modern',
   });
   const colorSchemeCSS = generateColorSchemeCSS(colorScheme);
   

@@ -1,14 +1,9 @@
 /**
  * Parallel Phase Executor
  * Enables multiple AI phases to run simultaneously where dependencies allow
- * 
+ *
  * This allows the "AI farm" to work on multiple phases at once for faster generation
  */
-
-import type { ProjectConfig } from './projectConfig';
-import type { DesignContext } from '../generator/designThinking';
-import type { LayoutStructure } from '../generator/layoutLLM';
-import type { StyleSystem } from '../generator/styleSystem';
 
 /**
  * Phase dependency graph
@@ -24,10 +19,10 @@ export interface PhaseDependency {
  * Execute phases in parallel where possible
  * Returns results as they complete
  */
-export async function executePhasesInParallel<T extends Record<string, any>>(
+export async function executePhasesInParallel<T extends Record<string, unknown>>(
   phases: Array<{
     id: string;
-    execute: () => Promise<any>;
+    execute: () => Promise<unknown>;
     dependsOn?: string[];
   }>
 ): Promise<T> {
@@ -71,10 +66,10 @@ export async function executePhasesInParallel<T extends Record<string, any>>(
         results[phase.id as keyof T] = result;
         completed.add(phase.id);
         return { id: phase.id, success: true, result };
-      } catch (error) {
-        console.error(`[Parallel Executor] Phase ${phase.id} failed:`, error);
+      } catch (_error: unknown) {
+        console.error(`[Parallel Executor] Phase ${phase.id} failed:`, _error);
         completed.add(phase.id); // Mark as completed to avoid blocking
-        return { id: phase.id, success: false, error };
+        return { id: phase.id, success: false, error: _error };
       } finally {
         executing.delete(phase.id);
       }
@@ -179,7 +174,7 @@ export async function executeParallel<T1, T2, T3, T4>(
   phase3: () => Promise<T3>,
   phase4: () => Promise<T4>
 ): Promise<[T1, T2, T3, T4]>;
-export async function executeParallel(...phases: Array<() => Promise<any>>): Promise<any[]> {
+export async function executeParallel(...phases: Array<() => Promise<unknown>>): Promise<unknown[]> {
   return Promise.all(phases.map(p => p()));
 }
 

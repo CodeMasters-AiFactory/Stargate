@@ -170,9 +170,9 @@ export const INDUSTRY_DNA: Record<string, IndustryDNA> = {
     id: 'legal',
     name: 'Law Firm & Legal Services',
     keywords: ['law firm', 'attorney', 'lawyer', 'legal', 'litigation', 'counsel', 'advocate', 'solicitor'],
-    
+
     design: {
-      colorScheme: 'dark',
+      colorScheme: 'light', // Fixed: was 'dark' but has white background
       primaryColor: '#1B365D',
       secondaryColor: '#8B7355',
       accentColor: '#C9A962',
@@ -217,7 +217,7 @@ export const INDUSTRY_DNA: Record<string, IndustryDNA> = {
   'tech': {
     id: 'tech',
     name: 'Tech Startup & SaaS',
-    keywords: ['tech', 'startup', 'saas', 'software', 'app', 'platform', 'digital', 'innovation', 'ai', 'cloud'],
+    keywords: ['tech', 'startup', 'saas', 'software', 'application', 'platform', 'digital', 'innovation', 'artificial intelligence', 'cloud', 'machine learning', 'api'],
     
     design: {
       colorScheme: 'cool',
@@ -435,6 +435,7 @@ export const INDUSTRY_DNA: Record<string, IndustryDNA> = {
       services: 'Behind the scenes photography shoot, photographer with camera, creative studio setting',
       about: 'Professional photographer portrait, holding camera, artistic lighting, creative personality',
       team: 'Photographer in action at shoot, capturing moment, professional equipment, passionate artist',
+      background: 'Abstract dark texture, subtle photography equipment silhouettes, moody artistic atmosphere',
       style: 'Artistic, dramatic lighting, portfolio-quality, minimal',
     },
     
@@ -545,6 +546,54 @@ export const INDUSTRY_DNA: Record<string, IndustryDNA> = {
     sections: ['hero', 'services', 'projects', 'about', 'process', 'testimonials', 'certifications', 'quote-form', 'footer'],
     specialFeatures: ['project-gallery', 'quote-calculator', 'service-areas'],
   },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // GENERIC BUSINESS (Default fallback)
+  // ─────────────────────────────────────────────────────────────────────────────
+  'business': {
+    id: 'business',
+    name: 'General Business',
+    keywords: ['business', 'company', 'services', 'solutions', 'enterprise', 'consulting', 'professional'],
+
+    design: {
+      colorScheme: 'light',
+      primaryColor: '#2563EB',
+      secondaryColor: '#1E40AF',
+      accentColor: '#3B82F6',
+      backgroundColor: '#FFFFFF',
+      textColor: '#1F2937',
+
+      fonts: {
+        heading: "'Inter', 'Helvetica Neue', sans-serif",
+        body: "'Inter', 'Arial', sans-serif",
+      },
+
+      aesthetic: 'Professional, clean, trustworthy, modern, versatile',
+      heroStyle: 'split',
+      borderRadius: 'medium',
+      shadows: 'subtle',
+    },
+
+    images: {
+      hero: 'Modern professional office environment, clean workspace, natural light, contemporary business setting',
+      services: 'Team collaboration in meeting room, diverse professionals working together, modern office',
+      about: 'Professional team portrait, business attire, friendly confident expressions, office background',
+      team: 'Professional headshot, business casual attire, approachable smile, neutral background',
+      background: 'Abstract business pattern, subtle blue tones, professional atmosphere',
+      style: 'Professional, clean, corporate photography, natural lighting',
+    },
+
+    copy: {
+      tone: 'Professional, approachable, confident, solution-focused',
+      powerWords: ['trusted', 'professional', 'dedicated', 'experienced', 'reliable', 'quality', 'excellence', 'commitment', 'results'],
+      avoidWords: ['cheap', 'discount', 'budget', 'basic'],
+      ctaText: ['Get Started', 'Contact Us', 'Learn More', 'Request a Quote'],
+      taglineStyle: 'Professional, benefit-focused, clear',
+    },
+
+    sections: ['hero', 'services', 'about', 'team', 'testimonials', 'contact', 'footer'],
+    specialFeatures: ['contact-form', 'service-list'],
+  },
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -553,18 +602,24 @@ export const INDUSTRY_DNA: Record<string, IndustryDNA> = {
 
 /**
  * Detect industry from business description
+ * Uses word boundary matching to avoid false positives with short keywords
  */
 export function detectIndustry(businessName: string, description: string): IndustryDNA {
   const searchText = `${businessName} ${description}`.toLowerCase();
-  
+
   // Score each industry based on keyword matches
   let bestMatch: IndustryDNA | null = null;
   let bestScore = 0;
-  
+
   for (const dna of Object.values(INDUSTRY_DNA)) {
     let score = 0;
     for (const keyword of dna.keywords) {
-      if (searchText.includes(keyword.toLowerCase())) {
+      const keywordLower = keyword.toLowerCase();
+      // Use word boundary regex to prevent false positives
+      // e.g., 'tech' should not match 'technology' unless 'technology' is the keyword
+      const escapedKeyword = keywordLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`\\b${escapedKeyword}\\b`, 'i');
+      if (regex.test(searchText)) {
         score += keyword.split(' ').length; // Multi-word matches score higher
       }
     }
@@ -573,16 +628,16 @@ export function detectIndustry(businessName: string, description: string): Indus
       bestMatch = dna;
     }
   }
-  
-  // Default to tech if no match
-  return bestMatch || INDUSTRY_DNA['tech'];
+
+  // Default to generic business if no match found
+  return bestMatch || INDUSTRY_DNA['business'];
 }
 
 /**
  * Get industry DNA by ID
  */
 export function getIndustryDNA(industryId: string): IndustryDNA {
-  return INDUSTRY_DNA[industryId] || INDUSTRY_DNA['tech'];
+  return INDUSTRY_DNA[industryId] || INDUSTRY_DNA['business'];
 }
 
 /**

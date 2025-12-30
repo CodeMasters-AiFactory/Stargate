@@ -5,8 +5,6 @@ import {
 import archiver from "archiver";
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import fs from "fs";
-import path from "path";
 import OpenAI from "openai";
 import { registerExecutionRoutes } from "./api/execution";
 import { registerPerformanceRoutes } from "./api/performance";
@@ -20,10 +18,8 @@ import { analyzeWebsite, saveAnalysisReport } from "./services/websiteAnalyzer";
 import { investigateWebsiteRequirements, type InvestigationRequest } from "./services/websiteInvestigation";
 import { storage } from "./storage";
 
-import { registerAllAgents } from './agents';
 import { registerAdminTemplateRoutes } from './api/adminTemplates';
 import { registerAdvancedScraperRoutes } from './api/advancedScraper';
-import agentRoutes from './api/agentApprovals';
 import { registerAIGenerationRoutes } from './api/aiGeneration';
 import { registerAnalyticsRoutes } from './api/analytics';
 import { registerAutomationCursorRoutes } from './api/automationCursor';
@@ -64,6 +60,8 @@ import { registerWebhookRoutes } from './api/webhooks';
 import { registerWebsitePreviewRoutes } from './api/websitePreview';
 import { registerWebsiteScraperRoutes } from './api/websiteScraper';
 import { registerWebsiteEditorRoutes } from './api/websiteEditor';
+import { registerBookingRoutes } from './api/booking';
+import appointmentRoutes from './api/appointments';
 import { registerVisualEditorRoutes } from './api/visualEditor';
 import { registerBackupRoutes } from './api/backup';
 import { registerBlogRoutes } from './api/blog';
@@ -114,6 +112,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerAwardWebsiteBatchProcessorRoutes(app); // Batch process award-winning websites through QA pipeline
   registerWebsitePreviewRoutes(app); // Preview generated websites
   registerWebsiteEditorRoutes(app); // AI-powered website editing via chat
+  registerBookingRoutes(app); // Airbnb/vacation rental booking system
+  app.use('/api/appointments', appointmentRoutes); // Professional Design consultation booking
   registerVisualEditorRoutes(app); // Visual drag-and-drop editor
   registerBlogRoutes(app); // Complete blog system
   registerCMSRoutes(app); // Content management system
@@ -149,19 +149,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register Multi-Model AI Orchestrator routes
   app.use('/api/ai', aiRoutes);
 
-  // Register AI Agent System routes (The Council)
-  app.use('/api/agents', agentRoutes);
-
   // Register Website Builder API routes (new 9-phase wizard)
   app.use('/api/website-builder', websiteBuilderRoutes);
-
-  // Initialize The Council (AI Specialist Agents)
-  try {
-    registerAllAgents();
-    console.log('[Routes] 🏛️ The Council agents registered');
-  } catch (err) {
-    console.error('[Routes] Failed to register agents:', err);
-  }
 
   // Register 120% Feature Routes
   app.use('/api/design-assistant', designAssistantRoutes);
@@ -766,12 +755,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Finalize the archive
       await archive.finalize();
+      return; // Archive streams directly to response
 
     } catch (error: unknown) {
       logError(error, 'Routes - Download');
       if (!res.headersSent) {
         const errorMessage = getErrorMessage(error);
-        res.status(500).json({ error: errorMessage });
+        return res.status(500).json({ error: errorMessage });
       }
     }
   });
@@ -825,12 +815,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       res.write(`data: ${JSON.stringify({ stage: 'complete', progress: 100, data: safeWebsite })}\n\n`);
-      res.end();
+      return res.end();
     } catch (error: unknown) {
       logError(error, 'Routes - Sterling generation');
       const errorMessage = getErrorMessage(error);
       res.write(`data: ${JSON.stringify({ error: errorMessage })}\n\n`);
-      res.end();
+      return res.end();
     }
   });
 
@@ -869,22 +859,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const brandKit = await generateBrandKit(config);
       saveBrandKit(config.projectSlug, brandKit);
 
-      res.json({ config, brandKit });
+      return res.json({ config, brandKit });
     } catch (error: unknown) {
       logError(error, 'Routes - Project creation');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage || 'Failed to create project' });
+      return res.status(500).json({ error: errorMessage || 'Failed to create project' });
     }
   });
 
-  app.get("/api/website-builder/projects", async (req, res) => {
+  app.get("/api/website-builder/projects", async (_req, res) => {
     try {
       const projects = listProjects();
-      res.json({ projects });
+      return res.json({ projects });
     } catch (error: unknown) {
       logError(error, 'Routes - List projects');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage || 'Failed to list projects' });
+      return res.status(500).json({ error: errorMessage || 'Failed to list projects' });
     }
   });
 
@@ -900,11 +890,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { loadBrandKit } = await import('./services/brandGenerator');
       const brandKit = loadBrandKit(slug);
 
-      res.json({ config, brandKit });
+      return res.json({ config, brandKit });
     } catch (error: unknown) {
       logError(error, 'Routes - Load project');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage || 'Failed to load project' });
+      return res.status(500).json({ error: errorMessage || 'Failed to load project' });
     }
   });
 
@@ -929,14 +919,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.body.brandPreferences || req.body.industry || req.body.toneOfVoice) {
         const brandKit = await generateBrandKit(updatedConfig);
         saveBrandKit(slug, brandKit);
-        res.json({ config: updatedConfig, brandKit });
+        return res.json({ config: updatedConfig, brandKit });
       } else {
-        res.json({ config: updatedConfig });
+        return res.json({ config: updatedConfig });
       }
     } catch (error: unknown) {
       logError(error, 'Routes - Update project');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage || 'Failed to update project' });
+      return res.status(500).json({ error: errorMessage || 'Failed to update project' });
     }
   });
 
@@ -987,12 +977,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       res.write(`data: ${JSON.stringify({ stage: 'complete', progress: 100, data: safeWebsite })}\n\n`);
-      res.end();
+      return res.end();
     } catch (error: unknown) {
       logError(error, 'Routes - Unified generation');
       const errorMessage = getErrorMessage(error);
       res.write(`data: ${JSON.stringify({ error: errorMessage })}\n\n`);
-      res.end();
+      return res.end();
     }
   });
 
@@ -1050,7 +1040,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
 
       res.write(`data: ${JSON.stringify({ type: 'complete', website })}\n\n`);
-      res.end();
+      return res.end();
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       const errorStack = error instanceof Error ? error.stack : undefined;
@@ -1059,7 +1049,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error('Stack trace:', errorStack);
       }
       res.write(`data: ${JSON.stringify({ type: 'error', error: errorMessage })}\n\n`);
-      res.end();
+      return res.end();
     }
   });
 
@@ -1086,19 +1076,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Save report to file
       const reportPath = saveAnalysisReport(analysis);
 
-      res.json({
+      return res.json({
         ...analysis,
         reportPath
       });
     } catch (error: unknown) {
       logError(error, 'Routes - Website analysis');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage || 'Failed to analyze website' });
+      return res.status(500).json({ error: errorMessage || 'Failed to analyze website' });
     }
   });
 
   // Minimal Test Endpoint - Verifies SSE works without complex logic
-  app.post("/api/website-builder/investigate-minimal", async (req, res) => {
+  app.post("/api/website-builder/investigate-minimal", async (_req, res) => {
     console.log('[MINIMAL TEST] Starting minimal SSE test...');
 
     try {
@@ -1156,13 +1146,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.end();
         console.log('[MINIMAL TEST] ✅ Test completed, stream closed');
       }
+      return;
     } catch (error: unknown) {
       logError(error, 'MINIMAL TEST');
       const errorObj = error instanceof Error ? error : new Error(String(error));
       if (!res.closed) {
         try {
           res.write(`data: ${JSON.stringify({ stage: 'error', progress: 0, error: errorObj.message })}\n\n`);
-          res.end();
+          return res.end();
         } catch (e) {
           console.error('[MINIMAL TEST] Failed to send error:', e);
         }
@@ -1495,7 +1486,7 @@ What specific changes would you like me to make?`;
     } catch (error: unknown) {
       logError(error, 'Routes - Chat refinement');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({
+      return res.status(500).json({
         error: 'Failed to process chat message',
         details: errorMessage
       });
@@ -1511,11 +1502,11 @@ What specific changes would you like me to make?`;
         mode: req.body.mode || 'create',
       });
       const session = await storage.createSession(sessionData);
-      res.json(session);
+      return res.json(session);
     } catch (error: unknown) {
       logError(error, 'Routes - Create session');
       const errorMessage = getErrorMessage(error);
-      res.status(400).json({ error: errorMessage });
+      return res.status(400).json({ error: errorMessage });
     }
   });
 
@@ -1525,11 +1516,11 @@ What specific changes would you like me to make?`;
       if (!session) {
         return res.status(404).json({ error: "Session not found" });
       }
-      res.json(session);
+      return res.json(session);
     } catch (error: unknown) {
       logError(error, 'Routes - Get session');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage });
+      return res.status(500).json({ error: errorMessage });
     }
   });
 
@@ -1540,22 +1531,22 @@ What specific changes would you like me to make?`;
       if (!session) {
         return res.status(404).json({ error: "Session not found" });
       }
-      res.json(session);
+      return res.json(session);
     } catch (error: unknown) {
       logError(error, 'Routes - Update session');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage });
+      return res.status(500).json({ error: errorMessage });
     }
   });
 
   app.get("/api/website-builder/sessions/user/:userId", async (req, res) => {
     try {
       const sessions = await storage.getSessionsByUserId(req.params.userId);
-      res.json(sessions);
+      return res.json(sessions);
     } catch (error: unknown) {
       logError(error, 'Routes - Get sessions by user');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage });
+      return res.status(500).json({ error: errorMessage });
     }
   });
 
@@ -1573,11 +1564,11 @@ What specific changes would you like me to make?`;
         code: req.body.code || {},
       });
       const draft = await storage.createDraft(draftData);
-      res.json(draft);
+      return res.json(draft);
     } catch (error: unknown) {
       logError(error, 'Routes - Create draft');
       const errorMessage = getErrorMessage(error);
-      res.status(400).json({ error: errorMessage });
+      return res.status(400).json({ error: errorMessage });
     }
   });
 
@@ -1587,11 +1578,11 @@ What specific changes would you like me to make?`;
       if (!draft) {
         return res.status(404).json({ error: "Draft not found" });
       }
-      res.json(draft);
+      return res.json(draft);
     } catch (error: unknown) {
       logError(error, 'Routes - Get draft');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage });
+      return res.status(500).json({ error: errorMessage });
     }
   });
 
@@ -1602,33 +1593,33 @@ What specific changes would you like me to make?`;
       if (!draft) {
         return res.status(404).json({ error: "Draft not found" });
       }
-      res.json(draft);
+      return res.json(draft);
     } catch (error: unknown) {
       logError(error, 'Routes - Update draft');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage });
+      return res.status(500).json({ error: errorMessage });
     }
   });
 
   app.get("/api/website-builder/drafts/session/:sessionId", async (req, res) => {
     try {
       const drafts = await storage.getDraftsBySessionId(req.params.sessionId);
-      res.json(drafts);
+      return res.json(drafts);
     } catch (error: unknown) {
       logError(error, 'Routes - Get drafts by session');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage });
+      return res.status(500).json({ error: errorMessage });
     }
   });
 
   app.get("/api/website-builder/drafts/user/:userId", async (req, res) => {
     try {
       const drafts = await storage.getDraftsByUserId(req.params.userId);
-      res.json(drafts);
+      return res.json(drafts);
     } catch (error: unknown) {
       logError(error, 'Routes - Get drafts by user');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ error: errorMessage });
+      return res.status(500).json({ error: errorMessage });
     }
   });
 
@@ -1665,6 +1656,7 @@ What specific changes would you like me to make?`;
   const { registerSelfHealingRoutes } = await import('./api/selfHealing');
   registerPredictiveContentRoutes(app); // Predictive Content Generator
   registerSmartABTestingRoutes(app); // Smart A/B Testing Engine
+  registerMultiLanguageRoutes(app); // Multi-Language Support
   registerSelfHealingRoutes(app); // Self-Healing Websites
   
   // Register breakthrough features (120%)
@@ -1802,10 +1794,10 @@ ${enableAppointmentScheduling ? '- Help schedule appointments or consultations w
 
       const aiResponse = response.choices[0]?.message?.content || 'I apologize, but I encountered an error. Please try again.';
 
-      res.json({ response: aiResponse });
+      return res.json({ response: aiResponse });
     } catch (error: unknown) {
       logError(error, 'Routes - Chatbot');
-      res.status(500).json({
+      return res.status(500).json({
         response: 'I apologize, but I encountered an error. Please try again or contact us directly.'
       });
     }
@@ -1824,7 +1816,7 @@ ${enableAppointmentScheduling ? '- Help schedule appointments or consultations w
 
       const response = await processChatbotMessage(message, context || {});
 
-      res.json({
+      return res.json({
         message: response.message,
         suggestions: response.suggestions || [],
         relatedQuestions: response.relatedQuestions || [],
@@ -1833,7 +1825,7 @@ ${enableAppointmentScheduling ? '- Help schedule appointments or consultations w
     } catch (error: unknown) {
       const errorObj = error instanceof Error ? error : new Error(String(error));
       logError(errorObj, 'Routes - Wizard chatbot');
-      res.status(500).json({
+      return res.status(500).json({
         message: 'I apologize, but I encountered an error. Please try again.',
         error: errorObj.message,
       });
@@ -1848,10 +1840,10 @@ ${enableAppointmentScheduling ? '- Help schedule appointments or consultations w
       const { generateContextualSuggestions } = await import('./services/chatbotService.js');
       const suggestions = generateContextualSuggestions(context);
 
-      res.json({ suggestions });
+      return res.json({ suggestions });
     } catch (error: unknown) {
       logError(error, 'Routes - Wizard chatbot suggestions');
-      res.status(500).json({
+      return res.status(500).json({
         suggestions: [
           'How do I get started?',
           'What package should I choose?',
@@ -1979,7 +1971,7 @@ ${enableAppointmentScheduling ? '- Help schedule appointments or consultations w
         duration,
       })}\n\n`);
 
-      res.end();
+      return res.end();
 
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -1991,7 +1983,7 @@ ${enableAppointmentScheduling ? '- Help schedule appointments or consultations w
         error: true,
         message: errorMessage || 'Website generation failed',
       })}\n\n`);
-      res.end();
+      return res.end();
     }
   });
 

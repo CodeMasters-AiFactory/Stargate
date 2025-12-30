@@ -50,7 +50,7 @@ export function generateComponentHTML(
  */
 function generateHTMLForComponent(
   component: WebsiteComponent,
-  variant: ComponentVariant | undefined,
+  _variant: ComponentVariant | undefined,
   props: Record<string, any>
 ): string {
   const componentId = `comp-${component.id}-${Date.now()}`;
@@ -112,8 +112,8 @@ function generateHTMLForComponent(
  */
 function generateCSSForComponent(
   component: WebsiteComponent,
-  variant: ComponentVariant | undefined,
-  props: Record<string, any>
+  _variant: ComponentVariant | undefined,
+  _props: Record<string, any>
 ): string {
   return `
 /* Component: ${component.name} */
@@ -129,8 +129,8 @@ function generateCSSForComponent(
  */
 function generateJSForComponent(
   component: WebsiteComponent,
-  variant: ComponentVariant | undefined,
-  props: Record<string, any>
+  _variant: ComponentVariant | undefined,
+  _props: Record<string, any>
 ): string {
   // Add animations if specified
   if (component.animations && component.animations.length > 0) {
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 // Component-specific HTML generators
-function generateHeroHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateHeroHTML(_component: WebsiteComponent, props: Record<string, any>): string {
   const headline = props.headline || 'Welcome to Our Website';
   const subheadline = props.subheadline || 'We help businesses grow';
   const ctaText = props.ctaText || 'Get Started';
@@ -168,7 +168,7 @@ function generateHeroHTML(component: WebsiteComponent, props: Record<string, any
   `.trim();
 }
 
-function generateNavigationHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateNavigationHTML(_component: WebsiteComponent, props: Record<string, any>): string {
   const logo = props.logo || 'Logo';
   const links = props.links || ['Home', 'About', 'Services', 'Contact'];
 
@@ -182,7 +182,7 @@ function generateNavigationHTML(component: WebsiteComponent, props: Record<strin
   `.trim();
 }
 
-function generateFeaturesHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateFeaturesHTML(_component: WebsiteComponent, props: Record<string, any>): string {
   const title = props.title || 'Features';
   const features = props.features || [
     { title: 'Feature 1', description: 'Description 1' },
@@ -205,7 +205,7 @@ function generateFeaturesHTML(component: WebsiteComponent, props: Record<string,
   `.trim();
 }
 
-function generateTestimonialsHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateTestimonialsHTML(_component: WebsiteComponent, props: Record<string, any>): string {
   const testimonials = props.testimonials || [
     { name: 'John Doe', text: 'Great service!', rating: 5 },
     { name: 'Jane Smith', text: 'Highly recommended!', rating: 5 },
@@ -227,7 +227,7 @@ function generateTestimonialsHTML(component: WebsiteComponent, props: Record<str
   `.trim();
 }
 
-function generatePricingHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generatePricingHTML(_component: WebsiteComponent, props: Record<string, any>): string {
   const plans = props.plans || [
     { name: 'Basic', price: '$9', features: ['Feature 1', 'Feature 2'] },
     { name: 'Pro', price: '$29', features: ['Feature 1', 'Feature 2', 'Feature 3'] },
@@ -252,7 +252,7 @@ function generatePricingHTML(component: WebsiteComponent, props: Record<string, 
   `.trim();
 }
 
-function generateCTAHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateCTAHTML(_component: WebsiteComponent, props: Record<string, any>): string {
   const title = props.title || 'Ready to Get Started?';
   const description = props.description || 'Join thousands of satisfied customers';
   const ctaText = props.ctaText || 'Get Started';
@@ -266,7 +266,7 @@ function generateCTAHTML(component: WebsiteComponent, props: Record<string, any>
   `.trim();
 }
 
-function generateContactHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateContactHTML(_component: WebsiteComponent, _props: Record<string, any>): string {
   return `
     <section class="contact-section">
       <h2 class="section-title">Contact Us</h2>
@@ -280,7 +280,7 @@ function generateContactHTML(component: WebsiteComponent, props: Record<string, 
   `.trim();
 }
 
-function generateFooterHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateFooterHTML(_component: WebsiteComponent, props: Record<string, any>): string {
   const copyright = props.copyright || `© ${new Date().getFullYear()} Company Name`;
   const links = props.links || ['Privacy', 'Terms', 'Contact'];
 
@@ -296,7 +296,7 @@ function generateFooterHTML(component: WebsiteComponent, props: Record<string, a
   `.trim();
 }
 
-function generateGalleryHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateGalleryHTML(_component: WebsiteComponent, props: Record<string, any>): string {
   const images = props.images || ['/image1.jpg', '/image2.jpg', '/image3.jpg'];
 
   return `
@@ -313,7 +313,7 @@ function generateGalleryHTML(component: WebsiteComponent, props: Record<string, 
   `.trim();
 }
 
-function generateStatsHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateStatsHTML(_component: WebsiteComponent, props: Record<string, any>): string {
   const stats = props.stats || [
     { label: 'Customers', value: '10K+' },
     { label: 'Projects', value: '500+' },
@@ -334,7 +334,7 @@ function generateStatsHTML(component: WebsiteComponent, props: Record<string, an
   `.trim();
 }
 
-function generateTeamHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateTeamHTML(_component: WebsiteComponent, props: Record<string, any>): string {
   const members = props.members || [
     { name: 'John Doe', role: 'CEO', image: '/team1.jpg' },
     { name: 'Jane Smith', role: 'CTO', image: '/team2.jpg' },
@@ -356,7 +356,7 @@ function generateTeamHTML(component: WebsiteComponent, props: Record<string, any
   `.trim();
 }
 
-function generateFAQHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateFAQHTML(_component: WebsiteComponent, props: Record<string, any>): string {
   const questions = props.questions || [
     { question: 'Question 1?', answer: 'Answer 1' },
     { question: 'Question 2?', answer: 'Answer 2' },
@@ -377,7 +377,7 @@ function generateFAQHTML(component: WebsiteComponent, props: Record<string, any>
   `.trim();
 }
 
-function generateEcommerceHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateEcommerceHTML(_component: WebsiteComponent, _props: Record<string, any>): string {
   return `
     <section class="ecommerce-section">
       <h2 class="section-title">Products</h2>
@@ -388,7 +388,7 @@ function generateEcommerceHTML(component: WebsiteComponent, props: Record<string
   `.trim();
 }
 
-function generateGenericHTML(component: WebsiteComponent, props: Record<string, any>): string {
+function generateGenericHTML(component: WebsiteComponent, _props: Record<string, any>): string {
   return `
     <div class="generic-component">
       <h3>${component.name}</h3>

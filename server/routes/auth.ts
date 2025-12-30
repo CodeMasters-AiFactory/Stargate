@@ -1,10 +1,10 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { db } from "../db";
-import { users, insertUserSchema } from "@shared/schema";
+import { users } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
 import { randomUUID } from "crypto";
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
 import { validateRequestBody } from '../utils/inputValidator';
 import { authSchemas } from '../utils/validationSchemas';
 import { strictRateLimit } from '../middleware/rateLimiter';
@@ -67,12 +67,13 @@ export function registerAuthRoutes(app: Express) {
   initializeInMemoryUsers();
   
   // Sign up
-  app.post("/api/auth/signup", strictRateLimit(), async (req, res) => {
+  app.post("/api/auth/signup", strictRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       // Validate input
       const validation = validateRequestBody(authSchemas.signup, req.body);
       if (!validation.success) {
-        return res.status(400).json({ error: validation.error });
+        res.status(400).json({ error: validation.error });
+        return;
       }
       
       const { username, email, password } = validation.data;
@@ -87,7 +88,8 @@ export function registerAuthRoutes(app: Express) {
           .limit(1);
 
         if (existingUser.length > 0) {
-          return res.status(400).json({ error: "Username already exists" });
+          res.status(400).json({ error: "Username already exists" });
+          return;
         }
 
         // Create new user (default role is 'user')
@@ -107,16 +109,18 @@ export function registerAuthRoutes(app: Express) {
         (req.session as any).username = newUser[0].username;
         (req.session as any).role = newUser[0].role || 'user';
 
-        return res.json({
+        res.json({
           id: newUser[0].id,
           username: newUser[0].username,
           email: email || null,
           role: newUser[0].role || 'user',
         });
+        return;
       } else {
         // In-memory storage
         if (inMemoryUsers.has(username)) {
-          return res.status(400).json({ error: "Username already exists" });
+          res.status(400).json({ error: "Username already exists" });
+          return;
         }
 
         const hashedPassword = hashPassword(password);
@@ -138,59 +142,30 @@ export function registerAuthRoutes(app: Express) {
         (req.session as any).username = newUser.username;
         (req.session as any).role = newUser.role;
 
-        return res.json({
+        res.json({
           id: newUser.id,
           username: newUser.username,
           email: newUser.email,
           role: newUser.role,
         });
+        return;
       }
     } catch (error: unknown) {
       logError(error, 'Auth - Signup');
-      res.status(500).json({ error: error.message || "Failed to create account" });
+      res.status(500).json({ error: (error as Error).message || "Failed to create account" });
     }
   });
 
-  // Login - BYPASSED: Auto-login without credentials
-  app.post("/api/auth/login", async (req, res) => {
+  // Login - SECURITY FIX: Proper authentication required
+  app.post("/api/auth/login", async (req: Request, res: Response): Promise<void> => {
     try {
-      // AUTO-LOGIN: Skip authentication, just create a session
-      console.log('🔓 Auto-login enabled (authentication bypassed)');
-
-      // Create a default user session
-      const defaultUser = {
-        id: 'auto-user-' + randomUUID(),
-        username: 'auto-user',
-        email: 'auto@stargate.dev',
-        role: 'administrator' as const,
-      };
-
-      // Set session only if session middleware is enabled and session exists
-      // Note: typeof null === 'object' is true in JS, so we need explicit null check
-      if (req.session !== null && req.session !== undefined && typeof req.session === 'object') {
-        try {
-          (req.session as any).userId = defaultUser.id;
-          (req.session as any).username = defaultUser.username;
-          (req.session as any).role = defaultUser.role;
-          console.log('[Auth - Login] Session set successfully for user:', defaultUser.id);
-        } catch (sessionError) {
-          console.log('[Auth - Login] Session storage failed (session may be disabled):', sessionError);
-        }
-      } else {
-        console.log('[Auth - Login] Session middleware not available (req.session is:', typeof req.session, '), skipping session storage');
-      }
-
-      return res.json(defaultUser);
-      
-      /* ORIGINAL CODE - DISABLED
       const { email, password } = req.body;
 
       if (!email || !password) {
-        return res.status(400).json({ error: "Email/username and password are required" });
+        res.status(400).json({ error: "Email/username and password are required" });
+        return;
       }
 
-      // ORIGINAL AUTH CODE - DISABLED FOR NOW
-      /*
       // Use database if available, otherwise use in-memory storage
       if (db) {
         // Find user by username (treating email as username for now)
@@ -201,12 +176,14 @@ export function registerAuthRoutes(app: Express) {
           .limit(1);
 
         if (user.length === 0) {
-          return res.status(401).json({ error: "Invalid email or password" });
+          res.status(401).json({ error: "Invalid email or password" });
+          return;
         }
 
         // Verify password
         if (!verifyPassword(password, user[0].password)) {
-          return res.status(401).json({ error: "Invalid email or password" });
+          res.status(401).json({ error: "Invalid email or password" });
+          return;
         }
 
         // Set session
@@ -214,29 +191,30 @@ export function registerAuthRoutes(app: Express) {
         (req.session as any).username = user[0].username;
         (req.session as any).role = user[0].role || 'user';
 
-        return res.json({
+        console.log(`✅ Login successful for: ${user[0].username}`);
+        res.json({
           id: user[0].id,
           username: user[0].username,
           email: email,
           role: user[0].role || 'user',
         });
+        return;
       } else {
         // In-memory storage
         console.log(`🔍 Looking up user: ${email}`);
-        console.log(`📊 Users in memory: ${inMemoryUsers.size}`);
         const user = inMemoryUsers.get(email);
-        
+
         if (!user) {
           console.log(`❌ User not found: ${email}`);
-          return res.status(401).json({ error: "Invalid email or password" });
+          res.status(401).json({ error: "Invalid email or password" });
+          return;
         }
-        
-        console.log(`✅ User found: ${user.username}`);
+
         const passwordValid = verifyPassword(password, user.password);
-        console.log(`🔐 Password valid: ${passwordValid}`);
-        
+
         if (!passwordValid) {
-          return res.status(401).json({ error: "Invalid email or password" });
+          res.status(401).json({ error: "Invalid email or password" });
+          return;
         }
 
         // Set session
@@ -245,73 +223,43 @@ export function registerAuthRoutes(app: Express) {
         (req.session as any).role = user.role;
 
         console.log(`✅ Login successful for: ${user.username}`);
-        return res.json({
+        res.json({
           id: user.id,
           username: user.username,
           email: user.email,
           role: user.role,
         });
+        return;
       }
-      */
     } catch (error: unknown) {
       logError(error, 'Auth - Login');
-      res.status(500).json({ error: error.message || "Failed to login" });
+      res.status(500).json({ error: (error as Error).message || "Failed to login" });
     }
   });
 
   // Logout
-  app.post("/api/auth/logout", async (req, res) => {
+  app.post("/api/auth/logout", async (req: Request, res: Response): Promise<void> => {
     req.session?.destroy((err) => {
       if (err) {
         console.error("Logout error:", err);
-        return res.status(500).json({ error: "Failed to logout" });
+        res.status(500).json({ error: "Failed to logout" });
+        return;
       }
       res.clearCookie("connect.sid");
       res.json({ message: "Logged out successfully" });
     });
   });
 
-  // Auth status check endpoint - same as /me but different route
-  app.get("/api/auth/status", async (req, res) => {
+  // Auth status check endpoint - SECURITY FIX: Check session properly
+  app.get("/api/auth/status", async (req: Request, res: Response): Promise<void> => {
     try {
-      console.log('[AUTH /status] Request received');
-      // SIMPLE AUTO-AUTH: Just return a user immediately
-      const defaultUser = {
-        id: 'auto-user-' + randomUUID(),
-        username: 'auto-user',
-        email: 'auto@stargate.dev',
-        role: 'administrator' as const,
-      };
-      console.log('[AUTH /status] Returning auto-user');
-      return res.json(defaultUser);
-    } catch (error: unknown) {
-      console.error('[AUTH /status] Error:', error);
-      // Always return fallback user on error
-      const fallbackUser = {
-        id: 'auto-user-fallback',
-        username: 'auto-user',
-        email: 'auto@stargate.dev',
-        role: 'administrator' as const,
-      };
-      return res.json(fallbackUser);
-    }
-  });
+      const userId = (req.session as any)?.userId;
 
-  // Get current user - BYPASSED: Always return authenticated user
-  app.get("/api/auth/me", async (req, res) => {
-    try {
-      console.log('[AUTH /me] Request received');
-      // SIMPLE AUTO-AUTH: Just return a user immediately, no session complexity
-      const defaultUser = {
-        id: 'auto-user-' + randomUUID(),
-        username: 'auto-user',
-        email: 'auto@stargate.dev',
-        role: 'administrator' as const,
-      };
-      console.log('[AUTH /me] Returning auto-user');
-      return res.json(defaultUser);
+      if (!userId) {
+        res.status(401).json({ error: "Not authenticated" });
+        return;
+      }
 
-      /* ORIGINAL CODE - DISABLED
       // Use database if available, otherwise use in-memory storage
       if (db) {
         const user = await db
@@ -321,74 +269,90 @@ export function registerAuthRoutes(app: Express) {
           .limit(1);
 
         if (user.length === 0) {
-          return res.status(401).json({ error: "User not found" });
+          res.status(401).json({ error: "User not found" });
+          return;
         }
 
-        return res.json({
+        res.json({
           id: user[0].id,
           username: user[0].username,
           email: user[0].email || null,
           role: user[0].role || 'user',
         });
+        return;
       } else {
         // In-memory storage
         const user = inMemoryUsers.get(userId);
-        
+
         if (!user) {
-          return res.status(401).json({ error: "User not found" });
+          res.status(401).json({ error: "User not found" });
+          return;
         }
 
-        return res.json({
+        res.json({
           id: user.id,
           username: user.username,
           email: user.email,
           role: user.role,
         });
+        return;
       }
-      */
     } catch (error: unknown) {
-      logError(error, 'Auth - Get user');
-      console.error("   Error details:", {
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-      });
-      
-      // CRITICAL: Even on error, always return a valid user (auto-auth bypass)
-      // NEVER return 401 or 500 - always create a session
-      try {
-        const fallbackUser = {
-          id: 'auto-user-' + randomUUID(),
-          username: 'auto-user',
-          email: 'auto@stargate.dev',
-          role: 'administrator' as const,
-        };
+      console.error('[AUTH /status] Error:', error);
+      res.status(500).json({ error: "Failed to check auth status" });
+    }
+  });
 
-        // Try to create session even on error
-        if (req.session) {
-          (req.session as any).userId = fallbackUser.id;
-          (req.session as any).username = fallbackUser.username;
-          (req.session as any).role = fallbackUser.role;
-          
-          req.session.save((err) => {
-            if (err) {
-              console.error('❌ Failed to save fallback session:', err);
-            }
-          });
+  // Get current user - SECURITY FIX: Check session properly
+  app.get("/api/auth/me", async (req: Request, res: Response): Promise<void> => {
+    try {
+      const userId = (req.session as any)?.userId;
+
+      if (!userId) {
+        res.status(401).json({ error: "Not authenticated" });
+        return;
+      }
+
+      // Use database if available, otherwise use in-memory storage
+      if (db) {
+        const user = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, userId))
+          .limit(1);
+
+        if (user.length === 0) {
+          res.status(401).json({ error: "User not found" });
+          return;
         }
 
-        console.log('🔓 Auto-authenticated fallback user after error');
-        return res.json(fallbackUser);
-      } catch (fallbackError: unknown) {
-        logError(fallbackError, 'Auth - Fallback auth');
-        // Last resort: return user without session (shouldn't happen)
-        return res.json({
-          id: 'auto-user-fallback',
-          username: 'auto-user',
-          email: 'auto@stargate.dev',
-          role: 'administrator',
+        res.json({
+          id: user[0].id,
+          username: user[0].username,
+          email: user[0].email || null,
+          role: user[0].role || 'user',
         });
+        return;
+      } else {
+        // In-memory storage
+        const user = inMemoryUsers.get(userId);
+
+        if (!user) {
+          res.status(401).json({ error: "User not found" });
+          return;
+        }
+
+        res.json({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+        });
+        return;
       }
+    } catch (error: unknown) {
+      logError(error, 'Auth - Get user');
+      res.status(500).json({ error: "Failed to get user" });
     }
   });
 }

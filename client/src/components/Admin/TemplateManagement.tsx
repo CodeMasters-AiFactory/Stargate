@@ -43,18 +43,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Plus, Edit, Trash2, Copy, Save, X, Sparkles, Search, ArrowRightLeft, LayoutGrid, List, Eye, CheckCircle2, Download, CheckCircle, XCircle, Check, Star } from 'lucide-react';
+import { Plus, Edit, Trash2, Copy, Save, X, Sparkles, Search, LayoutGrid, List, Eye, CheckCircle2, Download, CheckCircle, XCircle, Check, Star } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import type { BrandTemplate } from '@/types/templates';
-import { FIGMA_CATEGORIES, type FigmaCategory } from '../../../../shared/figmaCategories';
+import { FIGMA_CATEGORIES } from '../../../../shared/figmaCategories';
 
 interface Template extends BrandTemplate {
-  source?: 'database' | 'library';
+  source?: 'database' | 'library' | 'file';
   isActive?: boolean;
   createdAt?: string | null;
   updatedAt?: string | null;
   lastChecked?: string | null;
+  isPremium?: boolean;
+  price?: string | null;
+  isDesignQuality?: boolean;
+  isApproved?: boolean;
 }
 
 export function TemplateManagement() {
@@ -65,7 +69,6 @@ export function TemplateManagement() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [_selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
-  const [_deleteTemplateId, setDeleteTemplateId] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'name' | 'category' | 'lastChecked'>('name');
@@ -74,7 +77,10 @@ export function TemplateManagement() {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [isCheckingDependencies, setIsCheckingDependencies] = useState(false);
   const [isInjectingDependencies, setIsInjectingDependencies] = useState(false);
-  const [dependencyCheckResults, setDependencyCheckResults] = useState<any>(null);
+  const [_dependencyCheckResults, setDependencyCheckResults] = useState<{
+    checkedTemplates: number;
+    totalTemplates: number;
+  } | null>(null);
   const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
   const [deleteAllApproved, setDeleteAllApproved] = useState(false);
   const [isDeletingAll, setIsDeletingAll] = useState(false);
@@ -124,9 +130,9 @@ export function TemplateManagement() {
         const fetchedTemplates = data.templates || [];
         console.log(`[TemplateManagement] ✅ Loaded ${fetchedTemplates.length} templates from API`);
         console.log(`[TemplateManagement] Templates by source:`, {
-          database: fetchedTemplates.filter((t: any) => t.source === 'database').length,
-          file: fetchedTemplates.filter((t: any) => t.source === 'file').length,
-          library: fetchedTemplates.filter((t: any) => t.source === 'library').length,
+          database: fetchedTemplates.filter((t: Template) => t.source === 'database').length,
+          file: fetchedTemplates.filter((t: Template) => t.source === 'file').length,
+          library: fetchedTemplates.filter((t: Template) => t.source === 'library').length,
         });
         setTemplates(fetchedTemplates);
         applyFilters(fetchedTemplates, categoryFilter, searchQuery, sortBy, templateTypeFilter);
@@ -137,8 +143,8 @@ export function TemplateManagement() {
           variant: 'destructive',
         });
       }
-    } catch (error) {
-      console.error('[TemplateManagement] Error fetching templates:', error);
+    } catch (_error) {
+      console.error('[TemplateManagement] Error fetching templates:', _error);
       toast({
         title: 'Error',
         description: 'Failed to fetch templates',
@@ -151,16 +157,16 @@ export function TemplateManagement() {
 
   // Listen for template updates from scraper
   useEffect(() => {
-    const handleTemplatesUpdated = () => {
+    const handleTemplatesUpdated = (): void => {
       console.log('[TemplateManagement] Templates updated event received, refreshing...');
       fetchTemplates();
     };
-    
+
     window.addEventListener('templates-updated', handleTemplatesUpdated);
     return () => {
       window.removeEventListener('templates-updated', handleTemplatesUpdated);
     };
-  }, []);
+  }, [fetchTemplates]);
 
   // Check if template was updated in last month
   const isUpdatedRecently = (template: Template): boolean => {
@@ -183,9 +189,9 @@ export function TemplateManagement() {
     
     // Filter by template type (Free vs Paid)
     if (templateType === 'free') {
-      filtered = filtered.filter(t => !(t as any).isPremium || (t as any).isPremium === false);
+      filtered = filtered.filter(t => !t.isPremium);
     } else if (templateType === 'paid') {
-      filtered = filtered.filter(t => (t as any).isPremium === true);
+      filtered = filtered.filter(t => t.isPremium === true);
     }
     
     // Filter by category
@@ -227,31 +233,31 @@ export function TemplateManagement() {
   };
 
   // Handle double-click to open template preview
-  const handleDoubleClick = (template: Template) => {
+  const handleDoubleClick = (template: Template): void => {
     const previewUrl = `/api/template-preview/${template.id}`;
     window.open(previewUrl, '_blank', 'width=1400,height=900');
   };
 
   // Handle category filter change
-  const handleCategoryFilterChange = (category: string) => {
+  const handleCategoryFilterChange = (category: string): void => {
     setCategoryFilter(category);
     applyFilters(templates, category, searchQuery, sortBy, templateTypeFilter);
   };
 
   // Handle search query change
-  const handleSearchChange = (query: string) => {
+  const handleSearchChange = (query: string): void => {
     setSearchQuery(query);
     applyFilters(templates, categoryFilter, query, sortBy, templateTypeFilter);
   };
 
   // Handle sort change
-  const handleSortChange = (sort: 'name' | 'category' | 'lastChecked') => {
+  const handleSortChange = (sort: 'name' | 'category' | 'lastChecked'): void => {
     setSortBy(sort);
     applyFilters(templates, categoryFilter, searchQuery, sort, templateTypeFilter);
   };
 
   // Handle template type filter change
-  const handleTemplateTypeFilterChange = (type: 'all' | 'design' | 'search') => {
+  const handleTemplateTypeFilterChange = (type: 'all' | 'free' | 'paid'): void => {
     setTemplateTypeFilter(type);
     applyFilters(templates, categoryFilter, searchQuery, sortBy, type);
   };
@@ -304,7 +310,7 @@ export function TemplateManagement() {
           variant: 'destructive',
         });
       }
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: 'Error',
         description: 'Failed to save template',
@@ -337,12 +343,12 @@ export function TemplateManagement() {
       
       console.log('[TemplateManagement] Delete response status:', response.status, response.statusText);
       
-      let data;
+      let data: { success?: boolean; error?: string; message?: string };
       try {
         data = await response.json();
         console.log('[TemplateManagement] Delete response data:', data);
-      } catch (parseError) {
-        console.error('[TemplateManagement] Failed to parse response as JSON:', parseError);
+      } catch (_parseError) {
+        console.error('[TemplateManagement] Failed to parse response as JSON:', _parseError);
         const text = await response.text();
         console.error('[TemplateManagement] Response text:', text);
         throw new Error(`Server returned invalid response: ${response.status} ${response.statusText}`);
@@ -451,11 +457,11 @@ export function TemplateManagement() {
       // Reset approval state
       setDeleteAllApproved(false);
       setShowDeleteAllConfirm(false);
-      
+
       // Refresh templates
       await fetchTemplates();
-    } catch (error) {
-      console.error('[TemplateManagement] Delete all error:', error);
+    } catch (_error) {
+      console.error('[TemplateManagement] Delete all error:', _error);
       toast({
         title: 'Delete All Failed',
         description: 'Failed to delete all templates',
@@ -483,12 +489,12 @@ export function TemplateManagement() {
 
       console.log('[TemplateManagement] Duplicate response status:', response.status);
 
-      let data;
+      let data: { success?: boolean; error?: string; message?: string };
       try {
         data = await response.json();
         console.log('[TemplateManagement] Duplicate response data:', data);
-      } catch (parseError) {
-        console.error('[TemplateManagement] Failed to parse duplicate response:', parseError);
+      } catch (_parseError) {
+        console.error('[TemplateManagement] Failed to parse duplicate response:', _parseError);
         const text = await response.text();
         console.error('[TemplateManagement] Response text:', text);
         throw new Error(`Server returned invalid response: ${response.status} ${response.statusText}`);
@@ -512,12 +518,12 @@ export function TemplateManagement() {
         description: data.message || 'Template duplicated successfully',
       });
       await fetchTemplates();
-    } catch (error) {
-      console.error('[TemplateManagement] Duplicate error:', error);
-      const errorMessage = error instanceof Error 
-        ? error.message 
+    } catch (_error) {
+      console.error('[TemplateManagement] Duplicate error:', _error);
+      const errorMessage = _error instanceof Error
+        ? _error.message
         : 'Failed to duplicate template. Please check console for details.';
-      
+
       toast({
         title: 'Duplicate Failed',
         description: errorMessage,
@@ -528,7 +534,7 @@ export function TemplateManagement() {
 
 
   // Open edit dialog
-  const openEditDialog = (template: Template) => {
+  const openEditDialog = (template: Template): void => {
     if (template.source === 'library') {
       toast({
         title: 'Info',
@@ -544,7 +550,7 @@ export function TemplateManagement() {
   };
 
   // Open create dialog
-  const openCreateDialog = () => {
+  const openCreateDialog = (): void => {
     resetForm();
     setIsEditMode(false);
     setSelectedTemplate(null);
@@ -574,11 +580,11 @@ export function TemplateManagement() {
       } else {
         throw new Error(data.error || 'Failed to check dependencies');
       }
-    } catch (error) {
-      console.error('[TemplateManagement] Dependency check error:', error);
+    } catch (_error) {
+      console.error('[TemplateManagement] Dependency check error:', _error);
       toast({
         title: 'Check Failed',
-        description: error instanceof Error ? error.message : 'Failed to check dependencies',
+        description: _error instanceof Error ? _error.message : 'Failed to check dependencies',
         variant: 'destructive',
       });
     } finally {
@@ -631,11 +637,11 @@ export function TemplateManagement() {
       } else {
         throw new Error(data.error || 'Failed to inject dependencies');
       }
-    } catch (error) {
-      console.error('[TemplateManagement] Dependency injection error:', error);
+    } catch (_error) {
+      console.error('[TemplateManagement] Dependency injection error:', _error);
       toast({
         title: 'Injection Failed',
-        description: error instanceof Error ? error.message : 'Failed to inject dependencies',
+        description: _error instanceof Error ? _error.message : 'Failed to inject dependencies',
         variant: 'destructive',
       });
     } finally {
@@ -644,7 +650,7 @@ export function TemplateManagement() {
   };
 
   // Reset form
-  const resetForm = () => {
+  const resetForm = (): void => {
     setFormData({
       id: '',
       name: '',
@@ -861,19 +867,19 @@ export function TemplateManagement() {
               >
                 All Templates ({templates.length})
               </TabsTrigger>
-              <TabsTrigger 
-                value="free" 
+              <TabsTrigger
+                value="free"
                 className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-green-700 data-[state=active]:text-white"
               >
                 <Check className="w-4 h-4" />
-                Free Templates ({templates.filter(t => !(t as any).isPremium || (t as any).isPremium === false).length})
+                Free Templates ({templates.filter(t => !t.isPremium).length})
               </TabsTrigger>
-              <TabsTrigger 
-                value="paid" 
+              <TabsTrigger
+                value="paid"
                 className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-600 data-[state=active]:to-yellow-700 data-[state=active]:text-white"
               >
                 <Star className="w-4 h-4" />
-                Premium Templates ({templates.filter(t => (t as any).isPremium === true).length})
+                Premium Templates ({templates.filter(t => t.isPremium === true).length})
               </TabsTrigger>
             </TabsList>
             
@@ -889,9 +895,9 @@ export function TemplateManagement() {
                 </div>
               ) : (
                 filteredTemplates.map((template) => {
-                  const isDesignTemplate = (template as any).isDesignQuality === true;
+                  const isDesignTemplate = template.isDesignQuality === true;
                   const isActive = template.isActive !== false;
-                  
+
                   return (
                     <Card 
                       key={template.id}
@@ -1048,13 +1054,13 @@ export function TemplateManagement() {
                   filteredTemplates.map((template) => {
                     const isActive = template.isActive !== false;
                     const isDeleted = template.isActive === false;
-                    const isDesignTemplate = (template as any).isDesignQuality === true;
-                    
+                    const isDesignTemplate = template.isDesignQuality === true;
+
                     const recentlyUpdated = isUpdatedRecently(template);
-                    const lastCheckedDate = template.lastChecked 
-                      ? new Date(template.lastChecked).toLocaleDateString() 
+                    const lastCheckedDate = template.lastChecked
+                      ? new Date(template.lastChecked).toLocaleDateString()
                       : 'Never';
-                    
+
                     return (
                     <TableRow 
                       key={template.id}
@@ -1123,17 +1129,17 @@ export function TemplateManagement() {
                           <Badge variant={template.source === 'database' ? 'default' : 'secondary'}>
                             {template.source || 'library'}
                           </Badge>
-                          {(template as any).isDesignQuality ? (
-                            <Badge 
-                              variant="outline" 
+                          {template.isDesignQuality ? (
+                            <Badge
+                              variant="outline"
                               className="bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-purple-300 border-purple-400/50 text-xs font-semibold shadow-lg shadow-purple-500/20"
                             >
                               <Sparkles className="w-3 h-3 mr-1 text-purple-300" />
                               Design
                             </Badge>
                           ) : (
-                            <Badge 
-                              variant="outline" 
+                            <Badge
+                              variant="outline"
                               className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/50 text-xs font-semibold shadow-lg shadow-blue-500/20"
                             >
                               <Search className="w-3 h-3 mr-1 text-blue-300" />
@@ -1162,7 +1168,7 @@ export function TemplateManagement() {
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-1">
-                          {(template as any).isApproved ? (
+                          {template.isApproved ? (
                           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                               <CheckCircle className="w-3 h-3 mr-1" />
                               Approved
@@ -1197,11 +1203,11 @@ export function TemplateManagement() {
                           {/* Approve/Disapprove Buttons */}
                           {template.source === 'database' && (
                             <>
-                              {!(template as any).isApproved ? (
+                              {!template.isApproved ? (
                             <Button
                               variant="outline"
                               size="sm"
-                                  onClick={async () => {
+                                  onClick={async (): Promise<void> => {
                                     try {
                                       const response = await fetch(`/api/admin/templates/${template.id}/approve`, {
                                         method: 'POST',
@@ -1221,7 +1227,7 @@ export function TemplateManagement() {
                                           variant: 'destructive',
                                         });
                                       }
-                                    } catch (error) {
+                                    } catch (_error: unknown) {
                                       toast({
                                         title: 'Error',
                                         description: 'Failed to approve template',
@@ -1238,7 +1244,7 @@ export function TemplateManagement() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={async () => {
+                                  onClick={async (): Promise<void> => {
                                     try {
                                       const response = await fetch(`/api/admin/templates/${template.id}/disapprove`, {
                                         method: 'POST',
@@ -1258,7 +1264,7 @@ export function TemplateManagement() {
                                           variant: 'destructive',
                                         });
                                       }
-                                    } catch (error) {
+                                    } catch (_error: unknown) {
                                       toast({
                                         title: 'Error',
                                         description: 'Failed to disapprove template',
@@ -1311,7 +1317,7 @@ export function TemplateManagement() {
                                       Cancel
                                     </AlertDialogCancel>
                                     <AlertDialogAction
-                                      onClick={async () => {
+                                      onClick={async (): Promise<void> => {
                                         await handleDelete(template.id, false);
                                       }}
                                       disabled={isDeleting === template.id}
@@ -1404,7 +1410,7 @@ export function TemplateManagement() {
             <div className="space-y-2 col-span-2">
               <label className="text-sm font-medium flex items-center gap-2">
                 Template Type
-                {(formData as any).isPremium ? (
+                {formData.isPremium ? (
                   <Badge className="bg-yellow-500 text-white">PREMIUM</Badge>
                 ) : (
                   <Badge className="bg-green-500 text-white">FREE</Badge>
@@ -1414,21 +1420,21 @@ export function TemplateManagement() {
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={(formData as any).isPremium || false}
-                    onChange={(e) => setFormData({ 
-                      ...formData, 
+                    checked={formData.isPremium || false}
+                    onChange={(e) => setFormData({
+                      ...formData,
                       isPremium: e.target.checked,
-                      price: e.target.checked ? (formData as any).price || '9.99' : null
+                      price: e.target.checked ? formData.price || '9.99' : null
                     })}
                     className="w-4 h-4"
                   />
                   <span>Premium Template (Requires Payment)</span>
                 </label>
               </div>
-              {(formData as any).isPremium && (
+              {formData.isPremium && (
               <Input
                   type="text"
-                  value={(formData as any).price || '9.99'}
+                  value={formData.price || '9.99'}
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   placeholder="Price (e.g., 9.99)"
                   className="mt-2"

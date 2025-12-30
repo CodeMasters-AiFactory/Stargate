@@ -17,11 +17,6 @@ import {
   Sparkles,
   ChevronRight,
   Wand2,
-  Atom,
-  Route,
-  Ticket,
-  Headphones,
-  Store,
 } from 'lucide-react';
 import { useIDE } from '@/hooks/use-ide';
 import { LoginSignupModal } from '@/components/Auth/LoginSignupModal';
@@ -29,7 +24,7 @@ import { LoginSignupModal } from '@/components/Auth/LoginSignupModal';
 // YouTube API types
 declare global {
   interface Window {
-    YT: any;
+    YT: Record<string, unknown>;
     onYouTubeIframeAPIReady: () => void;
   }
 }
@@ -38,11 +33,11 @@ export function MarketingLandingPage() {
   const { setState } = useIDE();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
+  const [_scrollY, setScrollY] = useState(0);
   const [activeFeature, setActiveFeature] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    const handleScroll = (): void => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -60,10 +55,11 @@ export function MarketingLandingPage() {
   };
 
   const handleAuthSuccess = () => {
-    setState(prev => ({ ...prev, currentView: 'dashboard' }));
+    setState(prev => ({ ...prev, currentView: 'stargate-websites' }));
   };
 
   const handleMerlinWizard = () => {
+    // Go directly to website wizard (has built-in package selection)
     setState(prev => ({ ...prev, currentView: 'stargate-websites' as const }));
   };
 
@@ -103,8 +99,8 @@ export function MarketingLandingPage() {
     const originalConsoleError = console.error;
     const originalConsoleWarn = console.warn;
     
-    const suppressYouTubeWarnings = () => {
-      console.error = (...args: any[]) => {
+    const suppressYouTubeWarnings = (): void => {
+      console.error = (...args: unknown[]): void => {
         const message = args[0]?.toString() || '';
         // Suppress YouTube-specific warnings
         if (
@@ -119,7 +115,7 @@ export function MarketingLandingPage() {
         originalConsoleError.apply(console, args);
       };
 
-      console.warn = (...args: any[]) => {
+      console.warn = (...args: unknown[]): void => {
         const message = args[0]?.toString() || '';
         // Suppress YouTube-specific warnings
         if (
@@ -145,57 +141,63 @@ export function MarketingLandingPage() {
       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
     }
 
-    let player: any;
+    let player: Record<string, unknown>;
     let checkInterval: NodeJS.Timeout;
     const videoId = 'mSDsLpMogtM';
-    
+
     // Video segments to play (in seconds): [start, end]
     // Only playing 0-13 seconds as requested
     const VIDEO_SEGMENTS: [number, number][] = [
       [0, 13],           // 0-13 seconds only (loops)
     ];
-    
+
     let currentSegmentIndex = 0;
     let segmentCheckInterval: NodeJS.Timeout;
 
-    const playNextSegment = (event: any) => {
+    const playNextSegment = (event: Record<string, unknown>): void => {
       try {
         if (currentSegmentIndex >= VIDEO_SEGMENTS.length) {
           // Loop back to first segment
           currentSegmentIndex = 0;
         }
-        
+
         const [startTime, endTime] = VIDEO_SEGMENTS[currentSegmentIndex];
         console.log(`Playing segment ${currentSegmentIndex + 1}/${VIDEO_SEGMENTS.length}: ${startTime}s - ${endTime}s`);
-        
+
         // Seek to start of segment
-        event.target.seekTo(startTime, true);
-        event.target.playVideo();
-        
+        const target = event.target as Record<string, ((...args: unknown[]) => unknown) | unknown>;
+        (target.seekTo as (time: number, allowSeekAhead: boolean) => void)(startTime, true);
+        (target.playVideo as () => void)();
+
         // Check if we've reached the end of this segment
         segmentCheckInterval = setInterval(() => {
           try {
-            const currentTime = event.target.getCurrentTime();
+            const currentTime = (target.getCurrentTime as () => number)();
             if (currentTime >= endTime) {
               // Move to next segment
               currentSegmentIndex++;
               clearInterval(segmentCheckInterval);
               playNextSegment(event);
             }
-          } catch (e) {
+          } catch (_error: unknown) {
             // Silently handle timing errors
           }
         }, 100); // Check every 100ms for smooth transitions
-      } catch (e) {
+      } catch (_error: unknown) {
         // Silently handle segment errors
       }
     };
 
-    const initializePlayer = () => {
-      if (!window.YT || !window.YT.Player) return;
+    const initializePlayer = (): void => {
+      if (!window.YT || !(window.YT as Record<string, unknown>).Player) return;
 
       try {
-        player = new window.YT.Player('youtube-background', {
+        const YTPlayer = (window.YT as Record<string, unknown>).Player as new (
+          element: string,
+          config: Record<string, unknown>
+        ) => Record<string, unknown>;
+
+        player = new YTPlayer('youtube-background', {
           videoId: videoId,
           playerVars: {
             autoplay: 1,
@@ -211,32 +213,34 @@ export function MarketingLandingPage() {
             origin: window.location.origin, // Set origin to prevent postMessage warnings
           },
           events: {
-            onReady: (event: any) => {
+            onReady: (event: Record<string, unknown>) => {
               try {
                 // Wait for video to load, then start playing segments
                 setTimeout(() => {
                   playNextSegment(event);
                 }, 1000);
-              } catch (e) {
+              } catch (_error: unknown) {
                 // Silently handle player ready errors
               }
             },
-            onStateChange: (event: any) => {
+            onStateChange: (event: Record<string, unknown>) => {
               try {
+                const PlayerState = (window.YT as Record<string, unknown>).PlayerState as Record<string, unknown>;
+                const target = event.target as Record<string, ((...args: unknown[]) => unknown) | unknown>;
                 // Keep video playing if paused
-                if (event.data === window.YT.PlayerState.PAUSED) {
-                  event.target.playVideo();
+                if (event.data === PlayerState.PAUSED) {
+                  (target.playVideo as () => void)();
                 }
                 // If video ends, restart from first segment
-                if (event.data === window.YT.PlayerState.ENDED) {
+                if (event.data === PlayerState.ENDED) {
                   currentSegmentIndex = 0;
                   playNextSegment(event);
                 }
-              } catch (e) {
+              } catch (_error: unknown) {
                 // Silently handle state change errors
               }
             },
-            onError: (event: any) => {
+            onError: (event: Record<string, unknown>) => {
               // Only log actual errors, not warnings
               if (event.data !== 150 && event.data !== 101) {
                 originalConsoleError('YouTube player error:', event.data);
@@ -244,7 +248,7 @@ export function MarketingLandingPage() {
             },
           },
         });
-      } catch (e) {
+      } catch (_error: unknown) {
         // Silently handle initialization errors
       }
     };
@@ -252,7 +256,7 @@ export function MarketingLandingPage() {
     window.onYouTubeIframeAPIReady = initializePlayer;
 
     // If API is already loaded
-    if (window.YT && window.YT.Player) {
+    if (window.YT && (window.YT as Record<string, unknown>).Player) {
       setTimeout(initializePlayer, 100);
     }
 
@@ -260,7 +264,7 @@ export function MarketingLandingPage() {
       // Restore original console methods
       console.error = originalConsoleError;
       console.warn = originalConsoleWarn;
-      
+
       if (checkInterval) {
         clearInterval(checkInterval);
       }
@@ -269,8 +273,8 @@ export function MarketingLandingPage() {
       }
       if (player) {
         try {
-          player.destroy();
-        } catch (e) {
+          (player.destroy as () => void)();
+        } catch (_error: unknown) {
           // Ignore cleanup errors
         }
       }
@@ -278,21 +282,54 @@ export function MarketingLandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#030014] text-white overflow-x-hidden antialiased relative">
+    <div className="min-h-screen bg-slate-900 text-white overflow-x-hidden antialiased">
       {/* YouTube Video Background - Now only in hero section, placeholder here for API loading */}
       <div id="youtube-background-container" className="hidden" />
 
-      {/* Navigation */}
+      {/* Navigation - FIXED AT TOP - Must be outside any relative/transform containers */}
       <nav 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrollY > 50 ? 'bg-[#030014]/90 backdrop-blur-xl border-b border-white/10' : 'bg-transparent'
-        }`}
+        className="fixed top-0 left-0 right-0 z-[9999] bg-slate-900/95 backdrop-blur-md border-b border-white/10 shadow-lg"
+        style={{ position: 'fixed' }}
       >
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* Desktop Nav */}
+            {/* Logo on LEFT */}
+            <div className="flex items-center">
+              <img 
+                src="/images/stargate-logo.png" 
+                alt="Stargate" 
+                className="h-14 md:h-16 lg:h-20 w-auto object-contain"
+              />
+            </div>
+
+            {/* Desktop Nav on RIGHT */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="text-sm text-white/60 hover:text-white transition-colors">Services</a>
+              {/* Services Dropdown */}
+              <div className="relative group">
+                <button className="text-sm text-white/60 hover:text-white transition-colors flex items-center gap-1">
+                  Services
+                  <ChevronRight className="w-4 h-4 rotate-90 group-hover:rotate-[270deg] transition-transform" />
+                </button>
+                {/* Dropdown Menu */}
+                <div className="absolute top-full left-0 mt-2 w-80 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0">
+                  <div className="bg-slate-800 border border-white/10 rounded-xl shadow-2xl shadow-black/50 overflow-hidden max-h-[80vh] overflow-y-auto">
+                    <div className="p-2">
+                      {/* Active Services */}
+                      <div className="px-3 py-2 text-xs text-emerald-400 font-medium uppercase tracking-wider">Active Services</div>
+                      <a href="#" onClick={(e) => { e.preventDefault(); handleMerlinWizard(); }} className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-violet-500/20 hover:shadow-lg hover:shadow-violet-500/20 transition-all group/item">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/30 group-hover/item:shadow-violet-500/50 transition-shadow">
+                          <Wand2 className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-white">Merlin Website Wizard</div>
+                          <div className="text-xs text-white/50">AI website builder in 60 seconds</div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
               <a href="#features" className="text-sm text-white/60 hover:text-white transition-colors">Features</a>
               <a href="#pricing" className="text-sm text-white/60 hover:text-white transition-colors">Pricing</a>
               <a href="#testimonials" className="text-sm text-white/60 hover:text-white transition-colors">Testimonials</a>
@@ -321,12 +358,17 @@ export function MarketingLandingPage() {
 
           {/* Mobile Nav */}
           {mobileMenuOpen && (
-            <div className="md:hidden pt-4 pb-2 space-y-4">
-              <a href="#services" className="block text-white/60 hover:text-white">Services</a>
-              <a href="#features" className="block text-white/60 hover:text-white">Features</a>
-              <a href="#pricing" className="block text-white/60 hover:text-white">Pricing</a>
-              <a href="#testimonials" className="block text-white/60 hover:text-white">Testimonials</a>
-              <Button onClick={handleGetStarted} className="w-full bg-violet-600">Get Started</Button>
+            <div className="md:hidden pt-4 pb-2 space-y-2 bg-slate-800 rounded-xl mt-2 p-4">
+              <div className="text-xs text-emerald-400 font-medium uppercase mb-2">Services</div>
+              <a href="#" onClick={(e) => { e.preventDefault(); handleMerlinWizard(); setMobileMenuOpen(false); }} className="flex items-center gap-3 py-2">
+                <Wand2 className="w-5 h-5 text-violet-400" />
+                <span className="text-white/80">Merlin Website Wizard</span>
+              </a>
+              <div className="border-t border-white/10 my-3"></div>
+              <a href="#features" className="block text-white/60 hover:text-white py-2">Features</a>
+              <a href="#pricing" className="block text-white/60 hover:text-white py-2">Pricing</a>
+              <a href="#testimonials" className="block text-white/60 hover:text-white py-2">Testimonials</a>
+              <Button onClick={handleGetStarted} className="w-full bg-violet-600 mt-3">Get Started</Button>
             </div>
           )}
         </div>
@@ -347,9 +389,9 @@ export function MarketingLandingPage() {
           />
           {/* Overlay for text readability */}
           <div
-            className="absolute inset-0 bg-[#030014]/40"
+            className="absolute inset-0 bg-slate-900/40"
             style={{
-              background: 'linear-gradient(to bottom, rgba(3,0,20,0.3) 0%, rgba(3,0,20,0.2) 50%, rgba(3,0,20,0.6) 100%)',
+              background: 'linear-gradient(to bottom, rgba(15,23,42,0.3) 0%, rgba(15,23,42,0.2) 50%, rgba(15,23,42,0.6) 100%)',
             }}
           />
           {/* Subtle gradient overlay for depth */}
@@ -372,30 +414,30 @@ export function MarketingLandingPage() {
 
           {/* Main Headline - Enhanced with better gradients */}
           <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tight mb-6 leading-[1.05]">
-            <span 
+            <span
               className="inline-block bg-clip-text text-transparent"
               style={{
                 backgroundImage: 'linear-gradient(180deg, #ffffff 0%, #ffffff 40%, rgba(255,255,255,0.7) 100%)',
               }}
             >
-              Complete AI Ecosystem
+              Merlin Website Wizard
             </span>
             <br />
-            <span 
+            <span
               className="inline-block bg-clip-text text-transparent"
               style={{
                 backgroundImage: 'linear-gradient(135deg, #a78bfa 0%, #c084fc 25%, #e879f9 50%, #22d3ee 75%, #06b6d4 100%)',
                 backgroundSize: '200% 200%',
               }}
             >
-              For Modern Development
+              The Best Website Builder on the Planet
             </span>
           </h1>
 
           {/* Subheadline - Better typography */}
           <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-8 leading-relaxed font-normal tracking-wide">
-            Stargate provides cutting-edge AI-powered solutions across multiple platforms. From website creation with Merlin, 
-            to advanced development with Stargate IDE, to revolutionary AI systems - experience the complete ecosystem of intelligent tools.
+            Create stunning, professional websites in under 60 seconds. Just describe what you want and watch the magic happen.
+            No coding required - Merlin AI handles everything for you.
           </p>
 
           {/* CTA Buttons - Smoother with better shadows */}
@@ -440,327 +482,81 @@ export function MarketingLandingPage() {
         </div>
       </section>
 
-      {/* Services Section - All Stargate Services */}
-      <section id="services" className="py-16 px-6 relative">
-        <div className="max-w-7xl mx-auto">
+      {/* Services Section - Merlin Website Wizard */}
+      <section id="services" className="py-20 px-6 relative overflow-hidden min-h-[600px]">
+        {/* Merlin Background Image - Highly visible */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'url(/images/merlin-wizard.jpg)',
+            opacity: 0.6,
+          }}
+        />
+        {/* Subtle dark overlay for text readability */}
+        <div className="absolute inset-0 bg-slate-900/40" />
+        {/* Purple/violet magical glow effect - lighter */}
+        <div className="absolute inset-0 bg-gradient-to-r from-violet-900/20 via-transparent to-violet-900/20" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-12">
             <span className="text-sm text-violet-400 font-medium tracking-wider uppercase mb-4 block">
-              Our Services
+              AI Website Builder
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Complete{' '}
+              Create Stunning Websites with{' '}
               <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
-                Stargate Ecosystem
+                Merlin AI
               </span>
             </h2>
             <p className="text-white/50 text-lg max-w-2xl mx-auto">
-              Discover the full suite of Stargate services designed to transform your digital presence and development workflow.
+              Build professional websites in minutes using our AI-powered wizard. No coding required.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-5">
-            {/* Merlin Website Wizard */}
-            <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-950/80 to-slate-900/90 border-2 border-cyan-500/40 hover:border-cyan-400 transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] cursor-pointer">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-medium border border-emerald-500/30">
-                  Active
-                </span>
-              </div>
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-4 shadow-lg shadow-cyan-500/30 group-hover:shadow-cyan-400/50 group-hover:scale-110 transition-all">
-                <Wand2 className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="relative text-lg font-bold mb-2 text-white group-hover:text-cyan-100">Merlin Website Wizard</h3>
-              <p className="relative text-white/60 text-sm mb-4 leading-relaxed">
-                AI-powered website builder. Create stunning sites in minutes.
-              </p>
-              <ul className="relative space-y-1.5 mb-4">
-                <li className="flex items-center gap-2 text-xs text-cyan-300/80">
-                  <CheckCircle className="w-3 h-3 text-cyan-400" />
-                  <span>60-second generation</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs text-cyan-300/80">
-                  <CheckCircle className="w-3 h-3 text-cyan-400" />
-                  <span>1000+ templates</span>
-                </li>
-              </ul>
-              <Button
-                onClick={handleMerlinWizard}
-                className="relative w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-sm py-2"
-              >
-                Launch Wizard
-              </Button>
-            </div>
+          <div className="flex justify-center">
+            {/* Merlin Website Wizard - Featured Card */}
+            <div className="group relative p-8 md:p-10 rounded-3xl bg-gradient-to-br from-violet-950/60 to-slate-900/80 border-2 border-violet-500/50 hover:border-violet-400 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_80px_rgba(139,92,246,0.5)] cursor-pointer overflow-hidden max-w-xl w-full">
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" style={{boxShadow: 'inset 0 0 50px rgba(139,92,246,0.3)'}} />
 
-            {/* Stargate IDE */}
-            <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-950/80 to-slate-900/90 border-2 border-cyan-500/40 hover:border-cyan-400 transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] cursor-pointer">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-medium border border-cyan-500/30">
-                  Admin
-                </span>
-              </div>
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-4 shadow-lg shadow-blue-500/30 group-hover:shadow-cyan-400/50 group-hover:scale-110 transition-all">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="relative text-lg font-bold mb-2 text-white group-hover:text-cyan-100">Stargate IDE</h3>
-              <p className="relative text-white/60 text-sm mb-4 leading-relaxed">
-                Advanced AI Development Platform with full IDE capabilities.
-              </p>
-              <ul className="relative space-y-1.5 mb-4">
-                <li className="flex items-center gap-2 text-xs text-cyan-300/80">
-                  <CheckCircle className="w-3 h-3 text-cyan-400" />
-                  <span>AI code generation</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs text-cyan-300/80">
-                  <CheckCircle className="w-3 h-3 text-cyan-400" />
-                  <span>Full dev environment</span>
-                </li>
-              </ul>
-              <Button
-                variant="outline"
-                className="relative w-full border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400 text-sm py-2"
-              >
-                Access IDE
-              </Button>
-            </div>
+              <div className="relative text-center">
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(139,92,246,0.6)] group-hover:shadow-[0_0_60px_rgba(139,92,246,0.8)] group-hover:scale-110 transition-all">
+                  <Wand2 className="w-10 h-10 text-white" />
+                </div>
 
-            {/* PANDORA */}
-            <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-950/80 to-slate-900/90 border-2 border-blue-500/30 hover:border-cyan-400 transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] cursor-pointer">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs font-medium border border-blue-500/30">
-                  Soon
-                </span>
-              </div>
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center mb-4 shadow-lg shadow-blue-500/30 group-hover:shadow-cyan-400/50 group-hover:scale-110 transition-all opacity-80">
-                <Brain className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="relative text-lg font-bold mb-2 text-white group-hover:text-cyan-100">PANDORA</h3>
-              <p className="relative text-white/60 text-sm mb-4 leading-relaxed">
-                Multi-AI collaboration platform for advanced problem-solving.
-              </p>
-              <ul className="relative space-y-1.5 mb-4">
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>Multi-AI collaboration</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>AI orchestration</span>
-                </li>
-              </ul>
-              <Button
-                variant="outline"
-                className="relative w-full border-blue-500/30 text-blue-400/70 cursor-not-allowed text-sm py-2"
-                disabled
-              >
-                Coming Soon
-              </Button>
-            </div>
+                <h3 className="relative text-3xl font-bold mb-3 text-white group-hover:text-violet-200">Merlin Website Wizard</h3>
+                <p className="relative text-white/60 text-lg mb-6 leading-relaxed max-w-md mx-auto">
+                  Create stunning, professional websites in minutes using AI. No coding required - just describe what you want.
+                </p>
 
-            {/* Quantum Core */}
-            <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-950/80 to-slate-900/90 border-2 border-blue-500/30 hover:border-cyan-400 transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] cursor-pointer">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs font-medium border border-blue-500/30">
-                  Soon
-                </span>
-              </div>
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center mb-4 shadow-lg shadow-teal-500/30 group-hover:shadow-cyan-400/50 group-hover:scale-110 transition-all opacity-80">
-                <Atom className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="relative text-lg font-bold mb-2 text-white group-hover:text-cyan-100">Quantum Core</h3>
-              <p className="relative text-white/60 text-sm mb-4 leading-relaxed">
-                Quantum investigations and intelligent decision-making.
-              </p>
-              <ul className="relative space-y-1.5 mb-4">
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>Quantum investigations</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>Pattern analysis</span>
-                </li>
-              </ul>
-              <Button
-                variant="outline"
-                className="relative w-full border-blue-500/30 text-blue-400/70 cursor-not-allowed text-sm py-2"
-                disabled
-              >
-                Coming Soon
-              </Button>
-            </div>
+                <div className="flex flex-wrap justify-center gap-4 mb-8">
+                  <div className="flex items-center gap-2 text-sm text-violet-300 bg-violet-500/10 px-4 py-2 rounded-full">
+                    <CheckCircle className="w-4 h-4 text-violet-400" />
+                    <span>60-second generation</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-violet-300 bg-violet-500/10 px-4 py-2 rounded-full">
+                    <CheckCircle className="w-4 h-4 text-violet-400" />
+                    <span>7,000+ templates</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-violet-300 bg-violet-500/10 px-4 py-2 rounded-full">
+                    <CheckCircle className="w-4 h-4 text-violet-400" />
+                    <span>AI-powered design</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-violet-300 bg-violet-500/10 px-4 py-2 rounded-full">
+                    <CheckCircle className="w-4 h-4 text-violet-400" />
+                    <span>One-click publish</span>
+                  </div>
+                </div>
 
-            {/* Regis Core */}
-            <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-950/80 to-slate-900/90 border-2 border-blue-500/30 hover:border-cyan-400 transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] cursor-pointer">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs font-medium border border-blue-500/30">
-                  Soon
-                </span>
+                <Button
+                  onClick={handleMerlinWizard}
+                  size="lg"
+                  className="relative bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 text-lg px-10 py-6"
+                >
+                  <Wand2 className="w-5 h-5 mr-2" />
+                  Launch Merlin Wizard
+                </Button>
               </div>
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center mb-4 shadow-lg shadow-sky-500/30 group-hover:shadow-cyan-400/50 group-hover:scale-110 transition-all opacity-80">
-                <Route className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="relative text-lg font-bold mb-2 text-white group-hover:text-cyan-100">Regis Core</h3>
-              <p className="relative text-white/60 text-sm mb-4 leading-relaxed">
-                AI routing and cost optimization for maximum efficiency.
-              </p>
-              <ul className="relative space-y-1.5 mb-4">
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>Intelligent routing</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>Cost optimization</span>
-                </li>
-              </ul>
-              <Button
-                variant="outline"
-                className="relative w-full border-blue-500/30 text-blue-400/70 cursor-not-allowed text-sm py-2"
-                disabled
-              >
-                Coming Soon
-              </Button>
-            </div>
-
-            {/* Nero Core */}
-            <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-950/80 to-slate-900/90 border-2 border-blue-500/30 hover:border-cyan-400 transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] cursor-pointer">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs font-medium border border-blue-500/30">
-                  Soon
-                </span>
-              </div>
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/30 group-hover:shadow-cyan-400/50 group-hover:scale-110 transition-all opacity-80">
-                <Shield className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="relative text-lg font-bold mb-2 text-white group-hover:text-cyan-100">Nero Core</h3>
-              <p className="relative text-white/60 text-sm mb-4 leading-relaxed">
-                AI firewall and security with intelligent threat protection.
-              </p>
-              <ul className="relative space-y-1.5 mb-4">
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>AI-powered firewall</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>Threat protection</span>
-                </li>
-              </ul>
-              <Button
-                variant="outline"
-                className="relative w-full border-blue-500/30 text-blue-400/70 cursor-not-allowed text-sm py-2"
-                disabled
-              >
-                Coming Soon
-              </Button>
-            </div>
-
-            {/* Titan Ticket Master */}
-            <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-950/80 to-slate-900/90 border-2 border-blue-500/30 hover:border-cyan-400 transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] cursor-pointer">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs font-medium border border-blue-500/30">
-                  Soon
-                </span>
-              </div>
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-blue-600 flex items-center justify-center mb-4 shadow-lg shadow-violet-500/30 group-hover:shadow-cyan-400/50 group-hover:scale-110 transition-all opacity-80">
-                <Ticket className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="relative text-lg font-bold mb-2 text-white group-hover:text-cyan-100">Titan Ticket Master</h3>
-              <p className="relative text-white/60 text-sm mb-4 leading-relaxed">
-                Enterprise ticket management with AI automation.
-              </p>
-              <ul className="relative space-y-1.5 mb-4">
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>AI ticket automation</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>Analytics dashboard</span>
-                </li>
-              </ul>
-              <Button
-                variant="outline"
-                className="relative w-full border-blue-500/30 text-blue-400/70 cursor-not-allowed text-sm py-2"
-                disabled
-              >
-                Coming Soon
-              </Button>
-            </div>
-
-            {/* Titan Support Master */}
-            <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-950/80 to-slate-900/90 border-2 border-blue-500/30 hover:border-cyan-400 transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] cursor-pointer">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs font-medium border border-blue-500/30">
-                  Soon
-                </span>
-              </div>
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-4 shadow-lg shadow-cyan-500/30 group-hover:shadow-cyan-400/50 group-hover:scale-110 transition-all opacity-80">
-                <Headphones className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="relative text-lg font-bold mb-2 text-white group-hover:text-cyan-100">Titan Support Master</h3>
-              <p className="relative text-white/60 text-sm mb-4 leading-relaxed">
-                Customer support with multi-channel AI assistance.
-              </p>
-              <ul className="relative space-y-1.5 mb-4">
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>Multi-channel support</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>AI-powered responses</span>
-                </li>
-              </ul>
-              <Button
-                variant="outline"
-                className="relative w-full border-blue-500/30 text-blue-400/70 cursor-not-allowed text-sm py-2"
-                disabled
-              >
-                Coming Soon
-              </Button>
-            </div>
-
-            {/* AI Factory */}
-            <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-blue-950/80 to-slate-900/90 border-2 border-blue-500/30 hover:border-cyan-400 transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] cursor-pointer">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs font-medium border border-blue-500/30">
-                  Soon
-                </span>
-              </div>
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center mb-4 shadow-lg shadow-blue-500/30 group-hover:shadow-cyan-400/50 group-hover:scale-110 transition-all opacity-80">
-                <Store className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="relative text-lg font-bold mb-2 text-white group-hover:text-cyan-100">AI Factory</h3>
-              <p className="relative text-white/60 text-sm mb-4 leading-relaxed">
-                Global marketplace for developers to sell apps worldwide.
-              </p>
-              <ul className="relative space-y-1.5 mb-4">
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>Global app marketplace</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs text-blue-300/70">
-                  <Star className="w-3 h-3 text-blue-400" />
-                  <span>Developer monetization</span>
-                </li>
-              </ul>
-              <Button
-                variant="outline"
-                className="relative w-full border-blue-500/30 text-blue-400/70 cursor-not-allowed text-sm py-2"
-                disabled
-              >
-                Coming Soon
-              </Button>
             </div>
           </div>
         </div>
@@ -809,91 +605,481 @@ export function MarketingLandingPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-16 px-6 relative">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="text-sm text-emerald-400 font-medium tracking-wider uppercase mb-4 block">
-              Simple Pricing
-            </span>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Start free, scale as you{' '}
-              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                grow
+      {/* Pricing Section - Leonardo.ai Style */}
+      <section id="pricing" className="py-20 px-6 relative bg-slate-950">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Unlock the power of{' '}
+              <span className="bg-gradient-to-r from-fuchsia-400 to-violet-400 bg-clip-text text-transparent">
+                Merlin.Ai
               </span>
             </h2>
+            <p className="text-white/60 text-lg">
+              One subscription, all platforms
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Free Plan */}
-            <div className="relative p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-white/20 transition-all">
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-2">Starter</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">Free</span>
-                  <span className="text-white/50">forever</span>
+          {/* Billing Toggle */}
+          <div className="flex justify-center mb-12">
+            <div className="inline-flex items-center bg-slate-800/50 rounded-full p-1 border border-white/10">
+              <button className="px-6 py-2.5 rounded-full bg-gradient-to-r from-fuchsia-500 to-violet-500 text-white text-sm font-medium flex items-center gap-2">
+                Pay Yearly
+                <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs">Up to 20% off</span>
+              </button>
+              <button className="px-6 py-2.5 rounded-full text-white/60 text-sm font-medium hover:text-white transition-colors">
+                Pay Monthly
+              </button>
+            </div>
+          </div>
+
+          {/* Pricing Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 mb-16">
+            {/* Free Tier */}
+            <div className="relative p-6 rounded-2xl bg-slate-900/80 border border-white/10 hover:border-white/20 transition-all">
+              <h3 className="text-xl font-bold mb-4 text-white">Free</h3>
+              <div className="mb-2">
+                <span className="text-4xl font-bold text-white">$0</span>
+                <span className="text-white/50 text-sm">/month</span>
+              </div>
+              <p className="text-white/50 text-sm mb-6">Forever</p>
+
+              <div className="text-fuchsia-400 text-sm font-medium mb-3">Perfect for</div>
+              <p className="text-white/60 text-sm mb-6">Casual creators who want to explore AI websites</p>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">1 Website generation daily</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">All websites are public</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">Basic templates only</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">Community AI models</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">1 active project</span>
                 </div>
               </div>
-              <ul className="space-y-4 mb-8">
-                {['3 AI-generated websites', 'Basic templates', 'Community support', 'Stargate subdomain'].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-white/70">
-                    <CheckCircle className="w-5 h-5 text-emerald-400" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Button variant="outline" className="w-full py-6 rounded-xl border-white/20 hover:bg-white/5">
-                Get Started Free
+
+              <Button variant="outline" className="w-full rounded-lg border-white/20 hover:bg-white/5 text-white" onClick={handleGetStarted}>
+                Subscribe
               </Button>
             </div>
 
-            {/* Pro Plan */}
-            <div className="relative p-8 rounded-3xl bg-gradient-to-b from-violet-500/20 to-purple-500/10 border border-violet-500/30 scale-105 shadow-2xl shadow-violet-500/10">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 text-sm font-medium">
-                  Most Popular
+            {/* Starter Tier */}
+            <div className="relative p-6 rounded-2xl bg-slate-900/80 border border-white/10 hover:border-white/20 transition-all">
+              <h3 className="text-xl font-bold mb-4 text-fuchsia-400">Starter</h3>
+              <div className="mb-2">
+                <span className="text-white/40 line-through text-lg mr-2">$15</span>
+                <span className="text-4xl font-bold text-white">$12</span>
+                <span className="text-white/50 text-sm">/month</span>
+              </div>
+              <p className="text-white/50 text-sm mb-6">ex. tax</p>
+
+              <div className="text-fuchsia-400 text-sm font-medium mb-3">Perfect for</div>
+              <p className="text-white/60 text-sm mb-6">Hobbyists and enthusiasts who create regularly</p>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">10 Website generations monthly</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">Private websites - only you see</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">500+ premium templates</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">Custom domain connection</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">5 active projects</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">Email support</span>
+                </div>
+              </div>
+
+              <Button variant="outline" className="w-full rounded-lg border-white/20 hover:bg-white/5 text-white" onClick={handleGetStarted}>
+                Subscribe
+              </Button>
+            </div>
+
+            {/* Creator Tier - Best Offer */}
+            <div className="relative p-6 rounded-2xl bg-gradient-to-b from-fuchsia-950/50 to-slate-900/80 border-2 border-fuchsia-500/50 shadow-xl shadow-fuchsia-500/10">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <span className="px-4 py-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-violet-500 text-xs font-bold text-white">
+                  Best offer
                 </span>
               </div>
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-2">Pro</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">$29</span>
-                  <span className="text-white/50">/month</span>
+              <h3 className="text-xl font-bold mb-4 text-fuchsia-400">Creator</h3>
+              <div className="mb-2">
+                <span className="text-white/40 line-through text-lg mr-2">$35</span>
+                <span className="text-4xl font-bold text-white">$28</span>
+                <span className="text-white/50 text-sm">/month</span>
+              </div>
+              <p className="text-white/50 text-sm mb-6">ex. tax</p>
+
+              <div className="text-fuchsia-400 text-sm font-medium mb-3">Perfect for</div>
+              <p className="text-white/60 text-sm mb-6">Professional creators, small businesses, and content producers</p>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">50 Website generations monthly</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">Unlimited revisions & edits</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">All 7,000+ templates</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">Premium AI models</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">25 active projects</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">SEO optimization tools</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">Priority support</span>
                 </div>
               </div>
-              <ul className="space-y-4 mb-8">
-                {['Unlimited websites', 'Premium templates', 'Priority support', 'Custom domains', 'Analytics dashboard', 'Remove branding'].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-white/70">
-                    <CheckCircle className="w-5 h-5 text-violet-400" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Button className="w-full py-6 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500">
-                Start Pro Trial
+
+              <Button className="w-full rounded-lg bg-gradient-to-r from-fuchsia-600 to-violet-600 hover:from-fuchsia-500 hover:to-violet-500 text-white" onClick={handleGetStarted}>
+                Subscribe
               </Button>
             </div>
 
-            {/* Enterprise Plan */}
-            <div className="relative p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-white/20 transition-all">
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-2">Enterprise</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">Custom</span>
+            {/* Professional Tier */}
+            <div className="relative p-6 rounded-2xl bg-slate-900/80 border border-white/10 hover:border-white/20 transition-all">
+              <h3 className="text-xl font-bold mb-4 text-fuchsia-400">Professional</h3>
+              <div className="mb-2">
+                <span className="text-white/40 line-through text-lg mr-2">$70</span>
+                <span className="text-4xl font-bold text-white">$56</span>
+                <span className="text-white/50 text-sm">/month</span>
+              </div>
+              <p className="text-white/50 text-sm mb-6">ex. tax</p>
+
+              <div className="text-fuchsia-400 text-sm font-medium mb-3">Perfect for</div>
+              <p className="text-white/60 text-sm mb-6">Professional creators, agencies, and businesses</p>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">150 Website generations monthly</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">Unlimited AI-powered edits</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">White-label exports</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">All AI models + priority queue</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">100 active projects</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">Advanced analytics</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span className="text-white/70">API access</span>
                 </div>
               </div>
-              <ul className="space-y-4 mb-8">
-                {['Everything in Pro', 'Dedicated support', 'Custom integrations', 'SLA guarantee', 'On-premise option'].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-white/70">
-                    <CheckCircle className="w-5 h-5 text-cyan-400" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Button variant="outline" className="w-full py-6 rounded-xl border-white/20 hover:bg-white/5">
-                Contact Sales
+
+              <Button variant="outline" className="w-full rounded-lg border-white/20 hover:bg-white/5 text-white" onClick={handleGetStarted}>
+                Subscribe
               </Button>
             </div>
+
+            {/* Teams Tier */}
+            <div className="relative p-6 rounded-2xl bg-slate-900/80 border border-white/10 hover:border-white/20 transition-all">
+              <h3 className="text-xl font-bold mb-4 text-fuchsia-400">Merlin for Teams</h3>
+              <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <svg viewBox="0 0 24 24" className="w-12 h-12 text-white/60" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+
+              <div className="text-fuchsia-400 text-sm font-medium mb-3">Perfect for</div>
+              <p className="text-white/60 text-sm mb-6">Design teams, studios, agencies, and businesses</p>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">Shared generation pool</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">Unlimited for all members</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">Shared project library</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">Priority customer support</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">Enterprise security & SSO</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">Team collections & workspaces</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="w-4 h-4 text-fuchsia-400 flex-shrink-0" />
+                  <span className="text-white/70">Centralized billing</span>
+                </div>
+              </div>
+
+              <Button variant="outline" className="w-full rounded-lg border-white/20 hover:bg-white/5 text-white" onClick={handleGetStarted}>
+                Get Started Now
+              </Button>
+            </div>
+          </div>
+
+          {/* Compare All Benefits Table */}
+          <div className="bg-slate-900/50 border border-white/10 rounded-2xl overflow-hidden">
+            <div className="p-6 border-b border-white/10">
+              <h3 className="text-2xl font-bold text-white">Compare all benefits</h3>
+            </div>
+
+            {/* Table Header */}
+            <div className="grid grid-cols-6 gap-4 p-4 bg-slate-800/50 border-b border-white/10">
+              <div className="col-span-1"></div>
+              <div className="text-center">
+                <div className="font-semibold text-white/80">Free</div>
+                <Button variant="outline" size="sm" className="mt-2 text-xs border-white/20 hover:bg-white/5" onClick={handleGetStarted}>Subscribe</Button>
+              </div>
+              <div className="text-center">
+                <div className="font-semibold text-fuchsia-400">Starter</div>
+                <Button variant="outline" size="sm" className="mt-2 text-xs border-white/20 hover:bg-white/5" onClick={handleGetStarted}>Subscribe</Button>
+              </div>
+              <div className="text-center relative">
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2">
+                  <span className="px-2 py-0.5 rounded-full bg-fuchsia-500 text-[10px] font-bold text-white">Best offer</span>
+                </div>
+                <div className="font-semibold text-fuchsia-400">Creator</div>
+                <Button size="sm" className="mt-2 text-xs bg-fuchsia-600 hover:bg-fuchsia-500" onClick={handleGetStarted}>Subscribe</Button>
+              </div>
+              <div className="text-center">
+                <div className="font-semibold text-fuchsia-400">Professional</div>
+                <Button variant="outline" size="sm" className="mt-2 text-xs border-white/20 hover:bg-white/5" onClick={handleGetStarted}>Subscribe</Button>
+              </div>
+              <div className="text-center">
+                <div className="font-semibold text-fuchsia-400">Teams Plan</div>
+                <Button variant="outline" size="sm" className="mt-2 text-xs border-white/20 hover:bg-white/5" onClick={handleGetStarted}>Get started</Button>
+              </div>
+            </div>
+
+            {/* Generation Power Section */}
+            <div className="border-b border-white/10">
+              <div className="flex items-center gap-2 p-4 bg-slate-800/30">
+                <Sparkles className="w-5 h-5 text-fuchsia-400" />
+                <span className="font-semibold text-white">Generation Power</span>
+              </div>
+
+              {/* Website Generations */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">Website Generations</div>
+                <div className="text-center text-white/70 text-sm">1 Daily</div>
+                <div className="text-center text-white/70 text-sm">10 Monthly</div>
+                <div className="text-center text-white/70 text-sm">50 Monthly</div>
+                <div className="text-center text-white/70 text-sm">150 Monthly</div>
+                <div className="text-center text-white/70 text-sm">Shared Pool</div>
+              </div>
+
+              {/* Generation Rollover */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">Unused Rollover</div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center text-white/70 text-sm">Up to 20</div>
+                <div className="text-center text-white/70 text-sm">Up to 100</div>
+                <div className="text-center text-white/70 text-sm">Up to 300</div>
+                <div className="text-center text-white/70 text-sm">Shared Bank</div>
+              </div>
+
+              {/* Concurrent Generations */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">Concurrent Generations</div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center text-white/70 text-sm">2 at once</div>
+                <div className="text-center text-white/70 text-sm">3 at once</div>
+                <div className="text-center text-white/70 text-sm">6 at once</div>
+                <div className="text-center text-white/70 text-sm">6 at once</div>
+              </div>
+
+              {/* Priority Queue */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">Priority Queue</div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-fuchsia-400 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-fuchsia-400 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-fuchsia-400 mx-auto" /></div>
+              </div>
+            </div>
+
+            {/* Creative Features Section */}
+            <div className="border-b border-white/10">
+              <div className="flex items-center gap-2 p-4 bg-slate-800/30">
+                <Wand2 className="w-5 h-5 text-fuchsia-400" />
+                <span className="font-semibold text-white">Creative Features</span>
+              </div>
+
+              {/* Templates Access */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">Template Library</div>
+                <div className="text-center text-white/70 text-sm">Basic Only</div>
+                <div className="text-center text-white/70 text-sm">500+</div>
+                <div className="text-center text-white/70 text-sm">7,000+</div>
+                <div className="text-center text-white/70 text-sm">7,000+</div>
+                <div className="text-center text-white/70 text-sm">7,000+</div>
+              </div>
+
+              {/* AI Models */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">AI Models</div>
+                <div className="text-center text-white/70 text-sm">Community</div>
+                <div className="text-center text-white/70 text-sm">Standard</div>
+                <div className="text-center text-white/70 text-sm">Premium</div>
+                <div className="text-center text-white/70 text-sm">All + Priority</div>
+                <div className="text-center text-white/70 text-sm">All + Priority</div>
+              </div>
+
+              {/* Custom Domains */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">Custom Domains</div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+              </div>
+
+              {/* White Label */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">White-label Export</div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+              </div>
+
+              {/* SEO Tools */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">SEO Optimization</div>
+                <div className="text-center text-white/70 text-sm">Basic</div>
+                <div className="text-center text-white/70 text-sm">Standard</div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+              </div>
+            </div>
+
+            {/* Workflow & Management Section */}
+            <div>
+              <div className="flex items-center gap-2 p-4 bg-slate-800/30">
+                <Globe className="w-5 h-5 text-fuchsia-400" />
+                <span className="font-semibold text-white">Workflow & Management</span>
+              </div>
+
+              {/* Active Projects */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">Active Projects</div>
+                <div className="text-center text-white/70 text-sm">1</div>
+                <div className="text-center text-white/70 text-sm">5</div>
+                <div className="text-center text-white/70 text-sm">25</div>
+                <div className="text-center text-white/70 text-sm">100</div>
+                <div className="text-center text-white/70 text-sm">Unlimited</div>
+              </div>
+
+              {/* Team Members */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">Team Members</div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center text-white/70 text-sm">Unlimited</div>
+              </div>
+
+              {/* API Access */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">API Access</div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+              </div>
+
+              {/* Support */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">Support Level</div>
+                <div className="text-center text-white/70 text-sm">Community</div>
+                <div className="text-center text-white/70 text-sm">Email</div>
+                <div className="text-center text-white/70 text-sm">Priority</div>
+                <div className="text-center text-white/70 text-sm">Priority</div>
+                <div className="text-center text-white/70 text-sm">Dedicated</div>
+              </div>
+
+              {/* SSO */}
+              <div className="grid grid-cols-6 gap-4 p-4 border-t border-white/5 hover:bg-white/[0.02]">
+                <div className="text-white/60 text-sm">Enterprise SSO</div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><X className="w-4 h-4 text-white/20 mx-auto" /></div>
+                <div className="text-center"><CheckCircle className="w-4 h-4 text-emerald-400 mx-auto" /></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Disclaimer */}
+          <div className="mt-8 p-6 bg-slate-900/50 border border-white/10 rounded-xl">
+            <p className="text-white/40 text-sm">
+              * Unused generations from monthly allocation may roll over based on plan limits. Generation concurrency and queuing may be adjusted based on demand to ensure fair access for all users. All plans include SSL certificates, CDN delivery, and 99.9% uptime guarantee.
+            </p>
           </div>
         </div>
       </section>
@@ -933,8 +1119,8 @@ export function MarketingLandingPage() {
                 role: "Agency Owner",
                 avatar: "AR",
               },
-            ].map((testimonial, index) => (
-              <div key={index} className="p-6 rounded-2xl bg-white/[0.03] border border-white/10">
+            ].map((testimonial, _index) => (
+              <div key={_index} className="p-6 rounded-2xl bg-white/[0.03] border border-white/10">
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />

@@ -3,7 +3,7 @@
  * Protected routes for administrator functions
  */
 
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { db } from "../db";
 import { users, invoices, usageTracking } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
@@ -12,10 +12,11 @@ import { getErrorMessage, logError } from '../utils/errorHandler';
 
 export function registerAdminRoutes(app: Express) {
   // Get all users (admin only)
-  app.get("/api/admin/users", requireAdmin, async (req, res) => {
+  app.get("/api/admin/users", requireAdmin, async (_req: Request, res: Response): Promise<void> => {
     try {
       if (!db) {
-        return res.status(500).json({ error: "Database not available" });
+        res.status(500).json({ error: "Database not available" });
+        return;
       }
 
       const allUsers = await db
@@ -30,36 +31,39 @@ export function registerAdminRoutes(app: Express) {
         .orderBy(desc(users.createdAt));
 
       res.json(allUsers);
-    } catch (error: unknown) {
-      logError(error, 'Admin - Get users');
-      const errorMessage = getErrorMessage(error);
+    } catch (_error: unknown) {
+      logError(_error, 'Admin - Get users');
+      const errorMessage = getErrorMessage(_error);
       res.status(500).json({ error: errorMessage || "Failed to get users" });
     }
   });
 
   // Update user role (admin only)
-  app.patch("/api/admin/users/:id/role", requireAdmin, async (req, res) => {
+  app.patch("/api/admin/users/:id/role", requireAdmin, async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
-      const { role } = req.body;
+      const { role } = req.body as Record<string, unknown>;
 
       if (!db) {
-        return res.status(500).json({ error: "Database not available" });
+        res.status(500).json({ error: "Database not available" });
+        return;
       }
 
       const validRoles = ['administrator', 'user', 'technical', 'designer'];
-      if (!validRoles.includes(role)) {
-        return res.status(400).json({ error: "Invalid role" });
+      if (!validRoles.includes(role as string)) {
+        res.status(400).json({ error: "Invalid role" });
+        return;
       }
 
       const updatedUser = await db
         .update(users)
-        .set({ role })
+        .set({ role: role as string })
         .where(eq(users.id, id))
         .returning();
 
       if (updatedUser.length === 0) {
-        return res.status(404).json({ error: "User not found" });
+        res.status(404).json({ error: "User not found" });
+        return;
       }
 
       res.json({
@@ -68,18 +72,19 @@ export function registerAdminRoutes(app: Express) {
         email: updatedUser[0].email,
         role: updatedUser[0].role,
       });
-    } catch (error: unknown) {
-      logError(error, 'Admin - Update user role');
-      const errorMessage = getErrorMessage(error);
+    } catch (_error: unknown) {
+      logError(_error, 'Admin - Update user role');
+      const errorMessage = getErrorMessage(_error);
       res.status(500).json({ error: errorMessage || "Failed to update user role" });
     }
   });
 
   // Get all invoices (admin sees all, users see only their own)
-  app.get("/api/admin/invoices", requirePermission('view_all_billing'), async (req, res) => {
+  app.get("/api/admin/invoices", requirePermission('view_all_billing'), async (req: Request, res: Response): Promise<void> => {
     try {
       if (!db) {
-        return res.status(500).json({ error: "Database not available" });
+        res.status(500).json({ error: "Database not available" });
+        return;
       }
 
       const userId = getUserId(req);
@@ -102,18 +107,19 @@ export function registerAdminRoutes(app: Express) {
       }
 
       res.json(allInvoices);
-    } catch (error: unknown) {
-      logError(error, 'Admin - Get invoices');
-      const errorMessage = getErrorMessage(error);
+    } catch (_error: unknown) {
+      logError(_error, 'Admin - Get invoices');
+      const errorMessage = getErrorMessage(_error);
       res.status(500).json({ error: errorMessage || "Failed to get invoices" });
     }
   });
 
   // Get usage statistics (admin sees all, users see only their own)
-  app.get("/api/admin/usage", requirePermission('view_all_usage'), async (req, res) => {
+  app.get("/api/admin/usage", requirePermission('view_all_usage'), async (req: Request, res: Response): Promise<void> => {
     try {
       if (!db) {
-        return res.status(500).json({ error: "Database not available" });
+        res.status(500).json({ error: "Database not available" });
+        return;
       }
 
       const userId = getUserId(req);
@@ -136,9 +142,9 @@ export function registerAdminRoutes(app: Express) {
       }
 
       res.json(usage);
-    } catch (error: unknown) {
-      logError(error, 'Admin - Get usage');
-      const errorMessage = getErrorMessage(error);
+    } catch (_error: unknown) {
+      logError(_error, 'Admin - Get usage');
+      const errorMessage = getErrorMessage(_error);
       res.status(500).json({ error: errorMessage || "Failed to get usage" });
     }
   });

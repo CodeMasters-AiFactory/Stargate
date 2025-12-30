@@ -23,6 +23,9 @@ async function runMigrations(poolInstance: any) {
       `ALTER TABLE projects ADD COLUMN IF NOT EXISTS business_info JSONB DEFAULT '{}'`,
       `ALTER TABLE projects ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()`,
       `ALTER TABLE projects ADD COLUMN IF NOT EXISTS last_edited_at TIMESTAMP`,
+      // Soft delete support
+      `ALTER TABLE projects ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT false`,
+      `ALTER TABLE projects ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP`,
     ];
 
     for (const sql of migrations) {

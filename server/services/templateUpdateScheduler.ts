@@ -7,7 +7,8 @@
 
 import { db } from '../db';
 import { brandTemplates } from '@shared/schema';
-import { processNewTemplate, checkTemplateForChanges, updateTemplate } from './templateManager';
+import { eq } from 'drizzle-orm';
+import { checkTemplateForChanges, updateTemplate } from './templateManager';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 
 export interface SchedulerStatus {
@@ -69,8 +70,8 @@ export async function checkAllTemplates(): Promise<{
 
     for (const template of allTemplates) {
       try {
-        const contentData = (template.contentData as any) || {};
-        const sourceUrl = contentData.metadata?.sourceUrl || contentData.metadata?.url;
+        const contentData = (template.contentData as Record<string, unknown>) || {};
+        const sourceUrl = (contentData.metadata as Record<string, unknown>)?.sourceUrl || (contentData.metadata as Record<string, unknown>)?.url;
 
         if (!sourceUrl) {
           console.log(`[TemplateUpdateScheduler] ⚠️ Template ${template.id} has no source URL, skipping`);
@@ -100,10 +101,10 @@ export async function checkAllTemplates(): Promise<{
             .set({ lastChecked: new Date() })
             .where(eq(brandTemplates.id, template.id));
         }
-      } catch (error) {
-        const errorMsg = `Error checking template ${template.id}: ${getErrorMessage(error)}`;
+      } catch (_error: unknown) {
+        const errorMsg = `Error checking template ${template.id}: ${getErrorMessage(_error)}`;
         errors.push(errorMsg);
-        logError(error, `TemplateUpdateScheduler - Check Template ${template.id}`);
+        logError(_error, `TemplateUpdateScheduler - Check Template ${template.id}`);
       }
     }
 
@@ -111,9 +112,9 @@ export async function checkAllTemplates(): Promise<{
     console.log(`[TemplateUpdateScheduler] ✅ Check complete: ${checked} checked, ${updated} updated`);
 
     return { total, checked, updated, errors };
-  } catch (error) {
-    logError(error, 'TemplateUpdateScheduler - Check All Templates');
-    errors.push(getErrorMessage(error));
+  } catch (_error: unknown) {
+    logError(_error, 'TemplateUpdateScheduler - Check All Templates');
+    errors.push(getErrorMessage(_error));
     return { total: 0, checked, updated, errors };
   } finally {
     isRunning = false;
@@ -141,8 +142,8 @@ export function startScheduler(): void {
   // Run immediately if it's past the scheduled time
   if (msUntilNextRun <= 0) {
     console.log('[TemplateUpdateScheduler] Running check immediately (scheduled time has passed)');
-    checkAllTemplates().catch(error => {
-      logError(error, 'TemplateUpdateScheduler - Initial Run');
+    checkAllTemplates().catch((_error: unknown) => {
+      logError(_error, 'TemplateUpdateScheduler - Initial Run');
     });
   }
 
@@ -155,8 +156,8 @@ export function startScheduler(): void {
     // If we're past the scheduled time and haven't run yet this month
     if (now >= nextRun && (!lastRun || lastRun < new Date(now.getFullYear(), now.getMonth(), 1))) {
       console.log('[TemplateUpdateScheduler] ⏰ Scheduled check time reached, running...');
-      checkAllTemplates().catch(error => {
-        logError(error, 'TemplateUpdateScheduler - Scheduled Run');
+      checkAllTemplates().catch((_error: unknown) => {
+        logError(_error, 'TemplateUpdateScheduler - Scheduled Run');
       });
     }
   }, 60 * 60 * 1000); // Check every hour
@@ -193,8 +194,8 @@ export async function getSchedulerStatus(): Promise<SchedulerStatus> {
       totalTemplates = templates.length;
       checkedTemplates = templates.filter(t => t.lastChecked).length;
     }
-  } catch (error) {
-    console.error('[TemplateUpdateScheduler] Error getting status:', error);
+  } catch (_error: unknown) {
+    console.error('[TemplateUpdateScheduler] Error getting status:', _error);
   }
 
   return {

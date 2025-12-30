@@ -8,7 +8,7 @@
  * - Export evolution report
  */
 
-import { checkWaybackMachineAvailability, scrapeHistoricalPage } from './timeMachineScraper';
+import { scrapeHistoricalPage } from './timeMachineScraper';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 import fetch from 'node-fetch';
 
@@ -54,9 +54,9 @@ export async function getTimeMachineView(url: string, limit: number = 100): Prom
       throw new Error(`Failed to fetch snapshots: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    const data = await response.json() as unknown;
 
-    if (data.length < 2) {
+    if (!Array.isArray(data) || data.length < 2) {
       return {
         url,
         snapshots: [],
@@ -68,12 +68,12 @@ export async function getTimeMachineView(url: string, limit: number = 100): Prom
       };
     }
 
-    const header = data[0];
+    const header = data[0] as string[];
     const timestampIndex = header.indexOf('timestamp');
     const statusCodeIndex = header.indexOf('statuscode');
     const originalIndex = header.indexOf('original');
 
-    const snapshots: Snapshot[] = data.slice(1).map((row: string[]) => ({
+    const snapshots: Snapshot[] = (data.slice(1) as string[][]).map((row: string[]) => ({
       timestamp: row[timestampIndex],
       url: row[originalIndex],
       statusCode: row[statusCodeIndex],
@@ -125,17 +125,21 @@ export async function compareSnapshots(
       scrapeHistoricalPage(url, timestamp2),
     ]);
 
+    if (!snapshot1 || !snapshot2) {
+      throw new Error('Failed to fetch one or both snapshots');
+    }
+
     // Simple diff (would need proper diff library for better results)
-    const diff = calculateSimpleDiff(snapshot1.htmlContent, snapshot2.htmlContent);
+    const diff = calculateSimpleDiff(snapshot1.scrapedData.htmlContent, snapshot2.scrapedData.htmlContent);
 
     return {
       snapshot1: {
         timestamp: timestamp1,
-        html: snapshot1.htmlContent,
+        html: snapshot1.scrapedData.htmlContent,
       },
       snapshot2: {
         timestamp: timestamp2,
-        html: snapshot2.htmlContent,
+        html: snapshot2.scrapedData.htmlContent,
       },
       differences: diff,
     };

@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Save, Eye, Calendar, Tag, FolderOpen, Image as ImageIcon, X } from 'lucide-react';
+import { Save, Image as ImageIcon, X } from 'lucide-react';
 import type { BlogPost } from '@shared/schema';
 
 export interface BlogEditorProps {
@@ -42,15 +42,7 @@ export function BlogEditor({ websiteId, postId, onSave, onCancel }: BlogEditorPr
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Load post data if editing
-  useEffect(() => {
-    if (postId) {
-      loadPost();
-    }
-    loadMetadata();
-  }, [postId, websiteId]);
-
-  const loadPost = async () => {
+  const loadPost = useCallback(async (): Promise<void> => {
     if (!postId) return;
     
     setIsLoading(true);
@@ -74,14 +66,14 @@ export function BlogEditor({ websiteId, postId, onSave, onCancel }: BlogEditorPr
         setSeoDescription(post.seoMetadata?.description || '');
         setSeoKeywords(post.seoMetadata?.keywords || []);
       }
-    } catch (error) {
-      console.error('Failed to load post:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to load post:', _error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [postId]);
 
-  const loadMetadata = async () => {
+  const loadMetadata = useCallback(async (): Promise<void> => {
     try {
       // Load tags
       const tagsResponse = await fetch(`/api/blog/tags/${websiteId}`);
@@ -103,10 +95,18 @@ export function BlogEditor({ websiteId, postId, onSave, onCancel }: BlogEditorPr
       if (authorsData.success) {
         setAvailableAuthors(authorsData.authors);
       }
-    } catch (error) {
-      console.error('Failed to load metadata:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to load metadata:', _error);
     }
-  };
+  }, [websiteId]);
+
+  // Load post data if editing
+  useEffect(() => {
+    if (postId) {
+      loadPost();
+    }
+    loadMetadata();
+  }, [postId, websiteId, loadPost, loadMetadata]);
 
   // Auto-generate slug from title
   useEffect(() => {
@@ -164,8 +164,8 @@ export function BlogEditor({ websiteId, postId, onSave, onCancel }: BlogEditorPr
       } else {
         throw new Error(data.error || 'Failed to save post');
       }
-    } catch (error) {
-      console.error('Failed to save post:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to save post:', _error);
       alert('Failed to save post. Please try again.');
     } finally {
       setIsSaving(false);
@@ -335,7 +335,7 @@ export function BlogEditor({ websiteId, postId, onSave, onCancel }: BlogEditorPr
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="status">Status</Label>
-                  <Select value={status} onValueChange={(v: any) => setStatus(v)}>
+                  <Select value={status} onValueChange={(v: 'draft' | 'published' | 'scheduled' | 'archived') => setStatus(v)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>

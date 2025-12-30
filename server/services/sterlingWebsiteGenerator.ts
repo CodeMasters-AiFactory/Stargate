@@ -444,7 +444,7 @@ export async function generateSterlingWebsite(
     message: 'Creating professional CSS and JavaScript...'
   }, onProgress);
 
-  const css = generateDesignSystemCSS(designTokens, manifest);
+  const css = generateDesignSystemCSS(designTokens);
   const minifiedCSS = minifyCSS(css);
   
   // Generate JavaScript
@@ -509,30 +509,29 @@ console.log('Sterling Legal Partners website loaded');
     }
     
     // Optimize HTML
-    html = optimizeHTML(html);
+    const optimizedHTML = optimizeHTML(html);
+    html = typeof optimizedHTML === 'string' ? optimizedHTML : optimizedHTML.html;
     html = optimizeImagesInHTML(html, { addLazyLoading: true, addDimensions: true });
-    
+
     // Add critical CSS
-    const criticalCSS = extractCriticalCSS(minifiedCSS);
-    if (criticalCSS) {
-      html = inlineCriticalCSS(html, criticalCSS);
+    const criticalResult = extractCriticalCSS(html, minifiedCSS);
+    if (criticalResult && criticalResult.css) {
+      html = inlineCriticalCSS(criticalResult.html || html, criticalResult.css);
     }
 
     // Add schema markup
-    const schema = generateSchemaMarkup({
-      type: 'LegalService',
+    const schema = generateSchemaMarkup('LocalBusiness', {
       name: 'Sterling Legal Partners',
       description: manifest.description,
       url: `https://sterlinglegalpartners.co.za/${pageSpec.slug === 'index' ? '' : pageSpec.slug}.html`,
       address: {
-        streetAddress: '[STREET ADDRESS]',
-        addressLocality: city,
-        addressRegion: region,
-        postalCode: '[POSTAL CODE]',
-        addressCountry: 'ZA'
+        street: '[STREET ADDRESS]',
+        city: city,
+        state: region,
+        zip: '[POSTAL CODE]',
+        country: 'ZA'
       },
-      telephone: phone,
-      priceRange: '$$'
+      phone: phone,
     });
     html = html.replace('</head>', `${schema}\n</head>`);
 

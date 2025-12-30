@@ -3,7 +3,7 @@
  * New endpoint for "The Replit Destroyer" system
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import { generateMerlin7Website } from '../engines/merlin7Orchestrator';
 import { generateWebsiteHTML, saveGeneratedWebsite } from '../engines/htmlGenerator';
 import type { IntakeFormData } from '../engines/intakeEngine';
@@ -15,15 +15,16 @@ export function registerMerlin7Routes(app: Express): void {
    * Merlin 7.0 Website Generation Endpoint
    * POST /api/merlin7/generate
    */
-  app.post('/api/merlin7/generate', async (req, res) => {
+  app.post('/api/merlin7/generate', async (req: Request, res: Response): Promise<void> => {
     const startTime = Date.now();
     console.log('[Merlin 7.0] Generation request received');
-    
+
     try {
-      const { intakeData, deploymentConfig, enableLivePreview } = req.body;
-      
+      const { intakeData, deploymentConfig, enableLivePreview } = req.body as Record<string, unknown>;
+
       if (!intakeData) {
-        return res.status(400).json({ error: 'Missing intakeData in request body' });
+        res.status(400).json({ error: 'Missing intakeData in request body' });
+        return;
       }
       
       // Set up SSE for progress updates
@@ -92,11 +93,11 @@ export function registerMerlin7Routes(app: Express): void {
       })}\n\n`);
       
       res.end();
-    } catch (error: unknown) {
-      logError(error, 'Merlin 7.0 - Generation');
+    } catch (_error: unknown) {
+      logError(_error, 'Merlin 7.0 - Generation');
       res.write(`data: ${JSON.stringify({
         type: 'error',
-        error: error.message || 'Unknown error',
+        error: getErrorMessage(_error),
       })}\n\n`);
       res.end();
     }
@@ -106,7 +107,7 @@ export function registerMerlin7Routes(app: Express): void {
    * Get Merlin 7.0 status
    * GET /api/merlin7/status
    */
-  app.get('/api/merlin7/status', (req, res) => {
+  app.get('/api/merlin7/status', (_req: Request, res: Response): void => {
     res.json({
       version: '7.0',
       name: 'Merlin 7.0 - The Replit Destroyer',

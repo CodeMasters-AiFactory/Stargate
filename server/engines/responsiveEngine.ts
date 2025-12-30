@@ -4,7 +4,7 @@
  * Generates mobile, tablet, and desktop layouts with readability checks
  */
 
-import type { GeneratedLayout, ResponsiveLayout, SectionResponsiveRules } from './layoutEngine';
+import type { GeneratedLayout } from './layoutEngine';
 import type { DesignTokens } from '../types/designTokens';
 
 export interface ResponsiveRules {
@@ -48,7 +48,7 @@ export function generateResponsiveRules(
  */
 function generateMobileBreakpoint(
   layout: GeneratedLayout,
-  designTokens: DesignTokens
+  _designTokens: DesignTokens
 ): ResponsiveBreakpoint {
   return {
     breakpoint: '768px',
@@ -70,7 +70,7 @@ function generateMobileBreakpoint(
  */
 function generateTabletBreakpoint(
   layout: GeneratedLayout,
-  designTokens: DesignTokens
+  _designTokens: DesignTokens
 ): ResponsiveBreakpoint {
   return {
     breakpoint: '1024px',
@@ -92,18 +92,18 @@ function generateTabletBreakpoint(
  */
 function generateDesktopBreakpoint(
   layout: GeneratedLayout,
-  designTokens: DesignTokens
+  _designTokens: DesignTokens
 ): ResponsiveBreakpoint {
   return {
     breakpoint: '1280px',
     layout: 'full',
     typography: 'enhanced',
     spacing: 'comfortable',
-    sections: layout.sections.map(section => ({
+    sections: layout.sections.map((section): SectionBreakpointRules => ({
       sectionId: section.id,
       visible: section.responsive.desktop.visible,
       order: section.responsive.desktop.order,
-      layout: section.responsive.desktop.layout === 'full' ? 'full' : section.responsive.desktop.layout,
+      layout: section.responsive.desktop.layout === 'full' ? 'full' : (section.responsive.desktop.layout as SectionBreakpointRules['layout']),
       columns: section.variant.columns,
     })),
   };

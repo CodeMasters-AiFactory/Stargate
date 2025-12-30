@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Velocity Auto Racing | DOMINATE THE TRACK</title>
+  <meta name="description" content="Velocity Auto Racing - South Africa's premier motorsport team offering professional racing, elite driver training, and track day experiences.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Velocity Auto Racing">
+  <meta property="og:description" content="Velocity Auto Racing - South Africa's premier motorsport team offering professional racing, elite driver training, and track day experiences.">
+  <meta property="og:image" content="images/hero.jpg">
+  <meta property="og:type" content="website">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <style>
+:root {
+  --color-primary: #DC2626;
+  --color-secondary: #1E1E1E;
+  --color-accent: #FFFFFF;
+  --color-background: #0D0D0D;
+  --color-text: #FFFFFF;
+  
+  --font-heading: 'Orbitron', 'Rajdhani', sans-serif;
+  --font-body: 'Inter', 'Roboto', sans-serif;
+  
+  --border-radius: 4px;
+  
+  --shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+h2 { font-size: clamp(2rem, 4vw, 3rem); }
+h3 { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+
+p {
+  margin-bottom: 1rem;
+  max-width: 65ch;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: #FFFFFF;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 1px;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Mobile menu */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .mobile-menu-btn { display: block; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   HERO SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.hero-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.9);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.1) 100%);
+}
+
+.hero-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  color: #FFFFFF;
+  text-shadow: 3px 3px 6px rgba(0,0,0,1), 0 0 40px rgba(0,0,0,0.8);
+  font-weight: 900;
+}
+
+.hero h1 .highlight {
+  color: var(--color-primary);
+  text-shadow: 3px 3px 6px rgba(0,0,0,1), 0 0 40px rgba(0,0,0,0.8);
+}
+
+.hero .subtitle {
+  font-size: 1.25rem;
+  color: #FFFFFF;
+  text-shadow: 2px 2px 6px rgba(0,0,0,1);
+  max-width: 500px;
+  margin-bottom: 2rem;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.btn {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.875rem;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-text);
+  margin-left: 1rem;
+}
+
+.btn-outline:hover {
+  background: var(--color-text);
+  color: var(--color-background);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   STATS BAR
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.stats-bar {
+  background: var(--color-secondary);
+  padding: 3rem 0;
+  border-top: 3px solid var(--color-primary);
+}
+
+.stats-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  text-align: center;
+}
+
+.stat-item h3 {
+  font-size: 3rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.stat-item p {
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SECTIONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+section {
+  padding: 6rem 0;
+}
+
+.section-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-header h2 {
+  text-transform: uppercase;
+}
+
+.section-header p {
+  color: var(--color-text);
+  opacity: 0.7;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   CARDS GRID
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow);
+}
+
+.card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.card h3 {
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  opacity: 0.8;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TWO COLUMN SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.two-column img {
+  width: 100%;
+  border-radius: var(--border-radius);
+  border: 3px solid var(--color-primary);
+}
+
+.two-column-content h2 {
+  text-transform: uppercase;
+}
+
+.two-column-content p {
+  opacity: 0.8;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .two-column {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   CTA SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.cta-section {
+  background: var(--color-primary);
+  text-align: center;
+  padding: 5rem 0;
+}
+
+.cta-section h2,
+.cta-section p {
+  color: white;
+}
+
+.cta-section .btn {
+  background: white;
+  color: var(--color-primary);
+  border-color: white;
+}
+
+.cta-section .btn:hover {
+  background: transparent;
+  color: white;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+footer {
+  background: #0A0A0A;
+  padding: 3rem 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-logo {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-links a {
+  color: var(--color-text);
+  opacity: 0.7;
+  font-size: 0.875rem;
+}
+
+.footer-links a:hover {
+  opacity: 1;
+  color: var(--color-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero .subtitle {
+    font-size: 1rem;
+  }
+
+  .btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  .btn-outline {
+    margin-left: 0;
+    margin-top: 1rem;
+    display: block;
+    text-align: center;
+  }
+
+  section {
+    padding: 4rem 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ANNOUNCEMENT BAR
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.announcement-bar {
+  background: var(--color-primary);
+  color: white;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+}
+
+.announcement-bar a {
+  color: white;
+  text-decoration: underline;
+  margin-left: 0.5rem;
+}
+
+.announcement-bar a:hover {
+  opacity: 0.9;
+}
+
+/* Adjust nav position when announcement bar is present */
+nav {
+  top: 42px;
+}
+
+.hero {
+  padding-top: 42px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   RACE CALENDAR SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.race-calendar {
+  background: var(--color-secondary);
+}
+
+.race-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.race-card {
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  border-left: 4px solid var(--color-primary);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.race-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+}
+
+.race-date {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.race-track {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.race-location {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-bottom: 0.5rem;
+}
+
+.race-category {
+  display: inline-block;
+  background: var(--color-primary);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 992px) {
+  .race-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .race-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   DRIVERS SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.drivers-section {
+  background: var(--color-background);
+}
+
+.drivers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.driver-card {
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.driver-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow);
+}
+
+.driver-photo {
+  width: 100%;
+  height: 280px;
+  background: linear-gradient(135deg, var(--color-secondary) 0%, #2a2a2a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  color: var(--color-primary);
+  position: relative;
+}
+
+.driver-number {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--color-primary);
+  opacity: 0.3;
+}
+
+.driver-info {
+  padding: 1.5rem;
+}
+
+.driver-name {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.driver-stats {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--color-primary);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+@media (max-width: 992px) {
+  .drivers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .drivers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SPONSORS SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.sponsors-section {
+  background: var(--color-secondary);
+  padding: 4rem 0;
+}
+
+.sponsors-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2rem;
+  align-items: center;
+}
+
+.sponsor-logo {
+  background: rgba(255,255,255,0.1);
+  border-radius: var(--border-radius);
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.sponsor-logo:hover {
+  opacity: 1;
+  background: rgba(255,255,255,0.15);
+}
+
+@media (max-width: 992px) {
+  .sponsors-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .sponsors-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   COUNTDOWN SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.countdown-section {
+  background: linear-gradient(135deg, var(--color-background) 0%, var(--color-secondary) 100%);
+  text-align: center;
+  padding: 5rem 0;
+  border-top: 3px solid var(--color-primary);
+}
+
+.countdown-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.countdown-timer {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.countdown-item {
+  text-align: center;
+}
+
+.countdown-value {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--color-primary);
+  line-height: 1;
+  background: rgba(255,255,255,0.05);
+  padding: 1rem 1.5rem;
+  border-radius: var(--border-radius);
+  min-width: 100px;
+}
+
+.countdown-label {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+
+.countdown-race-name {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: white;
+}
+
+.countdown-race-name span {
+  color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .countdown-timer {
+    gap: 1rem;
+  }
+
+  .countdown-value {
+    font-size: 2.5rem;
+    padding: 0.75rem 1rem;
+    min-width: 70px;
+  }
+
+  .countdown-label {
+    font-size: 0.7rem;
+  }
+}
+  </style>
+</head>
+<body>
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    <span>🏁 NEXT RACE: Kyalami Grand Prix - January 25, 2025 | Limited VIP Paddock Passes Available</span>
+    <a href="#contact">Reserve Now →</a>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="logo">VELOCITY AUTO RACING</a>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#calendar">Calendar</a></li>
+        <li><a href="#drivers">Drivers</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="mobile-menu-btn">☰</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-background">
+      <img src="images/hero.jpg" alt="Velocity Auto Racing">
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <h1>DOMINATE THE TRACK<br>
+        <span class="highlight">BORN TO WIN</span>
+      </h1>
+      <p class="subtitle">Experience the thrill of professional motorsport. World-class racing, elite driver training, and unforgettable track day experiences.</p>
+      <a href="#contact" class="btn btn-primary">GET STARTED NOW</a>
+      <a href="#services" class="btn btn-outline">Race with Us</a>
+    </div>
+  </section>
+
+  
+  <!-- Stats Bar -->
+  <section class="stats-bar">
+    <div class="stats-container">
+      <div class="stat-item">
+        <h3>47</h3>
+        <p>Championship Titles</p>
+      </div>
+      <div class="stat-item">
+        <h3>200+</h3>
+        <p>Race Victories</p>
+      </div>
+      <div class="stat-item">
+        <h3>15+</h3>
+        <p>Years Racing</p>
+      </div>
+      <div class="stat-item">
+        <h3>4</h3>
+        <p>Elite Drivers</p>
+      </div>
+    </div>
+  </section>
+  
+
+  <!-- Services Section -->
+  <section id="services">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>OUR RACING SERVICES</h2>
+        <p>From heart-pounding track experiences to championship-winning performance tuning, we deliver excellence at every turn.</p>
+      </div>
+      <div class="cards-grid">
+
+      <div class="card">
+        <img src="images/services.jpg" alt="Racing Excellence">
+        <div class="card-content">
+          <h3>TRACK DAY EXPERIENCES</h3>
+          <p>Competing at the highest level of motorsport with cutting-edge technology and world-class drivers.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="images/about.jpg" alt="Engineering Innovation">
+        <div class="card-content">
+          <h3>PERFORMANCE TUNING</h3>
+          <p>Pushing the boundaries of aerodynamics and powertrain technology for maximum performance.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="images/team.jpg" alt="Driver Development">
+        <div class="card-content">
+          <h3>RACING ACADEMY</h3>
+          <p>Nurturing the next generation of champions through our elite driver academy.</p>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Race Calendar Section -->
+  <section class="race-calendar" id="calendar">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>2025 RACE CALENDAR</h2>
+        <p>Follow our championship campaign across South Africa's premier racing circuits</p>
+      </div>
+      <div class="race-grid">
+        <div class="race-card">
+          <div class="race-date">JAN 25</div>
+          <div class="race-track">Kyalami 9 Hour</div>
+          <div class="race-location">Kyalami Grand Prix Circuit</div>
+          <span class="race-category">Intercontinental GT</span>
+        </div>
+        <div class="race-card">
+          <div class="race-date">FEB 15</div>
+          <div class="race-track">Zwartkops 500</div>
+          <div class="race-location">Zwartkops Raceway</div>
+          <span class="race-category">SA Endurance</span>
+        </div>
+        <div class="race-card">
+          <div class="race-date">MAR 22</div>
+          <div class="race-track">Red Star Sprint</div>
+          <div class="race-location">Red Star Raceway</div>
+          <span class="race-category">SA GT Championship</span>
+        </div>
+        <div class="race-card">
+          <div class="race-date">APR 19</div>
+          <div class="race-track">Cape Town GP</div>
+          <div class="race-location">Killarney International</div>
+          <span class="race-category">Touring Cars</span>
+        </div>
+        <div class="race-card">
+          <div class="race-date">MAY 31</div>
+          <div class="race-track">Phakisa 400</div>
+          <div class="race-location">Phakisa Freeway</div>
+          <span class="race-category">Endurance Series</span>
+        </div>
+        <div class="race-card">
+          <div class="race-date">JUN 28</div>
+          <div class="race-track">East London Classic</div>
+          <div class="race-location">East London Grand Prix</div>
+          <span class="race-category">Historic Racing</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Drivers Section -->
+  <section class="drivers-section" id="drivers">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>CHAMPIONSHIP DRIVERS</h2>
+        <p>Meet the elite racers behind our championship-winning legacy</p>
+      </div>
+      <div class="drivers-grid">
+        <div class="driver-card">
+          <div class="driver-photo">
+            <span class="driver-number">#7</span>
+          </div>
+          <div class="driver-info">
+            <h3 class="driver-name">Marco Silva #7</h3>
+            <div class="driver-stats">
+              <div class="stat">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Wins</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">28</div>
+                <div class="stat-label">Podiums</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">8</div>
+                <div class="stat-label">Poles</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="driver-card">
+          <div class="driver-photo">
+            <span class="driver-number">#22</span>
+          </div>
+          <div class="driver-info">
+            <h3 class="driver-name">James van der Berg #22</h3>
+            <div class="driver-stats">
+              <div class="stat">
+                <div class="stat-value">9</div>
+                <div class="stat-label">Wins</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">21</div>
+                <div class="stat-label">Podiums</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">6</div>
+                <div class="stat-label">Poles</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="driver-card">
+          <div class="driver-photo">
+            <span class="driver-number">#15</span>
+          </div>
+          <div class="driver-info">
+            <h3 class="driver-name">Sarah Ndlovu #15</h3>
+            <div class="driver-stats">
+              <div class="stat">
+                <div class="stat-value">7</div>
+                <div class="stat-label">Wins</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">18</div>
+                <div class="stat-label">Podiums</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Poles</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="driver-card">
+          <div class="driver-photo">
+            <span class="driver-number">#33</span>
+          </div>
+          <div class="driver-info">
+            <h3 class="driver-name">Ryan Petersen #33</h3>
+            <div class="driver-stats">
+              <div class="stat">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Wins</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">14</div>
+                <div class="stat-label">Podiums</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">4</div>
+                <div class="stat-label">Poles</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <div class="section-container">
+      <div class="two-column">
+        <div class="two-column-image">
+          <img src="images/team.jpg" alt="About Velocity Auto Racing">
+        </div>
+        <div class="two-column-content">
+          <h2>OUR LEGACY</h2>
+          <p>Since 2008, Velocity Auto Racing has been South Africa's most decorated motorsport team. With 47 championship titles and a legacy of excellence, we've established ourselves as the benchmark for racing performance.</p>
+          <p>Our world-class facilities, expert technicians, and championship-winning drivers are dedicated to pushing the limits of what's possible on the track.</p>
+          <a href="#contact" class="btn btn-primary">GET STARTED NOW</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="section-container">
+      <h2>JOIN THE RACING ELITE</h2>
+      <p>Whether you're a seasoned racer or taking your first lap, we have the perfect program for you. Reserve your spot on the grid today.</p>
+      <a href="#contact" class="btn">GET STARTED NOW</a>
+    </div>
+  </section>
+
+  <!-- Sponsors Section -->
+  <section class="sponsors-section" id="sponsors">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>OFFICIAL PARTNERS</h2>
+        <p>Powered by the world's leading motorsport brands</p>
+      </div>
+      <div class="sponsors-grid">
+        <div class="sponsor-logo">Ferrari</div>
+        <div class="sponsor-logo">Porsche</div>
+        <div class="sponsor-logo">Mercedes-AMG</div>
+        <div class="sponsor-logo">Pirelli</div>
+        <div class="sponsor-logo">Shell</div>
+        <div class="sponsor-logo">Mobil 1</div>
+        <div class="sponsor-logo">Red Bull</div>
+        <div class="sponsor-logo">Brembo</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Countdown Section -->
+  <section class="countdown-section" id="countdown">
+    <div class="section-container">
+      <div class="countdown-title">Next Race In:</div>
+      <div class="countdown-timer">
+        <div class="countdown-item">
+          <div class="countdown-value" id="countdown-days">00</div>
+          <div class="countdown-label">Days</div>
+        </div>
+        <div class="countdown-item">
+          <div class="countdown-value" id="countdown-hours">00</div>
+          <div class="countdown-label">Hours</div>
+        </div>
+        <div class="countdown-item">
+          <div class="countdown-value" id="countdown-mins">00</div>
+          <div class="countdown-label">Mins</div>
+        </div>
+        <div class="countdown-item">
+          <div class="countdown-value" id="countdown-secs">00</div>
+          <div class="countdown-label">Secs</div>
+        </div>
+      </div>
+      <div class="countdown-race-name">
+        <span>Kyalami Grand Prix</span> - January 25, 2025
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="footer-container">
+      <div class="footer-logo">VELOCITY AUTO RACING</div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Countdown Timer
+    function updateCountdown() {
+      const raceDate = new Date('January 25, 2025 14:00:00').getTime();
+      const now = new Date().getTime();
+      const distance = raceDate - now;
+
+      if (distance > 0) {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById('countdown-days').textContent = days.toString().padStart(2, '0');
+        document.getElementById('countdown-hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('countdown-mins').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('countdown-secs').textContent = seconds.toString().padStart(2, '0');
+      } else {
+        document.getElementById('countdown-days').textContent = '00';
+        document.getElementById('countdown-hours').textContent = '00';
+        document.getElementById('countdown-mins').textContent = '00';
+        document.getElementById('countdown-secs').textContent = '00';
+      }
+    }
+
+    // Update countdown every second
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>

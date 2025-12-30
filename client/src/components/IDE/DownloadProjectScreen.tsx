@@ -319,7 +319,7 @@ export function DownloadProjectScreen() {
         <div className="flex justify-end gap-4">
           <Button
             variant="outline"
-            onClick={() => setState(prev => ({ ...prev, currentView: 'dashboard' }))}
+            onClick={() => setState(prev => ({ ...prev, currentView: 'stargate-websites' }))}
           >
             Cancel
           </Button>

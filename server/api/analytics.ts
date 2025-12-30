@@ -4,10 +4,10 @@
  * Now uses database persistence instead of in-memory storage
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import { db } from '../db';
-import { analyticsEvents } from '@shared/schema';
-import { eq, gte, and, desc, sql } from 'drizzle-orm';
+import { analyticsEvents, type AnalyticsEvent } from '@shared/schema';
+import { eq, gte, and, desc } from 'drizzle-orm';
 
 export interface AnalyticsEventInput {
   websiteId: string;
@@ -19,6 +19,13 @@ export interface AnalyticsEventInput {
   sessionId?: string;
   metadata?: Record<string, unknown>;
 }
+
+// Partial type for processing analytics data
+type AnalyticsEventData = Partial<AnalyticsEvent> & {
+  websiteId: string;
+  eventType: string;
+  timestamp: Date;
+};
 
 // Helper function to extract device info from user agent
 function getDeviceInfo(userAgent?: string): { deviceType: string; browser: string; os: string } {
@@ -59,17 +66,18 @@ function hashIP(ip?: string): string | null {
 
 export function registerAnalyticsRoutes(app: Express) {
   // Track analytics event
-  app.post('/api/analytics/track', async (req, res) => {
+  app.post('/api/analytics/track', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, eventType = 'pageview', path, referrer, sessionId, metadata } = req.body;
       const userAgent = req.headers['user-agent'];
       const ip = req.ip || req.socket.remoteAddress;
       
       if (!websiteId) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId is required',
         });
+        return;
       }
 
       const deviceInfo = getDeviceInfo(userAgent);
@@ -92,12 +100,13 @@ export function registerAnalyticsRoutes(app: Express) {
             metadata: metadata || {},
           }).returning();
 
-          return res.json({
+          res.json({
             success: true,
             eventId: event.id,
           });
-        } catch (dbError) {
-          console.error('[Analytics] Database error:', dbError);
+          return;
+        } catch (_dbError: unknown) {
+          console.error('[Analytics] Database error:', _dbError);
           // Fall through to in-memory fallback
         }
       }
@@ -115,18 +124,18 @@ export function registerAnalyticsRoutes(app: Express) {
       };
 
       // Store in memory as fallback
-      if (!(global as any).analyticsStore) {
-        (global as any).analyticsStore = new Map<string, AnalyticsEventInput[]>();
+      if (!(global as Record<string, unknown>).analyticsStore) {
+        (global as Record<string, unknown>).analyticsStore = new Map<string, AnalyticsEventInput[]>();
       }
-      const events = (global as any).analyticsStore.get(websiteId) || [];
+      const events = ((global as Record<string, unknown>).analyticsStore as Map<string, AnalyticsEventInput[]>).get(websiteId) || [];
       events.push(event);
-      (global as any).analyticsStore.set(websiteId, events);
+      ((global as Record<string, unknown>).analyticsStore as Map<string, AnalyticsEventInput[]>).set(websiteId, events);
 
       res.json({
         success: true,
         eventId: `event-${Date.now()}`,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to track event',
@@ -135,7 +144,7 @@ export function registerAnalyticsRoutes(app: Express) {
   });
 
   // Get analytics data for a website
-  app.get('/api/analytics/:websiteId', async (req, res) => {
+  app.get('/api/analytics/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const { range = '7d' } = req.query;
@@ -146,7 +155,7 @@ export function registerAnalyticsRoutes(app: Express) {
       const startDate = new Date(now);
       startDate.setDate(startDate.getDate() - rangeDays);
 
-      let events: any[] = [];
+      let events: AnalyticsEventData[] = [];
 
       // Try database first
       if (db) {
@@ -162,32 +171,38 @@ export function registerAnalyticsRoutes(app: Express) {
             )
             .orderBy(desc(analyticsEvents.timestamp));
 
-          events = dbEvents.map(e => ({
+          events = dbEvents.map((e: AnalyticsEvent): AnalyticsEventData => ({
             websiteId: e.websiteId,
             eventType: e.eventType,
             path: e.path,
             referrer: e.referrer,
             userAgent: e.userAgent,
             ip: e.ip,
-            timestamp: e.timestamp,
-            metadata: e.metadata,
+            timestamp: e.timestamp ?? new Date(),
+            deviceType: e.deviceType,
+            browser: e.browser,
+            os: e.os,
+            country: e.country,
+            metadata: e.metadata ?? undefined,
           }));
-        } catch (dbError) {
-          console.error('[Analytics] Database query error:', dbError);
+        } catch (_dbError: unknown) {
+          console.error('[Analytics] Database query error:', _dbError);
           // Fall through to in-memory fallback
         }
       }
 
       // Fallback to in-memory storage
-      if (events.length === 0 && (global as any).analyticsStore) {
-        const memoryEvents = (global as any).analyticsStore.get(websiteId) || [];
+      if (events.length === 0 && (global as Record<string, unknown>).analyticsStore) {
+        const memoryEvents = ((global as Record<string, unknown>).analyticsStore as Map<string, AnalyticsEventInput[]>).get(websiteId) || [];
         events = memoryEvents
-          .filter((e: any) => {
+          .filter((_e: AnalyticsEventInput) => {
             // In-memory events don't have timestamp, so include all
             return true;
           })
-          .map((e: any) => ({
+          .map((e: AnalyticsEventInput): AnalyticsEventData => ({
             ...e,
+            websiteId: e.websiteId,
+            eventType: e.eventType,
             timestamp: new Date(), // Use current time as fallback
           }));
       }
@@ -199,7 +214,7 @@ export function registerAnalyticsRoutes(app: Express) {
         success: true,
         data: analytics,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to fetch analytics',
@@ -208,7 +223,7 @@ export function registerAnalyticsRoutes(app: Express) {
   });
 
   // Get real-time visitor count
-  app.get('/api/analytics/:websiteId/live', async (req, res) => {
+  app.get('/api/analytics/:websiteId/live', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       
@@ -230,20 +245,20 @@ export function registerAnalyticsRoutes(app: Express) {
             );
 
           const uniqueVisitors = new Set(
-            recentEvents.map(e => e.sessionId || e.ip || 'unknown')
+            recentEvents.map((e: { sessionId: string | null; ip: string | null }) => e.sessionId || e.ip || 'unknown')
           );
           activeVisitors = uniqueVisitors.size;
-        } catch (dbError) {
-          console.error('[Analytics] Database query error:', dbError);
+        } catch (_dbError: unknown) {
+          console.error('[Analytics] Database query error:', _dbError);
           // Fall through to in-memory fallback
         }
       }
 
       // Fallback to in-memory storage
-      if (activeVisitors === 0 && (global as any).analyticsStore) {
-        const events = (global as any).analyticsStore.get(websiteId) || [];
+      if (activeVisitors === 0 && (global as Record<string, unknown>).analyticsStore) {
+        const events = ((global as Record<string, unknown>).analyticsStore as Map<string, AnalyticsEventInput[]>).get(websiteId) || [];
         const uniqueVisitors = new Set(
-          events.map((e: any) => e.sessionId || e.ip || 'unknown')
+          events.map((e: AnalyticsEventInput) => e.sessionId || e.ip || 'unknown')
         );
         activeVisitors = uniqueVisitors.size;
       }
@@ -252,7 +267,7 @@ export function registerAnalyticsRoutes(app: Express) {
         success: true,
         activeVisitors,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to fetch live data',
@@ -261,7 +276,7 @@ export function registerAnalyticsRoutes(app: Express) {
   });
 }
 
-function processAnalyticsData(events: any[], rangeDays: number) {
+function processAnalyticsData(events: AnalyticsEventData[], rangeDays: number) {
   const visitors = new Set<string>();
   const sessions = new Set<string>();
   const returningVisitors = new Set<string>();
@@ -304,7 +319,7 @@ function processAnalyticsData(events: any[], rangeDays: number) {
     }
 
     // Track traffic sources
-    const source = getSourceFromReferrer(event.referrer);
+    const source = getSourceFromReferrer(event.referrer ?? undefined);
     sources.set(source, (sources.get(source) || 0) + 1);
 
     // Track devices (use database field if available, otherwise parse)
@@ -329,7 +344,7 @@ function processAnalyticsData(events: any[], rangeDays: number) {
 
   // Calculate bounce rate (sessions with only 1 page view)
   const bouncedSessions = Array.from(sessionPageViews.entries())
-    .filter(([_, views]) => views === 1).length;
+    .filter(([_sessionId, views]) => views === 1).length;
   const bounceRate = sessions.size > 0 ? (bouncedSessions / sessions.size) * 100 : 0;
 
   // Calculate average session duration
@@ -409,7 +424,7 @@ function getDeviceFromUserAgent(userAgent: string): string {
   return 'Desktop';
 }
 
-function generateTimeSeries(events: AnalyticsEvent[], rangeDays: number) {
+function generateTimeSeries(events: AnalyticsEventData[], rangeDays: number) {
   const now = new Date();
   const series: Array<{ date: string; visitors: number; pageViews: number }> = [];
 
@@ -424,7 +439,7 @@ function generateTimeSeries(events: AnalyticsEvent[], rangeDays: number) {
     dayEnd.setHours(23, 59, 59, 999);
 
     const dayEvents = events.filter(
-      e => e.timestamp >= dayStart && e.timestamp <= dayEnd
+      e => e.timestamp && e.timestamp >= dayStart && e.timestamp <= dayEnd
     );
     const uniqueVisitors = new Set(dayEvents.map(e => e.ip || 'unknown')).size;
 

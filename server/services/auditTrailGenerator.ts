@@ -8,8 +8,7 @@
  * - Export court-ready documentation
  */
 
-import { parseRobotsTxt, generateComplianceReport } from './legalComplianceEngine';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { generateComplianceReport } from './legalComplianceEngine';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -17,7 +16,7 @@ export interface AuditTrailEntry {
   timestamp: Date;
   action: 'scrape' | 'check_robots' | 'check_tos' | 'compliance_check';
   url: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   compliance: {
     robotsTxtCompliant: boolean;
     tosCompliant: boolean;
@@ -70,7 +69,7 @@ export async function addAuditEntry(
   trailId: string,
   action: AuditTrailEntry['action'],
   url: string,
-  details: Record<string, any> = {}
+  details: Record<string, unknown> = {}
 ): Promise<void> {
   const trail = auditTrails.get(trailId);
   if (!trail) {

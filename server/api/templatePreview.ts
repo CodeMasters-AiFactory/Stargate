@@ -7,7 +7,7 @@
 import { brandTemplates } from '@shared/schema';
 import * as cheerio from 'cheerio';
 import { eq } from 'drizzle-orm';
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import { db } from '../db';
@@ -19,12 +19,12 @@ export function registerTemplatePreviewRoutes(app: Express) {
    * Get template preview with dependencies pre-loaded
    * GET /api/template-preview/:templateId
    */
-  app.get('/api/template-preview/:templateId', async (req, res) => {
+  app.get('/api/template-preview/:templateId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { templateId } = req.params;
 
       // Try to get template from database
-      let template: any = null;
+      let template: Record<string, unknown> | null = null;
       if (db) {
         try {
           const [dbTemplate] = await db
@@ -36,8 +36,8 @@ export function registerTemplatePreviewRoutes(app: Express) {
           if (dbTemplate) {
             template = dbTemplate;
           }
-        } catch (dbError) {
-          console.error('[TemplatePreview] Database error:', dbError);
+        } catch (_dbError: unknown) {
+          console.error('[TemplatePreview] Database error:', _dbError);
         }
       }
 
@@ -59,24 +59,27 @@ export function registerTemplatePreviewRoutes(app: Express) {
           const processedHTML = processTemplateFile(htmlFile);
           res.set('Content-Type', 'text/html');
           res.set('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
-          return res.send(processedHTML);
+          res.send(processedHTML);
+          return;
         }
       }
 
       // If template has contentData with HTML
-      if (template?.contentData?.html) {
+      if (template?.contentData && (template.contentData as Record<string, unknown>)?.html) {
         // CRITICAL: Prefer bundled HTML (self-contained) if available
-        let html = (template.contentData as any)?.bundledHtml || template.contentData.html;
-        const isBundled = !!(template.contentData as any)?.bundledHtml;
+        let html: string = ((template.contentData as Record<string, unknown>)?.bundledHtml || (template.contentData as Record<string, unknown>).html) as string;
+        const isBundled = !!(template.contentData as Record<string, unknown>)?.bundledHtml;
         
         if (isBundled) {
           console.log(`[TemplatePreview] Using bundled (self-contained) HTML version`);
         }
 
         // Get original website URL from metadata or sourceUrl field
-        const originalUrl = template.sourceUrl ||
-                           (template.contentData as any)?.metadata?.url ||
-                           (template.contentData as any)?.metadata?.sourceUrl ||
+        const contentData = template.contentData as Record<string, unknown>;
+        const metadata = contentData?.metadata as Record<string, unknown> | undefined;
+        const originalUrl = (template.sourceUrl as string) ||
+                           (metadata?.url as string) ||
+                           (metadata?.sourceUrl as string) ||
                            'https://www.apple.com'; // Fallback
 
         console.log(`[TemplatePreview] Using source URL: ${originalUrl}`);
@@ -98,7 +101,7 @@ export function registerTemplatePreviewRoutes(app: Express) {
                   : new URL(href, originalUrl).href;
                 $(el).attr('href', absoluteUrl);
                 console.log(`[TemplatePreview] Converted CSS: ${href} → ${absoluteUrl}`);
-              } catch (e) {
+              } catch (_e: unknown) {
                 console.warn(`[TemplatePreview] Failed to convert CSS URL: ${href}`);
               }
             }
@@ -114,7 +117,7 @@ export function registerTemplatePreviewRoutes(app: Express) {
                   : new URL(src, originalUrl).href;
                 $(el).attr('src', absoluteUrl);
                 console.log(`[TemplatePreview] Converted JS: ${src} → ${absoluteUrl}`);
-              } catch (e) {
+              } catch (_e: unknown) {
                 console.warn(`[TemplatePreview] Failed to convert JS URL: ${src}`);
               }
             }
@@ -129,7 +132,7 @@ export function registerTemplatePreviewRoutes(app: Express) {
                   ? `${baseUrl.origin}${src}`
                   : new URL(src, originalUrl).href;
                 $(el).attr('src', absoluteUrl);
-              } catch (e) {
+              } catch (_e: unknown) {
                 // Skip if URL conversion fails
               }
             }
@@ -198,7 +201,7 @@ export function registerTemplatePreviewRoutes(app: Express) {
                 $(el).attr('rel', 'noopener noreferrer');
                 $(el).attr('data-preview-mode', 'external');
               }
-            } catch (e) {
+            } catch (_e: unknown) {
               // Invalid URL, leave as is
               console.warn(`[TemplatePreview] Invalid link URL: ${href}`);
             }
@@ -206,16 +209,16 @@ export function registerTemplatePreviewRoutes(app: Express) {
 
           html = $.html();
           console.log(`[TemplatePreview] ✅ URL conversion complete`);
-        } catch (cheerioError) {
-          console.error('[TemplatePreview] Cheerio error:', cheerioError);
+        } catch (_cheerioError: unknown) {
+          console.error('[TemplatePreview] Cheerio error:', _cheerioError);
           // Fallback to regex if Cheerio fails
           const baseUrl = new URL(originalUrl);
-          html = html.replace(/href=["'](\/[^"']+)["']/g, (match, path) => {
+          html = html.replace(/href=["'](\/[^"']+)["']/g, (match: string, path: string) => {
             if (path.startsWith('//') || path.startsWith('http')) return match;
             return `href="${baseUrl.origin}${path}"`;
           });
 
-          html = html.replace(/src=["'](\/[^"']+)["']/g, (match, path) => {
+          html = html.replace(/src=["'](\/[^"']+)["']/g, (match: string, path: string) => {
             if (path.startsWith('//') || path.startsWith('http')) return match;
             return `src="${baseUrl.origin}${path}"`;
           });
@@ -253,7 +256,7 @@ export function registerTemplatePreviewRoutes(app: Express) {
         }
 
         // CRITICAL: Inject the scraped CSS if available (MUST be first in <head>)
-        const cssToInject = template.css || (template.contentData as any)?.css;
+        const cssToInject = (template.css as string | undefined) || (template.contentData as Record<string, unknown>)?.css as string | undefined;
         if (cssToInject) {
           // Find <head> tag and inject CSS right after base tag
           const headStartIndex = html.indexOf('<head>');
@@ -276,7 +279,7 @@ export function registerTemplatePreviewRoutes(app: Express) {
         }
 
         // CRITICAL: Inject the scraped JavaScript if available
-        const jsToInject = (template.contentData as any)?.js;
+        const jsToInject = (template.contentData as Record<string, unknown>)?.js as string | undefined;
         if (jsToInject) {
           // Find </body> tag and inject JS before it, or append to end
           const bodyEndIndex = html.indexOf('</body>');
@@ -294,7 +297,8 @@ export function registerTemplatePreviewRoutes(app: Express) {
 
         res.set('Content-Type', 'text/html');
         res.set('Cache-Control', 'public, max-age=3600');
-        return res.send(html);
+        res.send(html);
+        return;
       }
 
       // If template has CSS, generate a preview HTML
@@ -304,7 +308,8 @@ export function registerTemplatePreviewRoutes(app: Express) {
 
         res.set('Content-Type', 'text/html');
         res.set('Cache-Control', 'public, max-age=3600');
-        return res.send(processedHTML);
+        res.send(processedHTML);
+        return;
       }
 
       // Template not found
@@ -312,11 +317,11 @@ export function registerTemplatePreviewRoutes(app: Express) {
         success: false,
         error: `Template "${templateId}" not found`,
       });
-    } catch (error) {
-      logError(error, 'TemplatePreview');
+    } catch (_error: unknown) {
+      logError(_error, 'TemplatePreview');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -325,7 +330,7 @@ export function registerTemplatePreviewRoutes(app: Express) {
    * Get template preview URL (for iframe src)
    * Returns the URL to use in iframe
    */
-  app.get('/api/template-preview-url/:templateId', async (req, res) => {
+  app.get('/api/template-preview-url/:templateId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { templateId } = req.params;
       const previewUrl = `/api/template-preview/${templateId}`;
@@ -334,11 +339,11 @@ export function registerTemplatePreviewRoutes(app: Express) {
         success: true,
         url: previewUrl,
       });
-    } catch (error) {
-      logError(error, 'TemplatePreviewURL');
+    } catch (_error: unknown) {
+      logError(_error, 'TemplatePreviewURL');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -347,18 +352,20 @@ export function registerTemplatePreviewRoutes(app: Express) {
 /**
  * Generate preview HTML from template metadata
  */
-function generatePreviewFromTemplate(template: any): string {
-  const colors = template.colors || {
+function generatePreviewFromTemplate(template: Record<string, unknown>): string {
+  const defaultColors = {
     primary: '#000000',
     secondary: '#000000',
     background: '#FFFFFF',
     text: '#000000',
   };
+  const colors = (template.colors as typeof defaultColors | undefined) || defaultColors;
 
-  const typography = template.typography || {
+  const defaultTypography = {
     headingFont: 'system-ui, sans-serif',
     bodyFont: 'system-ui, sans-serif',
   };
+  const typography = (template.typography as typeof defaultTypography | undefined) || defaultTypography;
 
   return `
 <!DOCTYPE html>
@@ -370,30 +377,30 @@ function generatePreviewFromTemplate(template: any): string {
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: ${typography.bodyFont || 'system-ui, sans-serif'};
-      background: ${colors.background || '#FFFFFF'};
-      color: ${colors.text || '#000000'};
+      font-family: ${typography.bodyFont};
+      background: ${colors.background};
+      color: ${colors.text};
       line-height: 1.6;
     }
-    ${template.css || ''}
+    ${(template.css as string) || ''}
     .preview-hero {
       min-height: 60vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, ${colors.primary || '#000000'}20, ${colors.secondary || '#000000'}20);
+      background: linear-gradient(135deg, ${colors.primary}20, ${colors.secondary}20);
       padding: 2rem;
       text-align: center;
     }
     .preview-hero h1 {
-      font-family: ${typography.headingFont || 'system-ui, sans-serif'};
+      font-family: ${typography.headingFont};
       font-size: 3rem;
-      color: ${colors.text || '#000000'};
+      color: ${colors.text};
       margin-bottom: 1rem;
     }
     .preview-btn {
-      background: ${colors.primary || '#000000'};
-      color: ${colors.background || '#FFFFFF'};
+      background: ${colors.primary};
+      color: ${colors.background};
       padding: 0.75rem 2rem;
       border: none;
       border-radius: 4px;
@@ -410,9 +417,9 @@ function generatePreviewFromTemplate(template: any): string {
 <body>
   <div class="preview-hero">
     <div>
-      <h1>${template.brand || template.name || 'Template'}</h1>
-      <p style="color: ${colors.text || '#000000'}80; font-size: 1.2rem; margin-bottom: 1rem;">
-        ${template.name || 'Template Preview'}
+      <h1>${(template.brand as string) || (template.name as string) || 'Template'}</h1>
+      <p style="color: ${colors.text}80; font-size: 1.2rem; margin-bottom: 1rem;">
+        ${(template.name as string) || 'Template Preview'}
       </p>
       <button class="preview-btn" onclick="alert('Template is interactive!')">Get Started</button>
     </div>

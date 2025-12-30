@@ -1,0 +1,29 @@
+{
+  "businessName": "Golden Dragon Restaurant",
+  "industry": "restaurant",
+  "industryName": "Restaurant & Dining",
+  "generatedAt": "2025-12-29T10:09:11.700Z",
+  "version": "8.0",
+  "images": [],
+  "userPreferences": {
+    "businessType": "small",
+    "targetAudience": {
+      "audienceType": "b2c",
+      "incomeLevel": "mid"
+    },
+    "designPreferences": {
+      "colorMood": "warm"
+    },
+    "features": [
+      "contact-form",
+      "testimonials"
+    ],
+    "pages": [
+      "home",
+      "services",
+      "about",
+      "contact"
+    ],
+    "templateId": "chipotle-1766967790484"
+  }
+}

@@ -9,7 +9,6 @@
 import { getErrorMessage, logError } from '../utils/errorHandler';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as archiver from 'archiver';
 
 export interface ExportOptions {
   format: 'csv' | 'json' | 'excel' | 'google-sheets' | 'airtable' | 'notion' |
@@ -23,7 +22,7 @@ export interface ExportOptions {
  * Export data to various formats
  */
 export async function exportData(
-  data: Record<string, any> | Array<Record<string, any>>,
+  data: Record<string, unknown> | Array<Record<string, unknown>>,
   options: ExportOptions
 ): Promise<{
   success: boolean;
@@ -56,11 +55,11 @@ export async function exportData(
           error: `Export format ${options.format} not yet implemented`,
         };
     }
-  } catch (error) {
-    logError(error, 'Export Integrations');
+  } catch (_error: unknown) {
+    logError(_error, 'Export Integrations');
     return {
       success: false,
-      error: getErrorMessage(error),
+      error: getErrorMessage(_error),
     };
   }
 }
@@ -69,7 +68,7 @@ export async function exportData(
  * Export to CSV
  */
 async function exportToCSV(
-  data: Array<Record<string, any>>,
+  data: Array<Record<string, unknown>>,
   destination?: string
 ): Promise<{ success: boolean; filePath?: string; error?: string }> {
   try {
@@ -103,8 +102,8 @@ async function exportToCSV(
     const filePath = path.join(exportDir, `export-${Date.now()}.csv`);
     fs.writeFileSync(filePath, csvContent, 'utf8');
     return { success: true, filePath };
-  } catch (error) {
-    return { success: false, error: getErrorMessage(error) };
+  } catch (_error: unknown) {
+    return { success: false, error: getErrorMessage(_error) };
   }
 }
 
@@ -112,7 +111,7 @@ async function exportToCSV(
  * Export to JSON
  */
 async function exportToJSON(
-  data: Array<Record<string, any>>,
+  data: Array<Record<string, unknown>>,
   destination?: string
 ): Promise<{ success: boolean; filePath?: string; error?: string }> {
   try {
@@ -131,8 +130,8 @@ async function exportToJSON(
     const filePath = path.join(exportDir, `export-${Date.now()}.json`);
     fs.writeFileSync(filePath, jsonContent, 'utf8');
     return { success: true, filePath };
-  } catch (error) {
-    return { success: false, error: getErrorMessage(error) };
+  } catch (_error: unknown) {
+    return { success: false, error: getErrorMessage(_error) };
   }
 }
 
@@ -140,7 +139,7 @@ async function exportToJSON(
  * Export to Excel (simplified - CSV with .xlsx extension)
  */
 async function exportToExcel(
-  data: Array<Record<string, any>>,
+  data: Array<Record<string, unknown>>,
   destination?: string
 ): Promise<{ success: boolean; filePath?: string; error?: string }> {
   // For full Excel support, would need a library like 'xlsx'
@@ -152,7 +151,7 @@ async function exportToExcel(
  * Export to webhook
  */
 async function exportToWebhook(
-  data: Array<Record<string, any>>,
+  data: Array<Record<string, unknown>>,
   webhookUrl: string,
   credentials?: Record<string, string>
 ): Promise<{ success: boolean; exportedTo?: string; error?: string }> {
@@ -179,8 +178,8 @@ async function exportToWebhook(
       success: false,
       error: `Webhook returned ${response.status}: ${response.statusText}`,
     };
-  } catch (error) {
-    return { success: false, error: getErrorMessage(error) };
+  } catch (_error: unknown) {
+    return { success: false, error: getErrorMessage(_error) };
   }
 }
 
@@ -188,7 +187,7 @@ async function exportToWebhook(
  * Export to email (simplified - would need email service)
  */
 async function exportToEmail(
-  data: Array<Record<string, any>>,
+  data: Array<Record<string, unknown>>,
   email: string,
   credentials?: Record<string, string>
 ): Promise<{ success: boolean; exportedTo?: string; error?: string }> {

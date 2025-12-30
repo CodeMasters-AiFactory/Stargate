@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__playwright__*",
+      "mcp__puppeteer__*",
+      "mcp__github__*",
+      "mcp__memory__*",
+      "mcp__knowledge-graph__*",
+      "mcp__duckduckgo__*",
+      "mcp__figma__*",
+      "mcp__sequential-thinking__*",
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "Task(*)",
+      "TodoWrite(*)",
+      "NotebookEdit(*)",
+      "AskUserQuestion(*)",
+      "EnterPlanMode(*)",
+      "ExitPlanMode(*)",
+      "Skill(*)",
+      "KillShell(*)",
+      "TaskOutput(*)",
+      "ListMcpResourcesTool(*)",
+      "ReadMcpResourceTool(*)"
+    ],
+    "deny": []
+  }
+}

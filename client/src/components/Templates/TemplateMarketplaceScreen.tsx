@@ -24,8 +24,8 @@ export function TemplateMarketplaceScreen() {
     // CRITICAL: Clear query parameter FIRST before setting state
     // This prevents MainLayout from reading ?view=template-marketplace and syncing it back
     window.history.replaceState({}, '', '/');
-    // Now set state to dashboard - MainLayout won't find query param to sync
-    setState(prev => ({ ...prev, currentView: 'dashboard' }));
+    // Now set state to stargate-websites - MainLayout won't find query param to sync
+    setState(prev => ({ ...prev, currentView: 'stargate-websites' }));
     setLocation('/');
   };
 

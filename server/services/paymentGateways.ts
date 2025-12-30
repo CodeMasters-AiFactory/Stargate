@@ -156,7 +156,7 @@ async function createPayPalPayment(
       body: 'grant_type=client_credentials',
     });
 
-    const authData = await authResponse.json();
+    const authData = await authResponse.json() as { access_token?: string };
     const accessToken = authData.access_token;
 
     if (!accessToken) {
@@ -200,11 +200,15 @@ async function createPayPalPayment(
       }),
     });
 
-    const orderData = await orderResponse.json();
+    const orderData = await orderResponse.json() as {
+      id?: string;
+      message?: string;
+      links?: Array<{ rel: string; href: string }>;
+    };
 
     if (orderData.id) {
       // Get approval URL
-      const approvalLink = orderData.links?.find((link: any) => link.rel === 'approve');
+      const approvalLink = orderData.links?.find((link) => link.rel === 'approve');
       
       return {
         success: true,
@@ -269,7 +273,13 @@ async function createSquarePayment(
       }),
     });
 
-    const paymentLinkData = await paymentLinkResponse.json();
+    const paymentLinkData = await paymentLinkResponse.json() as {
+      payment_link?: {
+        id?: string;
+        url?: string;
+      };
+      errors?: Array<{ detail?: string }>;
+    };
 
     if (paymentLinkData.payment_link?.id) {
       return {
@@ -299,8 +309,8 @@ async function createSquarePayment(
  * Note: Apple Pay requires frontend implementation with Payment Request API
  */
 async function createApplePayPayment(
-  request: PaymentRequest,
-  config: PaymentGatewayConfig
+  _request: PaymentRequest,
+  _config: PaymentGatewayConfig
 ): Promise<PaymentResponse> {
   // Apple Pay uses the Payment Request API on the frontend
   // This function returns configuration for frontend implementation
@@ -318,8 +328,8 @@ async function createApplePayPayment(
  * Note: Google Pay requires frontend implementation with Payment Request API
  */
 async function createGooglePayPayment(
-  request: PaymentRequest,
-  config: PaymentGatewayConfig
+  _request: PaymentRequest,
+  _config: PaymentGatewayConfig
 ): Promise<PaymentResponse> {
   // Google Pay uses the Payment Request API on the frontend
   // This function returns configuration for frontend implementation
@@ -381,7 +391,7 @@ export async function verifyPayment(
           body: 'grant_type=client_credentials',
         });
 
-        const authData = await authResponse.json();
+        const authData = await authResponse.json() as { access_token?: string };
         const accessToken = authData.access_token;
 
         const orderResponse = await fetch(`${baseUrl}/v2/checkout/orders/${transactionId}`, {
@@ -390,7 +400,7 @@ export async function verifyPayment(
           },
         });
 
-        const orderData = await orderResponse.json();
+        const orderData = await orderResponse.json() as { status?: string };
         return {
           success: orderData.status === 'COMPLETED',
           status: orderData.status || 'unknown',
@@ -409,7 +419,11 @@ export async function verifyPayment(
           },
         });
 
-        const data = await response.json();
+        const data = await response.json() as {
+          payment?: {
+            status?: string;
+          };
+        };
         return {
           success: data.payment?.status === 'COMPLETED',
           status: data.payment?.status || 'unknown',

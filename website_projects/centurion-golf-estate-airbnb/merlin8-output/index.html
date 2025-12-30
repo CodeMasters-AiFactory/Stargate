@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centurion Golf Estate Airbnb | Golf Course Living at its Finest</title>
+  <meta name="description" content="Luxury Airbnb accommodation on Centurion Golf Estate, 5 Boca Street. Wake up to stunning views of the 18th hole on one of South Africa's premier golf courses. Our beautifully appointed rooms offer the perfect retreat for golfers and tourists alike. Enjoy world-class golf, modern amenities, and the tranquil beauty of the estate. Book your stay and experience Centurion Golf Estate like never before.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Centurion Golf Estate Airbnb">
+  <meta property="og:description" content="Luxury Airbnb accommodation on Centurion Golf Estate, 5 Boca Street. Wake up to stunning views of the 18th hole on one of South Africa's premier golf courses. Our beautifully appointed rooms offer the perfect retreat for golfers and tourists alike. Enjoy world-class golf, modern amenities, and the tranquil beauty of the estate. Book your stay and experience Centurion Golf Estate like never before.">
+  <meta property="og:image" content="images/hero.jpg">
+  <meta property="og:type" content="website">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant%20Garamond:wght@400;700;900&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <style>
+:root {
+  --color-primary: #1A1A2E;
+  --color-secondary: #C9A962;
+  --color-accent: #FFFFFF;
+  --color-background: #FAFAFA;
+  --color-text: #1A1A1A;
+  
+  --font-heading: 'Cormorant Garamond', 'Playfair Display', serif;
+  --font-body: 'Raleway', 'Montserrat', sans-serif;
+  
+  --border-radius: 4px;
+  
+  --shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+h2 { font-size: clamp(2rem, 4vw, 3rem); }
+h3 { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+
+p {
+  margin-bottom: 1rem;
+  max-width: 65ch;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: #FFFFFF;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 1px;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Mobile menu */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .mobile-menu-btn { display: block; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   HERO SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.3) 100%);
+}
+
+.hero-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.hero h1 {
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  color: #FFFFFF;
+  text-shadow: 3px 3px 6px rgba(0,0,0,1), 0 0 40px rgba(0,0,0,0.8);
+  font-weight: 900;
+}
+
+.hero h1 .highlight {
+  color: var(--color-secondary);
+  text-shadow: 3px 3px 6px rgba(0,0,0,1), 0 0 40px rgba(0,0,0,0.8);
+}
+
+.hero .subtitle {
+  font-size: 1.25rem;
+  color: #FFFFFF;
+  text-shadow: 2px 2px 6px rgba(0,0,0,1);
+  max-width: 500px;
+  margin-bottom: 2rem;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.btn {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.875rem;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  margin-left: 1rem;
+}
+
+.btn-outline:hover {
+  background: #FFFFFF;
+  color: var(--color-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   STATS BAR
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.stats-bar {
+  background: var(--color-secondary);
+  padding: 3rem 0;
+  border-top: 3px solid var(--color-primary);
+}
+
+.stats-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  text-align: center;
+}
+
+.stat-item h3 {
+  font-size: 3rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.stat-item p {
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SECTIONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+section {
+  padding: 6rem 0;
+}
+
+.section-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-header h2 {
+  text-transform: uppercase;
+}
+
+.section-header p {
+  color: var(--color-text);
+  opacity: 0.7;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   CARDS GRID
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.card {
+  background: rgba(0,0,0,0.02);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow);
+}
+
+.card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.card h3 {
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  opacity: 0.8;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TWO COLUMN SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.two-column img {
+  width: 100%;
+  border-radius: var(--border-radius);
+  border: 3px solid var(--color-primary);
+}
+
+.two-column-content h2 {
+  text-transform: uppercase;
+}
+
+.two-column-content p {
+  opacity: 0.8;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .two-column {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   BOOKING CALENDAR SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.booking-section {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #2d2d4a 100%);
+  padding: 6rem 0;
+}
+
+.booking-section .section-header h2,
+.booking-section .section-header p {
+  color: white;
+}
+
+.booking-section .section-header p {
+  opacity: 0.8;
+}
+
+.booking-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 968px) {
+  .booking-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Calendar Styles */
+.calendar-wrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.calendar-header h3 {
+  color: var(--color-primary);
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.calendar-nav button {
+  background: var(--color-secondary);
+  border: none;
+  color: var(--color-primary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.calendar-nav button:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-weight: 600;
+  color: var(--color-primary);
+  padding: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.calendar-day:hover:not(.disabled):not(.booked) {
+  background: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+.calendar-day.today {
+  border: 2px solid var(--color-secondary);
+}
+
+.calendar-day.selected {
+  background: var(--color-primary);
+  color: white;
+}
+
+.calendar-day.in-range {
+  background: rgba(201, 169, 98, 0.3);
+}
+
+.calendar-day.booked {
+  background: #ffebee;
+  color: #c62828;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.calendar-day.disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.calendar-day.other-month {
+  color: #ccc;
+}
+
+.calendar-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.legend-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.legend-box.available {
+  background: white;
+  border: 1px solid #ccc;
+}
+
+.legend-box.booked {
+  background: #ffebee;
+}
+
+.legend-box.selected {
+  background: var(--color-primary);
+}
+
+/* Booking Form */
+.booking-form-wrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.booking-form-wrapper h3 {
+  color: var(--color-primary);
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+}
+
+.date-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Pricing Summary */
+.pricing-summary {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.pricing-summary h4 {
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.pricing-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.pricing-row:last-child {
+  border-bottom: none;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--color-primary);
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 2px solid var(--color-primary);
+}
+
+.booking-form-wrapper .btn {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  font-size: 1rem;
+}
+
+.availability-status {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.availability-status.available {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.availability-status.unavailable {
+  background: #ffebee;
+  color: #c62828;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ROOM GALLERY SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.rooms-section {
+  background: var(--color-background);
+}
+
+.room-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.room-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+}
+
+.room-card img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+}
+
+.room-card-content {
+  padding: 1.5rem;
+}
+
+.room-card h3 {
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.room-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  margin-bottom: 1rem;
+}
+
+.room-price span {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #666;
+}
+
+.room-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.amenity-tag {
+  background: #f0f0f0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   CTA SECTION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.cta-section {
+  background: var(--color-primary);
+  text-align: center;
+  padding: 5rem 0;
+}
+
+.cta-section h2,
+.cta-section p {
+  color: white;
+}
+
+.cta-section .btn {
+  background: white;
+  color: var(--color-primary);
+  border-color: white;
+}
+
+.cta-section .btn:hover {
+  background: transparent;
+  color: white;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+footer {
+  background: #F8F9FA;
+  padding: 3rem 0;
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-logo {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-links a {
+  color: var(--color-text);
+  opacity: 0.7;
+  font-size: 0.875rem;
+}
+
+.footer-links a:hover {
+  opacity: 1;
+  color: var(--color-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero .subtitle {
+    font-size: 1rem;
+  }
+  
+  .btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .btn-outline {
+    margin-left: 0;
+    margin-top: 1rem;
+    display: block;
+    text-align: center;
+  }
+  
+  section {
+    padding: 4rem 0;
+  }
+}
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="logo">CENTURION GOLF ESTATE AIRBNB</a>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#rooms">Rooms</a></li>
+        <li><a href="#booking">Book Now</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="mobile-menu-btn">☰</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-background">
+      <img src="images/hero.jpg" alt="Centurion Golf Estate Airbnb">
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <h1>Your Dream<br>
+        <span class="highlight">Home Awaits</span>
+      </h1>
+      <p class="subtitle">Luxury Airbnb accommodation on Centurion Golf Estate, 5 Boca Street. Wake up to stunning views of the 18th hole on one of South Africa's premier golf courses. Our beautifully appointed rooms offer the perfect retreat for golfers and tourists alike. Enjoy world-class golf, modern amenities, and the tranquil beauty of the estate. Book your stay and experience Centurion Golf Estate like never before.</p>
+      <a href="#contact" class="btn btn-primary">Find Your Home</a>
+      <a href="#services" class="btn btn-outline">View Listings</a>
+    </div>
+  </section>
+
+  
+
+  <!-- Services Section -->
+  <section id="services">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>What We Offer</h2>
+        <p>Luxury Airbnb accommodation on Centurion Golf Estate, 5 Boca Street. Wake up to stunning views of the 18th hole on one of South Africa's premier golf courses. Our beautifully appointed rooms offer the perfect retreat for golfers and tourists alike. Enjoy world-class golf, modern amenities, and the tranquil beauty of the estate. Book your stay and experience Centurion Golf Estate like never before.</p>
+      </div>
+      <div class="cards-grid">
+
+      <div class="card">
+        <img src="images/services.jpg" alt="Luxury Room Accommodation">
+        <div class="card-content">
+          <h3>Luxury Room Accommodation</h3>
+          <p>Beautifully furnished rooms with golf course views</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="images/about.jpg" alt="Booking Calendar">
+        <div class="card-content">
+          <h3>Booking Calendar</h3>
+          <p>Easy online booking with real-time availability</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="images/team.jpg" alt="Golf Experience Packages">
+        <div class="card-content">
+          <h3>Golf Experience Packages</h3>
+          <p>Stay and play packages with tee time booking</p>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rooms Section -->
+  <section id="rooms" class="rooms-section">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>Our Luxury Rooms</h2>
+        <p>Choose from our beautifully appointed rooms, each with stunning views of Centurion Golf Estate</p>
+      </div>
+      <div class="cards-grid">
+        <div class="room-card">
+          <img src="images/services.jpg" alt="Master Suite">
+          <div class="room-card-content">
+            <h3>Master Suite</h3>
+            <div class="room-price">R2,500 <span>/ night</span></div>
+            <div class="room-amenities">
+              <span class="amenity-tag">King Bed</span>
+              <span class="amenity-tag">Golf View</span>
+              <span class="amenity-tag">En-suite</span>
+              <span class="amenity-tag">Air Con</span>
+            </div>
+            <p>Spacious master suite with panoramic views of the 18th hole. Features a king-size bed, luxury en-suite bathroom, and private balcony.</p>
+            <a href="#booking" class="btn btn-primary" style="margin-top: 1rem;">Book Now</a>
+          </div>
+        </div>
+
+        <div class="room-card">
+          <img src="images/about.jpg" alt="Deluxe Room">
+          <div class="room-card-content">
+            <h3>Deluxe Room</h3>
+            <div class="room-price">R1,800 <span>/ night</span></div>
+            <div class="room-amenities">
+              <span class="amenity-tag">Queen Bed</span>
+              <span class="amenity-tag">Garden View</span>
+              <span class="amenity-tag">En-suite</span>
+              <span class="amenity-tag">WiFi</span>
+            </div>
+            <p>Elegant deluxe room with garden views. Features a queen-size bed, modern en-suite bathroom, and access to shared lounge.</p>
+            <a href="#booking" class="btn btn-primary" style="margin-top: 1rem;">Book Now</a>
+          </div>
+        </div>
+
+        <div class="room-card">
+          <img src="images/team.jpg" alt="Twin Room">
+          <div class="room-card-content">
+            <h3>Twin Room</h3>
+            <div class="room-price">R1,500 <span>/ night</span></div>
+            <div class="room-amenities">
+              <span class="amenity-tag">Twin Beds</span>
+              <span class="amenity-tag">Pool View</span>
+              <span class="amenity-tag">Shared Bath</span>
+              <span class="amenity-tag">Breakfast</span>
+            </div>
+            <p>Comfortable twin room perfect for friends or golf buddies. Features two single beds and access to shared bathroom facilities.</p>
+            <a href="#booking" class="btn btn-primary" style="margin-top: 1rem;">Book Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Calendar Section -->
+  <section id="booking" class="booking-section">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>Book Your Stay</h2>
+        <p>Select your dates to check availability and book your luxury golf estate experience</p>
+      </div>
+      <div class="booking-container">
+        <!-- Calendar -->
+        <div class="calendar-wrapper">
+          <div class="calendar-header">
+            <h3 id="calendarMonth">December 2025</h3>
+            <div class="calendar-nav">
+              <button onclick="prevMonth()">‹</button>
+              <button onclick="nextMonth()">›</button>
+            </div>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <!-- Calendar will be generated by JavaScript -->
+          </div>
+          <div class="calendar-legend">
+            <div class="legend-item">
+              <div class="legend-box available"></div>
+              <span>Available</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-box booked"></div>
+              <span>Booked</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-box selected"></div>
+              <span>Selected</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="booking-form-wrapper">
+          <h3>Reservation Details</h3>
+          <form id="bookingForm">
+            <div class="form-group">
+              <label>Select Room</label>
+              <select id="roomSelect" onchange="updatePricing()">
+                <option value="master" data-price="2500">Master Suite - R2,500/night</option>
+                <option value="deluxe" data-price="1800">Deluxe Room - R1,800/night</option>
+                <option value="twin" data-price="1500">Twin Room - R1,500/night</option>
+              </select>
+            </div>
+
+            <div class="date-inputs">
+              <div class="form-group">
+                <label>Check-in Date</label>
+                <input type="text" id="checkIn" placeholder="Select on calendar" readonly>
+              </div>
+              <div class="form-group">
+                <label>Check-out Date</label>
+                <input type="text" id="checkOut" placeholder="Select on calendar" readonly>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Number of Guests</label>
+              <select id="guestCount">
+                <option value="1">1 Guest</option>
+                <option value="2" selected>2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="guestName" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="guestEmail" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel" id="guestPhone" placeholder="+27 XX XXX XXXX" required>
+            </div>
+
+            <div id="availabilityStatus" class="availability-status" style="display: none;"></div>
+
+            <div class="pricing-summary" id="pricingSummary" style="display: none;">
+              <h4>Pricing Summary</h4>
+              <div class="pricing-row">
+                <span>Room Rate</span>
+                <span id="roomRate">R0</span>
+              </div>
+              <div class="pricing-row">
+                <span>Nights</span>
+                <span id="nightCount">0</span>
+              </div>
+              <div class="pricing-row">
+                <span>Cleaning Fee</span>
+                <span>R350</span>
+              </div>
+              <div class="pricing-row">
+                <span>Service Fee</span>
+                <span id="serviceFee">R0</span>
+              </div>
+              <div class="pricing-row">
+                <span>Total</span>
+                <span id="totalPrice">R0</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="bookButton" disabled>
+              Select Dates to Book
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <div class="section-container">
+      <div class="two-column">
+        <div class="two-column-image">
+          <img src="images/team.jpg" alt="About Centurion Golf Estate Airbnb">
+        </div>
+        <div class="two-column-content">
+          <h2>About Us</h2>
+          <p>Luxury Airbnb accommodation on Centurion Golf Estate, 5 Boca Street. Wake up to stunning views of the 18th hole on one of South Africa's premier golf courses. Our beautifully appointed rooms offer the perfect retreat for golfers and tourists alike. Enjoy world-class golf, modern amenities, and the tranquil beauty of the estate. Book your stay and experience Centurion Golf Estate like never before.</p>
+          <p>We are committed to delivering exceptional results and exceeding expectations with every project we undertake.</p>
+          <a href="#contact" class="btn btn-primary">Find Your Home</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="section-container">
+      <h2>Ready to Get Started?</h2>
+      <p>Contact us today and let's discuss how we can help you achieve your goals.</p>
+      <a href="#contact" class="btn">Find Your Home</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="footer-container">
+      <div class="footer-logo">CENTURION GOLF ESTATE AIRBNB</div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="mailto:bookings@centuriongolfbnb.co.za">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // BOOKING CALENDAR FUNCTIONALITY
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    // Calendar State
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+    let selectedCheckIn = null;
+    let selectedCheckOut = null;
+    let selectingCheckOut = false;
+
+    // Booked dates - fetched from API
+    let bookedDates = [];
+
+    // Fetch booked dates from API
+    async function fetchBookedDates() {
+      try {
+        const response = await fetch('/api/booking/dates/centurion-golf-estate-airbnb');
+        const data = await response.json();
+        if (data.success && data.bookedDates) {
+          bookedDates = data.bookedDates;
+          console.log('[Calendar] Loaded booked dates:', bookedDates.length);
+          renderCalendar(); // Re-render with real data
+        }
+      } catch (error) {
+        console.error('[Calendar] Failed to fetch booked dates:', error);
+      }
+    }
+
+    // Room prices
+    const roomPrices = {
+      master: 2500,
+      deluxe: 1800,
+      twin: 1500
+    };
+
+    // Month names
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    // Day names
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    // Initialize calendar on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCalendar();
+      fetchBookedDates(); // Fetch real booked dates from API
+    });
+
+    // Render the calendar
+    function renderCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      const monthDisplay = document.getElementById('calendarMonth');
+
+      // Update month/year display
+      monthDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+      // Clear grid
+      grid.innerHTML = '';
+
+      // Add day headers
+      dayNames.forEach(day => {
+        const header = document.createElement('div');
+        header.className = 'calendar-day-header';
+        header.textContent = day;
+        grid.appendChild(header);
+      });
+
+      // Get first day of month and number of days
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+
+      // Previous month days
+      for (let i = firstDay - 1; i >= 0; i--) {
+        const day = document.createElement('div');
+        day.className = 'calendar-day other-month disabled';
+        day.textContent = daysInPrevMonth - i;
+        grid.appendChild(day);
+      }
+
+      // Current month days
+      const today = new Date();
+      for (let i = 1; i <= daysInMonth; i++) {
+        const day = document.createElement('div');
+        day.className = 'calendar-day';
+        day.textContent = i;
+
+        const dateStr = formatDateStr(currentYear, currentMonth, i);
+        const dateObj = new Date(currentYear, currentMonth, i);
+
+        // Check if date is in the past
+        if (dateObj < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+          day.classList.add('disabled');
+        }
+        // Check if date is booked
+        else if (bookedDates.includes(dateStr)) {
+          day.classList.add('booked');
+        }
+        // Check if date is today
+        else {
+          if (dateObj.toDateString() === today.toDateString()) {
+            day.classList.add('today');
+          }
+
+          // Check if date is selected
+          if (selectedCheckIn && dateStr === formatDate(selectedCheckIn)) {
+            day.classList.add('selected');
+          }
+          if (selectedCheckOut && dateStr === formatDate(selectedCheckOut)) {
+            day.classList.add('selected');
+          }
+
+          // Check if date is in range
+          if (selectedCheckIn && selectedCheckOut) {
+            const checkInTime = selectedCheckIn.getTime();
+            const checkOutTime = selectedCheckOut.getTime();
+            const currentTime = dateObj.getTime();
+            if (currentTime > checkInTime && currentTime < checkOutTime) {
+              day.classList.add('in-range');
+            }
+          }
+
+          // Add click handler
+          day.addEventListener('click', () => selectDate(dateObj, dateStr));
+        }
+
+        grid.appendChild(day);
+      }
+
+      // Next month days
+      const totalCells = firstDay + daysInMonth;
+      const remainingCells = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+      for (let i = 1; i <= remainingCells; i++) {
+        const day = document.createElement('div');
+        day.className = 'calendar-day other-month disabled';
+        day.textContent = i;
+        grid.appendChild(day);
+      }
+    }
+
+    // Navigate to previous month
+    function prevMonth() {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      renderCalendar();
+    }
+
+    // Navigate to next month
+    function nextMonth() {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      renderCalendar();
+    }
+
+    // Select a date
+    function selectDate(dateObj, dateStr) {
+      // Check if date is booked
+      if (bookedDates.includes(dateStr)) {
+        return;
+      }
+
+      if (!selectingCheckOut) {
+        // Selecting check-in date
+        selectedCheckIn = dateObj;
+        selectedCheckOut = null;
+        selectingCheckOut = true;
+        document.getElementById('checkIn').value = formatDisplayDate(dateObj);
+        document.getElementById('checkOut').value = '';
+        showAvailabilityStatus('Select your check-out date', 'available');
+      } else {
+        // Selecting check-out date
+        if (dateObj <= selectedCheckIn) {
+          // If selected date is before check-in, reset and use as new check-in
+          selectedCheckIn = dateObj;
+          selectedCheckOut = null;
+          document.getElementById('checkIn').value = formatDisplayDate(dateObj);
+          document.getElementById('checkOut').value = '';
+          showAvailabilityStatus('Select your check-out date', 'available');
+        } else {
+          // Check if any booked dates are in the range
+          let hasBlockedDates = false;
+          let checkDate = new Date(selectedCheckIn);
+          while (checkDate < dateObj) {
+            if (bookedDates.includes(formatDate(checkDate))) {
+              hasBlockedDates = true;
+              break;
+            }
+            checkDate.setDate(checkDate.getDate() + 1);
+          }
+
+          if (hasBlockedDates) {
+            showAvailabilityStatus('Some dates in this range are unavailable. Please select different dates.', 'unavailable');
+            selectedCheckIn = null;
+            selectedCheckOut = null;
+            selectingCheckOut = false;
+            document.getElementById('checkIn').value = '';
+            document.getElementById('checkOut').value = '';
+          } else {
+            selectedCheckOut = dateObj;
+            selectingCheckOut = false;
+            document.getElementById('checkOut').value = formatDisplayDate(dateObj);
+            showAvailabilityStatus('Dates available! Complete your booking below.', 'available');
+            updatePricing();
+          }
+        }
+      }
+
+      renderCalendar();
+    }
+
+    // Format date for comparison (YYYY-MM-DD)
+    function formatDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // Format date string from components
+    function formatDateStr(year, month, day) {
+      return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+
+    // Format date for display
+    function formatDisplayDate(date) {
+      const day = date.getDate();
+      const month = monthNames[date.getMonth()];
+      const year = date.getFullYear();
+      return `${day} ${month} ${year}`;
+    }
+
+    // Show availability status
+    function showAvailabilityStatus(message, status) {
+      const statusEl = document.getElementById('availabilityStatus');
+      statusEl.textContent = message;
+      statusEl.className = `availability-status ${status}`;
+      statusEl.style.display = 'block';
+    }
+
+    // Update pricing summary
+    function updatePricing() {
+      const pricingSummary = document.getElementById('pricingSummary');
+      const bookButton = document.getElementById('bookButton');
+
+      if (selectedCheckIn && selectedCheckOut) {
+        // Calculate nights
+        const timeDiff = selectedCheckOut.getTime() - selectedCheckIn.getTime();
+        const nights = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        // Get room price
+        const roomSelect = document.getElementById('roomSelect');
+        const roomType = roomSelect.value;
+        const roomPrice = roomPrices[roomType];
+
+        // Calculate totals
+        const roomTotal = roomPrice * nights;
+        const cleaningFee = 350;
+        const serviceFee = Math.round(roomTotal * 0.12); // 12% service fee
+        const total = roomTotal + cleaningFee + serviceFee;
+
+        // Update display
+        document.getElementById('roomRate').textContent = `R${roomPrice.toLocaleString()}`;
+        document.getElementById('nightCount').textContent = `${nights} night${nights > 1 ? 's' : ''}`;
+        document.getElementById('serviceFee').textContent = `R${serviceFee.toLocaleString()}`;
+        document.getElementById('totalPrice').textContent = `R${total.toLocaleString()}`;
+
+        pricingSummary.style.display = 'block';
+        bookButton.disabled = false;
+        bookButton.textContent = `Book Now - R${total.toLocaleString()}`;
+      } else {
+        pricingSummary.style.display = 'none';
+        bookButton.disabled = true;
+        bookButton.textContent = 'Select Dates to Book';
+      }
+    }
+
+    // Handle form submission
+    document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('guestName').value;
+      const email = document.getElementById('guestEmail').value;
+      const phone = document.getElementById('guestPhone').value;
+      const guests = document.getElementById('guestCount').value;
+      const roomSelect = document.getElementById('roomSelect');
+      const room = roomSelect.options[roomSelect.selectedIndex].text;
+      const specialRequests = document.getElementById('specialRequests')?.value || '';
+
+      if (!name || !email || !phone) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      if (!selectedCheckIn || !selectedCheckOut) {
+        alert('Please select check-in and check-out dates');
+        return;
+      }
+
+      // Disable submit button and show loading
+      const submitBtn = document.getElementById('bookButton');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      // Extract price from the displayed total
+      const totalText = document.getElementById('totalPrice').textContent;
+      const totalPrice = parseInt(totalText.replace(/[^0-9]/g, '')) || 0;
+
+      // Prepare booking data
+      const bookingData = {
+        projectSlug: 'centurion-golf-estate-airbnb',
+        guestName: name,
+        guestEmail: email,
+        guestPhone: phone,
+        checkIn: selectedCheckIn.toISOString().split('T')[0],
+        checkOut: selectedCheckOut.toISOString().split('T')[0],
+        roomType: room,
+        guests: parseInt(guests),
+        totalPrice: totalPrice,
+        specialRequests: specialRequests,
+        propertyName: 'Centurion Golf Estate',
+        propertyEmail: '' // Add owner email here for notifications
+      };
+
+      try {
+        // Submit to booking API
+        const response = await fetch('/api/booking/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bookingData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Show success message
+          alert('Booking Submitted Successfully!\n\nBooking Reference: ' + result.bookingRef + '\n\nA confirmation email has been sent to ' + email + '.\n\nWe will contact you shortly to confirm your reservation.');
+
+          // Reset form
+          document.getElementById('bookingForm').reset();
+          selectedCheckIn = null;
+          selectedCheckOut = null;
+          selectingCheckOut = false;
+          document.getElementById('checkIn').value = '';
+          document.getElementById('checkOut').value = '';
+          document.getElementById('pricingSummary').style.display = 'none';
+          document.getElementById('availabilityStatus').style.display = 'none';
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Select Dates to Book';
+          renderCalendar();
+        } else {
+          throw new Error(result.error || 'Booking failed');
+        }
+      } catch (error) {
+        console.error('Booking error:', error);
+        alert('Sorry, there was an error processing your booking. Please try again or contact us directly.\n\nError: ' + error.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  </script>
+</body>
+</html>

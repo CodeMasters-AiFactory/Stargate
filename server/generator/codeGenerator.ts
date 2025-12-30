@@ -121,9 +121,9 @@ ${JSON.stringify(schemaLD, null, 2)}
  * Generate React components (reserved for future use)
  */
 function _generateReact(
-  _layout: LayoutStructure,
-  _styleSystem: StyleSystem,
-  _copy: CopyContent
+  layout: LayoutStructure,
+  styleSystem: StyleSystem,
+  copy: CopyContent
 ): GeneratedCode {
   // Generate main App component
   let react = `import React from 'react';
@@ -134,10 +134,10 @@ function App() {
     <div className="app">
 `;
 
-  layout.sections.forEach(section => {
+  layout.sections.forEach((section: { type: string }) => {
     react += generateSectionReact(section, copy, styleSystem);
   });
-  
+
   react += `    </div>
   );
 }
@@ -146,17 +146,18 @@ export default App;`;
 
   // Generate CSS
   const css = generateCSS(styleSystem, layout);
-  
-  return { react, css };
+
+  return { html: '', css, javascript: '', react };
 }
+void _generateReact; // Reserved for future use
 
 /**
  * Generate Tailwind CSS (reserved for future use)
  */
 function _generateTailwind(
-  _layout: LayoutStructure,
-  _styleSystem: StyleSystem,
-  _copy: CopyContent
+  layout: LayoutStructure,
+  styleSystem: StyleSystem,
+  copy: CopyContent
 ): GeneratedCode {
   let html = `<!DOCTYPE html>
 <html lang="en">
@@ -186,15 +187,16 @@ function _generateTailwind(
 <body class="bg-white font-body">
 `;
 
-  layout.sections.forEach(section => {
+  layout.sections.forEach((section: { type: string }) => {
     html += generateSectionTailwind(section, copy);
   });
-  
+
   html += `</body>
 </html>`;
 
-  return { tailwind: html };
+  return { html, css: '', javascript: '' };
 }
+void _generateTailwind; // Reserved for future use
 
 /**
  * Helper functions for HTML generation
@@ -1045,9 +1047,10 @@ export function generateCSS(styleSystem: StyleSystem, _layout: LayoutStructure, 
 
   const neutrals = styleSystem.colors.neutrals || [];
   // Reserved for future use: backgroundColor, surfaceColor, mutedColor
-  const _backgroundColor = neutrals[0] || styleSystem.colors.background || '#f8fafc';
-  const _surfaceColor = neutrals[1] || '#ffffff';
-  const _mutedColor = neutrals[2] || '#94a3b8';
+  const backgroundColor = neutrals[0] || styleSystem.colors.background || '#f8fafc';
+  const surfaceColor = neutrals[1] || '#ffffff';
+  const mutedColor = neutrals[2] || '#94a3b8';
+  void backgroundColor; void surfaceColor; void mutedColor; // Reserved for future use
   const heroGradientStart = styleSystem.colors.primary || '#2563EB';
   const heroGradientMid = styleSystem.colors.secondary || heroGradientStart;
   const heroGradientEnd = styleSystem.colors.accent || heroGradientMid;

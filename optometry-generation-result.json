@@ -1,0 +1,35 @@
+{
+  "success": true,
+  "projectSlug": "eugenie-coetzer-optometrists",
+  "previewUrl": "/website_projects/eugenie-coetzer-optometrists/merlin8-output/index.html",
+  "outputPath": "C:\\CURSOR PROJECTS\\StargatePortal\\website_projects\\eugenie-coetzer-optometrists\\merlin8-output",
+  "industry": {
+    "id": "medical",
+    "name": "Medical & Healthcare"
+  },
+  "imagesGenerated": 5,
+  "images": [
+    {
+      "section": "hero",
+      "url": "images/hero.jpg"
+    },
+    {
+      "section": "services",
+      "url": "images/services.jpg"
+    },
+    {
+      "section": "about",
+      "url": "images/about.jpg"
+    },
+    {
+      "section": "team",
+      "url": "images/team.jpg"
+    },
+    {
+      "section": "background",
+      "url": "images/background.jpg"
+    }
+  ],
+  "duration": 32230,
+  "errors": []
+}

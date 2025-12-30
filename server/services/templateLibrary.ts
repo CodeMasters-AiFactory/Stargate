@@ -37,12 +37,12 @@ export const TEMPLATE_LIBRARY: Template[] = [
 ];
 
 // Helper functions remain for compatibility
-export function getTemplatesByCategory(category: string, includeGenerated: boolean = false): Template[] {
+export function getTemplatesByCategory(category: string, _includeGenerated: boolean = false): Template[] {
   return TEMPLATE_LIBRARY.filter(t => t.category === category);
 }
 
-export function getTemplatesByIndustry(industry: string, includeGenerated: boolean = false): Template[] {
-  return TEMPLATE_LIBRARY.filter(t => 
+export function getTemplatesByIndustry(industry: string, _includeGenerated: boolean = false): Template[] {
+  return TEMPLATE_LIBRARY.filter(t =>
     t.industry.some(ind => ind.toLowerCase().includes(industry.toLowerCase()))
   );
 }
@@ -57,7 +57,7 @@ export function getTemplateById(id: string): Template | undefined {
   return TEMPLATE_LIBRARY.find(t => t.id === id);
 }
 
-export function searchTemplates(query: string, includeGenerated: boolean = false): Template[] {
+export function searchTemplates(query: string, _includeGenerated: boolean = false): Template[] {
   const lowerQuery = query.toLowerCase();
   return TEMPLATE_LIBRARY.filter(t =>
       t.name.toLowerCase().includes(lowerQuery) ||
@@ -67,7 +67,7 @@ export function searchTemplates(query: string, includeGenerated: boolean = false
   );
 }
 
-export function getAllTemplates(includeGenerated: boolean = false, generatedCount: number = 100): Template[] {
+export function getAllTemplates(_includeGenerated: boolean = false, _generatedCount: number = 100): Template[] {
   // DISABLED: All templates cleared per user request
   return []; // Return empty array - no generated templates
 }

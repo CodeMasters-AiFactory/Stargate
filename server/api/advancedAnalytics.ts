@@ -3,7 +3,7 @@
  * Heatmaps, session recordings, funnel analysis, user segmentation
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import { advancedAnalyticsService } from '../services/advancedAnalytics';
 
 export function registerAdvancedAnalyticsRoutes(app: Express) {
@@ -12,16 +12,17 @@ export function registerAdvancedAnalyticsRoutes(app: Express) {
   // ============================================
 
   // Generate heatmap
-  app.get('/api/analytics/heatmap/:websiteId', async (req, res) => {
+  app.get('/api/analytics/heatmap/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const { pagePath, type, startDate, endDate } = req.query;
 
       if (!pagePath) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'pagePath is required',
         });
+        return;
       }
 
       const dateRange = startDate && endDate
@@ -52,15 +53,16 @@ export function registerAdvancedAnalyticsRoutes(app: Express) {
   // ============================================
 
   // Record session
-  app.post('/api/analytics/sessions/record', async (req, res) => {
+  app.post('/api/analytics/sessions/record', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, sessionId, events } = req.body;
 
       if (!websiteId || !sessionId || !events) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId, sessionId, and events are required',
         });
+        return;
       }
 
       const recordingId = await advancedAnalyticsService.recordSession(
@@ -82,16 +84,17 @@ export function registerAdvancedAnalyticsRoutes(app: Express) {
   });
 
   // Get session recording
-  app.get('/api/analytics/sessions/:recordingId', async (req, res) => {
+  app.get('/api/analytics/sessions/:recordingId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { recordingId } = req.params;
       const recording = await advancedAnalyticsService.getSessionRecording(recordingId);
 
       if (!recording) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Recording not found',
         });
+        return;
       }
 
       res.json({
@@ -111,15 +114,16 @@ export function registerAdvancedAnalyticsRoutes(app: Express) {
   // ============================================
 
   // Analyze funnel
-  app.post('/api/analytics/funnels/analyze', async (req, res) => {
+  app.post('/api/analytics/funnels/analyze', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, steps } = req.body;
 
       if (!websiteId || !steps || !Array.isArray(steps)) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId and steps array are required',
         });
+        return;
       }
 
       const analysis = await advancedAnalyticsService.analyzeFunnel(websiteId, steps);
@@ -141,15 +145,16 @@ export function registerAdvancedAnalyticsRoutes(app: Express) {
   // ============================================
 
   // Create user segment
-  app.post('/api/analytics/segments', async (req, res) => {
+  app.post('/api/analytics/segments', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, name, criteria } = req.body;
 
       if (!websiteId || !name || !criteria) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId, name, and criteria are required',
         });
+        return;
       }
 
       const segmentId = await advancedAnalyticsService.createUserSegment(
@@ -171,7 +176,7 @@ export function registerAdvancedAnalyticsRoutes(app: Express) {
   });
 
   // Get user segments
-  app.get('/api/analytics/segments/:websiteId', async (req, res) => {
+  app.get('/api/analytics/segments/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const segments = await advancedAnalyticsService.getUserSegments(websiteId);
@@ -189,16 +194,17 @@ export function registerAdvancedAnalyticsRoutes(app: Express) {
   });
 
   // Analyze user segment
-  app.get('/api/analytics/segments/:websiteId/:segmentId', async (req, res) => {
+  app.get('/api/analytics/segments/:websiteId/:segmentId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { segmentId } = req.params;
       const segment = await advancedAnalyticsService.analyzeUserSegment('', segmentId);
 
       if (!segment) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Segment not found',
         });
+        return;
       }
 
       res.json({

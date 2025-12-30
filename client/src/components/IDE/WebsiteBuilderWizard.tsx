@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useLocation } from 'wouter';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -25,7 +25,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import {
   ArrowRight,
@@ -47,9 +46,6 @@ import {
   Zap,
   User,
   HelpCircle,
-  Undo2,
-  Redo2,
-  Upload,
   X,
   ShoppingCart,
   ChevronRight,
@@ -62,9 +58,7 @@ import {
   Edit,
   Pause,
   Play,
-  Clock,
-  Star,
-  Crown,
+  LayoutTemplate,
 } from 'lucide-react';
 import type {
   WizardStage,
@@ -75,10 +69,6 @@ import type {
   GeneratedWebsitePackage,
   MultiPageWebsite,
   LegacyWebsiteContent,
-  PageKeywords,
-  GeneratedImage,
-  SEOAssessmentResult,
-  RedoRequest,
 } from '@/types/websiteBuilder';
 import {
   discoveryQuestions,
@@ -102,15 +92,9 @@ import { DesignTemplateSelection } from './DesignTemplateSelection';
 import { ContentTemplateSelection } from './ContentTemplateSelection';
 import { MergePreview } from './MergePreview';
 import { EmptyTemplatePreview } from './EmptyTemplatePreview';
-import { ImageReplacementStage } from './ImageReplacementStage';
-import { ContentRewritingStage } from './ContentRewritingStage';
 import { ClientInfoCollection } from './ClientInfoCollection';
-// New wizard components for 9-phase flow
-// Phase 3 (keywords-collection) removed - no longer needed
-import { ImageGenerationStage } from './ImageGenerationStage';
-import { SEOAssessmentStage } from './SEOAssessmentStage';
-import { ReviewRedoStage } from './ReviewRedoStage';
 import { FinalWebsiteDisplay } from './FinalWebsiteDisplay';
+import { QuickBusinessForm, type BusinessFormData } from './QuickBusinessForm';
 import { AIWebsiteGeneration } from './AIWebsiteGeneration';
 import { RealTimeWebsiteTransform } from './RealTimeWebsiteTransform';
 import { ReviewAndRedesign } from './ReviewAndRedesign';
@@ -464,6 +448,13 @@ const GOOGLE_CATEGORY_STAGES: Record<
   'review-redesign': null,
   'seo-evaluation': null,
   'final-approval': null,
+  // New 4-phase workflow stages
+  'quick-form': null,
+  'final-website': null,
+  'keywords-collection': null,
+  'seo-assessment': null,
+  'review-redo': null,
+  'empty-preview': null,
 };
 
 // Google Rating Category Details (legacy, keeping for backward compatibility)
@@ -755,16 +746,16 @@ const performanceMonitor = {
 };
 
 // Package name and price mappings
-const PACKAGE_NAMES: Record<PackageId, string> = {
-  basic: 'Essential',
-  advanced: 'Professional',
-  seo: 'SEO Optimized',
-  deluxe: 'Deluxe',
-  ultra: 'Ultra',
+const _PACKAGE_NAMES: Record<PackageId, string> = {
+  basic: 'Free Trial',
+  advanced: 'Starter',
+  seo: 'Pro',
+  deluxe: 'Agency',
+  ultra: 'Enterprise',
   custom: 'Custom',
 };
 
-const PACKAGE_PRICES: Record<PackageId, string> = {
+const _PACKAGE_PRICES: Record<PackageId, string> = {
   basic: '$29/month',
   advanced: '$49/month',
   seo: '$69/month',
@@ -772,6 +763,10 @@ const PACKAGE_PRICES: Record<PackageId, string> = {
   ultra: '$199/month',
   custom: 'Custom',
 };
+
+// Export for potential future use
+void _PACKAGE_NAMES;
+void _PACKAGE_PRICES;
 
 interface InitialProjectData {
   projectId: string;
@@ -788,7 +783,7 @@ interface WebsiteBuilderWizardProps {
   initialProject?: InitialProjectData; // Direct project data bypasses localStorage
 }
 
-export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: WebsiteBuilderWizardProps = {}) {
+export function WebsiteBuilderWizard({ onBackToProjects: _onBackToProjects, initialProject }: WebsiteBuilderWizardProps = {}) {
   // Debug mode: Set to false in production to disable verbose logging
   const DEBUG_MODE = process.env.NODE_ENV === 'development';
 
@@ -834,10 +829,10 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
   };
 
   const { toast } = useToast();
-  const { state } = useIDE();
+  const { state, setState } = useIDE();
   const { startInvestigation, updateProgress, stopInvestigation } = useInvestigation();
-  const { isAdmin: _isAdmin, user, isAuthenticated } = useAuth();
-  const [, setLocation] = useLocation();
+  const { isAdmin: _isAdmin, user: _user, isAuthenticated: _isAuthenticated } = useAuth();
+  const [, _setLocation] = useLocation();
 
   // Custom hooks for state management
   const wizardUI = useWizardUI();
@@ -861,9 +856,13 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
       return true;
     }
   });
-  const [autoAdvanceDelay, setAutoAdvanceDelay] = useState<number>(5000); // 5 seconds default
+  const [autoAdvanceDelay, _setAutoAdvanceDelay] = useState<number>(5000); // 5 seconds default
   const [showAutoAdvanceConfirmation, setShowAutoAdvanceConfirmation] = useState(false);
   const [pendingAutoAdvance, setPendingAutoAdvance] = useState<{ stage: WizardStage; nextStage: WizardStage } | null>(null);
+
+  // Pricing page state
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const [showCreditPacks, setShowCreditPacks] = useState(false);
 
   // Ref to store abort controller for SSE stream cleanup
   const generateAbortControllerRef = useRef<AbortController | null>(null);
@@ -896,7 +895,8 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
   // Get selected package from state (will be used to customize wizard flow)
   const selectedPackage = state.merlinPackage;
 
-  // Package-specific configuration
+  // Package-specific configuration - reserved for future use
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const packageConfig = useMemo(() => {
     if (!selectedPackage) return null;
 
@@ -915,6 +915,7 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
             : Infinity,
     };
   }, [selectedPackage]);
+  void packageConfig; // Reserved for future use
 
   // Helper function to regenerate a specific check - defined after wizardState
   const regenerateCheck = useCallback(
@@ -1023,11 +1024,8 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
 
   // CRITICAL: Reset wizard for a completely new project
   // This function completely resets all wizard state and clears all data
-  // Note: Currently unused but kept for potential future use
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // Reserved for future use: resetWizardForNewProject
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _resetWizardForNewProject = useCallback(() => {
+  const resetWizardForNewProject = useCallback(() => {
     debugLog('[Wizard] 🔄 Resetting wizard for new project');
     clearWizardData();
     setGeneratedWebsite(null);
@@ -1044,9 +1042,13 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
       selectedContentTemplates: [],
       imageSource: 'leonardo',
       redesignCount: 0,
+      pageKeywords: [],
+      generatedImages: [],
+      redoRequests: [],
     });
     debugLog('[Wizard] ✅ Wizard reset complete - ready for new project');
   }, [clearWizardData, debugLog]);
+  void resetWizardForNewProject; // Reserved for future use
 
   // Load saved state from localStorage - must be synchronous for useState initializer
   // CRITICAL: This function should NEVER restore state if:
@@ -1138,10 +1140,7 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
           css: initialProject.css || '',
         },
         requirements: initialProject.businessInfo || {},
-        selectedDesignTemplates: initialProject.templateId ? [{
-          id: initialProject.templateId,
-          name: initialProject.templateName || 'Template',
-        }] : [],
+        selectedDesignTemplates: [], // BrandTemplate[] - templates loaded separately
         currentPage: 'project-overview',
         currentQuestion: 0,
         messages: [],
@@ -1152,6 +1151,9 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
         selectedContentTemplates: [],
         imageSource: 'leonardo',
         redesignCount: 0,
+        pageKeywords: [],
+        generatedImages: [],
+        redoRequests: [],
       };
       // Also update localStorage to match
       localStorage.setItem('stargate-wizard-state', JSON.stringify(projectState));
@@ -1214,6 +1216,9 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
       selectedContentTemplates: [],
       imageSource: 'leonardo' as const,
       redesignCount: 0,
+      pageKeywords: [],
+      generatedImages: [],
+      redoRequests: [],
     };
   });
 
@@ -1321,6 +1326,8 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
 
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [ecommerceProducts, setEcommerceProducts] = useState<Product[]>([]);
+  // Build mode: 'templates' = browse templates, 'merlin' = AI canvas from scratch
+  const [buildMode, setBuildMode] = useState<'templates' | 'merlin'>('templates');
   // Load generated website from localStorage on mount
   // CRITICAL: Don't restore old website data - always start fresh
   const [generatedWebsite, setGeneratedWebsite] = useState<{
@@ -1364,16 +1371,10 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
       }
       // Always clear from localStorage when not in review
       localStorage.removeItem('merlin_generated_website');
-      
+
       // FORCE reset stage to template-select if we have generatedWebsite but stage is wrong
-      // BUT: NEVER reset if we're on final-website stage (that's valid and must be preserved)
-      // CRITICAL: Double-check we're not on final-website before any reset
-      if (wizardState.stage === 'final-website') {
-        debugLog('[Wizard] ✅ FINAL CHECK: On final-website - ABORTING any reset logic');
-        return; // Exit early, don't do anything
-      }
-      
-      if (generatedWebsite && wizardState.stage !== 'template-select' && (wizardState.stage as string) !== 'review' && wizardState.stage !== 'final-website') {
+      // Note: 'final-website' was already handled above with early return, and we're inside !== 'review' block
+      if (generatedWebsite && wizardState.stage !== 'template-select') {
         debugLog('[Wizard] 🔄 FORCE RESETTING stage to template-select');
         // Direct state update - navigateToStage may not be defined yet
         setWizardState(prev => ({ ...prev, stage: 'package-select' }));
@@ -1393,7 +1394,7 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
   // Removed unused showPreview state - preview is controlled by stage
   // UI state now managed by useWizardUI hook
   const {
-    showRestartDialog,
+    showRestartDialog: _showRestartDialog,
     setShowRestartDialog,
     viewMode: _viewMode,
     setViewMode: _setViewMode,
@@ -1425,7 +1426,7 @@ export function WebsiteBuilderWizard({ onBackToProjects, initialProject }: Websi
     setIsGenerating,
     buildingProgress,
     setBuildingProgress,
-    error: _generationError,
+    error: generationError,
     setError: setGenerationError,
   } = websiteGeneration;
 
@@ -1797,6 +1798,8 @@ ${
           generatedImages: wizardState.generatedImages || [],
           seoAssessment: wizardState.seoAssessment,
           redoRequests: wizardState.redoRequests || [],
+          // CRITICAL: Save businessInfo for refresh persistence
+          businessInfo: wizardState.businessInfo,
         };
         localStorage.setItem(WIZARD_STORAGE_KEY, JSON.stringify(stateToSave));
         debugLog('[Wizard] 💾 Saved state:', stateToSave.stage, stateToSave.currentPage);
@@ -1825,6 +1828,9 @@ ${
     wizardState.messages,
     wizardState.stageHistory,
     wizardState.packageConstraints,
+    // CRITICAL: Include stage and businessInfo directly to ensure saves after quick-form submission
+    wizardState.stage,
+    wizardState.businessInfo,
     // debugLog is stable function, not needed in deps
   ]);
 
@@ -1888,8 +1894,17 @@ ${
   >('all');
   const [activitySearch, setActivitySearch] = useState('');
   const [activityPage, setActivityPage] = useState(1);
-  const [activityItemsPerPage, setActivityItemsPerPage] = useState(20);
+  const [activityItemsPerPage, _setActivityItemsPerPage] = useState(20);
   const [showAllActivities, setShowAllActivities] = useState(false);
+
+  // Pause/Resume investigation handlers
+  const pauseInvestigation = useCallback(() => {
+    setIsPaused(true);
+  }, []);
+
+  const resumeInvestigation = useCallback(() => {
+    setIsPaused(false);
+  }, []);
 
   // Debug: Log researchActivities changes (throttled to prevent performance issues)
   useEffect(() => {
@@ -2616,7 +2631,7 @@ ${
     }
   }, []);
 
-  // Export/Import functions
+  // Export/Import functions (reserved for future use)
   const handleExportConfig = useCallback(() => {
     try {
       const config = {
@@ -2645,6 +2660,7 @@ ${
     }
     // Only depend on specific fields
   }, [wizardState.stage, wizardState.currentPage, wizardState.requirements, toast]);
+  void handleExportConfig; // Reserved for future use
 
   const handleImportConfig = useCallback(() => {
     const input = document.createElement('input');
@@ -2681,6 +2697,7 @@ ${
     };
     input.click();
   }, [toast, saveToHistory]);
+  void handleImportConfig; // Reserved for future use
 
   // Validate current page before navigation
   const validateCurrentPage = useCallback((): {
@@ -2752,6 +2769,9 @@ ${
         selectedPackage: packageId,
         packageConstraints: constraints,
         selectedTemplate: null, // No template selected yet
+        pageKeywords: [],
+        generatedImages: [],
+        redoRequests: [],
       });
 
       // Clear any generated website
@@ -3480,7 +3500,7 @@ ${
                                     if (!autoAdvanceEnabled) {
                                       debugLog('[AUTO-ADVANCE] Auto-advance disabled by user preference');
                                       autoAdvanceInProgressRef.current = false;
-                                      return;
+                                      return currentState;
                                     }
                                     
                                     // Show confirmation dialog
@@ -5034,7 +5054,7 @@ ${
   };
 
   // Download function - reserved for future use
-  const _handleDownload = async () => {
+  const handleDownload = async () => {
     if (!generatedWebsite) return;
 
     // Check if multi-page format (preferred)
@@ -5130,6 +5150,7 @@ ${
       setWizardState(prev => ({ ...prev, stage: 'commit' }));
     }
   };
+  void handleDownload; // Reserved for future use
 
   const handleStartOver = () => {
     debugLog('[Wizard] 🔄 Starting over - clearing ALL data');
@@ -5151,6 +5172,9 @@ ${
       messages: [],
       selectedPackage: undefined,
       packageConstraints: undefined,
+      pageKeywords: [],
+      generatedImages: [],
+      redoRequests: [],
     };
     setWizardState(newState);
     setGeneratedWebsite(null);
@@ -5274,10 +5298,9 @@ ${
                   handleInputChange(question.key, e.target.value);
                   // Generate suggestions as user types (debounced)
                   if (e.target.value.length > 2) {
-                    const timeoutId = setTimeout(() => {
+                    setTimeout(() => {
                       generateAISuggestions(question.key);
                     }, 500);
-                    return () => clearTimeout(timeoutId);
                   } else {
                     setShowSuggestions(prev => ({ ...prev, [question.key]: false }));
                   }
@@ -5767,8 +5790,8 @@ ${
 
   return (
     <div className="h-full w-full flex flex-col bg-background" data-testid="website-builder-wizard">
-      {/* Global Wizard Navigation - Hidden on final-website for full screen */}
-      {wizardState.stage !== 'final-website' && (
+      {/* Global Wizard Navigation - Hidden on package-select and final-website for clean UI */}
+      {wizardState.stage !== 'final-website' && wizardState.stage !== 'package-select' && (
         <WizardNavigation
           currentStage={wizardState.stage}
           onNavigate={stage => {
@@ -5817,7 +5840,319 @@ ${
         />
       )}
 
-      {/* Main Content Area */}
+      {/* PACKAGE SELECT - Full Pricing Page Design */}
+      {wizardState.stage === 'package-select' && (
+        <div className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-900 via-purple-900/50 to-gray-900">
+          {/* Top Navigation Bar */}
+          <div className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10">
+            <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => window.location.href = '/services'}
+                  className="text-white/70 hover:text-white hover:bg-white/10"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back to Services
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => window.location.href = '/'}
+                  className="text-white/70 hover:text-white hover:bg-white/10"
+                >
+                  <Building2 className="w-4 h-4 mr-2" />
+                  Home
+                </Button>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.location.href = '/dashboard'}
+                className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10"
+              >
+                My Projects
+              </Button>
+            </div>
+          </div>
+
+          <div className="max-w-7xl mx-auto px-6 py-12">
+            {/* Header */}
+            <div className="text-center mb-12">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                Simple, Transparent Pricing
+              </h1>
+              <p className="text-xl text-purple-200 mb-8">
+                Build unlimited websites with AI. Pay only for what you use.
+              </p>
+
+              {/* Billing toggle */}
+              <div className="inline-flex items-center bg-gray-800 rounded-full p-1">
+                <button
+                  onClick={() => setBillingCycle('monthly')}
+                  className={`px-6 py-2 rounded-full transition-all ${
+                    billingCycle === 'monthly'
+                      ? 'bg-purple-600 text-white'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Monthly
+                </button>
+                <button
+                  onClick={() => setBillingCycle('yearly')}
+                  className={`px-6 py-2 rounded-full transition-all ${
+                    billingCycle === 'yearly'
+                      ? 'bg-purple-600 text-white'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Yearly
+                  <span className="ml-2 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
+                    Save 20%
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* Packages Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-16">
+              {[
+                { id: 'basic' as PackageId, name: 'Free Trial', price: 0, credits: 25, websites: 1, description: 'Try before you buy', features: ['25 free credits', '1 website', 'Basic templates', 'Haiku models only', 'Community support'], popular: false, cta: 'Start Free' },
+                { id: 'advanced' as PackageId, name: 'Starter', price: 9, credits: 150, websites: 2, description: 'Perfect for individuals', features: ['150 credits/month', '2 websites', 'All templates', 'Haiku & Sonnet models', 'Email support', 'AI image generation'], popular: false, cta: 'Get Started' },
+                { id: 'seo' as PackageId, name: 'Pro', price: 29, credits: 500, websites: 10, description: 'For professionals', features: ['500 credits/month', '10 websites', 'Premium templates', 'All AI models', 'Priority support', 'AI image generation', 'Custom domains', 'Analytics'], popular: true, cta: 'Go Pro' },
+                { id: 'deluxe' as PackageId, name: 'Agency', price: 79, credits: 2000, websites: 50, description: 'For agencies & teams', features: ['2000 credits/month', '50 websites', 'All premium features', 'ALL AI models (including Opus)', 'White-label option', 'API access', 'Dedicated support', 'Team collaboration'], popular: false, cta: 'Contact Sales' },
+                { id: 'ultra' as PackageId, name: 'Enterprise', price: 199, credits: 10000, websites: -1, description: 'Unlimited power', features: ['10,000 credits/month', 'Unlimited websites', 'All features included', 'ALL AI models', 'Custom integrations', 'SLA guarantee', 'Dedicated account manager', 'On-boarding & training'], popular: false, cta: 'Contact Us' },
+              ].map((pkg) => {
+                const displayPrice = billingCycle === 'yearly' && pkg.price > 0
+                  ? Math.round(pkg.price * 0.8)
+                  : pkg.price;
+                const constraints = PACKAGE_CONSTRAINTS[pkg.id];
+
+                return (
+                  <div
+                    key={pkg.id}
+                    onClick={() => {
+                      clearWizardData();
+                      setWizardState({
+                        stage: 'template-select',
+                        currentPage: 'project-overview',
+                        selectedDesignTemplates: [],
+                        selectedContentTemplates: [],
+                        imageSource: 'leonardo',
+                        redesignCount: 0,
+                        currentQuestion: 0,
+                        requirements: {},
+                        messages: [],
+                        stageHistory: ['package-select'],
+                        selectedPackage: pkg.id,
+                        packageConstraints: constraints,
+                        selectedTemplate: null,
+                        pageKeywords: [],
+                        generatedImages: [],
+                        redoRequests: [],
+                      });
+                      setGeneratedWebsite(null);
+                      toast({
+                        title: 'Package Selected!',
+                        description: `You selected ${pkg.name}. Now choose your design template.`,
+                      });
+                    }}
+                    className={`relative rounded-2xl p-6 transition-all cursor-pointer hover:scale-105 ${
+                      pkg.popular
+                        ? 'bg-gradient-to-b from-purple-600 to-purple-800 border-2 border-purple-400 shadow-2xl shadow-purple-500/30'
+                        : 'bg-gray-800/80 border border-gray-700 hover:border-purple-500/50'
+                    }`}
+                  >
+                    {/* Popular badge */}
+                    {pkg.popular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-yellow-400 text-gray-900 text-sm font-bold rounded-full">
+                        Most Popular
+                      </div>
+                    )}
+
+                    {/* Package name */}
+                    <h3 className="text-xl font-bold text-white mb-1">{pkg.name}</h3>
+                    <p className="text-sm text-gray-400 mb-4">{pkg.description}</p>
+
+                    {/* Price */}
+                    <div className="mb-6">
+                      <span className="text-4xl font-bold text-white">
+                        {pkg.price === 0 ? 'Free' : `$${displayPrice}`}
+                      </span>
+                      {pkg.price > 0 && (
+                        <span className="text-gray-400">/month</span>
+                      )}
+                      {billingCycle === 'yearly' && pkg.price > 0 && (
+                        <div className="text-sm text-green-400">
+                          Billed ${Math.round(pkg.price * 12 * 0.8)}/year
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Credits & Websites */}
+                    <div className="flex gap-4 mb-4 text-sm">
+                      <div className="flex items-center gap-1 text-purple-300">
+                        <span className="text-lg">💎</span>
+                        <span>{pkg.credits} credits</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-purple-300">
+                        <span className="text-lg">🌐</span>
+                        <span>{pkg.websites === -1 ? '∞' : pkg.websites} sites</span>
+                      </div>
+                    </div>
+
+                    {/* Features */}
+                    <ul className="space-y-2 mb-6">
+                      {pkg.features.map((feature, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                          <span className="text-green-400 mt-0.5">✓</span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* CTA Button */}
+                    <button
+                      className={`w-full py-3 rounded-xl font-bold transition-all ${
+                        pkg.popular
+                          ? 'bg-white text-purple-600 hover:bg-gray-100'
+                          : pkg.price === 0
+                          ? 'bg-purple-600 text-white hover:bg-purple-500'
+                          : 'bg-gray-700 text-white hover:bg-gray-600'
+                      }`}
+                    >
+                      {pkg.cta}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Credit Packs Section */}
+            <div className="bg-gray-800/50 rounded-2xl p-8 mb-16">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-white">Need More Credits?</h2>
+                  <p className="text-gray-400">Buy credit packs anytime. No subscription required.</p>
+                </div>
+                <button
+                  onClick={() => setShowCreditPacks(!showCreditPacks)}
+                  className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-500 transition-all"
+                >
+                  {showCreditPacks ? 'Hide Packs' : 'View Credit Packs'}
+                </button>
+              </div>
+
+              {showCreditPacks && (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  {[
+                    { credits: 50, price: 4, discount: null },
+                    { credits: 100, price: 7, discount: '12% off' },
+                    { credits: 250, price: 15, discount: '25% off' },
+                    { credits: 500, price: 25, discount: '37% off' },
+                    { credits: 1000, price: 40, discount: '50% off' },
+                    { credits: 5000, price: 150, discount: '62% off' },
+                  ].map((pack, i) => (
+                    <button
+                      key={i}
+                      className="bg-gray-700 hover:bg-gray-600 rounded-xl p-4 text-center transition-all hover:scale-105"
+                    >
+                      <div className="text-2xl font-bold text-white mb-1">
+                        {pack.credits}
+                      </div>
+                      <div className="text-sm text-gray-400 mb-2">credits</div>
+                      <div className="text-xl font-bold text-purple-400">
+                        ${pack.price}
+                      </div>
+                      {pack.discount && (
+                        <div className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded mt-2">
+                          {pack.discount}
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* AI Models Section */}
+            <div className="bg-gray-800/50 rounded-2xl p-8">
+              <h2 className="text-2xl font-bold text-white mb-2">AI Model Pricing</h2>
+              <p className="text-gray-400 mb-6">Choose the right AI for your needs. Cheaper models are faster, premium models are smarter.</p>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="border-b border-gray-700">
+                      <th className="py-3 px-4 text-gray-400">Model</th>
+                      <th className="py-3 px-4 text-gray-400">Credits/Message</th>
+                      <th className="py-3 px-4 text-gray-400">Best For</th>
+                      <th className="py-3 px-4 text-gray-400">Speed</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-300">
+                    <tr className="border-b border-gray-700/50">
+                      <td className="py-3 px-4">🌱 Haiku 3</td>
+                      <td className="py-3 px-4 text-green-400 font-bold">1 credit</td>
+                      <td className="py-3 px-4">Simple edits, quick tasks</td>
+                      <td className="py-3 px-4">⚡⚡⚡ Fastest</td>
+                    </tr>
+                    <tr className="border-b border-gray-700/50">
+                      <td className="py-3 px-4">⚡ Haiku 3.5</td>
+                      <td className="py-3 px-4 text-green-400 font-bold">2 credits</td>
+                      <td className="py-3 px-4">Efficient conversations</td>
+                      <td className="py-3 px-4">⚡⚡⚡ Very Fast</td>
+                    </tr>
+                    <tr className="border-b border-gray-700/50">
+                      <td className="py-3 px-4">🚀 Haiku 4.5</td>
+                      <td className="py-3 px-4 text-yellow-400 font-bold">3 credits</td>
+                      <td className="py-3 px-4">Near-frontier speed</td>
+                      <td className="py-3 px-4">⚡⚡ Fast</td>
+                    </tr>
+                    <tr className="border-b border-gray-700/50 bg-purple-900/20">
+                      <td className="py-3 px-4">✨ Sonnet 4.5 <span className="text-xs bg-purple-500 text-white px-2 py-0.5 rounded ml-2">Recommended</span></td>
+                      <td className="py-3 px-4 text-purple-400 font-bold">8 credits</td>
+                      <td className="py-3 px-4">Website building, coding</td>
+                      <td className="py-3 px-4">⚡ Balanced</td>
+                    </tr>
+                    <tr className="border-b border-gray-700/50">
+                      <td className="py-3 px-4">👑 Opus 4.5</td>
+                      <td className="py-3 px-4 text-orange-400 font-bold">15 credits</td>
+                      <td className="py-3 px-4">Complex reasoning</td>
+                      <td className="py-3 px-4">Premium</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4">🔮 Opus 4.1</td>
+                      <td className="py-3 px-4 text-red-400 font-bold">40 credits</td>
+                      <td className="py-3 px-4">Ultimate intelligence</td>
+                      <td className="py-3 px-4">Ultimate</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Trust badges */}
+            <div className="mt-16 text-center">
+              <p className="text-gray-400 mb-4">
+                Trusted by businesses worldwide. Secure payments via Stripe.
+              </p>
+              <div className="flex items-center justify-center gap-6 opacity-60">
+                <span className="text-2xl">💳</span>
+                <span className="text-white font-medium">Visa</span>
+                <span className="text-white font-medium">Mastercard</span>
+                <span className="text-white font-medium">Amex</span>
+                <span className="text-2xl">🔒</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+            {/* Main Content Area - For other stages */}
+      {wizardState.stage !== 'package-select' && (
       <TooltipProvider>
         <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
           {/* Review Stage - Full Width */}
@@ -5828,28 +6163,13 @@ ${
            generatedWebsite.code &&
            wizardState.selectedPackage ? (
             <div className="flex-1 overflow-hidden w-full flex flex-col">
-              {/* Merlin Header for Review Stage */}
+              {/* Header for Review Stage */}
               <div className="px-4 py-3 border-b bg-gradient-to-r from-purple-50/50 to-blue-50/50 dark:from-purple-950/30 dark:to-blue-950/30 relative overflow-hidden">
-                {/* Merlin Background Image */}
-                <div
-                  className="absolute inset-0 pointer-events-none opacity-[0.04] dark:opacity-[0.02]"
-                  style={{
-                    backgroundImage: 'url(/merlin.jpg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center 70%',
-                    backgroundRepeat: 'no-repeat',
-                  }}
-                />
                 <div className="flex items-center gap-3 relative z-10">
-                  {/* Merlin Image/Icon */}
+                  {/* Icon */}
                   <div className="relative">
-                    <img
-                      src="/merlin.jpg"
-                      alt="Merlin"
-                      className="w-10 h-10 rounded-xl object-cover shadow-md border-2 border-purple-200 dark:border-purple-800"
-                    />
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center shadow-sm">
-                      <Sparkles className="w-2 h-2 text-white" />
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-md">
+                      <Sparkles className="w-5 h-5 text-white" />
                     </div>
                   </div>
                   <div>
@@ -6220,191 +6540,7 @@ ${
               {/* Wizard Content - Centered */}
               <div className="flex-1 overflow-y-auto">
                 <div className="w-full px-4 sm:px-6 lg:px-8 py-8" style={{ width: '100%', maxWidth: '100%' }}>
-                  {/* Header - Only show on package-select (first page) */}
-                    {wizardState.stage === 'package-select' && (
-                    <div className="mb-8 relative">
-                    {/* Merlin Background Image */}
-                    <div
-                      className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl opacity-[0.06] dark:opacity-[0.04]"
-                      style={{
-                        zIndex: 0,
-                        backgroundImage: 'url(/merlin.jpg)',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center 70%',
-                        backgroundRepeat: 'no-repeat',
-                      }}
-                    />
-
-                    <div
-                      className="flex flex-col items-center text-center mb-6 relative"
-                      style={{ zIndex: 1 }}
-                    >
-                      {/* Back to Projects Button */}
-                      {onBackToProjects && isAuthenticated && (
-                        <div className="absolute top-0 left-0">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={onBackToProjects}
-                            className="text-muted-foreground hover:text-foreground"
-                          >
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            My Projects
-                          </Button>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-4 mb-4">
-                        {/* Merlin Image/Icon */}
-                        <div className="relative">
-                          <img
-                            src="/merlin.jpg"
-                            alt="Merlin"
-                            className="w-16 h-16 rounded-2xl object-cover shadow-lg border-2 border-purple-200 dark:border-purple-800"
-                          />
-                          <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center shadow-md">
-                            <Sparkles className="w-3 h-3 text-white" />
-                          </div>
-                        </div>
-                          <div>
-                            <div className="flex items-center justify-center gap-3 mb-1">
-                              <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent">
-                                {t('wizard.title', language)}
-                              </h1>
-                              {packageConfig && (
-                                <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
-                                  {packageConfig.packageType.charAt(0).toUpperCase() +
-                                    packageConfig.packageType.slice(1)}
-                                </Badge>
-                              )}
-                            </div>
-                            <p className="text-base text-muted-foreground">
-                              {t('wizard.subtitle', language)}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Action Buttons - Compact */}
-                        <div className="flex items-center gap-2 flex-wrap justify-center">
-                          {/* Undo/Redo */}
-                          {wizardState.stage === 'discover' && (
-                            <>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={handleUndo}
-                                      disabled={!canUndo}
-                                      aria-label="Undo"
-                                      data-testid="button-undo"
-                                    >
-                                      <Undo2 className="w-4 h-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>Undo (Ctrl+Z)</TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={handleRedo}
-                                      disabled={!canRedo}
-                                      aria-label="Redo"
-                                      data-testid="button-redo"
-                                    >
-                                      <Redo2 className="w-4 h-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>Redo (Ctrl+Y)</TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </>
-                          )}
-
-                          {/* Export/Import */}
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={handleExportConfig}
-                                  aria-label="Export configuration"
-                                  data-testid="button-export"
-                                >
-                                  <Download className="w-4 h-4" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>Export Configuration</TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={handleImportConfig}
-                                  aria-label="Import configuration"
-                                  data-testid="button-import"
-                                >
-                                  <Upload className="w-4 h-4" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>Import Configuration</TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-
-                          {/* Restart Button */}
-                          {wizardState.stage !== 'commit' && (
-                            <AlertDialog
-                              open={showRestartDialog}
-                              onOpenChange={setShowRestartDialog}
-                            >
-                              <AlertDialogTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="gap-2"
-                                  data-testid="button-restart"
-                                  aria-label="Restart wizard"
-                                >
-                                  <RotateCcw className="w-4 h-4" />
-                                  Restart
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent data-testid="dialog-restart-confirmation">
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>
-                                    Are you sure you want to restart?
-                                  </AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This will clear all your current progress and answers.
-                                    You&apos;ll start from the beginning with a fresh wizard.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel data-testid="button-cancel-restart">
-                                    Cancel
-                                  </AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={handleStartOver}
-                                    data-testid="button-confirm-restart"
-                                  >
-                                    Yes, Restart
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    )}
+                  {/* Header removed - package-select now has its own clean standalone page */}
 
                   {/* Resume Indicator - Hidden for template-select stage */}
                   {(() => {
@@ -6805,170 +6941,44 @@ ${
                         </Card>
                       )}
 
-                      {/* PHASE 1: Package Selection Stage - LEONARDO AI REDESIGNED */}
-                      {wizardState.stage === 'package-select' && (
-                        <div className="relative min-h-screen w-full overflow-hidden">
-                          {/* AI-Generated Background with Gradient Overlay */}
-                          <div className="absolute inset-0 -z-10">
-                            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900" />
-                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-500/20 via-transparent to-transparent" />
-                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-pink-500/20 via-transparent to-transparent" />
-                            {/* Animated gradient orbs */}
-                            <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
-                            <div className="absolute bottom-20 right-10 w-96 h-96 bg-pink-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-                          </div>
-
-                          <div className="relative max-w-7xl mx-auto p-6 py-12">
-                            {/* Header - Enhanced with AI Theme */}
-                            <div className="text-center mb-16 relative z-10">
-                              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 mb-6">
-                                <Sparkles className="w-4 h-4 text-purple-400" />
-                                <span className="text-sm font-medium text-purple-300">Powered by Leonardo AI</span>
-                              </div>
-                              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                                Choose Your Package
-                              </h1>
-                              <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                                Select the perfect solution for your website needs. Each package is crafted with AI-powered precision.
-                              </p>
-                            </div>
-
-                            {/* Package Cards - Modern Glassmorphic Design */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
-                            {[
-                              { id: 'basic' as PackageId, name: 'Starter', price: '$29', icon: Zap, color: 'from-purple-500 to-pink-600', description: 'Perfect for small businesses getting started online. Up to 1 page, 3 services, delivered in 3-6 hours.' },
-                              { id: 'advanced' as PackageId, name: 'Standard', price: '$49', icon: Sparkles, color: 'from-blue-500 to-cyan-600', description: 'Comprehensive solution for established businesses. Up to 5 pages, 8 services, competitor research included.' },
-                              { id: 'seo' as PackageId, name: 'Professional', price: '$79', icon: Building2, color: 'from-indigo-500 to-purple-600', description: 'Advanced features for growing businesses. Up to 10 pages, 15 services, advanced SEO tools included.' },
-                              { id: 'deluxe' as PackageId, name: 'Business', price: '$129', icon: Crown, color: 'from-pink-500 to-rose-600', description: 'Complete business solution with advanced features. Up to 20 pages, 25 services, automated maintenance.' },
-                              { id: 'ultra' as PackageId, name: 'Enterprise', price: '$199', icon: Star, color: 'from-orange-500 to-red-600', description: 'Powerful solution for large-scale operations. Up to 50 pages, 50 services, dedicated support included.' },
-                            ].map(({ id, name, price, icon: Icon, color, description }) => {
-                              const constraints = PACKAGE_CONSTRAINTS[id];
-                              const isSelected = wizardState.selectedPackage === id;
-                              return (
-                                <Card
-                                  key={id}
-                                  className={`group relative cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-2xl overflow-hidden ${
-                                    isSelected
-                                      ? 'ring-4 ring-purple-400/50 border-2 border-purple-400/50 bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-xl shadow-2xl shadow-purple-500/20'
-                                      : 'border border-white/20 bg-white/10 backdrop-blur-xl hover:border-purple-400/40 hover:bg-white/15 hover:shadow-purple-500/10'
-                                  }`}
-                                  onClick={() => {
-                                    debugLog('[Wizard] 🆕 Package clicked - navigating to Phase 2');
-                                    clearWizardData();
-                                    setWizardState({
-                                      stage: 'template-select',
-                                      currentPage: 'project-overview',
-                                      selectedDesignTemplates: [],
-                                      selectedContentTemplates: [],
-                                      imageSource: 'leonardo',
-                                      redesignCount: 0,
-                                      currentQuestion: 0,
-                                      requirements: {},
-                                      messages: [],
-                                      stageHistory: ['package-select'],
-                                      selectedPackage: id,
-                                      packageConstraints: constraints,
-                                      selectedTemplate: null,
-                                    });
-                                    setGeneratedWebsite(null);
-                                    trackEvent('wizard_package_selected', { package: id });
-                                    toast({
-                                      title: 'Package Selected!',
-                                      description: `You selected ${name}. Now choose your design template.`,
-                                    });
-                                  }}
-                                >
-                                  {/* Animated background gradient */}
-                                  <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-                                  
-                                  <CardHeader className="pb-4 relative z-10">
-                                    <div className="flex items-start justify-between mb-4">
-                                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300`}>
-                                        <Icon className="w-8 h-8 text-white" />
-                                      </div>
-                                      {isSelected && (
-                                        <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center shadow-lg animate-pulse">
-                                          <Check className="w-5 h-5 text-white" />
-                                        </div>
-                                      )}
-                                    </div>
-                                    <CardTitle className="text-2xl font-bold text-white mb-2">
-                                      {name}
-                                    </CardTitle>
-                                    <CardDescription className="text-base text-gray-300 leading-relaxed">
-                                      {description}
-                                    </CardDescription>
-                                  </CardHeader>
-                                  <CardContent className="pt-0 relative z-10">
-                                    <div className="mb-6">
-                                      <div className="flex items-baseline gap-2 mb-3">
-                                        <span className="text-4xl font-bold text-white">{price.replace('$', '')}</span>
-                                        <span className="text-lg text-gray-400">/month</span>
-                                      </div>
-                                      <div className="flex items-center gap-2 text-sm text-gray-400">
-                                        <Clock className="w-4 h-4" />
-                                        <span>
-                                          {id === 'basic' ? '3-6 hours' : id === 'advanced' ? '4-8 hours' : id === 'seo' ? '6-10 hours' : id === 'deluxe' ? '8-12 hours' : '10-16 hours'} delivery
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <Button
-                                      className={`w-full h-12 text-base font-semibold transition-all duration-300 ${
-                                        isSelected
-                                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg shadow-purple-500/50'
-                                          : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl hover:shadow-purple-500/30'
-                                      }`}
-                                    >
-                                      {isSelected ? (
-                                        <>
-                                          <Check className="w-5 h-5 mr-2" />
-                                          Selected
-                                        </>
-                                      ) : (
-                                        <>
-                                          Select Package
-                                          <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                                        </>
-                                      )}
-                                    </Button>
-                                  </CardContent>
-                                </Card>
-                              );
-                            })}
-                          </div>
-
-                          {/* Footer Navigation - Enhanced Design */}
-                          {wizardState.selectedPackage && (
-                            <div className="mt-12 relative z-10">
-                              <div className="max-w-4xl mx-auto p-6 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl">
-                                <div className="flex items-center justify-between flex-wrap gap-4">
-                                  <div>
-                                    <p className="text-xl font-bold text-white mb-1">
-                                      Selected: {PACKAGE_NAMES[wizardState.selectedPackage]}
-                                    </p>
-                                    <p className="text-sm text-gray-300">
-                                      {wizardState.packageConstraints?.maxPages} pages, {wizardState.packageConstraints?.maxServices} services included
-                                    </p>
-                                  </div>
-                                  <Button
-                                    onClick={() => navigateToStage('template-select')}
-                                    size="lg"
-                                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg shadow-purple-500/50 hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-300"
-                                  >
-                                    Continue to Design Selection
-                                    <ArrowRight className="w-5 h-5 ml-2" />
-                                  </Button>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                          </div>
-                        </div>
-                      )}
-
                       {/* PHASE 2: Design Template Selection (Multi-Select) */}
                       {wizardState.stage === 'template-select' && (
+                        <div className="flex flex-col h-full">
+                          {/* Build Mode Toggle - Templates vs Clean Canvas */}
+                          <div className="bg-slate-800/50 border-b border-slate-700 px-6 py-3">
+                            <div className="flex items-center gap-4">
+                              <div className="flex bg-slate-900/50 rounded-lg p-1">
+                                <button
+                                  onClick={() => setBuildMode('templates')}
+                                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                                    buildMode === 'templates'
+                                      ? 'bg-blue-600 text-white shadow-lg'
+                                      : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                                  }`}
+                                >
+                                  <LayoutTemplate className="w-4 h-4" />
+                                  Templates
+                                </button>
+                                <button
+                                  onClick={() => setBuildMode('merlin')}
+                                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                                    buildMode === 'merlin'
+                                      ? 'bg-purple-600 text-white shadow-lg'
+                                      : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                                  }`}
+                                >
+                                  <Wand2 className="w-4 h-4" />
+                                  Clean Canvas
+                                </button>
+                              </div>
+                              <span className="text-slate-500 text-sm">
+                                {buildMode === 'templates' ? 'Choose from professional templates' : 'Let AI build from scratch'}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Show Templates or Merlin AI based on selection */}
+                          {buildMode === 'templates' ? (
                         <DesignTemplateSelection
                           onBack={() => {
                             // Navigate back to previous stage (package-select)
@@ -7013,66 +7023,20 @@ ${
                                 return;
                               }
 
-                              // Create a project if user is authenticated
-                              let projectId = wizardState.projectId;
-                              const projectName = wizardState.requirements?.businessName ||
-                                                  selectedTemplate.name ||
-                                                  'Untitled Project';
-
-                              if (isAuthenticated && user && !projectId) {
-                                try {
-                                  const createResponse = await fetch('/api/projects', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    credentials: 'include',
-                                    body: JSON.stringify({
-                                      name: projectName,
-                                      templateId: selectedTemplate.id,
-                                      templateName: selectedTemplate.name,
-                                      templatePreview: selectedTemplate.thumbnailUrl || selectedTemplate.previewUrl,
-                                      html: data.html,
-                                      css: '',
-                                      industry: selectedTemplate.industry || wizardState.requirements?.industry,
-                                      businessInfo: wizardState.requirements,
-                                    }),
-                                  });
-
-                                  if (createResponse.ok) {
-                                    const projectData = await createResponse.json();
-                                    projectId = projectData.project?.id;
-                                    console.log('[Wizard] Project created:', projectId);
-                                  } else {
-                                    console.warn('[Wizard] Failed to create project, continuing without saving');
-                                  }
-                                } catch (err) {
-                                  console.warn('[Wizard] Error creating project:', err);
-                                }
-                              }
-
-                              // Store the exact preview HTML (paths already fixed) and project ID
+                              // Store the template HTML - DON'T create project yet
+                              // Project will be created after quick-form is submitted
                               setWizardState(prev => ({
                                 ...prev,
-                                projectId,
-                                projectName,
                                 mergedTemplate: {
                                   html: data.html || '',
                                   css: '', // Not needed - HTML already includes CSS via fixed paths
                                 },
                               }));
 
-                              // If project was created, redirect to Projects page
-                              if (projectId) {
-                                toast({
-                                  title: 'Project Created!',
-                                  description: `"${projectName}" has been saved to your projects.`,
-                                });
-                                // Clear wizard state to start fresh next time
-                                localStorage.removeItem('stargate-wizard-state');
-                                setLocation('/stargate-websites');
-                              } else {
-                                // Fallback: if no project created (not authenticated), go to editor
-                                navigateToStage('final-website');
-                              }
+                              // Always go to quick-form first to collect business info
+                              // Project creation happens after quick-form submission
+                              navigateToStage('quick-form');
+
                             } catch (error) {
                               console.error('[Wizard] Error loading template preview:', error);
                               toast({
@@ -7083,6 +7047,53 @@ ${
                             }
                           }}
                         />
+                          ) : (
+                            /* Merlin AI Canvas - Start from scratch */
+                            <div className="flex-1 flex flex-col items-center justify-center p-8 bg-gradient-to-b from-slate-900 to-slate-800">
+                              <div className="max-w-2xl text-center">
+                                <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+                                  <Wand2 className="w-12 h-12 text-white" />
+                                </div>
+                                <h2 className="text-3xl font-bold text-white mb-4">
+                                  Let Merlin AI Build Your Website
+                                </h2>
+                                <p className="text-slate-400 text-lg mb-8">
+                                  Our AI will create a completely unique, custom-designed website based on your requirements.
+                                  No templates - just pure AI creativity tailored to your business.
+                                </p>
+                                <ul className="text-left max-w-md mx-auto space-y-3 mb-8">
+                                  <li className="flex items-center gap-3 text-slate-300">
+                                    <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+                                    100% unique design created from scratch
+                                  </li>
+                                  <li className="flex items-center gap-3 text-slate-300">
+                                    <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+                                    AI-written content tailored to your business
+                                  </li>
+                                  <li className="flex items-center gap-3 text-slate-300">
+                                    <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+                                    Ready in minutes, fully customizable
+                                  </li>
+                                </ul>
+                                <Button
+                                  size="lg"
+                                  onClick={() => {
+                                    // Navigate to merlin-quick-generate
+                                    setState(prev => ({
+                                      ...prev,
+                                      currentView: 'merlin-quick-generate',
+                                    }));
+                                  }}
+                                  className="px-8 py-6 text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-xl"
+                                >
+                                  <Sparkles className="w-5 h-5 mr-2" />
+                                  Start AI Generation
+                                  <ArrowRight className="w-5 h-5 ml-2" />
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       )}
 
                       {/* Phase 3 (keywords-collection) REMOVED - navigation goes directly from template-select to content-rewriting */}
@@ -7327,54 +7338,138 @@ ${
 
                       {/* Phase 7 (final-approval) REMOVED - navigation goes directly from template-select to final-website */}
 
-                      {/* PHASE 3: Final Website - Display the final website */}
+                      {/* PHASE 3: Quick Business Form - Collect business details */}
+                      {wizardState.stage === 'quick-form' && (
+                        <QuickBusinessForm
+                          templateName={wizardState.selectedDesignTemplates?.[0]?.name}
+                          templateIndustry={wizardState.selectedDesignTemplates?.[0]?.industry}
+                          initialData={wizardState.businessInfo}
+                          onBack={() => {
+                            navigateToStage('template-select');
+                          }}
+                          onSubmit={(formData: BusinessFormData) => {
+                            console.log('[Wizard] Business form submitted:', formData);
+
+                            // CRITICAL FIX: Combine businessInfo + stage transition in a SINGLE state update
+                            // This ensures both are saved together to localStorage for refresh persistence
+                            setWizardState(prev => {
+                              const newState = {
+                                ...prev,
+                                businessInfo: formData,
+                                autoBuildPending: true,
+                                // Also update requirements for legacy compatibility
+                                requirements: {
+                                  ...prev.requirements,
+                                  businessName: formData.businessName,
+                                  industry: formData.industry,
+                                  businessEmail: formData.email,
+                                  region: formData.location,
+                                },
+                                // Navigate to final-website in the SAME state update
+                                stageHistory: [...prev.stageHistory, prev.stage],
+                                stage: 'final-website' as WizardStage,
+                              };
+
+                              // CRITICAL: IMMEDIATE save to localStorage - don't rely on debounced autosave
+                              // The debounced save may still have access to old state closure
+                              const stateToSave = {
+                                stage: 'final-website',
+                                currentPage: newState.currentPage || 'project-overview',
+                                currentQuestion: newState.currentQuestion || 0,
+                                requirements: newState.requirements || {},
+                                messages: newState.messages || [],
+                                stageHistory: newState.stageHistory || [],
+                                selectedPackage: newState.selectedPackage,
+                                selectedDesignTemplates: newState.selectedDesignTemplates || [],
+                                selectedContentTemplates: newState.selectedContentTemplates || [],
+                                imageSource: newState.imageSource || 'leonardo',
+                                redesignCount: newState.redesignCount || 0,
+                                packageConstraints: newState.packageConstraints,
+                                mergedTemplate: newState.mergedTemplate,
+                                pageKeywords: newState.pageKeywords || [],
+                                generatedImages: newState.generatedImages || [],
+                                seoAssessment: newState.seoAssessment,
+                                redoRequests: newState.redoRequests || [],
+                                businessInfo: formData, // Use the formData directly
+                              };
+                              localStorage.setItem('stargate-wizard-state', JSON.stringify(stateToSave));
+                              console.log('[Wizard] 🚀 IMMEDIATE SAVE - businessInfo + final-website stage:', {
+                                businessName: formData.businessName,
+                                stage: 'final-website',
+                              });
+
+                              return newState;
+                            });
+                          }}
+                        />
+                      )}
+
+                      {/* PHASE 4: Final Website - Display the final website with auto-build progress */}
                       {wizardState.stage === 'final-website' && (() => {
                         // Get HTML from mergedTemplate (already has all CSS via fixed paths from preview-html-json)
-                        const html = wizardState.mergedTemplate?.html || 
-                                   wizardState.selectedDesignTemplates?.[0]?.html || 
-                                   wizardState.generatedWebsite?.code?.files?.['index.html'] || 
+                        const html = wizardState.mergedTemplate?.html ||
+                                   wizardState.generatedWebsite?.html ||
                                    '<html><head><title>Website</title></head><body><h1>No website content available</h1><p>Please go back and select a template.</p></body></html>';
-                        
+
+                        // Use businessInfo from quick-form if available, fallback to requirements
+                        const businessContext = wizardState.businessInfo ? {
+                          businessName: wizardState.businessInfo.businessName,
+                          industry: wizardState.businessInfo.industry,
+                          location: wizardState.businessInfo.location,
+                          email: wizardState.businessInfo.email,
+                          hasOwnPhotos: wizardState.businessInfo.hasOwnPhotos,
+                        } : {
+                          businessName: wizardState.requirements.businessName || 'Your Business',
+                          industry: wizardState.requirements.industry,
+                          location: wizardState.requirements.region,
+                        };
+
                         return (
                           <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000, margin: 0, padding: 0 }}>
                             <FinalWebsiteDisplay
-                            html={html}
-                            pageKeywords={wizardState.pageKeywords || []}
-                            seoAssessment={wizardState.seoAssessment}
-                            generatedImages={wizardState.generatedImages}
-                            businessContext={{
-                              businessName: wizardState.requirements.businessName || 'Your Business',
-                              industry: wizardState.requirements.industry,
-                              location: wizardState.requirements.location,
-                            }}
-                            onEdit={() => {
-                              // Go back to template selection for modifications
-                              navigateToStage('template-select');
-                            }}
-                            onStartNew={() => {
-                              // Reset wizard state and start fresh
-                              setWizardState(prev => ({
-                                ...prev,
-                                stage: 'package-select',
-                                selectedDesignTemplates: [],
-                                selectedContentTemplates: [],
-                                pageKeywords: [],
-                                generatedImages: [],
-                                mergedTemplate: undefined,
-                                seoAssessment: undefined,
-                                redoRequests: [],
-                              }));
-                            }}
-                            onWebsiteUpdate={(updatedHtml) => {
-                              setWizardState(prev => ({
-                                ...prev,
-                                mergedTemplate: {
-                                  html: updatedHtml,
-                                  css: prev.mergedTemplate?.css || '',
-                                },
-                              }));
-                            }}
-                          />
+                              html={html}
+                              pageKeywords={wizardState.pageKeywords || []}
+                              seoAssessment={wizardState.seoAssessment}
+                              generatedImages={wizardState.generatedImages}
+                              businessContext={businessContext}
+                              autoBuildPending={wizardState.autoBuildPending}
+                              onAutoBuildComplete={() => {
+                                // Clear the auto-build flag
+                                setWizardState(prev => ({
+                                  ...prev,
+                                  autoBuildPending: false,
+                                }));
+                              }}
+                              onEdit={() => {
+                                // Go back to quick-form for business info changes
+                                navigateToStage('quick-form');
+                              }}
+                              onStartNew={() => {
+                                // Reset wizard state and start fresh
+                                setWizardState(prev => ({
+                                  ...prev,
+                                  stage: 'package-select',
+                                  selectedDesignTemplates: [],
+                                  selectedContentTemplates: [],
+                                  pageKeywords: [],
+                                  generatedImages: [],
+                                  mergedTemplate: undefined,
+                                  seoAssessment: undefined,
+                                  redoRequests: [],
+                                  businessInfo: undefined,
+                                  autoBuildPending: false,
+                                }));
+                              }}
+                              onWebsiteUpdate={(updatedHtml) => {
+                                setWizardState(prev => ({
+                                  ...prev,
+                                  mergedTemplate: {
+                                    html: updatedHtml,
+                                    css: prev.mergedTemplate?.css || '',
+                                  },
+                                }));
+                              }}
+                            />
                           </div>
                         );
                       })()}
@@ -7382,7 +7477,7 @@ ${
                       {/* DEPRECATED: Old Final Approval - kept for backwards compatibility */}
                       {false && wizardState.stage === 'final-approval' && wizardState.generatedWebsite && (
                         <FinalApproval
-                          website={wizardState.generatedWebsite}
+                          website={wizardState.generatedWebsite as { html: string; css: string; js?: string }}
                           requirements={wizardState.requirements}
                           seoScore={wizardState.seoScore || 85}
                           onDownload={() => {
@@ -7596,11 +7691,11 @@ ${
                                                   : wizardState.selectedPackage}
                                         {' • '}
                                         <strong>Limit:</strong>{' '}
-                                        {wizardState.packageConstraints.maxPages}{' '}
-                                        {wizardState.packageConstraints.maxPages === 1
+                                        {wizardState.packageConstraints!.maxPages}{' '}
+                                        {wizardState.packageConstraints!.maxPages === 1
                                           ? 'page'
                                           : 'pages'}
-                                        , {wizardState.packageConstraints.maxServices} services
+                                        , {wizardState.packageConstraints!.maxServices} services
                                       </div>
                                     ) : null}
                                   </div>
@@ -8090,13 +8185,13 @@ ${
 
                               {wizardState.requirements.pages &&
                                 Array.isArray(wizardState.requirements.pages) &&
-                                (wizardState.requirements.pages as any[]).length > 0 && (
+                                (wizardState.requirements.pages as string[]).length > 0 && (
                                   <div>
                                     <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">
                                       Pages:
                                     </p>
                                     <div className="flex flex-wrap gap-1 mt-1">
-                                      {wizardState.requirements.pages.map((page: string) => (
+                                      {(wizardState.requirements.pages as string[]).map((page: string) => (
                                         <Badge key={page} variant="secondary">
                                           {page}
                                         </Badge>
@@ -8107,13 +8202,13 @@ ${
 
                               {wizardState.requirements.features &&
                                 Array.isArray(wizardState.requirements.features) &&
-                                (wizardState.requirements.features as any[]).length > 0 && (
+                                (wizardState.requirements.features as string[]).length > 0 && (
                                   <div>
                                     <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">
                                       Features:
                                     </p>
                                     <div className="flex flex-wrap gap-1 mt-1">
-                                      {wizardState.requirements.features.map((feature: string) => (
+                                      {(wizardState.requirements.features as string[]).map((feature: string) => (
                                         <Badge key={feature} variant="secondary">
                                           {feature}
                                         </Badge>
@@ -8266,6 +8361,7 @@ ${
                       )}
 
                       {/* COMPACT PROGRESS BAR - 8-phase wizard (hidden on final-website) */}
+                      {/* Note: 'package-select' already excluded by parent conditional */}
                       {wizardState.stage !== 'final-website' && (() => {
                         const STAGE_ORDER_8: WizardStage[] = [
                           'package-select', 'template-select', 'content-select', 'client-info',
@@ -8563,7 +8659,7 @@ ${
                             </div>
 
                             {/* Error Display */}
-                            {error && (error as any).stage === 'build' && (
+                            {generationError && (generationError as any).stage === 'build' && (
                               <div className="p-4 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 dark:border-red-800">
                                 <div className="flex items-start gap-3">
                                   <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
@@ -8572,9 +8668,9 @@ ${
                                       Build Error
                                     </p>
                                     <p className="text-sm text-red-700 dark:text-red-300 mb-3">
-                                      {error.message}
+                                      {(generationError as any).message}
                                     </p>
-                                    {error.canRetry && (
+                                    {(generationError as any).canRetry && (
                                       <Button
                                         onClick={() => {
                                           setGenerationError(null);
@@ -8648,10 +8744,10 @@ ${
                           <Card>
                             <CardContent className="p-6 space-y-6">
                               {(() => {
-                                if (!error || error === null) return null;
-                                // TypeScript narrowing: error is confirmed to be non-null
+                                if (!generationError || generationError === null) return null;
+                                // TypeScript narrowing: generationError is confirmed to be non-null
                                 // Use non-null assertion since we've already checked
-                                const nonNullError = error!;
+                                const nonNullError = generationError!;
                                 if (
                                   !('stage' in nonNullError) ||
                                   nonNullError.stage !== 'content-quality'
@@ -8697,10 +8793,10 @@ ${
                                         Go Back
                                       </Button>
                                       {(() => {
-                                        if (!error || error === null) return null;
-                                        // TypeScript narrowing: error is confirmed to be non-null
+                                        if (!generationError || generationError === null) return null;
+                                        // TypeScript narrowing: generationError is confirmed to be non-null
                                         // Explicit type assertion after validation
-                                        const nonNullError = error as NonNullable<typeof error>;
+                                        const nonNullError = generationError as NonNullable<typeof generationError>;
                                         if (!('canRetry' in nonNullError)) return null;
                                         // TypeScript narrowing: error is confirmed to have canRetry property
                                         const errWithRetry = nonNullError as { canRetry: boolean };
@@ -8756,7 +8852,7 @@ ${
                                   </>
                                 );
                               })()}
-                              {!error || (error !== null && error?.stage !== 'content-quality') ? (
+                              {!generationError || (generationError !== null && (generationError as any)?.stage !== 'content-quality') ? (
                                 <>
                                   <div className="flex items-center gap-2 mb-4">
                                     <Sparkles className="w-6 h-6 text-blue-500 animate-pulse" />
@@ -9843,6 +9939,7 @@ ${
           )}
         </div>
       </TooltipProvider>
+      )}
 
       {/* AI Chatbot Assistant */}
       <WizardChatbot
@@ -9851,7 +9948,7 @@ ${
           selectedPackage: wizardState.selectedPackage,
           packageConstraints: wizardState.packageConstraints,
           checklistState: checklistState,
-          requirements: wizardState.requirements,
+          requirements: wizardState.requirements as Record<string, unknown>,
         }}
       />
     </div>

@@ -6,8 +6,8 @@
 
 import { debugLog } from '../utils/debugLogger';
 import { db } from '../db';
-import { performanceMetrics, performanceReports, type InsertPerformanceMetric, type InsertPerformanceReport } from '@shared/schema';
-import { eq, and, gte, desc } from 'drizzle-orm';
+import { performanceMetrics, performanceReports } from '@shared/schema';
+import { eq, desc } from 'drizzle-orm';
 
 export interface PerformanceMetric {
   name: string;
@@ -16,6 +16,10 @@ export interface PerformanceMetric {
   timestamp: number;
   url: string;
   websiteId?: string;
+  deviceType?: string;
+  browser?: string;
+  connectionType?: string;
+  metadata?: Record<string, unknown>;
 }
 
 export interface PerformanceReport {
@@ -56,14 +60,14 @@ export async function recordMetric(metric: PerformanceMetric): Promise<void> {
         metricName: metric.name,
         value: metric.value.toString(),
         rating: metric.rating,
-        deviceType: (metric as any).deviceType,
-        browser: (metric as any).browser,
-        connectionType: (metric as any).connectionType,
+        deviceType: metric.deviceType,
+        browser: metric.browser,
+        connectionType: metric.connectionType,
         timestamp: new Date(metric.timestamp),
-        metadata: (metric as any).metadata || {},
+        metadata: metric.metadata || {},
       });
-    } catch (error) {
-      console.error('[Performance Monitoring] Failed to save metric to database:', error);
+    } catch (_error) {
+      console.error('[Performance Monitoring] Failed to save metric to database:', _error);
     }
   }
 
@@ -102,10 +106,10 @@ export async function getMetricsForWebsite(
       deviceType: m.deviceType,
       browser: m.browser,
       connectionType: m.connectionType,
-      metadata: m.metadata as Record<string, any>,
+      metadata: m.metadata as Record<string, unknown>,
     }));
-  } catch (error) {
-    console.error('[Performance Monitoring] Failed to get metrics:', error);
+  } catch (_error) {
+    console.error('[Performance Monitoring] Failed to get metrics:', _error);
     return [];
   }
 }
@@ -113,12 +117,12 @@ export async function getMetricsForWebsite(
 /**
  * Generate performance report
  */
-export function generatePerformanceReport(
+export async function generatePerformanceReport(
   websiteId?: string,
   url?: string
-): PerformanceReport | null {
-  const metrics = getMetricsForWebsite(websiteId, 1000);
-  
+): Promise<PerformanceReport | null> {
+  const metrics = await getMetricsForWebsite(websiteId, 1000);
+
   if (metrics.length === 0) {
     return null;
   }
@@ -309,12 +313,12 @@ export async function getPerformanceReports(
       websiteId: r.websiteId,
       url: r.url,
       timestamp: r.timestamp.getTime(),
-      metrics: (r.metrics as any) || [],
-      summary: (r.summary as any) || {},
-      scores: (r.scores as any) || {},
+      metrics: (r.metrics as PerformanceMetric[]) || [],
+      summary: (r.summary as PerformanceReport['summary']) || {},
+      scores: (r.scores as PerformanceReport['scores']) || {},
     }));
-  } catch (error) {
-    console.error('[Performance Monitoring] Failed to get reports:', error);
+  } catch (_error) {
+    console.error('[Performance Monitoring] Failed to get reports:', _error);
     return [];
   }
 }
@@ -332,12 +336,12 @@ export async function savePerformanceReport(report: PerformanceReport): Promise<
       websiteId: report.websiteId || '',
       url: report.url,
       timestamp: new Date(report.timestamp),
-      metrics: report.metrics as any,
-      summary: report.summary as any,
-      scores: report.scores as any,
+      metrics: report.metrics as Record<string, unknown>,
+      summary: report.summary as Record<string, unknown>,
+      scores: report.scores as Record<string, unknown>,
     });
-  } catch (error) {
-    console.error('[Performance Monitoring] Failed to save report:', error);
+  } catch (_error) {
+    console.error('[Performance Monitoring] Failed to save report:', _error);
   }
 }
 

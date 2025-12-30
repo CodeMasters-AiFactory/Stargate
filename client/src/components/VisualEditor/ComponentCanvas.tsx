@@ -8,7 +8,7 @@ import { useDrop } from 'react-dnd';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Grid, AlignCenter, AlignLeft, AlignRight, AlignJustify } from 'lucide-react';
+import { Grid } from 'lucide-react';
 import type { GeneratedWebsitePackage } from '@/types/websiteBuilder';
 import type { SelectedElement } from './VisualEditor';
 import { ComponentRenderer } from './ComponentRenderer';
@@ -31,7 +31,6 @@ export function ComponentCanvas({
 }: ComponentCanvasProps) {
   const [showGrid, setShowGrid] = useState(false);
   const [snapToGrid, setSnapToGrid] = useState(false);
-  const [dropPosition, setDropPosition] = useState<{ x: number; y: number } | null>(null);
   const [insertionIndex, setInsertionIndex] = useState<number>(-1);
   const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -49,8 +48,8 @@ export function ComponentCanvas({
         html: el.outerHTML,
         index
       }));
-    } catch (e) {
-      console.error('Failed to parse components:', e);
+    } catch (_error: unknown) {
+      console.error('Failed to parse components:', _error);
       return [];
     }
   }, []);
@@ -185,8 +184,8 @@ export function ComponentCanvas({
       };
 
       onWebsiteUpdate(updatedWebsite);
-    } catch (error) {
-      console.error('Failed to add component:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to add component:', _error);
     }
   }, [website, onWebsiteUpdate, calculateInsertionIndex, parseComponents]);
 
@@ -204,11 +203,10 @@ export function ComponentCanvas({
         handleComponentDrop(item.component.id);
       }
     },
-    hover: (item, monitor) => {
+    hover: (_item, monitor) => {
       // Track hover position for visual feedback
       const offset = monitor.getClientOffset();
       if (offset) {
-        setDropPosition(offset);
         const index = calculateInsertionIndex(offset.y);
         setInsertionIndex(index);
       }

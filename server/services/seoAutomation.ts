@@ -4,16 +4,16 @@
  */
 
 import * as cheerio from 'cheerio';
-import * as fs from 'fs';
-import * as path from 'path';
-import { generate } from './multiModelAIOrchestrator';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
+
+// Type for JSON-LD schema objects
+type SchemaObject = Record<string, unknown>;
 
 export interface SEOOptimization {
   html: string;
   sitemap: string;
   robotsTxt: string;
-  schema: any; // JSON-LD schema
+  schema: SchemaObject[]; // JSON-LD schema
   metaTags: {
     title: string;
     description: string;
@@ -39,7 +39,7 @@ function generateLocalBusinessSchema(clientInfo: {
   address: string;
   location: { city: string; state: string; country: string };
   services: Array<{ name: string; description: string }>;
-}): any {
+}): SchemaObject {
   return {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
@@ -76,7 +76,7 @@ function generateLocalBusinessSchema(clientInfo: {
 /**
  * Generate FAQ schema
  */
-function generateFAQSchema(faqs: Array<{ question: string; answer: string }>): any {
+function generateFAQSchema(faqs: Array<{ question: string; answer: string }>): SchemaObject {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -155,7 +155,18 @@ async function generateMetaTags(
 /**
  * Inject SEO tags into HTML
  */
-function injectSEOTags(html: string, metaTags: any, schema: any[], clientInfo?: { websiteUrl?: string }): string {
+function injectSEOTags(
+  html: string,
+  metaTags: {
+    title: string;
+    description: string;
+    keywords: string;
+    openGraph: Record<string, string>;
+    twitter: Record<string, string>;
+  },
+  schema: SchemaObject[],
+  clientInfo?: { websiteUrl?: string }
+): string {
   const $ = cheerio.load(html);
 
   // Update or add title
@@ -180,14 +191,14 @@ function injectSEOTags(html: string, metaTags: any, schema: any[], clientInfo?: 
   }
 
   // Add Open Graph tags
-  Object.entries(metaTags.openGraph).forEach(([property, content]) => {
+  Object.entries(metaTags.openGraph).forEach(([property, content]: [string, string]) => {
     if (!$(`meta[property="${property}"]`).length) {
       $('head').append(`<meta property="${property}" content="${content}">`);
     }
   });
 
   // Add Twitter Card tags
-  Object.entries(metaTags.twitter).forEach(([name, content]) => {
+  Object.entries(metaTags.twitter).forEach(([name, content]: [string, string]) => {
     if (!$(`meta[name="${name}"]`).length) {
       $('head').append(`<meta name="${name}" content="${content}">`);
     }
@@ -200,7 +211,7 @@ function injectSEOTags(html: string, metaTags: any, schema: any[], clientInfo?: 
   }
 
   // Add schema JSON-LD
-  schema.forEach(s => {
+  schema.forEach((s: SchemaObject) => {
     $('head').append(`<script type="application/ld+json">${JSON.stringify(s)}</script>`);
   });
 
@@ -247,7 +258,17 @@ Sitemap: ${baseUrl}/sitemap.xml`;
 /**
  * Calculate SEO score
  */
-function calculateSEOScore(html: string, metaTags: any, schema: any[]): number {
+function calculateSEOScore(
+  html: string,
+  metaTags: {
+    title: string;
+    description: string;
+    keywords: string;
+    openGraph: Record<string, string>;
+    twitter: Record<string, string>;
+  },
+  schema: SchemaObject[]
+): number {
   let score = 0;
 
   // Title tag (20 points)
@@ -284,7 +305,7 @@ function calculateSEOScore(html: string, metaTags: any, schema: any[]): number {
 
   // Alt tags on images (10 points)
   const images = $('img');
-  const imagesWithAlt = images.filter((_, el) => $(el).attr('alt')).length;
+  const imagesWithAlt = images.filter((_i, el) => $(el).attr('alt')).length;
   if (images.length > 0 && imagesWithAlt / images.length >= 0.8) {
     score += 10;
   }
@@ -329,7 +350,7 @@ export async function optimizeSEO(
     });
 
     // Generate schema markup
-    const schemas: any[] = [];
+    const schemas: SchemaObject[] = [];
     
     // LocalBusiness schema
     const localBusinessSchema = generateLocalBusinessSchema(clientInfo);

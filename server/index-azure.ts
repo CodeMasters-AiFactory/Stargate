@@ -18,7 +18,7 @@ console.log('[AZURE] NODE_ENV:', process.env.NODE_ENV);
 console.log('[AZURE] CWD:', process.cwd());
 console.log('=====================================');
 
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { createServer } from 'http';
 import path from 'path';
 import fs from 'fs';
@@ -52,18 +52,19 @@ process.on('unhandledRejection', (reason: unknown) => {
 app.use(express.json({ limit: '10mb' }));
 
 // CORS
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction): void => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+    res.sendStatus(200);
+    return;
   }
   next();
 });
 
 // Request logging
-app.use((req, res, next) => {
+app.use((req: Request, _res: Response, next: NextFunction): void => {
   console.log(`[AZURE] ${req.method} ${req.url}`);
   next();
 });
@@ -72,7 +73,7 @@ app.use((req, res, next) => {
 // HEALTH CHECK ROUTES (Critical for Azure)
 // ============================================
 
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (_req: Request, res: Response): void => {
   console.log('[AZURE] Health check hit');
   res.json({
     status: 'ok',
@@ -84,17 +85,18 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-app.get('/test', (req, res) => {
+app.get('/test', (_req: Request, res: Response): void => {
   console.log('[AZURE] Test route hit');
   res.send('AZURE MINIMAL SERVER OK - ' + new Date().toISOString());
 });
 
-app.get('/', (req, res) => {
+app.get('/', (_req: Request, res: Response): void => {
   console.log('[AZURE] Root route hit');
   // Try to serve index.html if it exists
   const distPath = path.join(process.cwd(), 'dist', 'public', 'index.html');
   if (fs.existsSync(distPath)) {
-    return res.sendFile(distPath);
+    res.sendFile(distPath);
+    return;
   }
   // Otherwise send a simple response
   res.send(`
@@ -127,7 +129,7 @@ if (fs.existsSync(distPublicPath)) {
   try {
     const files = fs.readdirSync(distPublicPath);
     console.log('[AZURE] Files in dist/public:', files.slice(0, 10).join(', '));
-  } catch (e) {
+  } catch (_error: unknown) {
     console.log('[AZURE] Could not list dist/public contents');
   }
 } else {
@@ -135,15 +137,17 @@ if (fs.existsSync(distPublicPath)) {
 }
 
 // SPA fallback
-app.get('*', (req, res) => {
+app.get('*', (req: Request, res: Response): void => {
   // Skip API routes
   if (req.url.startsWith('/api')) {
-    return res.status(404).json({ error: 'API endpoint not found' });
+    res.status(404).json({ error: 'API endpoint not found' });
+    return;
   }
 
   const indexPath = path.join(distPublicPath, 'index.html');
   if (fs.existsSync(indexPath)) {
-    return res.sendFile(indexPath);
+    res.sendFile(indexPath);
+    return;
   }
 
   res.send(`

@@ -55,7 +55,8 @@ function extractOriginalCompanyInfo(template: any): {
   // Try to extract from HTML if available
   const html = template.htmlContent || template.content?.html || '';
   if (html) {
-    const $ = cheerio.load(html);
+    // Load HTML for potential future use
+    void cheerio.load(html);
     
     // Extract phone from various patterns
     const phonePattern = /(\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g;
@@ -80,7 +81,7 @@ export async function inspectTemplate(
   template: any,
   html: string
 ): Promise<InspectionResult> {
-  const $ = cheerio.load(html, { decodeEntities: false });
+  const $ = cheerio.load(html);
   const checks: InspectionCheck[] = [];
   const originalCompany = extractOriginalCompanyInfo(template);
   
@@ -129,8 +130,8 @@ export async function inspectTemplate(
   
   // Check 4: No duplicate IDs
   const ids: string[] = [];
-  let duplicateIds: string[] = [];
-  $('[id]').each((i, el) => {
+  const duplicateIds: string[] = [];
+  $('[id]').each((_i, el) => {
     const id = $(el).attr('id');
     if (id) {
       if (ids.includes(id)) {
@@ -269,9 +270,7 @@ export async function inspectTemplate(
   });
   
   // Check 12: Original physical addresses removed
-  const addressPatterns = [
-    /\d+\s+[A-Za-z0-9\s,]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl)/gi,
-  ];
+  // Pattern for future use: /\d+\s+[A-Za-z0-9\s,]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl)/gi
   let addressFound = false;
   if (originalCompany.domain) {
     // Check for common address patterns in context of original domain
@@ -289,9 +288,7 @@ export async function inspectTemplate(
   });
   
   // Check 13: Original testimonials/reviews removed
-  const testimonialPatterns = [
-    /testimonial|review|customer\s+review|client\s+testimonial/gi,
-  ];
+  // Pattern for future use: /testimonial|review|customer\s+review|client\s+testimonial/gi
   let testimonialsFound = false;
   if (originalCompany.companyName) {
     // Check if testimonials mention original company
@@ -313,7 +310,7 @@ export async function inspectTemplate(
     /team|staff|employee|executive|founder|ceo|president/gi,
   ];
   let teamPhotosFound = false;
-  $('img').each((i, el) => {
+  $('img').each((_i, el) => {
     const src = $(el).attr('src') || '';
     const alt = $(el).attr('alt') || '';
     if (teamPhotoPatterns.some(pattern => pattern.test(src) || pattern.test(alt))) {
@@ -322,6 +319,7 @@ export async function inspectTemplate(
         return false; // Break
       }
     }
+    return;
   });
   removalChecks.push({
     id: 'check-14',
@@ -336,12 +334,13 @@ export async function inspectTemplate(
   // Check 15: Original logo replaced
   let originalLogoFound = false;
   if (originalCompany.domain) {
-    $('img[src*="logo"], img[alt*="logo"], img[class*="logo"]').each((i, el) => {
+    $('img[src*="logo"], img[alt*="logo"], img[class*="logo"]').each((_i, el) => {
       const src = $(el).attr('src') || '';
       if (src.includes(originalCompany.domain!)) {
         originalLogoFound = true;
         return false;
       }
+      return;
     });
   }
   removalChecks.push({
@@ -357,12 +356,13 @@ export async function inspectTemplate(
   // Check 16: Original social media links removed
   let originalSocialFound = false;
   if (originalCompany.domain) {
-    $('a[href*="facebook"], a[href*="twitter"], a[href*="linkedin"], a[href*="instagram"]').each((i, el) => {
+    $('a[href*="facebook"], a[href*="twitter"], a[href*="linkedin"], a[href*="instagram"]').each((_i, el) => {
       const href = $(el).attr('href') || '';
       if (href.includes(originalCompany.domain!)) {
         originalSocialFound = true;
         return false;
       }
+      return;
     });
   }
   removalChecks.push({
@@ -402,12 +402,13 @@ export async function inspectTemplate(
   let originalDomainInLinks = false;
   if (originalCompany.domain) {
     const domainPattern = new RegExp(originalCompany.domain.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-    $('a[href]').each((i, el) => {
+    $('a[href]').each((_i, el) => {
       const href = $(el).attr('href') || '';
       if (domainPattern.test(href)) {
         originalDomainInLinks = true;
         return false;
       }
+      return;
     });
   }
   removalChecks.push({
@@ -452,7 +453,7 @@ export async function inspectTemplate(
   // Check 20: No empty headings or paragraphs
   let emptyContentFound = false;
   const emptyElements: string[] = [];
-  $('h1, h2, h3, h4, h5, h6, p').each((i, el) => {
+  $('h1, h2, h3, h4, h5, h6, p').each((_i, el) => {
     const text = $(el).text().trim();
     if (text === '' || text.length < 3) {
       emptyContentFound = true;
@@ -475,7 +476,7 @@ export async function inspectTemplate(
   // Check 21: All alt text is meaningful
   let badAltTextFound = false;
   const badAltTexts: string[] = [];
-  $('img').each((i, el) => {
+  $('img').each((_i, el) => {
     const alt = $(el).attr('alt') || '';
     const badPatterns = ['', 'image', 'img', 'photo', 'picture', 'placeholder', 'alt'];
     if (badPatterns.includes(alt.toLowerCase()) || alt.length < 3) {
@@ -602,7 +603,7 @@ export async function inspectTemplate(
   // Check 27: All images have valid src
   let brokenImagesFound = false;
   const brokenImages: string[] = [];
-  $('img').each((i, el) => {
+  $('img').each((_i, el) => {
     const src = $(el).attr('src') || '';
     if (!src || src === 'undefined' || src === 'null' || src.trim() === '') {
       brokenImagesFound = true;
@@ -623,7 +624,7 @@ export async function inspectTemplate(
   
   // Check 28: All images have alt text
   let imagesWithoutAlt = 0;
-  $('img').each((i, el) => {
+  $('img').each((_i, el) => {
     const alt = $(el).attr('alt');
     if (alt === undefined || alt === null) {
       imagesWithoutAlt++;
@@ -668,13 +669,14 @@ export async function inspectTemplate(
   
   // Check 31: Images are reasonable size (check if base64, estimate)
   let largeImagesFound = false;
-  $('img[src^="data:"]').each((i, el) => {
+  $('img[src^="data:"]').each((_i, el) => {
     const src = $(el).attr('src') || '';
     // Base64 images: estimate size (rough calculation)
     if (src.length > 200000) { // ~150KB base64
       largeImagesFound = true;
       return false;
     }
+    return;
   });
   imageChecks.push({
     id: 'check-31',
@@ -688,12 +690,13 @@ export async function inspectTemplate(
   
   // Check 32: No broken image references
   let brokenRefsFound = false;
-  $('img').each((i, el) => {
+  $('img').each((_i, el) => {
     const src = $(el).attr('src') || '';
     if (src.includes('undefined') || src.includes('null') || src.includes('{{')) {
       brokenRefsFound = true;
       return false;
     }
+    return;
   });
   imageChecks.push({
     id: 'check-32',
@@ -727,7 +730,7 @@ export async function inspectTemplate(
   
   // Check 34: No broken internal links
   let brokenInternalLinks = 0;
-  $('a[href^="#"], a[href^="/"], a[href^="./"]').each((i, el) => {
+  $('a[href^="#"], a[href^="/"], a[href^="./"]').each((_i, el) => {
     const href = $(el).attr('href') || '';
     if (href.startsWith('#') && href.length > 1) {
       const targetId = href.substring(1);
@@ -748,7 +751,7 @@ export async function inspectTemplate(
   
   // Check 35: All href attributes are valid
   let invalidHrefs = 0;
-  $('a[href]').each((i, el) => {
+  $('a[href]').each((_i, el) => {
     const href = $(el).attr('href') || '';
     if (href.includes('undefined') || href.includes('null') || href.includes('{{')) {
       invalidHrefs++;
@@ -766,7 +769,7 @@ export async function inspectTemplate(
   
   // Check 36: No javascript:void(0) without handlers
   let voidLinks = 0;
-  $('a[href="javascript:void(0)"], a[href="javascript:void(0);"]').each((i, el) => {
+  $('a[href="javascript:void(0)"], a[href="javascript:void(0);"]').each((_i, el) => {
     const onclick = $(el).attr('onclick');
     const hasHandler = onclick && onclick.length > 0;
     if (!hasHandler) {
@@ -785,7 +788,7 @@ export async function inspectTemplate(
   
   // Check 37: All buttons have proper click handlers
   let buttonsWithoutHandlers = 0;
-  $('button').each((i, el) => {
+  $('button').each((_i, el) => {
     const onclick = $(el).attr('onclick');
     const type = $(el).attr('type');
     const form = $(el).closest('form').length > 0;
@@ -806,12 +809,13 @@ export async function inspectTemplate(
   // Check 38: No mailto to original company
   let originalMailtoFound = false;
   if (originalCompany.email) {
-    $('a[href^="mailto:"]').each((i, el) => {
+    $('a[href^="mailto:"]').each((_i, el) => {
       const href = $(el).attr('href') || '';
       if (href.toLowerCase().includes(originalCompany.email!.toLowerCase())) {
         originalMailtoFound = true;
         return false;
       }
+      return;
     });
   }
   linkChecks.push({
@@ -827,7 +831,7 @@ export async function inspectTemplate(
   // Check 39: No tel to original company phone
   let originalTelFound = false;
   if (originalCompany.phone) {
-    $('a[href^="tel:"]').each((i, el) => {
+    $('a[href^="tel:"]').each((_i, el) => {
       const href = $(el).attr('href') || '';
       const phoneDigits = originalCompany.phone!.replace(/\D/g, '');
       const hrefDigits = href.replace(/\D/g, '');
@@ -835,6 +839,7 @@ export async function inspectTemplate(
         originalTelFound = true;
         return false;
       }
+      return;
     });
   }
   linkChecks.push({
@@ -1015,7 +1020,7 @@ export async function inspectTemplate(
   
   // Check 47: No external form endpoints
   let externalFormEndpoints = 0;
-  $('form[action]').each((i, el) => {
+  $('form[action]').each((_i, el) => {
     const action = $(el).attr('action') || '';
     if (action.startsWith('http://') || action.startsWith('https://')) {
       if (!action.includes('localhost') && !action.includes('127.0.0.1')) {
@@ -1127,7 +1132,7 @@ export async function inspectTemplate(
   
   // Check 54: Forms have valid action attributes
   let invalidFormActions = 0;
-  $('form[action]').each((i, el) => {
+  $('form[action]').each((_i, el) => {
     const action = $(el).attr('action') || '';
     if (action.includes('undefined') || action.includes('null') || action.includes('{{')) {
       invalidFormActions++;
@@ -1145,7 +1150,7 @@ export async function inspectTemplate(
   
   // Check 55: Form inputs have proper names
   let inputsWithoutNames = 0;
-  $('input, textarea, select').not('[type="submit"]').not('[type="button"]').not('[type="reset"]').each((i, el) => {
+  $('input, textarea, select').not('[type="submit"]').not('[type="button"]').not('[type="reset"]').each((_i, el) => {
     const name = $(el).attr('name');
     const id = $(el).attr('id');
     if (!name && !id) {
@@ -1164,7 +1169,7 @@ export async function inspectTemplate(
   
   // Check 56: Required fields properly marked
   let requiredFieldsWithoutAria = 0;
-  $('input[required], textarea[required], select[required]').each((i, el) => {
+  $('input[required], textarea[required], select[required]').each((_i, el) => {
     const ariaRequired = $(el).attr('aria-required');
     if (ariaRequired !== 'true') {
       requiredFieldsWithoutAria++;
@@ -1183,7 +1188,7 @@ export async function inspectTemplate(
   // Check 57: Forms don't submit to original company
   let formsToOriginalCompany = 0;
   if (originalCompany.domain) {
-    $('form[action]').each((i, el) => {
+    $('form[action]').each((_i, el) => {
       const action = $(el).attr('action') || '';
       if (action.includes(originalCompany.domain!)) {
         formsToOriginalCompany++;
@@ -1202,7 +1207,7 @@ export async function inspectTemplate(
   
   // Check 58: Email/phone inputs validated
   let unvalidatedEmailPhone = 0;
-  $('input[type="email"], input[type="tel"]').each((i, el) => {
+  $('input[type="email"], input[type="tel"]').each((_i, el) => {
     const pattern = $(el).attr('pattern');
     const type = $(el).attr('type');
     if (!pattern && type === 'email') {
@@ -1287,7 +1292,7 @@ export async function inspectTemplate(
   
   // Check 63: ARIA labels on interactive elements
   let interactiveWithoutAria = 0;
-  $('button, a[href], input, textarea, select').each((i, el) => {
+  $('button, a[href], input, textarea, select').each((_i, el) => {
     const ariaLabel = $(el).attr('aria-label');
     const ariaLabelledBy = $(el).attr('aria-labelledby');
     const title = $(el).attr('title');
@@ -1319,10 +1324,8 @@ export async function inspectTemplate(
   });
   
   // Check 65: Proper color contrast (basic check - look for low contrast patterns)
-  const lowContrastPatterns = [
-    /color\s*:\s*#[0-9a-f]{3,6}\s*;\s*background[^:]*:\s*#[0-9a-f]{3,6}/gi,
-  ];
-  let lowContrastFound = false;
+  // Pattern for future use: /color\s*:\s*#[0-9a-f]{3,6}\s*;\s*background[^:]*:\s*#[0-9a-f]{3,6}/gi
+  const lowContrastFound = false;
   // This is a basic check - full contrast checking would require color parsing
   accessibilityChecks.push({
     id: 'check-65',
@@ -1336,7 +1339,7 @@ export async function inspectTemplate(
   
   // Check 66: Keyboard navigation works (check for tabindex)
   let negativeTabindex = 0;
-  $('[tabindex]').each((i, el) => {
+  $('[tabindex]').each((_i, el) => {
     const tabindex = parseInt($(el).attr('tabindex') || '0');
     if (tabindex < 0) {
       negativeTabindex++;

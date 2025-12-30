@@ -8,7 +8,7 @@ import * as path from 'path';
 import { db } from '../db';
 import { websiteVersions, approvalRequests, templateHealthLogs } from '@shared/schema';
 import { eq, desc } from 'drizzle-orm';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { getErrorMessage } from '../utils/errorHandler';
 
 const STORAGE_DIR = path.join(process.cwd(), 'data', 'hybrid-storage');
 const SQLITE_DB_PATH = path.join(STORAGE_DIR, 'fallback.db');
@@ -20,9 +20,9 @@ if (!fs.existsSync(STORAGE_DIR)) {
 
 // In-memory storage fallback
 const memoryStore: {
-  versions: Map<string, any[]>;
-  approvals: Map<string, any[]>;
-  healthLogs: Map<string, any[]>;
+  versions: Map<string, Record<string, unknown>[]>;
+  approvals: Map<string, Record<string, unknown>[]>;
+  healthLogs: Map<string, Record<string, unknown>[]>;
 } = {
   versions: new Map(),
   approvals: new Map(),
@@ -32,7 +32,7 @@ const memoryStore: {
 /**
  * Initialize SQLite fallback database
  */
-let sqliteDb: any = null;
+let sqliteDb: typeof import('better-sqlite3').Database.prototype | null = null;
 
 /**
  * Close SQLite database connection (cleanup)
@@ -49,7 +49,7 @@ export function closeSQLite(): void {
   }
 }
 
-async function initSQLite() {
+async function initSQLite(): Promise<typeof import('better-sqlite3').Database.prototype | null> {
   if (sqliteDb) return sqliteDb;
 
   // #region agent log
@@ -159,7 +159,7 @@ export async function syncToPostgreSQL() {
           metadata: version.metadata ? JSON.parse(version.metadata) : {},
           createdAt: new Date(version.created_at),
         }).onConflictDoNothing();
-      } catch (e) {
+      } catch (_error: unknown) {
         // Skip if already exists
       }
     }
@@ -180,7 +180,7 @@ export async function syncToPostgreSQL() {
           createdAt: new Date(approval.created_at),
           updatedAt: new Date(approval.updated_at),
         }).onConflictDoNothing();
-      } catch (e) {
+      } catch (_error: unknown) {
         // Skip if already exists
       }
     }
@@ -197,8 +197,8 @@ export async function syncToPostgreSQL() {
 export async function saveVersionSnapshot(
   websiteId: string,
   stage: string,
-  snapshot: any,
-  metadata?: Record<string, any>
+  snapshot: Record<string, unknown>,
+  metadata?: Record<string, unknown>
 ): Promise<string> {
   const versionId = `v_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const versionNumber = await getNextVersionNumber(websiteId);
@@ -306,11 +306,11 @@ export async function listVersions(websiteId: string): Promise<Array<{
         WHERE website_id = ?
         ORDER BY created_at DESC
       `).all(websiteId);
-      return rows.map((r: any) => ({
-        id: r.id,
-        version: r.version,
-        stage: r.stage,
-        createdAt: new Date(r.created_at),
+      return rows.map((r: Record<string, unknown>) => ({
+        id: r.id as string,
+        version: r.version as string,
+        stage: r.stage as string,
+        createdAt: new Date(r.created_at as number),
       }));
     } catch (error) {
       console.warn('[HybridStorage] SQLite list failed, using memory:', getErrorMessage(error));
@@ -320,17 +320,17 @@ export async function listVersions(websiteId: string): Promise<Array<{
   // Fallback to memory
   const versions = memoryStore.versions.get(websiteId) || [];
   return versions.map(v => ({
-    id: v.id,
-    version: v.version,
-    stage: v.stage,
-    createdAt: v.createdAt,
+    id: v.id as string,
+    version: v.version as string,
+    stage: v.stage as string,
+    createdAt: v.createdAt as Date,
   }));
 }
 
 /**
  * Restore version with fallback
  */
-export async function restoreVersion(websiteId: string, versionId: string): Promise<any> {
+export async function restoreVersion(websiteId: string, versionId: string): Promise<Record<string, unknown>> {
   // Try PostgreSQL first
   if (db) {
     try {
@@ -356,7 +356,7 @@ export async function restoreVersion(websiteId: string, versionId: string): Prom
         WHERE id = ? AND website_id = ?
       `).get(versionId, websiteId);
       if (row) {
-        return JSON.parse((row as any).snapshot);
+        return JSON.parse((row as Record<string, unknown>).snapshot as string);
       }
     } catch (error) {
       console.warn('[HybridStorage] SQLite restore failed, using memory:', getErrorMessage(error));
@@ -367,7 +367,7 @@ export async function restoreVersion(websiteId: string, versionId: string): Prom
   const versions = memoryStore.versions.get(websiteId) || [];
   const version = versions.find(v => v.id === versionId);
   if (version) {
-    return version.snapshot;
+    return version.snapshot as Record<string, unknown>;
   }
 
   throw new Error(`Version not found: ${versionId}`);
@@ -452,8 +452,8 @@ export async function processApproval(
   approved: boolean,
   reviewedBy: string,
   comments?: string,
-  changeRequests?: any[]
-): Promise<any> {
+  changeRequests?: Record<string, unknown>[]
+): Promise<Record<string, unknown>> {
   const status = approved ? 'approved' : (changeRequests && changeRequests.length > 0 ? 'changes_requested' : 'rejected');
 
   // Try PostgreSQL first
@@ -500,7 +500,7 @@ export async function processApproval(
   }
 
   // Fallback to memory
-  for (const [websiteId, approvals] of memoryStore.approvals.entries()) {
+  for (const [_websiteId, approvals] of memoryStore.approvals.entries()) {
     const approval = approvals.find(a => a.id === approvalId);
     if (approval) {
       approval.status = status;
@@ -518,7 +518,7 @@ export async function processApproval(
 /**
  * Get approval status with fallback
  */
-export async function getApprovalStatus(websiteId: string, stage?: string): Promise<any[]> {
+export async function getApprovalStatus(websiteId: string, stage?: string): Promise<Record<string, unknown>[]> {
   // Try PostgreSQL first
   if (db) {
     try {
@@ -540,18 +540,18 @@ export async function getApprovalStatus(websiteId: string, stage?: string): Prom
   if (sqlite) {
     try {
       let sql = 'SELECT * FROM approval_requests WHERE website_id = ?';
-      const params: any[] = [websiteId];
+      const params: (string | number)[] = [websiteId];
       if (stage) {
         sql += ' AND stage = ?';
         params.push(stage);
       }
       sql += ' ORDER BY created_at';
       const rows = sqlite.prepare(sql).all(...params);
-      return rows.map((r: any) => ({
+      return rows.map((r: Record<string, unknown>) => ({
         ...r,
-        changeRequests: r.change_requests ? JSON.parse(r.change_requests) : [],
-        createdAt: new Date(r.created_at),
-        updatedAt: new Date(r.updated_at),
+        changeRequests: r.change_requests ? JSON.parse(r.change_requests as string) : [],
+        createdAt: new Date(r.created_at as number),
+        updatedAt: new Date(r.updated_at as number),
       }));
     } catch (error) {
       console.warn('[HybridStorage] SQLite approval status failed, using memory:', getErrorMessage(error));
@@ -570,7 +570,7 @@ export async function saveTemplateHealthLog(
   templateId: string,
   qualityScore: string,
   checksPassed: Record<string, boolean>,
-  issues: any[],
+  issues: Record<string, unknown>[],
   status: string
 ): Promise<void> {
   const logId = `h_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -631,7 +631,7 @@ export async function saveTemplateHealthLog(
 /**
  * Get template health logs with fallback
  */
-export async function getTemplateHealthLogs(templateId: string, limit: number = 1): Promise<any[]> {
+export async function getTemplateHealthLogs(templateId: string, limit: number = 1): Promise<Record<string, unknown>[]> {
   // Try PostgreSQL first
   if (db) {
     try {
@@ -656,11 +656,11 @@ export async function getTemplateHealthLogs(templateId: string, limit: number = 
         ORDER BY checked_at DESC
         LIMIT ?
       `).all(templateId, limit);
-      return rows.map((r: any) => ({
+      return rows.map((r: Record<string, unknown>) => ({
         ...r,
-        checksPassed: JSON.parse(r.checks_passed),
-        issues: JSON.parse(r.issues),
-        checkedAt: new Date(r.checked_at),
+        checksPassed: JSON.parse(r.checks_passed as string),
+        issues: JSON.parse(r.issues as string),
+        checkedAt: new Date(r.checked_at as number),
       }));
     } catch (error) {
       console.warn('[HybridStorage] SQLite health logs failed, using memory:', getErrorMessage(error));

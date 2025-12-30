@@ -28,6 +28,7 @@ interface MerlinChatSidebarProps {
     location?: string;
   };
   onWebsiteUpdate?: (updatedHtml: string) => void;
+  onAutoSave?: (html: string) => void; // Auto-save after Merlin edits
   width?: number;
   onWidthChange?: (width: number) => void;
   isCollapsed?: boolean;
@@ -38,6 +39,7 @@ export function MerlinChatSidebar({
   currentHtml,
   businessContext,
   onWebsiteUpdate,
+  onAutoSave,
   width: externalWidth,
   onWidthChange,
   isCollapsed: externalCollapsed,
@@ -60,7 +62,7 @@ export function MerlinChatSidebar({
   // Resize and collapse state
   const [internalWidth, setInternalWidth] = useState(() => {
     const saved = localStorage.getItem('merlin-sidebar-width');
-    return saved ? parseInt(saved, 10) : 320;
+    return saved ? parseInt(saved, 10) : 420; // Increased default width for better readability
   });
   const [internalCollapsed, setInternalCollapsed] = useState(() => {
     const saved = localStorage.getItem('merlin-sidebar-collapsed');
@@ -112,7 +114,11 @@ export function MerlinChatSidebar({
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Small delay to ensure DOM is updated before scrolling
+    const timeoutId = setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, 100);
+    return () => clearTimeout(timeoutId);
   }, [messages, isLoading]);
 
   // Handle voice input from Merlin Avatar
@@ -177,6 +183,12 @@ export function MerlinChatSidebar({
         // If we got updated HTML, update the website preview live
         if (data.updatedHtml && onWebsiteUpdate) {
           onWebsiteUpdate(data.updatedHtml);
+
+          // Auto-save the changes to persist them
+          if (onAutoSave) {
+            console.log('[MerlinChat] Auto-saving after edit...');
+            onAutoSave(data.updatedHtml);
+          }
         }
 
         const responseText = data.message || 'I\'ve made the changes you requested!';
@@ -277,7 +289,7 @@ export function MerlinChatSidebar({
           const handleMouseMove = (e: MouseEvent) => {
             e.preventDefault();
             const diff = e.clientX - startX;
-            const newWidth = Math.max(280, Math.min(600, startWidth + diff));
+            const newWidth = Math.max(320, Math.min(800, startWidth + diff)); // Min 320, max 800 for better usability
             
             if (onWidthChange) {
               onWidthChange(newWidth);

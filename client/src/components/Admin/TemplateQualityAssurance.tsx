@@ -63,7 +63,7 @@ export function TemplateQualityAssurance() {
     fetchTemplateStatus();
   }, []);
 
-  const fetchTemplateStatus = async () => {
+  const fetchTemplateStatus = async (): Promise<void> => {
     try {
       setLoading(true);
       const response = await fetch('/api/admin/templates/qa/status', {
@@ -80,8 +80,8 @@ export function TemplateQualityAssurance() {
           variant: 'destructive',
         });
       }
-    } catch (error) {
-      console.error('[TemplateQA] Error fetching status:', error);
+    } catch (_error: unknown) {
+      console.error('[TemplateQA] Error fetching status:', _error);
       toast({
         title: 'Error',
         description: 'Failed to fetch template status',
@@ -92,12 +92,12 @@ export function TemplateQualityAssurance() {
     }
   };
 
-  const updateProgress = (templates: TemplateQAStatus[]) => {
+  const updateProgress = (templates: TemplateQAStatus[]): void => {
     const total = templates.length;
-    const contentDone = templates.filter(t => t.contentRewritten).length;
-    const imagesDone = templates.filter(t => t.imagesRegenerated).length;
-    const seoDone = templates.filter(t => t.seoEvaluated).length;
-    const verified = templates.filter(t => t.verified).length;
+    const _contentDone = templates.filter(t => t.contentRewritten).length;
+    const _imagesDone = templates.filter(t => t.imagesRegenerated).length;
+    const _seoDone = templates.filter(t => t.seoEvaluated).length;
+    const _verified = templates.filter(t => t.verified).length;
 
     setProgress({
       total,
@@ -106,7 +106,7 @@ export function TemplateQualityAssurance() {
     });
   };
 
-  const handleSelectTemplate = (templateId: string, checked: boolean) => {
+  const handleSelectTemplate = (templateId: string, checked: boolean): void => {
     const newSelected = new Set(selectedTemplates);
     if (checked) {
       newSelected.add(templateId);
@@ -116,7 +116,7 @@ export function TemplateQualityAssurance() {
     setSelectedTemplates(newSelected);
   };
 
-  const handleSelectAll = () => {
+  const handleSelectAll = (): void => {
     const pendingTemplates = templates.filter(t => !t.contentRewritten);
     if (selectedTemplates.size === pendingTemplates.length) {
       setSelectedTemplates(new Set());
@@ -125,7 +125,7 @@ export function TemplateQualityAssurance() {
     }
   };
 
-  const handleRewriteSelectedContent = async () => {
+  const handleRewriteSelectedContent = async (): Promise<void> => {
     if (isRewriting) return;
     
     const templateIdsToRewrite = selectedTemplates.size > 0
@@ -192,14 +192,14 @@ export function TemplateQualityAssurance() {
                 setSelectedTemplates(new Set()); // Clear selection after completion
                 await fetchTemplateStatus();
               }
-            } catch (e) {
+            } catch (_e: unknown) {
               // Ignore parse errors
             }
           }
         }
       }
-    } catch (error) {
-      console.error('[TemplateQA] Error rewriting content:', error);
+    } catch (_error: unknown) {
+      console.error('[TemplateQA] Error rewriting content:', _error);
       toast({
         title: 'Error',
         description: 'Failed to rewrite content',
@@ -212,7 +212,7 @@ export function TemplateQualityAssurance() {
   };
 
 
-  const handleRegenerateAllImages = async () => {
+  const handleRegenerateAllImages = async (): Promise<void> => {
     if (isRegenerating) return;
     
     try {
@@ -264,14 +264,14 @@ export function TemplateQualityAssurance() {
                 });
                 await fetchTemplateStatus();
               }
-            } catch (e) {
+            } catch (_e: unknown) {
               // Ignore parse errors
             }
           }
         }
       }
-    } catch (error) {
-      console.error('[TemplateQA] Error regenerating images:', error);
+    } catch (_error: unknown) {
+      console.error('[TemplateQA] Error regenerating images:', _error);
       toast({
         title: 'Error',
         description: 'Failed to regenerate images',
@@ -283,7 +283,7 @@ export function TemplateQualityAssurance() {
     }
   };
 
-  const handleEvaluateSEO = async () => {
+  const handleEvaluateSEO = async (): Promise<void> => {
     if (isEvaluating) return;
     
     try {
@@ -335,14 +335,14 @@ export function TemplateQualityAssurance() {
                 });
                 await fetchTemplateStatus();
               }
-            } catch (e) {
+            } catch (_e: unknown) {
               // Ignore parse errors
             }
           }
         }
       }
-    } catch (error) {
-      console.error('[TemplateQA] Error evaluating SEO:', error);
+    } catch (_error: unknown) {
+      console.error('[TemplateQA] Error evaluating SEO:', _error);
       toast({
         title: 'Error',
         description: 'Failed to evaluate SEO',
@@ -354,7 +354,7 @@ export function TemplateQualityAssurance() {
     }
   };
 
-  const handleVerifyAll = async () => {
+  const handleVerifyAll = async (): Promise<void> => {
     if (isVerifying) return;
     
     try {
@@ -382,8 +382,8 @@ export function TemplateQualityAssurance() {
       } else {
         throw new Error(data.error || 'Verification failed');
       }
-    } catch (error) {
-      console.error('[TemplateQA] Error verifying templates:', error);
+    } catch (_error: unknown) {
+      console.error('[TemplateQA] Error verifying templates:', _error);
       toast({
         title: 'Error',
         description: 'Failed to verify templates',

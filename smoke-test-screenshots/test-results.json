@@ -1,0 +1,113 @@
+{
+  "timestamp": "2025-12-23T20:02:35.938Z",
+  "summary": {
+    "passed": 13,
+    "failed": 6,
+    "successRate": 68
+  },
+  "issues": [
+    "Business name input: ",
+    "Email input: ",
+    "My Projects button visible: ",
+    "GET /api/brand-templates: Status: 404",
+    "Auth endpoint accessible: Status: 404",
+    "Login button visible: Already logged in or hidden"
+  ],
+  "tests": [
+    {
+      "name": "Server is running",
+      "passed": true,
+      "details": "Mode: Local (Testing)"
+    },
+    {
+      "name": "Page loads",
+      "passed": true,
+      "details": "Stargate IDE"
+    },
+    {
+      "name": "Hero section visible",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "Navigated to /stargate-websites",
+      "passed": true,
+      "details": "http://localhost:5000/stargate-websites"
+    },
+    {
+      "name": "Package cards visible",
+      "passed": true,
+      "details": "Found 5/5 packages"
+    },
+    {
+      "name": "Pricing displayed",
+      "passed": true,
+      "details": "Found 5 price elements"
+    },
+    {
+      "name": "Featured package badge",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "Action buttons present",
+      "passed": true,
+      "details": "Found 5 buttons"
+    },
+    {
+      "name": "Package selection advances flow",
+      "passed": true,
+      "details": "Template selection"
+    },
+    {
+      "name": "Template cards displayed",
+      "passed": true,
+      "details": "Found 1 templates/cards"
+    },
+    {
+      "name": "Template can be selected",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "Business name input",
+      "passed": false,
+      "details": ""
+    },
+    {
+      "name": "Email input",
+      "passed": false,
+      "details": ""
+    },
+    {
+      "name": "My Projects button visible",
+      "passed": false,
+      "details": ""
+    },
+    {
+      "name": "GET /api/projects",
+      "passed": true,
+      "details": "Status: 200"
+    },
+    {
+      "name": "GET /api/brand-templates",
+      "passed": false,
+      "details": "Status: 404"
+    },
+    {
+      "name": "GET /api/website-editor/status",
+      "passed": true,
+      "details": "Mode: Local (Testing)"
+    },
+    {
+      "name": "Auth endpoint accessible",
+      "passed": false,
+      "details": "Status: 404"
+    },
+    {
+      "name": "Login button visible",
+      "passed": false,
+      "details": "Already logged in or hidden"
+    }
+  ]
+}

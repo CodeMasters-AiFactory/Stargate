@@ -42,11 +42,11 @@ export async function takeScreenshot(
   // Wait for page to be fully loaded
   try {
     await page.waitForLoadState?.('networkidle');
-  } catch {
+  } catch (_error: unknown) {
     // Fallback: wait for network idle or timeout
     await Promise.race([
       page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 10000 }).catch(() => {}),
-      new Promise(resolve => setTimeout(resolve, 3000)),
+      new Promise((resolve: (value: unknown) => void) => setTimeout(resolve, 3000)),
     ]);
   }
 
@@ -136,11 +136,11 @@ export async function verifyVisualMatch(
       });
       await takeScreenshot(originalPage, originalScreenshotPath, { fullPage: true });
       console.log(`[VisualVerifier] ✅ Original screenshot saved: ${originalScreenshotPath}`);
-    } catch (error) {
-      errors.push(`Failed to screenshot original: ${getErrorMessage(error)}`);
-      logError(error, 'VisualVerifier - original screenshot');
+    } catch (_error: unknown) {
+      errors.push(`Failed to screenshot original: ${getErrorMessage(_error)}`);
+      logError(_error, 'VisualVerifier - original screenshot');
       await originalPage.close();
-      throw error;
+      throw _error;
     }
     await originalPage.close();
 
@@ -154,11 +154,11 @@ export async function verifyVisualMatch(
       });
       await takeScreenshot(templatePage, templateScreenshotPath, { fullPage: true });
       console.log(`[VisualVerifier] ✅ Template screenshot saved: ${templateScreenshotPath}`);
-    } catch (error) {
-      errors.push(`Failed to screenshot template: ${getErrorMessage(error)}`);
-      logError(error, 'VisualVerifier - template screenshot');
+    } catch (_error: unknown) {
+      errors.push(`Failed to screenshot template: ${getErrorMessage(_error)}`);
+      logError(_error, 'VisualVerifier - template screenshot');
       await templatePage.close();
-      throw error;
+      throw _error;
     }
     await templatePage.close();
 
@@ -184,12 +184,12 @@ export async function verifyVisualMatch(
       diffScreenshot: diffScreenshotPath,
       errors,
     };
-  } catch (error) {
+  } catch (_error: unknown) {
     if (browser) {
       await browser.close();
     }
-    logError(error, 'VisualVerifier - verifyVisualMatch');
-    errors.push(getErrorMessage(error));
+    logError(_error, 'VisualVerifier - verifyVisualMatch');
+    errors.push(getErrorMessage(_error));
 
     return {
       match: false,
@@ -262,12 +262,12 @@ export async function verifyTemplateAgainstStoredScreenshot(
       diffScreenshot: diffScreenshotPath,
       errors,
     };
-  } catch (error) {
+  } catch (_error: unknown) {
     if (browser) {
       await browser.close();
     }
-    logError(error, 'VisualVerifier - verifyTemplateAgainstStoredScreenshot');
-    errors.push(getErrorMessage(error));
+    logError(_error, 'VisualVerifier - verifyTemplateAgainstStoredScreenshot');
+    errors.push(getErrorMessage(_error));
 
     return {
       match: false,

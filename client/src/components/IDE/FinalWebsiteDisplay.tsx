@@ -36,11 +36,12 @@ import {
   Share2,
   Zap
 } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { cn } from '@/lib/utils';
 import { ClientTopBar } from './ClientTopBar';
 import { MerlinChatSidebar } from './MerlinChatSidebar';
+import { WebsiteBuildProgress } from './WebsiteBuildProgress';
 
 interface FinalWebsiteDisplayProps {
   html: string;
@@ -52,7 +53,11 @@ interface FinalWebsiteDisplayProps {
     businessName: string;
     industry?: string;
     location?: string;
+    email?: string;
+    hasOwnPhotos?: boolean;
   };
+  autoBuildPending?: boolean;  // NEW: Trigger auto-build on mount
+  onAutoBuildComplete?: () => void;  // NEW: Callback when auto-build finishes
   onEdit?: () => void;  // Go back to review/redo stage
   onStartNew?: () => void;  // Start a new website
   onWebsiteUpdate?: (updatedHtml: string) => void; // Callback when HTML changes
@@ -63,17 +68,19 @@ type ViewportSize = 'desktop' | 'tablet' | 'mobile';
 export function FinalWebsiteDisplay({
   html,
   css,
-  pageKeywords,
-  seoAssessment,
-  generatedImages = [],
+  pageKeywords: _pageKeywords,
+  seoAssessment: _seoAssessment,
+  generatedImages: _generatedImages = [],
   businessContext,
-  onEdit,
-  onStartNew,
+  autoBuildPending,
+  onAutoBuildComplete,
+  onEdit: _onEdit,
+  onStartNew: _onStartNew,
   onWebsiteUpdate,
 }: FinalWebsiteDisplayProps) {
-  const [viewport, setViewport] = useState<ViewportSize>('desktop');
-  const [showShareDialog, setShowShareDialog] = useState(false);
-  const [showCodeDialog, setShowCodeDialog] = useState(false);
+  const [_viewport, _setViewport] = useState<ViewportSize>('desktop');
+  const [_showShareDialog, _setShowShareDialog] = useState(false);
+  const [_showCodeDialog, _setShowCodeDialog] = useState(false);
   const [copied, setCopied] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isDirty, setIsDirty] = useState(false);
@@ -81,39 +88,104 @@ export function FinalWebsiteDisplay({
   const [publishStatus, setPublishStatus] = useState<'draft' | 'published' | 'publishing'>('draft');
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
 
+  // Auto-build state
+  const [isBuilding, setIsBuilding] = useState(false);
+  const [buildProgress, setBuildProgress] = useState(0);
+  const [buildStep, setBuildStep] = useState('');
+  const [currentHtml, setCurrentHtml] = useState(html);
+
   // Merlin sidebar state
   const [merlinSidebarWidth, setMerlinSidebarWidth] = useState(() => {
     const saved = localStorage.getItem('merlin-sidebar-width');
-    return saved ? parseInt(saved, 10) : 250;
+    return saved ? parseInt(saved, 10) : 420; // Increased default width for better readability
   });
   const [merlinSidebarCollapsed, setMerlinSidebarCollapsed] = useState(() => {
     const saved = localStorage.getItem('merlin-sidebar-collapsed');
     return saved === 'true';
   });
 
-  const collapsedWidth = 8; // Minimal width for expand button visibility
-  const currentSidebarWidth = merlinSidebarCollapsed ? collapsedWidth : merlinSidebarWidth;
-
   // Track iframe key to force re-render when HTML changes
   const [iframeKey, setIframeKey] = useState(0);
 
+  // Auto-build effect - runs when autoBuildPending is true
+  useEffect(() => {
+    if (!autoBuildPending) return;
+
+    // Start auto-build process
+    const runAutoBuild = async () => {
+      setIsBuilding(true);
+      setBuildProgress(0);
+      setBuildStep('setup');
+
+      try {
+        // Use the sync endpoint for simpler implementation
+        const response = await fetch('/api/website-editor/auto-build-sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            templateHtml: html,
+            businessInfo: {
+              name: businessContext.businessName,
+              industry: businessContext.industry || 'Business',
+              location: businessContext.location || '',
+              email: businessContext.email || '',
+              hasOwnPhotos: businessContext.hasOwnPhotos || false,
+            },
+          }),
+        });
+
+        const data = await response.json() as { success: boolean; html?: string; error?: string };
+
+        if (data.success && data.html) {
+          // Update the HTML with the auto-built version
+          setCurrentHtml(data.html);
+          onWebsiteUpdate?.(data.html);
+          setBuildProgress(100);
+          setBuildStep('complete');
+
+          // Wait a moment before hiding the progress
+          await new Promise<void>((resolve) => setTimeout(resolve, 1500));
+        } else {
+          console.error('[Auto-Build] Failed:', data.error);
+        }
+      } catch (_error: unknown) {
+        console.error('[Auto-Build] Error:', _error);
+      } finally {
+        setIsBuilding(false);
+        onAutoBuildComplete?.();
+      }
+    };
+
+    runAutoBuild();
+  }, [autoBuildPending]);
+
+  // Update currentHtml when html prop changes (from external source)
+  useEffect(() => {
+    if (!isBuilding) {
+      setCurrentHtml(html);
+    }
+  }, [html, isBuilding]);
+
   // Combine HTML and CSS into a complete document
+  // Use currentHtml which may be updated by auto-build
   const fullHtml = React.useMemo(() => {
+    const sourceHtml = currentHtml || html;
+
     // If HTML already has a complete structure, inject CSS into <head>
-    if (html.includes('</head>') || html.includes('</HEAD>')) {
+    if (sourceHtml.includes('</head>') || sourceHtml.includes('</HEAD>')) {
       // Inject CSS before </head>
       const cssTag = css ? `<style>${css}</style>` : '';
-      return html.replace(/<\/head>/i, `${cssTag}</head>`);
+      return sourceHtml.replace(/<\/head>/i, `${cssTag}</head>`);
     }
 
     // If HTML has <html> tag but no <head>, add head with CSS
-    if (html.includes('<html') || html.includes('<HTML')) {
+    if (sourceHtml.includes('<html') || sourceHtml.includes('<HTML')) {
       const cssTag = css ? `<head><style>${css}</style></head>` : '<head></head>';
-      if (html.includes('</html>') || html.includes('</HTML>')) {
-        return html.replace(/<\/html>/i, `${cssTag}</html>`);
+      if (sourceHtml.includes('</html>') || sourceHtml.includes('</HTML>')) {
+        return sourceHtml.replace(/<\/html>/i, `${cssTag}</html>`);
       }
       // Insert after <html> tag
-      return html.replace(/<html[^>]*>/i, `$&${cssTag}`);
+      return sourceHtml.replace(/<html[^>]*>/i, `$&${cssTag}`);
     }
 
     // If HTML is just body content, wrap it with full structure
@@ -127,17 +199,10 @@ export function FinalWebsiteDisplay({
   ${cssTag}
 </head>
 <body>
-  ${html}
+  ${sourceHtml}
 </body>
 </html>`;
-  }, [html, css, businessContext.businessName]);
-
-  // Viewport dimensions
-  const viewportWidths: Record<ViewportSize, string> = {
-    desktop: '100%',
-    tablet: '768px',
-    mobile: '375px',
-  };
+  }, [currentHtml, html, css, businessContext.businessName]);
 
   // Download HTML file
   const downloadHTML = () => {
@@ -152,39 +217,6 @@ export function FinalWebsiteDisplay({
     URL.revokeObjectURL(url);
   };
 
-  // Download as ZIP (would need server-side implementation)
-  const downloadZIP = async () => {
-    try {
-      const response = await fetch('/api/website-builder/download', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          html,
-          businessName: businessContext.businessName,
-          pageKeywords,
-        }),
-      });
-
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${businessContext.businessName.toLowerCase().replace(/\s+/g, '-')}-website.zip`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      } else {
-        // Fallback to HTML download
-        downloadHTML();
-      }
-    } catch {
-      // Fallback to HTML download
-      downloadHTML();
-    }
-  };
-
   // Copy HTML to clipboard
   const copyHTML = async () => {
     try {
@@ -196,13 +228,6 @@ export function FinalWebsiteDisplay({
     }
   };
 
-  // Open in new tab
-  const openInNewTab = () => {
-    const blob = new Blob([html], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
-  };
-
   // Update iframe when html changes - force re-render with key
   React.useEffect(() => {
     // Force iframe to re-render by incrementing key
@@ -211,19 +236,62 @@ export function FinalWebsiteDisplay({
     setIsDirty(true);
   }, [html]); // Only depend on html prop, not fullHtml (to avoid double updates)
 
-  // Handle save
-  const handleSave = async () => {
-    setSaveStatus('saving');
+  // Helper function to save HTML to file system
+  const saveToFileSystem = async (htmlToSave: string, showStatus: boolean = true) => {
+    if (showStatus) setSaveStatus('saving');
     try {
-      // TODO: Implement actual save API call
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
-      setSaveStatus('saved');
-      setIsDirty(false);
-      setTimeout(() => setSaveStatus(null), 2000);
-    } catch (error) {
-      setSaveStatus('error');
-      console.error('Save failed:', error);
+      // Generate project slug from business name
+      const projectSlug = businessContext.businessName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+
+      // Call the save API endpoint
+      const response = await fetch('/api/website-editor/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          projectSlug,
+          html: htmlToSave,
+        }),
+      });
+
+      const data = await response.json() as { success: boolean; savedAt?: string; error?: string };
+
+      if (data.success) {
+        if (showStatus) {
+          setSaveStatus('saved');
+          setIsDirty(false);
+          setTimeout(() => setSaveStatus(null), 2000);
+        }
+        console.log('[FinalWebsiteDisplay] Saved successfully:', data.savedAt);
+        return true;
+      } else {
+        throw new Error(data.error || 'Failed to save');
+      }
+    } catch (_error: unknown) {
+      if (showStatus) {
+        setSaveStatus('error');
+        setTimeout(() => setSaveStatus(null), 3000);
+      }
+      console.error('[FinalWebsiteDisplay] Save failed:', _error);
+      return false;
     }
+  };
+
+  // Handle save - persist to file system for file-based projects
+  const handleSave = async () => {
+    // Use currentHtml which contains all Merlin edits
+    const htmlToSave = currentHtml || html;
+    await saveToFileSystem(htmlToSave, true);
+  };
+
+  // Handle auto-save from Merlin edits
+  const handleAutoSave = async (updatedHtml: string) => {
+    // Save silently without changing status indicators
+    await saveToFileSystem(updatedHtml, false);
   };
 
   // Handle publish
@@ -231,18 +299,18 @@ export function FinalWebsiteDisplay({
     setPublishStatus('publishing');
     try {
       // TODO: Implement actual publish API call
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+      await new Promise<void>((resolve) => setTimeout(resolve, 1500)); // Simulate API call
       setPublishStatus('published');
-    } catch (error) {
+    } catch (_error: unknown) {
       setPublishStatus('draft');
-      console.error('Publish failed:', error);
+      console.error('Publish failed:', _error);
     }
   };
 
   // Handle preview mode change
   const handlePreviewModeChange = (mode: 'desktop' | 'tablet' | 'mobile') => {
     setPreviewMode(mode);
-    setViewport(mode);
+    _setViewport(mode);
   };
 
   // Left sidebar state (matching top nav style)
@@ -251,10 +319,45 @@ export function FinalWebsiteDisplay({
     return saved === 'true';
   });
   const leftSidebarWidth = leftSidebarCollapsed ? 48 : 180;
-  const [, setLocation] = useLocation();
+  const [location, _setLocation] = useLocation();
+
+  // Sync URL with project slug for refresh persistence
+  useEffect(() => {
+    if (businessContext.businessName) {
+      const projectSlug = businessContext.businessName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+      const expectedPath = `/editor/${projectSlug}`;
+
+      // Only update if not already on the correct editor path
+      if (!location.startsWith('/editor/')) {
+        console.log('[FinalWebsiteDisplay] Syncing URL to:', expectedPath);
+        window.history.replaceState({}, '', expectedPath);
+      }
+    }
+  }, [businessContext.businessName, location]);
 
   return (
     <div className="flex bg-slate-900" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%', margin: 0, padding: 0 }}>
+      {/* Auto-Build Progress Overlay */}
+      {isBuilding && (
+        <WebsiteBuildProgress
+          businessName={businessContext.businessName}
+          industry={businessContext.industry || 'Business'}
+          isBuilding={isBuilding}
+          currentStep={buildStep}
+          progress={buildProgress}
+          onCancel={() => {
+            setIsBuilding(false);
+            onAutoBuildComplete?.();
+          }}
+          onComplete={() => {
+            setIsBuilding(false);
+          }}
+        />
+      )}
+
       {/* Left Sidebar - Flows into Top Bar */}
       <div
         className="h-full bg-gradient-to-b from-slate-900 via-blue-950 to-slate-900 border-r border-blue-900/50 flex flex-col flex-shrink-0 transition-all duration-300"
@@ -331,7 +434,7 @@ export function FinalWebsiteDisplay({
               "w-full justify-start text-white/70 hover:text-white hover:bg-slate-800/50 h-8",
               leftSidebarCollapsed ? "px-2 justify-center" : "px-2"
             )}
-            onClick={() => setLocation('/?view=dashboard')}
+            onClick={() => _setLocation('/?view=dashboard')}
           >
             <LayoutDashboard className="w-4 h-4 flex-shrink-0" />
             {!leftSidebarCollapsed && <span className="ml-2 text-xs">Dashboard</span>}
@@ -344,7 +447,7 @@ export function FinalWebsiteDisplay({
               "w-full justify-start text-white/70 hover:text-white hover:bg-slate-800/50 h-8",
               leftSidebarCollapsed ? "px-2 justify-center" : "px-2"
             )}
-            onClick={() => setLocation('/stargate-websites')}
+            onClick={() => _setLocation('/stargate-websites')}
           >
             <FolderOpen className="w-4 h-4 flex-shrink-0" />
             {!leftSidebarCollapsed && <span className="ml-2 text-xs">Projects</span>}
@@ -357,7 +460,7 @@ export function FinalWebsiteDisplay({
               "w-full justify-start text-white/70 hover:text-white hover:bg-slate-800/50 h-8",
               leftSidebarCollapsed ? "px-2 justify-center" : "px-2"
             )}
-            onClick={() => setLocation('/?view=templates')}
+            onClick={() => _setLocation('/?view=templates')}
           >
             <Layout className="w-4 h-4 flex-shrink-0" />
             {!leftSidebarCollapsed && <span className="ml-2 text-xs">Templates</span>}
@@ -373,7 +476,7 @@ export function FinalWebsiteDisplay({
               "w-full justify-start text-white/70 hover:text-white hover:bg-slate-800/50 h-8",
               leftSidebarCollapsed ? "px-2 justify-center" : "px-2"
             )}
-            onClick={() => setLocation('/?view=usage')}
+            onClick={() => _setLocation('/?view=usage')}
           >
             <BarChart3 className="w-4 h-4 flex-shrink-0" />
             {!leftSidebarCollapsed && <span className="ml-2 text-xs">Usage</span>}
@@ -386,7 +489,7 @@ export function FinalWebsiteDisplay({
               "w-full justify-start text-white/70 hover:text-white hover:bg-slate-800/50 h-8",
               leftSidebarCollapsed ? "px-2 justify-center" : "px-2"
             )}
-            onClick={() => setLocation('/?view=performance')}
+            onClick={() => _setLocation('/?view=performance')}
           >
             <Zap className="w-4 h-4 flex-shrink-0" />
             {!leftSidebarCollapsed && <span className="ml-2 text-xs">Performance</span>}
@@ -402,7 +505,7 @@ export function FinalWebsiteDisplay({
               "w-full justify-start text-white/70 hover:text-white hover:bg-slate-800/50 h-8",
               leftSidebarCollapsed ? "px-2 justify-center" : "px-2"
             )}
-            onClick={() => setLocation('/?view=blog')}
+            onClick={() => _setLocation('/?view=blog')}
           >
             <FileText className="w-4 h-4 flex-shrink-0" />
             {!leftSidebarCollapsed && <span className="ml-2 text-xs">Blog</span>}
@@ -415,7 +518,7 @@ export function FinalWebsiteDisplay({
               "w-full justify-start text-white/70 hover:text-white hover:bg-slate-800/50 h-8",
               leftSidebarCollapsed ? "px-2 justify-center" : "px-2"
             )}
-            onClick={() => setLocation('/?view=cms')}
+            onClick={() => _setLocation('/?view=cms')}
           >
             <Database className="w-4 h-4 flex-shrink-0" />
             {!leftSidebarCollapsed && <span className="ml-2 text-xs">CMS</span>}
@@ -431,7 +534,7 @@ export function FinalWebsiteDisplay({
               "w-full justify-start text-white/70 hover:text-white hover:bg-slate-800/50 h-8",
               leftSidebarCollapsed ? "px-2 justify-center" : "px-2"
             )}
-            onClick={() => setLocation('/?view=backup')}
+            onClick={() => _setLocation('/?view=backup')}
           >
             <Archive className="w-4 h-4 flex-shrink-0" />
             {!leftSidebarCollapsed && <span className="ml-2 text-xs">Backup</span>}
@@ -444,7 +547,7 @@ export function FinalWebsiteDisplay({
               "w-full justify-start text-white/70 hover:text-white hover:bg-slate-800/50 h-8",
               leftSidebarCollapsed ? "px-2 justify-center" : "px-2"
             )}
-            onClick={() => setLocation('/?view=settings')}
+            onClick={() => _setLocation('/?view=settings')}
           >
             <Settings className="w-4 h-4 flex-shrink-0" />
             {!leftSidebarCollapsed && <span className="ml-2 text-xs">Settings</span>}
@@ -478,6 +581,7 @@ export function FinalWebsiteDisplay({
                 setIsDirty(true);
               }
             }}
+            onAutoSave={handleAutoSave}
             width={merlinSidebarWidth}
             onWidthChange={(newWidth) => {
               setMerlinSidebarWidth(newWidth);
@@ -512,7 +616,7 @@ export function FinalWebsiteDisplay({
       </div>
 
       {/* Share Dialog */}
-      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
+      <Dialog open={_showShareDialog} onOpenChange={_setShowShareDialog}>
         <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -552,7 +656,7 @@ export function FinalWebsiteDisplay({
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setShowShareDialog(false)}
+              onClick={() => _setShowShareDialog(false)}
               className="border-slate-600 text-slate-300"
             >
               Close
@@ -562,7 +666,7 @@ export function FinalWebsiteDisplay({
       </Dialog>
 
       {/* Code Dialog */}
-      <Dialog open={showCodeDialog} onOpenChange={setShowCodeDialog}>
+      <Dialog open={_showCodeDialog} onOpenChange={_setShowCodeDialog}>
         <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-4xl max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -602,7 +706,7 @@ export function FinalWebsiteDisplay({
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setShowCodeDialog(false)}
+              onClick={() => _setShowCodeDialog(false)}
               className="border-slate-600 text-slate-300"
             >
               Close

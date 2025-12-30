@@ -3,7 +3,7 @@
  * Adds tax calculation, discount codes, and analytics endpoints
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import {
   calculateTax,
   isTaxRequired,
@@ -22,15 +22,16 @@ import {
 
 export function registerEnhancedEcommerceRoutes(app: Express) {
   // Tax Calculation Endpoint
-  app.post('/api/ecommerce/tax/calculate', async (req, res) => {
+  app.post('/api/ecommerce/tax/calculate', async (req: Request, res: Response): Promise<void> => {
     try {
       const { subtotal, shippingAddress, shippingCost = 0 } = req.body;
 
       if (!subtotal || !shippingAddress || !shippingAddress.country) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Missing required fields: subtotal, shippingAddress.country',
         });
+        return;
       }
 
       const taxCalculation = calculateTax(subtotal, shippingAddress, shippingCost);
@@ -49,15 +50,16 @@ export function registerEnhancedEcommerceRoutes(app: Express) {
   });
 
   // Discount Code Endpoints
-  app.post('/api/ecommerce/discount/apply', async (req, res) => {
+  app.post('/api/ecommerce/discount/apply', async (req: Request, res: Response): Promise<void> => {
     try {
       const { code, subtotal, shippingCost, items, isFirstTimeCustomer = false } = req.body;
 
       if (!code || !subtotal || !items) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Missing required fields: code, subtotal, items',
         });
+        return;
       }
 
       const discount = applyDiscountCode(
@@ -69,10 +71,11 @@ export function registerEnhancedEcommerceRoutes(app: Express) {
       );
 
       if (!discount) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Invalid or expired discount code',
         });
+        return;
       }
 
       res.json({
@@ -88,16 +91,17 @@ export function registerEnhancedEcommerceRoutes(app: Express) {
   });
 
   // Create Discount Code (Admin)
-  app.post('/api/ecommerce/discount/create', async (req, res) => {
+  app.post('/api/ecommerce/discount/create', async (req: Request, res: Response): Promise<void> => {
     try {
       const discountData = req.body;
-      
+
       // Validate required fields
       if (!discountData.code || !discountData.type || !discountData.value) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Missing required fields: code, type, value',
         });
+        return;
       }
 
       const discount = createDiscountCode({
@@ -128,16 +132,17 @@ export function registerEnhancedEcommerceRoutes(app: Express) {
   });
 
   // Get Discount Code
-  app.get('/api/ecommerce/discount/:code', async (req, res) => {
+  app.get('/api/ecommerce/discount/:code', async (req: Request, res: Response): Promise<void> => {
     try {
       const { code } = req.params;
       const discount = getDiscountCode(code);
 
       if (!discount) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Discount code not found',
         });
+        return;
       }
 
       res.json({
@@ -153,7 +158,7 @@ export function registerEnhancedEcommerceRoutes(app: Express) {
   });
 
   // List Discount Codes
-  app.get('/api/ecommerce/discounts', async (req, res) => {
+  app.get('/api/ecommerce/discounts', async (_req: Request, res: Response): Promise<void> => {
     try {
       const discounts = listDiscountCodes();
       
@@ -170,18 +175,19 @@ export function registerEnhancedEcommerceRoutes(app: Express) {
   });
 
   // Update Discount Code
-  app.patch('/api/ecommerce/discount/:code', async (req, res) => {
+  app.patch('/api/ecommerce/discount/:code', async (req: Request, res: Response): Promise<void> => {
     try {
       const { code } = req.params;
       const updates = req.body;
-      
+
       const discount = updateDiscountCode(code, updates);
-      
+
       if (!discount) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Discount code not found',
         });
+        return;
       }
 
       res.json({
@@ -197,16 +203,17 @@ export function registerEnhancedEcommerceRoutes(app: Express) {
   });
 
   // Delete Discount Code
-  app.delete('/api/ecommerce/discount/:code', async (req, res) => {
+  app.delete('/api/ecommerce/discount/:code', async (req: Request, res: Response): Promise<void> => {
     try {
       const { code } = req.params;
       const deleted = deleteDiscountCode(code);
-      
+
       if (!deleted) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Discount code not found',
         });
+        return;
       }
 
       res.json({

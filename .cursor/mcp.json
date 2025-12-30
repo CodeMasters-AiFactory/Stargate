@@ -1,8 +1,33 @@
 {
   "mcpServers": {
+    "sequential-thinking": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "env": {}
+    },
+    "github": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {}
+    },
     "desktop-commander": {
       "command": "C:\\Program Files\\nodejs\\npx.cmd",
       "args": ["-y", "@wonderwhy-er/desktop-commander@latest"],
+      "env": {}
+    },
+    "filesystem": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:/CURSOR PROJECTS",
+        "D:/"
+      ],
+      "env": {}
+    },
+    "puppeteer": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
       "env": {}
     },
     "playwright": {
@@ -10,14 +35,24 @@
       "args": ["-y", "@playwright/mcp@latest"],
       "env": {}
     },
-    "filesystem": {
+    "duckduckgo": {
       "command": "C:\\Program Files\\nodejs\\npx.cmd",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "C:\\", "D:\\"],
+      "args": ["-y", "@oevortex/ddg_search"],
       "env": {}
     },
-    "sequential-thinking": {
+    "memory": {
       "command": "C:\\Program Files\\nodejs\\npx.cmd",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "env": {}
+    },
+    "knowledge-graph": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "mcp-knowledge-graph"],
+      "env": {}
+    },
+    "fetch": {
+      "command": "C:\\Program Files\\nodejs\\npx.cmd",
+      "args": ["-y", "@kazuph/mcp-fetch"],
       "env": {}
     }
   }

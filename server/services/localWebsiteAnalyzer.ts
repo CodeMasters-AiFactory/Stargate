@@ -7,6 +7,45 @@
 import * as cheerio from 'cheerio';
 import type { WebsiteAnalysis } from './websiteAnalyzer';
 
+interface WebsiteInfo {
+  title: string;
+  description: string;
+  h1Count: number;
+  h1Text: string;
+  h2Count: number;
+  metaDescription: string;
+  hasSchema: boolean;
+  imageCount: number;
+  formCount: number;
+  ctaCount: number;
+  linkCount: number;
+  hasNavigation: boolean;
+  colorScheme: string[];
+}
+
+interface CategoryScores {
+  visualDesign: number;
+  uxStructure: number;
+  contentPositioning: number;
+  conversionTrust: number;
+  seoFoundations: number;
+  creativityDifferentiation: number;
+}
+
+interface CategoryDetail {
+  strengths: string[];
+  improvements: string[];
+}
+
+interface CategoryDetails {
+  visualDesign: CategoryDetail;
+  uxStructure: CategoryDetail;
+  contentPositioning: CategoryDetail;
+  conversionTrust: CategoryDetail;
+  seoFoundations: CategoryDetail;
+  creativityDifferentiation: CategoryDetail;
+}
+
 /**
  * Analyze website using local rules and heuristics
  * Based on quality standards manifesto
@@ -14,21 +53,7 @@ import type { WebsiteAnalysis } from './websiteAnalyzer';
 export function analyzeWebsiteLocally(
   url: string,
   html: string,
-  websiteInfo: {
-    title: string;
-    description: string;
-    h1Count: number;
-    h1Text: string;
-    h2Count: number;
-    metaDescription: string;
-    hasSchema: boolean;
-    imageCount: number;
-    formCount: number;
-    ctaCount: number;
-    linkCount: number;
-    hasNavigation: boolean;
-    colorScheme: string[];
-  }
+  websiteInfo: WebsiteInfo
 ): WebsiteAnalysis {
   const $ = cheerio.load(html);
   
@@ -85,7 +110,7 @@ export function analyzeWebsiteLocally(
   };
 }
 
-function scoreVisualDesign(info: any, _$: cheerio.CheerioAPI, html: string): number {
+function scoreVisualDesign(info: WebsiteInfo, _$: cheerio.CheerioAPI, html: string): number {
   let score = 5; // Start at OK
   
   // Check for cohesive color scheme
@@ -119,21 +144,21 @@ function scoreVisualDesign(info: any, _$: cheerio.CheerioAPI, html: string): num
   return Math.min(10, Math.max(0, score));
 }
 
-function scoreUXStructure(info: any, _$: cheerio.CheerioAPI, _html: string): number {
+function scoreUXStructure(info: WebsiteInfo, _$: cheerio.CheerioAPI, _html: string): number {
   let score = 5; // Start at OK
-  
+
   // Navigation present
   if (info.hasNavigation) {
     score += 1;
   }
-  
+
   // Proper heading hierarchy
   if (info.h1Count === 1 && info.h2Count >= 3) {
     score += 1;
   }
-  
+
   // Mobile responsive
-  if (html.includes('viewport') || html.includes('responsive') || html.includes('mobile')) {
+  if (_html.includes('viewport') || _html.includes('responsive') || _html.includes('mobile')) {
     score += 0.5;
   }
   
@@ -155,7 +180,7 @@ function scoreUXStructure(info: any, _$: cheerio.CheerioAPI, _html: string): num
   return Math.min(10, Math.max(0, score));
 }
 
-function scoreContent(_info: any, bodyText: string, wordCount: number): number {
+function scoreContent(_info: WebsiteInfo, bodyText: string, wordCount: number): number {
   let score = 5; // Start at OK
   
   // Check for generic filler
@@ -198,7 +223,7 @@ function scoreContent(_info: any, bodyText: string, wordCount: number): number {
   return Math.min(10, Math.max(0, score));
 }
 
-function scoreConversion(info: any, hasPhone: boolean, hasEmail: boolean, hasAddress: boolean, bodyText: string): number {
+function scoreConversion(info: WebsiteInfo, hasPhone: boolean, hasEmail: boolean, hasAddress: boolean, bodyText: string): number {
   let score = 3; // Start low
   
   // Strong CTAs
@@ -230,7 +255,7 @@ function scoreConversion(info: any, hasPhone: boolean, hasEmail: boolean, hasAdd
   return Math.min(10, Math.max(0, score));
 }
 
-function scoreSEO(info: any, $: cheerio.CheerioAPI, html: string): number {
+function scoreSEO(info: WebsiteInfo, _$: cheerio.CheerioAPI, _html: string): number {
   let score = 5; // Start at OK
   
   // Title quality
@@ -271,7 +296,7 @@ function scoreSEO(info: any, $: cheerio.CheerioAPI, html: string): number {
   return Math.min(10, Math.max(0, score));
 }
 
-function scoreCreativity(info: any, $: cheerio.CheerioAPI, html: string, bodyText: string): number {
+function scoreCreativity(info: WebsiteInfo, $: cheerio.CheerioAPI, html: string, bodyText: string): number {
   let score = 5; // Start at OK
   
   // Unique visual elements
@@ -309,7 +334,7 @@ function scoreCreativity(info: any, $: cheerio.CheerioAPI, html: string, bodyTex
   return Math.min(10, Math.max(0, score));
 }
 
-function generateCategoryDetails(scores: any, info: any, bodyText: string, wordCount: number): any {
+function generateCategoryDetails(scores: CategoryScores, info: WebsiteInfo, bodyText: string, wordCount: number): CategoryDetails {
   return {
     visualDesign: {
       strengths: generateVisualStrengths(scores.visualDesign, info),
@@ -338,7 +363,7 @@ function generateCategoryDetails(scores: any, info: any, bodyText: string, wordC
   };
 }
 
-function generateVisualStrengths(score: number, info: any): string[] {
+function generateVisualStrengths(score: number, info: WebsiteInfo): string[] {
   const strengths: string[] = [];
   if (score >= 7) {
     if (info.colorScheme.length >= 2) strengths.push('Cohesive color palette');
@@ -351,7 +376,7 @@ function generateVisualStrengths(score: number, info: any): string[] {
   return strengths.length > 0 ? strengths : ['Basic styling present'];
 }
 
-function generateVisualImprovements(score: number, info: any): string[] {
+function generateVisualImprovements(score: number, info: WebsiteInfo): string[] {
   const improvements: string[] = [];
   if (score < 7.5) {
     if (info.colorScheme.length < 2) improvements.push('Develop cohesive color palette');
@@ -361,7 +386,7 @@ function generateVisualImprovements(score: number, info: any): string[] {
   return improvements;
 }
 
-function generateUXStrengths(score: number, info: any): string[] {
+function generateUXStrengths(score: number, info: WebsiteInfo): string[] {
   const strengths: string[] = [];
   if (info.hasNavigation) strengths.push('Clear navigation structure');
   if (info.h1Count === 1) strengths.push('Proper heading hierarchy');
@@ -371,7 +396,7 @@ function generateUXStrengths(score: number, info: any): string[] {
   return strengths.length > 0 ? strengths : ['Basic structure present'];
 }
 
-function generateUXImprovements(score: number, info: any): string[] {
+function generateUXImprovements(score: number, info: WebsiteInfo): string[] {
   const improvements: string[] = [];
   if (score < 7.5) {
     if (info.h1Count !== 1) improvements.push('Ensure exactly one H1 per page');
@@ -402,7 +427,7 @@ function generateContentImprovements(score: number, bodyText: string, wordCount:
   return improvements;
 }
 
-function generateConversionStrengths(score: number, info: any, bodyText: string): string[] {
+function generateConversionStrengths(score: number, info: WebsiteInfo, bodyText: string): string[] {
   const strengths: string[] = [];
   if (/book a consultation|schedule a call/i.test(bodyText)) strengths.push('Strong, action-oriented CTAs');
   if (info.formCount > 0) strengths.push('Contact form present');
@@ -412,7 +437,7 @@ function generateConversionStrengths(score: number, info: any, bodyText: string)
   return strengths.length > 0 ? strengths : ['Basic contact options'];
 }
 
-function generateConversionImprovements(score: number, info: any, bodyText: string): string[] {
+function generateConversionImprovements(score: number, info: WebsiteInfo, bodyText: string): string[] {
   const improvements: string[] = [];
   if (score < 7.5) {
     if (!/book a consultation|schedule a call/i.test(bodyText)) improvements.push('Use strong CTAs like "Book a Consultation" instead of "Contact Us"');
@@ -423,7 +448,7 @@ function generateConversionImprovements(score: number, info: any, bodyText: stri
   return improvements;
 }
 
-function generateSEOStrengths(score: number, info: any): string[] {
+function generateSEOStrengths(score: number, info: WebsiteInfo): string[] {
   const strengths: string[] = [];
   if (info.title && info.title.length >= 30) strengths.push('Proper title length');
   if (info.h1Count === 1) strengths.push('One H1 per page');
@@ -434,7 +459,7 @@ function generateSEOStrengths(score: number, info: any): string[] {
   return strengths.length > 0 ? strengths : ['Basic SEO elements'];
 }
 
-function generateSEOImprovements(score: number, info: any): string[] {
+function generateSEOImprovements(score: number, info: WebsiteInfo): string[] {
   const improvements: string[] = [];
   if (score < 7.5) {
     if (/^(home|services|about|contact)\s*\|/i.test(info.title)) improvements.push('Use keyword-rich titles (include location/service keywords)');
@@ -445,7 +470,7 @@ function generateSEOImprovements(score: number, info: any): string[] {
   return improvements;
 }
 
-function generateCreativityStrengths(score: number, info: any, bodyText: string): string[] {
+function generateCreativityStrengths(score: number, info: WebsiteInfo, bodyText: string): string[] {
   const strengths: string[] = [];
   if (info.colorScheme.length >= 2) strengths.push('Defined color scheme');
   if (bodyText.match(/story|mission/i)) strengths.push('Brand narrative present');
@@ -455,7 +480,7 @@ function generateCreativityStrengths(score: number, info: any, bodyText: string)
   return strengths.length > 0 ? strengths : ['Basic branding'];
 }
 
-function generateCreativityImprovements(_score: number, _info: any, bodyText: string): string[] {
+function generateCreativityImprovements(score: number, _info: WebsiteInfo, bodyText: string): string[] {
   const improvements: string[] = [];
   if (score < 7.5) {
     improvements.push('Develop unique visual identity');
@@ -466,7 +491,7 @@ function generateCreativityImprovements(_score: number, _info: any, bodyText: st
   return improvements;
 }
 
-function determineVerdict(averageScore: number, scores: any): 'Poor' | 'OK' | 'Good' | 'Excellent' | 'World-Class' {
+function determineVerdict(averageScore: number, scores: CategoryScores): 'Poor' | 'OK' | 'Good' | 'Excellent' | 'World-Class' {
   if (averageScore < 4.0) return 'Poor';
   if (averageScore < 6.0) return 'OK';
   if (averageScore < 7.5) return 'Good';
@@ -492,7 +517,7 @@ function determineVerdict(averageScore: number, scores: any): 'Poor' | 'OK' | 'G
   return 'Good';
 }
 
-function generateOverallSummary(scores: any, averageScore: number, verdict: string): string {
+function generateOverallSummary(scores: CategoryScores, averageScore: number, verdict: string): string {
   const highCategories = Object.entries(scores)
     .filter(([_, score]) => (score as number) >= 8)
     .map(([cat]) => cat.replace(/([A-Z])/g, ' $1').trim());

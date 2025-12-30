@@ -46,7 +46,7 @@ export function WebPage() {
   };
 
   const handleAuthSuccess = () => {
-    setState(prev => ({ ...prev, currentView: 'dashboard' }));
+    setState(prev => ({ ...prev, currentView: 'stargate-websites' }));
   };
 
   const handleMerlinWizard = () => {

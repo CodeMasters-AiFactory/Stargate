@@ -12,6 +12,17 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined
 ): Promise<Response> {
+  // DEBUG: Track project creation calls to find source of premature creation
+  if (url.includes('/api/projects') && method === 'POST' && !url.includes('/api/projects/')) {
+    console.log('[apiRequest DEBUG] =================================');
+    console.log('[apiRequest DEBUG] POST /api/projects called');
+    console.log('[apiRequest DEBUG] URL:', url);
+    console.log('[apiRequest DEBUG] Data:', JSON.stringify(data, null, 2));
+    console.log('[apiRequest DEBUG] Stack trace:');
+    console.trace('[apiRequest DEBUG] Called from:');
+    console.log('[apiRequest DEBUG] =================================');
+  }
+
   const res = await fetch(url, {
     method,
     headers: data ? { 'Content-Type': 'application/json' } : {},

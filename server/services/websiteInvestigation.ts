@@ -1,6 +1,4 @@
 import OpenAI from 'openai';
-import { scrapeWebsite, type ScrapedWebsite } from './webScraper';
-import { getInvestigationLogger, closeInvestigationLogger } from './investigationLogger';
 
 // Use Replit AI Integrations for OpenAI access (optional - allows server to start without keys)
 // Only create OpenAI client if we have a valid (non-placeholder) API key
@@ -354,21 +352,9 @@ export async function investigateWebsiteRequirements(
   request: InvestigationRequest,
   onProgress?: (progress: InvestigationProgress) => void
 ): Promise<InvestigationResults> {
-  // Create logger for this investigation session (with error handling)
-  // TEMPORARILY DISABLED - Using only console.log for debugging
-  const logger = {
-    info: () => {},
-    success: () => {},
-    warn: () => {},
-    error: () => {},
-    log: () => {},
-    logProgress: () => {},
-    getStageLogs: () => [],
-    getSummary: () => [],
-    close: () => {},
-    getLogDirectory: () => '',
-  } as any;
-  
+  // Logger functionality TEMPORARILY DISABLED - Using only console.log for debugging
+  // The logger would be initialized here if needed
+
   console.log('[INVESTIGATION] Starting 13-step Google Rating Category investigation');
   console.log('[INVESTIGATION] Business:', request.businessName);
   console.log('[INVESTIGATION] Business type:', request.businessType);
@@ -389,7 +375,7 @@ export async function investigateWebsiteRequirements(
   const calculateCheckScore = (
     hasData: boolean,
     analysisQuality: 'excellent' | 'good' | 'fair' | 'poor' = 'good',
-    dataCompleteness: number = 1.0, // 0.0 to 1.0 - how complete the data is
+    dataCompleteness = 1.0, // 0.0 to 1.0 - how complete the data is
     customReasoning?: string
   ): CheckScoreResult => {
     // Validation: Ensure dataCompleteness is in valid range
@@ -447,7 +433,7 @@ export async function investigateWebsiteRequirements(
   const getCheckScore = (
     hasData: boolean,
     analysisQuality: 'excellent' | 'good' | 'fair' | 'poor' = 'good',
-    dataCompleteness: number = 1.0
+    dataCompleteness = 1.0
   ): number => {
     return calculateCheckScore(hasData, analysisQuality, dataCompleteness).score;
   };
@@ -537,11 +523,11 @@ What specific content topics, sections, and information would be most valuable f
             max_tokens: 500,
           });
           const hasContent = !!contentResponse.choices[0]?.message?.content;
-          check1Score = calculateCheckScore(hasContent, hasContent && request.services?.length ? 'excellent' : 'good');
+          check1Score = calculateCheckScore(hasContent, hasContent && request.services?.length ? 'excellent' : 'good').score;
           checkScores[`${category.name}-0`] = check1Score; // Check 1: Real, useful content
           console.log(`[CATEGORY ${categoryIdx + 1}] ✅ Content research complete:`, contentResponse.choices[0]?.message?.content?.substring(0, 100));
-        } catch (error: unknown) {
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        } catch (_error: unknown) {
+          const errorMessage = _error instanceof Error ? _error.message : 'Unknown error';
           console.error(`[CATEGORY ${categoryIdx + 1}] ⚠️ Content research API error:`, errorMessage);
           const scoreResult = calculateCheckScore(false, 'poor', 0, `API error: ${errorMessage}`);
           check1Score = scoreResult.score;
@@ -585,8 +571,8 @@ What specific content topics, sections, and information would be most valuable f
           );
           check2Score = scoreResult.score;
           checkScores[`${category.name}-1`] = check2Score; // Check 2: Answers user intent
-        } catch (error: unknown) {
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        } catch (_error: unknown) {
+          const errorMessage = _error instanceof Error ? _error.message : 'Unknown error';
           console.error(`[CATEGORY ${categoryIdx + 1}] ⚠️ Intent analysis error:`, errorMessage);
           const scoreResult = calculateCheckScore(false, 'poor', 0, `API error: ${errorMessage}`);
           check2Score = scoreResult.score;
@@ -634,8 +620,8 @@ What specific content topics, sections, and information would be most valuable f
           );
           check3Score = scoreResult.score;
           checkScores[`${category.name}-2`] = check3Score; // Check 3: Goes deeper than competitors
-        } catch (error: unknown) {
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        } catch (_error: unknown) {
+          const errorMessage = _error instanceof Error ? _error.message : 'Unknown error';
           console.error(`[CATEGORY ${categoryIdx + 1}] ⚠️ Competitor analysis error:`, errorMessage);
           const scoreResult = calculateCheckScore(false, 'poor', 0, `API error: ${errorMessage}`);
           check3Score = scoreResult.score;
@@ -725,15 +711,15 @@ What specific content topics, sections, and information would be most valuable f
     } else {
       // Other categories (Steps 2-13) - Faster processing (0.3-0.5 min each)
       const timePerCheck = category.estimatedTimeMinutes * 60 * 1000 / (category.checks.length || 1);
-      
+
       for (let checkIdx = 0; checkIdx < category.checks.length; checkIdx++) {
-        const check = category.checks[checkIdx];
+        const _check = category.checks[checkIdx];
         const checkProgress = Math.floor((checkIdx / category.checks.length) * 100);
         
         safeProgress({
           stage: category.stage,
           progress: overallProgress + Math.floor((checkIdx / category.checks.length) * 2),
-          message: `Checking: ${check}`,
+          message: `Checking: ${_check}`,
           categoryIndex: categoryIdx,
           categoryName: category.name,
           categoryProgress: checkProgress,

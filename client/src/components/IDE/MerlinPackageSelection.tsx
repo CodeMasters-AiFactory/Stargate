@@ -8,45 +8,45 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
 import { useIDE } from '@/hooks/use-ide';
 import { useToast } from '@/hooks/use-toast';
 import {
-  ArrowRight,
-  Building2,
-  Check,
-  Clock,
-  Crown,
-  FileText,
-  Globe,
-  LayoutTemplate,
-  Palette,
-  Search,
-  Shield,
-  ShoppingCart,
-  Sparkles,
-  Star,
-  TrendingUp,
-  Users,
-  Wand2,
-  Zap
+    ArrowLeft,
+    ArrowRight,
+    Building2,
+    Check,
+    Clock,
+    Crown,
+    FileText,
+    Globe,
+    LayoutTemplate,
+    Palette,
+    Search,
+    Shield,
+    ShoppingCart,
+    Sparkles,
+    TrendingUp,
+    Users,
+    Wand2,
+    Zap
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
@@ -55,7 +55,7 @@ import { NavigationButtons } from './BackButton';
 // YouTube API types
 declare global {
   interface Window {
-    YT: any;
+    YT: Record<string, unknown>;
     onYouTubeIframeAPIReady: () => void;
   }
 }
@@ -85,24 +85,6 @@ interface Package {
   automated: boolean;
   category: 'basic' | 'professional' | 'corporate' | 'custom';
 }
-
-// Credit costs for different services
-const creditCosts = {
-  websiteGeneration: 20,
-  contentWriting: 5,
-  imageGeneration: 10,
-  seoOptimization: 15,
-  templateChange: 10,
-  aiChatMessage: 1,
-  codeExport: 25,
-};
-
-// Credit packs for purchase when credits run out
-const creditPacks = [
-  { credits: 50, price: 10, savings: 0 },
-  { credits: 200, price: 35, savings: 15 },
-  { credits: 500, price: 75, savings: 25 },
-];
 
 const packages: Package[] = [
   // HOME PACKAGE - For personal use and small projects
@@ -269,13 +251,25 @@ const siteTypes = [
 export function MerlinPackageSelection() {
   const { setState } = useIDE();
   const { toast } = useToast();
-  const { isAuthenticated, isLoading, checkAuth, isAdmin } = useAuth();
-  const [, setLocation] = useLocation();
+  const { isAuthenticated, isLoading, checkAuth, isAdmin: _isAdmin } = useAuth();
+  useLocation(); // Keep hook but don't destructure unused setLocation
   const [selectedPackage, setSelectedPackage] = useState<PackageType | null>(null);
+  const [buildType, setBuildType] = useState<'merlin' | 'custom' | null>(null);
   const [showSiteTypeSelection, setShowSiteTypeSelection] = useState(false);
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
   const [showQuoteDialog, setShowQuoteDialog] = useState(false);
-  const [selectedCustomPackage, setSelectedCustomPackage] = useState<string | null>(null);
+  const [customFormData, setCustomFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    projectDescription: '',
+    budget: '',
+    timeline: '',
+    preferredDate: '',
+    preferredTime: '',
+  });
+  const [selectedCustomPackage, _setSelectedCustomPackage] = useState<string | null>(null);
   const [quoteForm, setQuoteForm] = useState({
     name: '',
     email: '',
@@ -365,7 +359,7 @@ export function MerlinPackageSelection() {
             playlist: videoId, // Required for looping
           },
           events: {
-            onReady: (event: any) => {
+            onReady: (event: Record<string, unknown>) => {
               event.target.playVideo();
               // Get video duration
               setTimeout(() => {
@@ -397,7 +391,7 @@ export function MerlinPackageSelection() {
                 }
               }, 1000);
             },
-            onStateChange: (event: any) => {
+            onStateChange: (event: Record<string, unknown>) => {
               // If video ends (shouldn't happen with our timer, but backup)
               if (event.data === 0) {
                 event.target.seekTo(0);
@@ -408,13 +402,13 @@ export function MerlinPackageSelection() {
                 event.target.playVideo();
               }
             },
-            onError: (event: any) => {
+            onError: (event: Record<string, unknown>) => {
               originalConsoleError('YouTube player error:', event.data);
             },
           },
         });
-      } catch (error) {
-        originalConsoleError('Failed to initialize YouTube player:', error);
+      } catch (_error: unknown) {
+        originalConsoleError('Failed to initialize YouTube player:', _error);
       }
     };
 
@@ -610,77 +604,21 @@ export function MerlinPackageSelection() {
       return;
     }
 
-
-    setSelectedPackage(pkg);
-
-    // CRITICAL: Navigate to wizard with package selected and go directly to template selection (Phase 2)
-    // Store package in localStorage for wizard to pick up
-    localStorage.setItem('stargate-wizard-state', JSON.stringify({
-      stage: 'template-select',
-      currentPage: 'project-overview',
-      currentQuestion: 0,
-      requirements: {},
-      messages: [],
-      stageHistory: ['package-select'],
-      selectedPackage: pkg,
-      packageConstraints: getPackageConstraints(pkg),
-      selectedTemplate: null,
-    }));
-
-    // Navigate to wizard (stargate-websites view) - Use URL navigation to prevent sync conflicts
-    setLocation('/stargate-websites');
-    setState(prev => ({
-      ...prev,
-      currentView: 'stargate-websites',
-      merlinPackage: {
-        packageType: pkg,
-        siteType: pkg === 'ultra' ? 'business' : 'business', // Default for all
-  },
-    }));
+    if (pkg !== 'custom') {
+      setSelectedPackage(pkg);
+    }
 
     toast({
-  title: 'Package Selected!',
-      description: `You selected the ${pkg} package. Now choose your design template.`,
+      title: 'Package Selected!',
+      description: `You've selected the ${pkg} package. Ready to build your website!`,
     });
   };
 
-  // Helper function to get package constraints
-  const getPackageConstraints = (pkg: PackageType) => {
-    const constraints: Record<PackageType, { maxPages: number; maxServices: number; includesCompetitorResearch: boolean; includesAdvancedSEO: boolean }> = {
-      basic: { maxPages: 5, maxServices: 3, includesCompetitorResearch: false, includesAdvancedSEO: false },
-      advanced: { maxPages: 15, maxServices: 10, includesCompetitorResearch: false, includesAdvancedSEO: false },
-      seo: { maxPages: 15, maxServices: 20, includesCompetitorResearch: false, includesAdvancedSEO: true },
-      deluxe: { maxPages: 50, maxServices: 50, includesCompetitorResearch: true, includesAdvancedSEO: true },
-      ultra: { maxPages: Infinity, maxServices: Infinity, includesCompetitorResearch: true, includesAdvancedSEO: true },
-    };
-    return constraints[pkg];
-  };
-
-  const handleContinue = () => {
-    if (!selectedPackage) {
-      toast({
-        title: 'Please select a package',
-        description: 'Choose a package to continue',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (!requirements.siteType) {
-      toast({
-        title: 'Please select site type',
-        description: 'Choose the type of website you want to build',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    // STREAMLINED FLOW: Skip the old 17-phase wizard!
-    // Store all requirements and go DIRECTLY to generation
-    const fullRequirements = {
+  // Build full requirements object
+  const buildFullRequirements = () => {
+    return {
       ...requirements,
       packageType: selectedPackage,
-      // Map to backend expected format
       businessName: requirements.businessName || 'My Business',
       businessType: requirements.siteType || 'business',
       industry: requirements.industry || 'professional',
@@ -689,11 +627,9 @@ export function MerlinPackageSelection() {
       services: requirements.services.filter(s => s.name),
       colorScheme: requirements.colorScheme || 'professional',
       designStyle: requirements.designStyle || 'modern',
-      // Contact info
       contactEmail: requirements.businessEmail,
       contactPhone: requirements.businessPhone,
       address: requirements.businessAddress,
-      // Features
       features: {
         contactForm: requirements.hasContactForm,
         newsletter: requirements.hasNewsletter,
@@ -707,7 +643,6 @@ export function MerlinPackageSelection() {
         localSeo: requirements.wantsLocalSEO,
         socialLinks: requirements.hasSocialLinks,
       },
-      // Social media
       socialMedia: {
         facebook: requirements.facebook,
         instagram: requirements.instagram,
@@ -716,33 +651,80 @@ export function MerlinPackageSelection() {
         youtube: requirements.youtube,
         tiktok: requirements.tiktok,
       },
-      // Content
       contentMode: requirements.contentMode,
       contentTone: requirements.contentTone,
-      // SEO
       targetKeywords: requirements.targetKeywords,
       competitors: requirements.competitorUrls,
       region: requirements.region,
       country: requirements.country,
     };
+  };
 
-    // Store in localStorage for the generator to access
-    localStorage.setItem('merlin_quick_generate', JSON.stringify(fullRequirements));
+  // Validate before proceeding
+  const validateBeforeProceed = () => {
+    if (!selectedPackage) {
+      toast({
+        title: 'Please select a package',
+        description: 'Choose a package to continue',
+        variant: 'destructive',
+      });
+      return false;
+    }
+    if (!requirements.siteType) {
+      toast({
+        title: 'Please select site type',
+        description: 'Choose the type of website you want to build',
+        variant: 'destructive',
+      });
+      return false;
+    }
+    return true;
+  };
 
-    // Navigate to quick generate view (skips 17-phase wizard!)
+  // Handle starting with templates - goes to template browser
+  const handleStartWithTemplates = () => {
+    if (!validateBeforeProceed()) return;
+
+    const fullReqs = buildFullRequirements();
+    localStorage.setItem('merlin_quick_generate', JSON.stringify(fullReqs));
+
+    // Navigate to template selection (website wizard at template-select stage)
     setState(prev => ({
       ...prev,
-      currentView: 'merlin-quick-generate',
+      currentView: 'website' as any,
       merlinPackage: {
-        packageType: selectedPackage,
+        packageType: selectedPackage!,
         siteType: requirements.siteType || 'business',
       },
       merlinQuickGenerate: {
-        requirements: fullRequirements,
+        requirements: fullReqs,
         skipChecklist: true,
       },
     }));
   };
+
+  // Handle starting with AI Canvas (Merlin AI generation)
+  const handleStartWithMerlinAI = () => {
+    if (!validateBeforeProceed()) return;
+
+    const fullReqs = buildFullRequirements();
+    localStorage.setItem('merlin_quick_generate', JSON.stringify(fullReqs));
+
+    // Navigate to AI generation canvas
+    setState(prev => ({
+      ...prev,
+      currentView: 'merlin-quick-generate',
+      merlinPackage: {
+        packageType: selectedPackage!,
+        siteType: requirements.siteType || 'business',
+      },
+      merlinQuickGenerate: {
+        requirements: fullReqs,
+        skipChecklist: true,
+      },
+    }));
+  };
+
 
   const handleBack = () => {
     if (showSiteTypeSelection) {
@@ -902,7 +884,7 @@ export function MerlinPackageSelection() {
               What type of website do you need?
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {siteTypes.map(type => {
+              {siteTypes.map((type: { id: SiteType; name: string; description: string; icon: React.ComponentType<{ className?: string }> }) => {
                 const Icon = type.icon;
                 const isSelected = requirements.siteType === type.id;
                 return (
@@ -935,7 +917,7 @@ export function MerlinPackageSelection() {
             </h2>
             <p className="text-white/40 text-sm mb-4">Select pages and customize their names. ({enabledPages} pages selected)</p>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-              {requirements.pages.map((page, idx) => (
+              {requirements.pages.map((page: { name: string; enabled: boolean; editable: boolean }, idx: number) => (
                 <div key={idx} className={`rounded-xl border transition-all ${
                   page.enabled
                     ? 'bg-blue-500/20 border-purple-900/20'
@@ -1611,20 +1593,38 @@ export function MerlinPackageSelection() {
             </div>
           </div>
 
-          {/* Continue Button */}
-          <div className="flex flex-col items-center gap-4 pb-12">
-            <Button
-              size="lg"
-              onClick={handleContinue}
-              disabled={!requirements.siteType}
-              className="px-12 py-6 text-lg bg-cyan-600 hover:bg-cyan-500 text-white shadow-xl shadow-cyan-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Wand2 className="w-5 h-5 mr-2" />
-              Generate My Website
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <p className="text-white/40 text-sm">
-              {!requirements.siteType ? 'Please select a site type above' : `${enabledPages} pages • ${requirements.colorScheme} style • Ready to generate!`}
+          {/* Choose How to Build */}
+          <div className="flex flex-col items-center gap-6 pb-12">
+            <h3 className="text-xl font-semibold text-white">How would you like to build?</h3>
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* Browse Templates Button */}
+              <Button
+                size="lg"
+                onClick={handleStartWithTemplates}
+                disabled={!requirements.siteType}
+                className="px-8 py-6 text-lg bg-blue-600 hover:bg-blue-500 text-white shadow-xl shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <LayoutTemplate className="w-5 h-5 mr-2" />
+                Browse Templates
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+
+              {/* Merlin AI Canvas Button */}
+              <Button
+                size="lg"
+                onClick={handleStartWithMerlinAI}
+                disabled={!requirements.siteType}
+                className="px-8 py-6 text-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-xl shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Wand2 className="w-5 h-5 mr-2" />
+                Merlin AI Canvas
+                <Sparkles className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+            <p className="text-white/40 text-sm text-center max-w-md">
+              {!requirements.siteType
+                ? 'Please select a site type above'
+                : `${enabledPages} pages • ${requirements.colorScheme} style • Choose templates or let AI create your site!`}
             </p>
           </div>
         </div>
@@ -1674,112 +1674,276 @@ export function MerlinPackageSelection() {
   }
 
   return (
-    <div className="w-full h-full overflow-y-auto bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 relative">
-      {/* YouTube Video Background - DISABLED - Video removed per user request */}
-      {/* Background overlays removed with video */}
-
+    <div className="w-full h-full overflow-y-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
-        {/* Gradient Orbs - Reduced animation for stability */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-900/15 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
         <div className="absolute top-1/2 right-0 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl" />
-
       </div>
 
-      {/* Sticky Navigation Bar */}
-      <div className="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-white/10 px-6 py-4 mb-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <NavigationButtons
-            backDestination="dashboard"
-            backLabel="Back to Services"
-            className="[&_button]:bg-blue-600 [&_button]:hover:bg-blue-700 [&_button]:border-none [&_button]:text-white [&_button]:shadow-lg [&_button]:px-4 [&_button]:py-2"
-          />
-          {isAdmin && (
-            <Button
-              variant="outline"
-              onClick={() => {
-                setLocation('/admin');
-                setState(prev => ({ ...prev, currentView: 'admin' }));
-              }}
-              className="text-white/80 hover:text-white hover:bg-white/10 transition-colors border border-white/20"
-            >
-              <Shield className="w-4 h-4 mr-2" />
-              Admin Panel
-            </Button>
-          )}
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-12 relative z-20">
-        {/* Enhanced Header */}
-        <div className="text-center mb-20 relative">
-          {/* Merlin Image - Positioned Right Behind the Title */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-visible" style={{ zIndex: 0 }}>
-            <img
-              src="/merlin.jpg"
-              alt="Merlin"
-              className="object-contain"
-              style={{
-                width: '800px',
-                height: '800px',
-                maxWidth: '90vw',
-                maxHeight: '90vh',
-                objectFit: 'contain',
-                position: 'absolute',
-                opacity: 0.15,
-                filter: 'blur(1px)',
-              }}
-              onError={() => {
-                // MERLIN IMAGE FAILED TO LOAD
-              }}
-              onLoad={() => {
-                // MERLIN IMAGE LOADED SUCCESSFULLY
-              }}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-20">
+        {/* Clean Header - Title at Top */}
+        <div className="text-center mb-12 relative">
+          {/* Back Button - Small, top left */}
+          <div className="absolute top-0 left-0">
+            <NavigationButtons
+              backDestination="dashboard"
+              backLabel="Back"
+              className="[&_button]:bg-slate-700/50 [&_button]:hover:bg-slate-600/50 [&_button]:border-slate-600 [&_button]:text-white/70 [&_button]:hover:text-white [&_button]:px-3 [&_button]:py-1.5 [&_button]:text-sm"
             />
           </div>
-          <div className="flex items-center justify-center gap-4 mb-6 relative z-10">
-            <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 bg-clip-text text-transparent animate-gradient relative z-10">
-              Merlin Website Wizard
-            </h1>
-          </div>
-          <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 max-w-3xl mx-auto mb-3 font-medium relative z-10">
-            Choose the perfect package for your needs
+
+          {/* Main Title */}
+          <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-violet-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-3 pt-2">
+            Website Builder
+          </h1>
+          <p className="text-lg text-white/60 mb-8">
+            Choose how you want to build your website
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-base md:text-lg font-semibold relative z-10">
-            <span className="text-primary flex items-center gap-2">
-              <Zap className="w-5 h-5" />
-              Starting from $19/month
-            </span>
-            <span className="text-gray-500 dark:text-gray-400">•</span>
-            <span className="text-primary flex items-center gap-2">
-              <Wand2 className="w-5 h-5" />
-              Fully Automated
-            </span>
-            <span className="text-gray-500 dark:text-gray-400">•</span>
-            <span className="text-primary flex items-center gap-2">
-              <Check className="w-5 h-5" />
-              No Coding Required
-            </span>
+
+          {/* Build Type Selector */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+            <button
+              onClick={() => setBuildType('merlin')}
+              className={`flex items-center gap-3 px-6 py-4 rounded-xl border-2 transition-all duration-300 min-w-[280px] ${
+                buildType === 'merlin'
+                  ? 'border-violet-500 bg-violet-500/20 shadow-lg shadow-violet-500/30'
+                  : 'border-slate-600 bg-slate-800/50 hover:border-violet-400 hover:bg-slate-700/50'
+              }`}
+            >
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                buildType === 'merlin' ? 'bg-violet-500' : 'bg-slate-700'
+              }`}>
+                <Wand2 className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-white">Merlin Website Wizard</div>
+                <div className="text-sm text-white/60">AI-powered, build it yourself</div>
+              </div>
+              {buildType === 'merlin' && (
+                <Check className="w-6 h-6 text-violet-400 ml-auto" />
+              )}
+            </button>
+
+            <button
+              onClick={() => setBuildType('custom')}
+              className={`flex items-center gap-3 px-6 py-4 rounded-xl border-2 transition-all duration-300 min-w-[280px] ${
+                buildType === 'custom'
+                  ? 'border-amber-500 bg-amber-500/20 shadow-lg shadow-amber-500/30'
+                  : 'border-slate-600 bg-slate-800/50 hover:border-amber-400 hover:bg-slate-700/50'
+              }`}
+            >
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                buildType === 'custom' ? 'bg-amber-500' : 'bg-slate-700'
+              }`}>
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-white">Custom Website</div>
+                <div className="text-sm text-white/60">We build it for you</div>
+              </div>
+              {buildType === 'custom' && (
+                <Check className="w-6 h-6 text-amber-400 ml-auto" />
+              )}
+            </button>
           </div>
         </div>
 
-        {/* Phase 1: Package Selection */}
-        <section className="mb-16">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/30 mb-4">
-              <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0">
-                Phase 1
-              </Badge>
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Choose Your Package
-              </span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Select Your Package
+        {/* Custom Website Form - Shows when Custom is selected */}
+        {buildType === 'custom' && (
+          <section className="mb-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <Card className="max-w-3xl mx-auto bg-slate-800/80 border-amber-500/30 backdrop-blur-sm">
+              <CardHeader className="text-center border-b border-slate-700">
+                <CardTitle className="text-2xl text-white flex items-center justify-center gap-3">
+                  <Users className="w-6 h-6 text-amber-400" />
+                  Custom Website Request
+                </CardTitle>
+                <CardDescription className="text-white/60">
+                  Tell us about your project and schedule a consultation with our team
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                {/* Contact Info */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-white/80 mb-1 block">Your Name *</label>
+                    <input
+                      type="text"
+                      value={customFormData.name}
+                      onChange={(e) => setCustomFormData(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-white/40 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+                      placeholder="John Doe"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-white/80 mb-1 block">Email Address *</label>
+                    <input
+                      type="email"
+                      value={customFormData.email}
+                      onChange={(e) => setCustomFormData(prev => ({ ...prev, email: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-white/40 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+                      placeholder="john@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-white/80 mb-1 block">Phone Number</label>
+                    <input
+                      type="tel"
+                      value={customFormData.phone}
+                      onChange={(e) => setCustomFormData(prev => ({ ...prev, phone: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-white/40 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+                      placeholder="+1 234 567 8900"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-white/80 mb-1 block">Company/Business Name</label>
+                    <input
+                      type="text"
+                      value={customFormData.company}
+                      onChange={(e) => setCustomFormData(prev => ({ ...prev, company: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-white/40 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+                      placeholder="Your Company"
+                    />
+                  </div>
+                </div>
+
+                {/* Project Details */}
+                <div>
+                  <label className="text-sm text-white/80 mb-1 block">Project Description *</label>
+                  <textarea
+                    value={customFormData.projectDescription}
+                    onChange={(e) => setCustomFormData(prev => ({ ...prev, projectDescription: e.target.value }))}
+                    className="w-full px-4 py-2 rounded-lg bg-slate-700 border border-slate-600 text-white placeholder-white/40 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none h-32 resize-none"
+                    placeholder="Describe your business, what kind of website you need, key features, pages required, design preferences, reference websites you like..."
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-white/80 mb-1 block">Budget Range</label>
+                    <select
+                      value={customFormData.budget}
+                      onChange={(e) => setCustomFormData(prev => ({ ...prev, budget: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg bg-slate-700 border border-slate-600 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+                    >
+                      <option value="">Select budget range</option>
+                      <option value="500-1000">$500 - $1,000</option>
+                      <option value="1000-2500">$1,000 - $2,500</option>
+                      <option value="2500-5000">$2,500 - $5,000</option>
+                      <option value="5000-10000">$5,000 - $10,000</option>
+                      <option value="10000+">$10,000+</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm text-white/80 mb-1 block">Timeline</label>
+                    <select
+                      value={customFormData.timeline}
+                      onChange={(e) => setCustomFormData(prev => ({ ...prev, timeline: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg bg-slate-700 border border-slate-600 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+                    >
+                      <option value="">Select timeline</option>
+                      <option value="asap">ASAP</option>
+                      <option value="1-2weeks">1-2 Weeks</option>
+                      <option value="2-4weeks">2-4 Weeks</option>
+                      <option value="1-2months">1-2 Months</option>
+                      <option value="flexible">Flexible</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Meeting Scheduler */}
+                <div className="border-t border-slate-700 pt-6">
+                  <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-amber-400" />
+                    Schedule a Consultation
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm text-white/80 mb-1 block">Preferred Date</label>
+                      <input
+                        type="date"
+                        value={customFormData.preferredDate}
+                        onChange={(e) => setCustomFormData(prev => ({ ...prev, preferredDate: e.target.value }))}
+                        className="w-full px-4 py-2 rounded-lg bg-slate-700 border border-slate-600 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-white/80 mb-1 block">Preferred Time</label>
+                      <select
+                        value={customFormData.preferredTime}
+                        onChange={(e) => setCustomFormData(prev => ({ ...prev, preferredTime: e.target.value }))}
+                        className="w-full px-4 py-2 rounded-lg bg-slate-700 border border-slate-600 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+                      >
+                        <option value="">Select time slot</option>
+                        <option value="9am-10am">9:00 AM - 10:00 AM</option>
+                        <option value="10am-11am">10:00 AM - 11:00 AM</option>
+                        <option value="11am-12pm">11:00 AM - 12:00 PM</option>
+                        <option value="2pm-3pm">2:00 PM - 3:00 PM</option>
+                        <option value="3pm-4pm">3:00 PM - 4:00 PM</option>
+                        <option value="4pm-5pm">4:00 PM - 5:00 PM</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex gap-4 pt-4">
+                  <Button
+                    variant="ghost"
+                    className="text-white/60 hover:text-white"
+                    onClick={() => setBuildType(null)}
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back
+                  </Button>
+                  <Button
+                    className="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold py-6"
+                    onClick={() => {
+                      if (!customFormData.name || !customFormData.email || !customFormData.projectDescription) {
+                        toast({
+                          title: 'Missing Information',
+                          description: 'Please fill in your name, email, and project description.',
+                          variant: 'destructive',
+                        });
+                        return;
+                      }
+                      toast({
+                        title: 'Request Submitted!',
+                        description: 'Our team will contact you within 24 hours to discuss your project.',
+                      });
+                      setCustomFormData({
+                        name: '',
+                        email: '',
+                        phone: '',
+                        company: '',
+                        projectDescription: '',
+                        budget: '',
+                        timeline: '',
+                        preferredDate: '',
+                        preferredTime: '',
+                      });
+                      setBuildType(null);
+                    }}
+                  >
+                    Submit Request
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        )}
+
+        {/* Phase 1: Package Selection - Shows when Merlin is selected */}
+        {buildType === 'merlin' && (
+        <section className="mb-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+              Choose Your Package
             </h2>
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Choose the perfect solution for your website needs
+            <p className="text-lg text-white/50 max-w-2xl mx-auto">
+              Select the perfect solution for your website needs. Each package is crafted with AI-powered precision.
             </p>
           </div>
 
@@ -1787,8 +1951,8 @@ export function MerlinPackageSelection() {
           <div className="mb-12">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {packages
-                .filter(p => p.id === 'basic' || p.id === 'business' || p.id === 'corporate')
-                .map(pkg => {
+                .filter((p: Package) => p.id === 'basic' || p.id === 'business' || p.id === 'corporate')
+                .map((pkg: Package) => {
                     const Icon = pkg.icon;
                     const isSelected = selectedPackage === pkg.id;
                     return (
@@ -1881,7 +2045,7 @@ export function MerlinPackageSelection() {
                           </div>
 
                       <ul className="space-y-2.5 mb-6 flex-1">
-                        {pkg.features.map((feature, idx) => (
+                        {pkg.features.map((feature: string, idx: number) => (
                           <li
                             key={idx}
                             className="flex items-start text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors"
@@ -1900,7 +2064,7 @@ export function MerlinPackageSelection() {
                             ? 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg ring-2 ring-blue-400/50'
                             : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-md hover:shadow-xl group-hover:scale-105 group-hover:brightness-125 group-hover:ring-4 group-hover:ring-blue-300/90 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.6)]'
                         }`}
-                        onClick={e => {
+                        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                           e.stopPropagation();
                           handlePackageSelect(pkg.id as PackageType);
                         }}
@@ -1930,7 +2094,43 @@ export function MerlinPackageSelection() {
             </div>
           </div>
 
+          {/* Proceed Button - Shows when package is selected */}
+          {selectedPackage && (
+            <div className="mt-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-12 py-6 text-xl font-bold rounded-xl shadow-2xl shadow-violet-500/30 hover:shadow-violet-500/50 transition-all duration-300 hover:scale-105"
+                onClick={() => {
+                  // Save selection and navigate to wizard
+                  localStorage.setItem('stargate-wizard-state', JSON.stringify({
+                    stage: 'template-select',
+                    currentPage: 'project-overview',
+                    currentQuestion: 0,
+                    requirements: {},
+                    messages: [],
+                    stageHistory: ['package-select'],
+                    selectedPackage: selectedPackage,
+                    designPath: 'merlin-template',
+                  }));
+
+                  // Navigate to wizard
+                  window.location.href = '/stargate-websites';
+                }}
+              >
+                <Wand2 className="w-6 h-6 mr-3" />
+                Proceed to Website Builder
+                <ArrowRight className="w-6 h-6 ml-3" />
+              </Button>
+              <p className="mt-4 text-white/60 text-sm">
+                You selected the <span className="text-violet-400 font-semibold capitalize">{selectedPackage}</span> package
+              </p>
+            </div>
+          )}
+
         </section>
+        )}
+
+
 
         {/* Enhanced Comparison Table - 3 Packages Only */}
         <Card className="mb-16 border-2 border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm shadow-xl">
@@ -2437,7 +2637,7 @@ export function MerlinPackageSelection() {
                   } else {
                     throw new Error('Failed to submit quote request');
                   }
-                } catch (error) {
+                } catch (_error: unknown) {
                   toast({
                     title: 'Request Submitted',
                     description: 'Your quote request has been received. Our team will contact you soon!',

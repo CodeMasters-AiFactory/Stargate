@@ -17,18 +17,18 @@ export function registerMultiLanguageRoutes(app: Express): void {
    * GET /api/multi-language/languages
    * Get list of supported languages
    */
-  app.get('/api/multi-language/languages', (req: Request, res: Response) => {
+  app.get('/api/multi-language/languages', (_req: Request, res: Response): void => {
     try {
       res.json({
         success: true,
         languages: SUPPORTED_LANGUAGES,
         count: SUPPORTED_LANGUAGES.length,
       });
-    } catch (error) {
-      logError(error, 'MultiLanguage API - GetLanguages');
+    } catch (_error: unknown) {
+      logError(_error, 'MultiLanguage API - GetLanguages');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -37,22 +37,24 @@ export function registerMultiLanguageRoutes(app: Express): void {
    * POST /api/multi-language/generate
    * Generate website in target language
    */
-  app.post('/api/multi-language/generate', async (req: Request, res: Response) => {
+  app.post('/api/multi-language/generate', async (req: Request, res: Response): Promise<void> => {
     try {
       const { html, targetLanguage, sourceLanguage } = req.body;
 
       if (!html || !targetLanguage) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'html and targetLanguage are required',
         });
+        return;
       }
 
       if (!SUPPORTED_LANGUAGES.find(l => l.code === targetLanguage)) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: `Unsupported language: ${targetLanguage}`,
         });
+        return;
       }
 
       const result = await generateMultiLanguageWebsite(
@@ -65,11 +67,11 @@ export function registerMultiLanguageRoutes(app: Express): void {
         success: true,
         ...result,
       });
-    } catch (error) {
-      logError(error, 'MultiLanguage API - Generate');
+    } catch (_error: unknown) {
+      logError(_error, 'MultiLanguage API - Generate');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -78,15 +80,16 @@ export function registerMultiLanguageRoutes(app: Express): void {
    * POST /api/multi-language/generate-all
    * Generate website in all supported languages
    */
-  app.post('/api/multi-language/generate-all', async (req: Request, res: Response) => {
+  app.post('/api/multi-language/generate-all', async (req: Request, res: Response): Promise<void> => {
     try {
       const { html, sourceLanguage } = req.body;
 
       if (!html) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'html is required',
         });
+        return;
       }
 
       const results = await Promise.all(
@@ -107,11 +110,11 @@ export function registerMultiLanguageRoutes(app: Express): void {
         languages: results,
         count: results.length,
       });
-    } catch (error) {
-      logError(error, 'MultiLanguage API - GenerateAll');
+    } catch (_error: unknown) {
+      logError(_error, 'MultiLanguage API - GenerateAll');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -120,16 +123,17 @@ export function registerMultiLanguageRoutes(app: Express): void {
    * GET /api/multi-language/seo/:language
    * Get SEO metadata for a language
    */
-  app.get('/api/multi-language/seo/:language', (req: Request, res: Response) => {
+  app.get('/api/multi-language/seo/:language', (req: Request, res: Response): void => {
     try {
       const { language } = req.params;
       const { title, description } = req.query;
 
       if (!SUPPORTED_LANGUAGES.find(l => l.code === language)) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: `Unsupported language: ${language}`,
         });
+        return;
       }
 
       const metadata = getLanguageSEOMetadata(language as SupportedLanguage, {
@@ -141,11 +145,11 @@ export function registerMultiLanguageRoutes(app: Express): void {
         success: true,
         metadata,
       });
-    } catch (error) {
-      logError(error, 'MultiLanguage API - GetSEO');
+    } catch (_error: unknown) {
+      logError(_error, 'MultiLanguage API - GetSEO');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });

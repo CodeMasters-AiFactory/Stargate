@@ -10,9 +10,10 @@ console.log('[STARTUP] dotenv loaded');
 
 import fs from "fs";
 import path from "path";
+// @ts-ignore - compression module lacks proper type declarations
 import compression from "compression"; // Re-enabled for CDN optimization
-import express, { type Request, Response } from "express";
-// import session from "express-session"; // Temporarily disabled (was causing hangs)
+import express, { type Request, Response, type NextFunction } from "express";
+import session from "express-session"; // Re-enabled for authentication
 import helmet from "helmet";
 import { cacheBusterMiddleware } from "./middleware/cacheBuster";
 import { cdnCacheMiddleware } from "./middleware/cdnCache";
@@ -48,7 +49,7 @@ process.on('uncaughtException', (error: Error) => {
   }) + '\n';
   try {
     fs.appendFileSync(errorLogPath, errorEntry, 'utf8');
-  } catch (e) {
+  } catch (_e) {
     // If file write fails, at least log to console
   }
   console.error('❌ UNCAUGHT EXCEPTION:', error);
@@ -75,7 +76,7 @@ process.on('unhandledRejection', (reason: unknown, _promise: Promise<unknown>) =
   }) + '\n';
   try {
     fs.appendFileSync(errorLogPath, errorEntry, 'utf8');
-  } catch (e) {
+  } catch (_e) {
     // If file write fails, at least log to console
   }
   console.error('❌ UNHANDLED REJECTION:', reason);
@@ -120,7 +121,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(compression({
     level: 6, // Balanced compression
     threshold: 1024, // Only compress responses > 1KB
-    filter: (req, res) => {
+    filter: (req: express.Request, res: express.Response) => {
       // Don't compress already compressed files
       if (req.path.match(/\.(br|gz|zip|rar|7z|tar|tgz)$/i)) {
         return false;
@@ -140,33 +141,15 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // CRITICAL DEBUG: Add direct test route BEFORE any middleware
-app.get('/test', (req, res) => {
+app.get('/test', (_req, res) => {
   res.send('TEST OK');
 });
 
-// EMERGENCY FIX: Add auth routes BEFORE any middleware that might hang
-app.get('/api/auth/me', (req, res) => {
-  console.log('[AUTH /me DIRECT] Request received - bypassing all middleware');
-  res.json({
-    id: 'auto-user-direct',
-    username: 'auto-user',
-    email: 'auto@stargate.dev',
-    role: 'administrator'
-  });
-});
-
-app.get('/api/auth/status', (req, res) => {
-  console.log('[AUTH /status DIRECT] Request received - bypassing all middleware');
-  res.json({
-    id: 'auto-user-direct',
-    username: 'auto-user',
-    email: 'auto@stargate.dev',
-    role: 'administrator'
-  });
-});
+// SECURITY FIX: Removed bypass auth routes - proper auth is now in routes/auth.ts
+// Auth routes are registered via registerAuthRoutes() with proper session checks
 
 // CRITICAL DEBUG: Log ALL incoming requests IMMEDIATELY
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   console.log(`[DEBUG] INCOMING REQUEST: ${req.method} ${req.url}`);
   next();
 });
@@ -175,7 +158,21 @@ app.use((req, res, next) => {
 // This bypasses all the Vite hanging issues by serving static files
 const distPath = path.resolve(process.cwd(), 'dist', 'public');
 console.log('[PRODUCTION] Serving React app from:', distPath);
-app.use(express.static(distPath));
+app.use(express.static(distPath, {
+  // Disable caching for development/testing to ensure fresh JS is always served
+  setHeaders: (res: Response, filePath: string) => {
+    // No caching for HTML files
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+    // Short cache for JS/CSS (1 minute) - allows cache busting via file hash
+    else if (filePath.endsWith('.js') || filePath.endsWith('.css')) {
+      res.setHeader('Cache-Control', 'no-cache, max-age=60');
+    }
+  }
+}));
 
 // Compression middleware TEMPORARILY DISABLED FOR DEBUGGING
 // app.use(
@@ -193,20 +190,20 @@ app.use(express.static(distPath));
 // );
 log("Compression middleware DISABLED for debugging");
 
-// Session configuration - DISABLED AGAIN (causing hangs)
-// app.use(
-//   session({
-//     secret: process.env.SESSION_SECRET || "stargate-portal-secret-key-change-in-production",
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: {
-//       secure: false,
-//       httpOnly: true,
-//       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-//     },
-//   })
-// );
-log("Session middleware DISABLED (was causing hangs)");
+// Session configuration - Re-enabled for authentication
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "stargate-portal-secret-key-change-in-production",
+    resave: false,
+    saveUninitialized: false, // Changed to false to prevent creating sessions for anonymous requests
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    },
+  })
+);
+log("✅ Session middleware enabled");
 
 declare module 'http' {
   interface IncomingMessage {
@@ -255,9 +252,9 @@ app.use((req, res, next) => {
   let capturedJsonResponse: Record<string, unknown> | undefined = undefined;
 
   const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
+  res.json = function (bodyJson: Record<string, unknown>) {
     capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
+    return originalResJson.call(res, bodyJson);
   };
 
   res.on("finish", () => {
@@ -286,7 +283,7 @@ app.use((req, res, next) => {
     const envValidation = validateEnvironment();
     if (!envValidation.valid) {
     log('⚠️  Environment validation warnings:');
-    envValidation.errors.forEach(error => {
+    envValidation.errors.forEach((error: string) => {
       log(`   - ${error}`);
     });
     log('   Continuing with defaults/optional values...');
@@ -299,17 +296,6 @@ app.use((req, res, next) => {
   // Serve public folder files (images, etc.) from client/public - MUST be before Vite
   const publicPath = path.join(process.cwd(), 'client', 'public');
   if (fs.existsSync(publicPath)) {
-    // Add explicit route for merlin.jpg first (before static middleware)
-    app.get('/merlin.jpg', (_req, res) => {
-      const filePath = path.join(publicPath, 'merlin.jpg');
-      if (fs.existsSync(filePath)) {
-        res.sendFile(path.resolve(filePath));
-      } else {
-        console.error('Merlin image not found at:', filePath);
-        res.status(404).send('File not found');
-      }
-    });
-    // Then add static middleware for all other public files
     app.use(express.static(publicPath, { index: false }));
     log('✅ Serving public files from /client/public');
   } else {
@@ -351,8 +337,13 @@ app.use((req, res, next) => {
   // Serve generated website files from website_projects directory
   const websiteProjectsPath = path.join(process.cwd(), 'website_projects');
   if (fs.existsSync(websiteProjectsPath)) {
-    app.use('/website_projects', express.static(websiteProjectsPath));
-    log('✅ Serving generated websites from /website_projects');
+    // Allow iframe embedding for generated websites by removing X-Frame-Options
+    app.use('/website_projects', (_req, res, next) => {
+      res.removeHeader('X-Frame-Options');
+      res.setHeader('Content-Security-Policy', "frame-ancestors 'self' http://localhost:*");
+      next();
+    }, express.static(websiteProjectsPath));
+    log('✅ Serving generated websites from /website_projects (iframe-enabled)');
   }
 
   // WebSocket servers temporarily disabled to debug 426 Upgrade Required issue
@@ -415,7 +406,7 @@ app.use((req, res, next) => {
       setViteStatus(true, []); // Production build is ready
 
       // Catch-all route for React Router (serves index.html for all non-API routes)
-      app.get('*', (req, res, next) => {
+      app.get('*', (req: Request, res: Response, next: NextFunction) => {
         // Skip API routes, website projects, and static assets
         if (req.url.startsWith('/api') ||
             req.url.startsWith('/website_projects') ||
@@ -507,7 +498,7 @@ app.use((req, res, next) => {
       try {
         const { closeSQLite } = await import('./services/hybridStorage');
         closeSQLite();
-      } catch (e) {
+      } catch (_e) {
         // Ignore if module not loaded
       }
       server.close(() => {
@@ -523,7 +514,7 @@ app.use((req, res, next) => {
       try {
         const { closeSQLite } = await import('./services/hybridStorage');
         closeSQLite();
-      } catch (e) {
+      } catch (_e) {
         // Ignore if module not loaded
       }
       server.close(() => {

@@ -9,10 +9,10 @@
  * ENHANCED: Full task-by-task checklist with detailed status
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'wouter';
-import { 
-  Sparkles, Image, Code, CheckCircle, Loader2, 
+import {
+  Sparkles, Image, Code, CheckCircle, Loader2,
   ExternalLink, AlertCircle, RefreshCw, FileCode,
   Palette, Download, Wand2, Layout, Save, Check
 } from 'lucide-react';
@@ -35,12 +35,15 @@ interface GenerationResult {
   errors: string[];
 }
 
+// Timeout for generation (5 minutes - image generation takes time)
+const GENERATION_TIMEOUT_MS = 5 * 60 * 1000;
+
 // All generation tasks for the checklist
 const GENERATION_TASKS = [
   { id: 1, name: 'Analyzing your business details', icon: Sparkles, phase: 1 },
   { id: 2, name: 'Loading industry design profile', icon: Palette, phase: 2 },
   { id: 3, name: 'Preparing content and copy', icon: FileCode, phase: 3 },
-  { id: 4, name: 'Generating hero image (Leonardo AI)', icon: Image, phase: 4, isImage: true },
+  { id: 4, name: 'Generating hero image', icon: Image, phase: 4, isImage: true },
   { id: 5, name: 'Generating services image', icon: Image, phase: 4, isImage: true },
   { id: 6, name: 'Generating about image', icon: Image, phase: 4, isImage: true },
   { id: 7, name: 'Generating team image', icon: Image, phase: 4, isImage: true },
@@ -53,17 +56,22 @@ const GENERATION_TASKS = [
 ];
 
 export default function GeneratingProgress() {
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
   const [intakeData, setIntakeData] = useState<any>(null);
-  
+
   const [progress, setProgress] = useState<ProgressUpdate | null>(null);
   const [result, setResult] = useState<GenerationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
-  
-  const eventSourceRef = useRef<EventSource | null>(null);
+
+  // Refs for cleanup and abort handling
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const generationStartedRef = useRef(false);
+  // Buffer for incomplete SSE data chunks
+  const sseBufferRef = useRef('');
 
   // Timer for elapsed time
   useEffect(() => {
@@ -75,103 +83,204 @@ export default function GeneratingProgress() {
     }
   }, [startTime, result, error]);
 
+  // Cleanup function for generation resources
+  const cleanupGeneration = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    sseBufferRef.current = '';
+  }, []);
+
+  // Process a single SSE message - defined early to be available for startGeneration
+  const processSSEData = useCallback((message: string) => {
+    const lines = message.split('\n');
+    for (const line of lines) {
+      if (line.startsWith('data: ')) {
+        try {
+          const jsonStr = line.slice(6);
+          const data = JSON.parse(jsonStr);
+          console.log('[GeneratingProgress] Parsed event:', data.type, data.phase, data.phaseName);
+
+          if (data.type === 'started') {
+            console.log('[GeneratingProgress] SSE connection established');
+          } else if (data.type === 'progress') {
+            setProgress(data);
+          } else if (data.type === 'complete') {
+            console.log('[GeneratingProgress] Generation complete!', data.projectSlug);
+            setResult(data);
+            setProgress(null);
+            setIsGenerating(false);
+            // Clear timeout on completion
+            if (timeoutRef.current) {
+              clearTimeout(timeoutRef.current);
+              timeoutRef.current = null;
+            }
+          } else if (data.type === 'error') {
+            console.error('[GeneratingProgress] Server error:', data.error);
+            setError(data.error || 'Server error occurred');
+            setIsGenerating(false);
+          }
+        } catch (e) {
+          console.error('[GeneratingProgress] Failed to parse SSE data:', e, line);
+          // Don't set error for parse failures - could be incomplete data
+        }
+      }
+    }
+  }, []);
+
+  // startGeneration is stable - it only uses refs and state setters which are stable
+  const startGeneration = useCallback(async (data: any) => {
+    console.log('[GeneratingProgress] startGeneration called with data:', data?.businessName);
+
+    // Create new abort controller for this generation
+    abortControllerRef.current = new AbortController();
+    sseBufferRef.current = '';
+
+    // Set up timeout - capture cleanup in closure
+    const currentCleanup = cleanupGeneration;
+    timeoutRef.current = setTimeout(() => {
+      console.error('[GeneratingProgress] Generation timed out');
+      currentCleanup();
+      setError('Generation timed out. Please try again.');
+      setIsGenerating(false);
+    }, GENERATION_TIMEOUT_MS);
+
+    try {
+      // Use sync endpoint for more reliable generation (SSE has issues with some environments)
+      console.log('[GeneratingProgress] Fetching /api/merlin8/generate-sync...');
+
+      // Show simulated progress while waiting
+      setProgress({
+        phase: 3,
+        totalPhases: 8,
+        phaseName: 'Generating',
+        message: 'Creating your website...',
+        progress: 40,
+      });
+
+      const response = await fetch('/api/merlin8/generate-sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        signal: abortControllerRef.current.signal,
+      });
+
+      console.log('[GeneratingProgress] Response status:', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => 'Unknown error');
+        throw new Error(`Failed to generate: ${response.status} ${errorText}`);
+      }
+
+      const result = await response.json();
+      console.log('[GeneratingProgress] Generation complete!', result.projectSlug);
+
+      // Clear timeout on completion
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      // Set result
+      setResult({
+        success: result.success,
+        projectSlug: result.projectSlug,
+        previewUrl: result.previewUrl,
+        industry: result.industry,
+        imagesGenerated: result.imagesGenerated,
+        duration: result.duration,
+        errors: result.errors || [],
+      });
+      setProgress(null);
+      setIsGenerating(false);
+    } catch (err) {
+      // Don't report abort errors (user-initiated or cleanup)
+      if (err instanceof Error && err.name === 'AbortError') {
+        console.log('[GeneratingProgress] Generation aborted');
+        return;
+      }
+      console.error('[GeneratingProgress] Generation error:', err);
+      setError(err instanceof Error ? err.message : 'Unknown error occurred');
+      setIsGenerating(false);
+    }
+  }, [cleanupGeneration, processSSEData]);
+
   // Load data from sessionStorage on mount
   useEffect(() => {
     const storedData = sessionStorage.getItem('merlin8-intake');
+    console.log('[GeneratingProgress] Loading intake data:', storedData ? 'Found' : 'Not found');
     if (storedData) {
-      setIntakeData(JSON.parse(storedData));
+      try {
+        const parsed = JSON.parse(storedData);
+        console.log('[GeneratingProgress] Parsed data:', parsed.businessName);
+        setIntakeData(parsed);
+      } catch (e) {
+        console.error('[GeneratingProgress] Failed to parse intake data:', e);
+        setLocation('/merlin8');
+      }
     } else {
+      console.log('[GeneratingProgress] No intake data, redirecting...');
       setLocation('/merlin8');
     }
   }, [setLocation]);
 
-  // Start generation when data is loaded
+  // Start generation when data is loaded - uses ref to prevent double-start
   useEffect(() => {
-    if (!intakeData || isGenerating) return;
-    
+    console.log('[GeneratingProgress] Generation effect - intakeData:', !!intakeData, 'generationStarted:', generationStartedRef.current);
+    if (!intakeData || generationStartedRef.current) return;
+
+    console.log('[GeneratingProgress] Starting generation...');
+    generationStartedRef.current = true;
     setIsGenerating(true);
     setStartTime(Date.now());
-    startGeneration();
-    
+    startGeneration(intakeData);
+
     return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-      }
+      cleanupGeneration();
     };
-  }, [intakeData]);
+  }, [intakeData, cleanupGeneration, startGeneration]);
 
-  const startGeneration = async () => {
-    try {
-      const response = await fetch('/api/merlin8/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(intakeData),
-      });
+  const handleRetry = useCallback(() => {
+    // Cleanup any existing generation
+    cleanupGeneration();
 
-      if (!response.ok) {
-        throw new Error('Failed to start generation');
-      }
-
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-
-      if (!reader) {
-        throw new Error('No response body');
-      }
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        const text = decoder.decode(value);
-        const lines = text.split('\n\n').filter(Boolean);
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              
-              if (data.type === 'progress') {
-                setProgress(data);
-              } else if (data.type === 'complete') {
-                setResult(data);
-                setProgress(null);
-              } else if (data.type === 'error') {
-                setError(data.error);
-              }
-            } catch (e) {
-              console.error('Failed to parse SSE data:', e);
-            }
-          }
-        }
-      }
-    } catch (err) {
-      console.error('Generation error:', err);
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    }
-  };
-
-  const handleRetry = () => {
+    // Reset all state
     setError(null);
     setResult(null);
     setProgress(null);
     setIsGenerating(false);
     setStartTime(null);
     setElapsedTime(0);
-    setTimeout(() => setIsGenerating(true), 100);
-  };
 
-  const handleViewWebsite = () => {
+    // Start fresh generation after state reset
+    // Use setTimeout to ensure state updates are flushed
+    setTimeout(() => {
+      if (intakeData) {
+        setIsGenerating(true);
+        setStartTime(Date.now());
+        startGeneration(intakeData);
+      } else {
+        setError('No intake data available. Please start over.');
+      }
+    }, 100);
+  }, [cleanupGeneration, intakeData, startGeneration]);
+
+  const handleViewWebsite = useCallback(() => {
     if (result?.previewUrl) {
       window.open(result.previewUrl, '_blank');
     }
-  };
+  }, [result?.previewUrl]);
 
-  const handleEditWebsite = () => {
+  const handleEditWebsite = useCallback(() => {
     if (result?.projectSlug) {
       setLocation(`/editor/${result.projectSlug}`);
     }
-  };
+  }, [result?.projectSlug, setLocation]);
 
   // Get task status based on current phase
   const getTaskStatus = (task: typeof GENERATION_TASKS[0]) => {
@@ -383,8 +492,8 @@ export default function GeneratingProgress() {
             {/* Fun Fact */}
             <div className="mt-6 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl">
               <p className="text-slate-400 text-sm text-center">
-                💡 <span className="text-purple-300">Fun fact:</span> Merlin uses Leonardo AI to generate 
-                unique, royalty-free images specifically designed for your industry. 
+                💡 <span className="text-purple-300">Fun fact:</span> Merlin uses advanced AI to generate
+                unique, royalty-free images specifically designed for your industry.
                 No generic stock photos!
               </p>
             </div>

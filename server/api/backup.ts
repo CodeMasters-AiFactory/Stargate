@@ -3,7 +3,7 @@
  * Website backup and restore functionality
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import { db } from '../db';
 import { websiteDrafts } from '@shared/schema';
 import { eq, desc, and } from 'drizzle-orm';
@@ -38,11 +38,12 @@ export function registerBackupRoutes(app: Express) {
    * GET /api/websites/backups
    * List all backups for the authenticated user
    */
-  app.get('/api/websites/backups', requireAuth, async (req, res) => {
+  app.get('/api/websites/backups', requireAuth, async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = (req as any).user?.id;
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       // Get all website drafts for the user (these represent websites)
@@ -54,7 +55,7 @@ export function registerBackupRoutes(app: Express) {
 
       // For now, create mock backups from drafts
       // In production, you'd have a separate backups table
-      const backups: BackupMetadata[] = drafts.map((draft, index) => ({
+      const backups: BackupMetadata[] = drafts.map((draft, _index) => ({
         id: draft.id,
         websiteId: draft.sessionId,
         websiteName: draft.name || 'Untitled Website',
@@ -78,17 +79,19 @@ export function registerBackupRoutes(app: Express) {
    * POST /api/websites/backup
    * Create a new backup
    */
-  app.post('/api/websites/backup', requireAuth, async (req, res) => {
+  app.post('/api/websites/backup', requireAuth, async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = (req as any).user?.id;
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       const { name, description, websiteId } = req.body;
 
       if (!name) {
-        return res.status(400).json({ error: 'Backup name is required' });
+        res.status(400).json({ error: 'Backup name is required' });
+        return;
       }
 
       // Get the latest draft for the website (or use websiteId if provided)
@@ -102,7 +105,8 @@ export function registerBackupRoutes(app: Express) {
           .limit(1);
 
         if (drafts.length === 0) {
-          return res.status(404).json({ error: 'Website not found' });
+          res.status(404).json({ error: 'Website not found' });
+          return;
         }
         draft = drafts[0];
       } else {
@@ -115,7 +119,8 @@ export function registerBackupRoutes(app: Express) {
           .limit(1);
 
         if (drafts.length === 0) {
-          return res.status(404).json({ error: 'No website found to backup' });
+          res.status(404).json({ error: 'No website found to backup' });
+          return;
         }
         draft = drafts[0];
       }
@@ -163,11 +168,12 @@ export function registerBackupRoutes(app: Express) {
    * POST /api/websites/restore/:backupId
    * Restore a website from a backup
    */
-  app.post('/api/websites/restore/:backupId', requireAuth, async (req, res) => {
+  app.post('/api/websites/restore/:backupId', requireAuth, async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = (req as any).user?.id;
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       const { backupId } = req.params;
@@ -175,7 +181,8 @@ export function registerBackupRoutes(app: Express) {
       // Load backup from file system
       const backupPath = path.join(BACKUPS_DIR, `${backupId}.json`);
       if (!fs.existsSync(backupPath)) {
-        return res.status(404).json({ error: 'Backup not found' });
+        res.status(404).json({ error: 'Backup not found' });
+        return;
       }
 
       const backupData = fs.readFileSync(backupPath, 'utf-8');
@@ -216,11 +223,12 @@ export function registerBackupRoutes(app: Express) {
    * DELETE /api/websites/backup/:backupId
    * Delete a backup
    */
-  app.delete('/api/websites/backup/:backupId', requireAuth, async (req, res) => {
+  app.delete('/api/websites/backup/:backupId', requireAuth, async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = (req as any).user?.id;
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       const { backupId } = req.params;
@@ -228,7 +236,8 @@ export function registerBackupRoutes(app: Express) {
       // Delete backup file
       const backupPath = path.join(BACKUPS_DIR, `${backupId}.json`);
       if (!fs.existsSync(backupPath)) {
-        return res.status(404).json({ error: 'Backup not found' });
+        res.status(404).json({ error: 'Backup not found' });
+        return;
       }
 
       fs.unlinkSync(backupPath);
@@ -247,11 +256,12 @@ export function registerBackupRoutes(app: Express) {
    * GET /api/websites/backup/:backupId/download
    * Download a backup as a file
    */
-  app.get('/api/websites/backup/:backupId/download', requireAuth, async (req, res) => {
+  app.get('/api/websites/backup/:backupId/download', requireAuth, async (req: Request, res: Response): Promise<void> => {
     try {
       const userId = (req as any).user?.id;
       if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
       }
 
       const { backupId } = req.params;
@@ -259,7 +269,8 @@ export function registerBackupRoutes(app: Express) {
       // Load backup from file system
       const backupPath = path.join(BACKUPS_DIR, `${backupId}.json`);
       if (!fs.existsSync(backupPath)) {
-        return res.status(404).json({ error: 'Backup not found' });
+        res.status(404).json({ error: 'Backup not found' });
+        return;
       }
 
       const backupData = fs.readFileSync(backupPath, 'utf-8');

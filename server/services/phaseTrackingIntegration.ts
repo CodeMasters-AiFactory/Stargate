@@ -4,7 +4,7 @@
  */
 
 import { PhaseTracker } from './phaseTracker';
-import { ratePhase, type PhaseRatingContext } from './phaseRater';
+import { ratePhase } from './phaseRater';
 import type { ProjectConfig } from './projectConfig';
 import type { GeneratedWebsite } from './merlinDesignLLM';
 import type { QualityAssessment } from './qualityAssessment';
@@ -119,19 +119,24 @@ export async function generateWebsiteWithPhaseTracking(
   phaseTracker.completeStep(2, 9, `Visual assets: ${(projectConfig.visualAssets || projectConfig.logo) ? 'Provided' : 'Not provided'}`);
   
   // Step 10: Location & Social Media
+  const socialMedia = (projectConfig as any).socialMedia;
+  const googleBusinessLink = (projectConfig as any).googleBusinessLink;
   phaseTracker.addStep(2, 'Location & Social Media', 'Collected social media links and location details', {
-    socialMedia: projectConfig.socialMedia,
-    socialMediaCount: projectConfig.socialMedia ? Object.keys(projectConfig.socialMedia).length : 0,
-    googleBusinessLink: projectConfig.googleBusinessLink
+    socialMedia,
+    socialMediaCount: socialMedia ? Object.keys(socialMedia).length : 0,
+    googleBusinessLink
   });
-  phaseTracker.completeStep(2, 10, `${projectConfig.socialMedia ? Object.keys(projectConfig.socialMedia).length : 0} social media links`);
-  
+  phaseTracker.completeStep(2, 10, `${socialMedia ? Object.keys(socialMedia).length : 0} social media links`);
+
   // Step 11: Preferences & Additional Requirements
+  const domainStatus = (projectConfig as any).domainStatus;
+  const additionalRequirements = (projectConfig as any).additionalRequirements;
+  const specialRequests = (projectConfig as any).specialRequests;
   phaseTracker.addStep(2, 'Preferences & Additional Requirements', 'Collected additional preferences and requirements', {
-    domainStatus: projectConfig.domainStatus,
-    hasAdditionalRequirements: !!(projectConfig.additionalRequirements || projectConfig.specialRequests)
+    domainStatus,
+    hasAdditionalRequirements: !!(additionalRequirements || specialRequests)
   });
-  phaseTracker.completeStep(2, 11, `Domain status: ${projectConfig.domainStatus || 'Not specified'}`);
+  phaseTracker.completeStep(2, 11, `Domain status: ${domainStatus || 'Not specified'}`);
   
   const phase2Rating = ratePhase({
     phaseNumber: 2,
@@ -179,15 +184,15 @@ export async function generateWebsiteWithPhaseTracking(
     console.error('Phase tracking error:', errorMessage);
     // Track error in phase 16
     phaseTracker.startPhase(16);
-    phaseTracker.addStep(16, 'Generation Error', `Website generation failed: ${error.message}`, {
-      error: error.message
+    phaseTracker.addStep(16, 'Generation Error', `Website generation failed: ${errorMessage}`, {
+      error: errorMessage
     });
-    phaseTracker.completeStep(16, 1, `Error: ${error.message}`, [error.message]);
-    phaseTracker.completePhase(16, 0, [], 
-      `Website generation failed: ${error.message}`, [], 
-      [`Generation error: ${error.message}`], 
-      ['Fix generation errors and retry'], 
-      undefined, [error.message]);
+    phaseTracker.completeStep(16, 1, `Error: ${errorMessage}`, [errorMessage]);
+    phaseTracker.completePhase(16, 0, [],
+      `Website generation failed: ${errorMessage}`, [],
+      [`Generation error: ${errorMessage}`],
+      ['Fix generation errors and retry'],
+      undefined, [errorMessage]);
     throw error;
   }
 

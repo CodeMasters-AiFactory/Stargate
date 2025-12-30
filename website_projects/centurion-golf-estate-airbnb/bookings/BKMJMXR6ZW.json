@@ -1,0 +1,15 @@
+{
+  "bookingRef": "BKMJMXR6ZW",
+  "guestName": "John Test",
+  "guestEmail": "john.test@example.com",
+  "guestPhone": "+27 82 555 1234",
+  "checkIn": "2025-12-25",
+  "checkOut": "2025-12-26",
+  "roomType": "Master Suite - R2,500/night",
+  "guests": 2,
+  "totalPrice": 3150,
+  "specialRequests": "",
+  "propertyName": "Centurion Golf Estate",
+  "status": "pending",
+  "createdAt": "2025-12-26T13:57:06.476Z"
+}

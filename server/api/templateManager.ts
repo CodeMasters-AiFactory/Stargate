@@ -1,10 +1,10 @@
 /**
  * Template Manager API
- * 
+ *
  * Endpoints for managing template processing and updates
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import {
   processNewTemplate,
   verifyTemplate,
@@ -13,13 +13,11 @@ import {
 } from '../services/templateManager';
 import {
   checkAllTemplates,
-  startScheduler,
-  stopScheduler,
   getSchedulerStatus,
 } from '../services/templateUpdateScheduler';
 import { db } from '../db';
 import { templateUpdateLogs } from '@shared/schema';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 
 export function registerTemplateManagerRoutes(app: Express) {
@@ -27,7 +25,7 @@ export function registerTemplateManagerRoutes(app: Express) {
    * Process a single template
    * POST /api/template-manager/process/:id
    */
-  app.post('/api/template-manager/process/:id', async (req, res) => {
+  app.post('/api/template-manager/process/:id', async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
       console.log(`[TemplateManager API] Processing template: ${id}`);
@@ -38,11 +36,11 @@ export function registerTemplateManagerRoutes(app: Express) {
         success: result.success,
         result,
       });
-    } catch (error) {
-      logError(error, 'TemplateManager API - Process');
+    } catch (_error: unknown) {
+      logError(_error, 'TemplateManager API - Process');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -51,7 +49,7 @@ export function registerTemplateManagerRoutes(app: Express) {
    * Run monthly check now (manual trigger)
    * POST /api/template-manager/check-all
    */
-  app.post('/api/template-manager/check-all', async (req, res) => {
+  app.post('/api/template-manager/check-all', async (_req: Request, res: Response): Promise<void> => {
     try {
       console.log('[TemplateManager API] Running manual check-all...');
 
@@ -61,11 +59,11 @@ export function registerTemplateManagerRoutes(app: Express) {
         success: result.errors.length === 0,
         result,
       });
-    } catch (error) {
-      logError(error, 'TemplateManager API - Check All');
+    } catch (_error: unknown) {
+      logError(_error, 'TemplateManager API - Check All');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -74,7 +72,7 @@ export function registerTemplateManagerRoutes(app: Express) {
    * Force update a template
    * POST /api/template-manager/update/:id
    */
-  app.post('/api/template-manager/update/:id', async (req, res) => {
+  app.post('/api/template-manager/update/:id', async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
       console.log(`[TemplateManager API] Force updating template: ${id}`);
@@ -85,11 +83,11 @@ export function registerTemplateManagerRoutes(app: Express) {
         success: result.success,
         result,
       });
-    } catch (error) {
-      logError(error, 'TemplateManager API - Update');
+    } catch (_error: unknown) {
+      logError(_error, 'TemplateManager API - Update');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -98,7 +96,7 @@ export function registerTemplateManagerRoutes(app: Express) {
    * Check if template source has changed
    * GET /api/template-manager/check/:id
    */
-  app.get('/api/template-manager/check/:id', async (req, res) => {
+  app.get('/api/template-manager/check/:id', async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
 
@@ -108,11 +106,11 @@ export function registerTemplateManagerRoutes(app: Express) {
         success: true,
         result,
       });
-    } catch (error) {
-      logError(error, 'TemplateManager API - Check Changes');
+    } catch (_error: unknown) {
+      logError(_error, 'TemplateManager API - Check Changes');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -121,7 +119,7 @@ export function registerTemplateManagerRoutes(app: Express) {
    * Verify template renders correctly
    * GET /api/template-manager/verify/:id
    */
-  app.get('/api/template-manager/verify/:id', async (req, res) => {
+  app.get('/api/template-manager/verify/:id', async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
 
@@ -131,11 +129,11 @@ export function registerTemplateManagerRoutes(app: Express) {
         success: true,
         isValid,
       });
-    } catch (error) {
-      logError(error, 'TemplateManager API - Verify');
+    } catch (_error: unknown) {
+      logError(_error, 'TemplateManager API - Verify');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -144,7 +142,7 @@ export function registerTemplateManagerRoutes(app: Express) {
    * Get scheduler status
    * GET /api/template-manager/status
    */
-  app.get('/api/template-manager/status', async (req, res) => {
+  app.get('/api/template-manager/status', async (_req: Request, res: Response): Promise<void> => {
     try {
       const status = await getSchedulerStatus();
 
@@ -152,11 +150,11 @@ export function registerTemplateManagerRoutes(app: Express) {
         success: true,
         status,
       });
-    } catch (error) {
-      logError(error, 'TemplateManager API - Status');
+    } catch (_error: unknown) {
+      logError(_error, 'TemplateManager API - Status');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -165,7 +163,7 @@ export function registerTemplateManagerRoutes(app: Express) {
    * Get update logs
    * GET /api/template-manager/logs
    */
-  app.get('/api/template-manager/logs', async (req, res) => {
+  app.get('/api/template-manager/logs', async (req: Request, res: Response): Promise<void> => {
     try {
       const { templateId, limit = 100 } = req.query;
 
@@ -176,7 +174,7 @@ export function registerTemplateManagerRoutes(app: Express) {
       let query = db.select().from(templateUpdateLogs);
 
       if (templateId) {
-        query = query.where(eq(templateUpdateLogs.templateId, templateId as string)) as any;
+        query = query.where(eq(templateUpdateLogs.templateId, templateId as string));
       }
 
       const logs = await query
@@ -187,11 +185,11 @@ export function registerTemplateManagerRoutes(app: Express) {
         success: true,
         logs,
       });
-    } catch (error) {
-      logError(error, 'TemplateManager API - Logs');
+    } catch (_error: unknown) {
+      logError(_error, 'TemplateManager API - Logs');
       res.status(500).json({
         success: false,
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });

@@ -3,7 +3,7 @@
  * Phase 3.3: Marketing Automation - Lead scoring APIs
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import {
   getScoringCriteria,
   getScoringCriterion,
@@ -23,92 +23,94 @@ export function registerLeadScoringRoutes(app: Express) {
   // ===== SCORING CRITERIA MANAGEMENT =====
   
   // Get all scoring criteria for a website
-  app.get('/api/lead-scoring/:websiteId/criteria', async (req, res) => {
+  app.get('/api/lead-scoring/:websiteId/criteria', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const criteria = await getScoringCriteria(websiteId);
-      
+
       res.json({
         success: true,
         criteria,
         count: criteria.length,
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch scoring criteria',
+        error: _error instanceof Error ? _error.message : 'Failed to fetch scoring criteria',
       });
     }
   });
   
   // Get a specific scoring criterion
-  app.get('/api/lead-scoring/:websiteId/criteria/:criteriaId', async (req, res) => {
+  app.get('/api/lead-scoring/:websiteId/criteria/:criteriaId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, criteriaId } = req.params;
       const criterion = await getScoringCriterion(websiteId, criteriaId);
-      
+
       if (!criterion) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Scoring criterion not found',
         });
+        return;
       }
-      
+
       res.json({
         success: true,
         criterion,
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch scoring criterion',
+        error: _error instanceof Error ? _error.message : 'Failed to fetch scoring criterion',
       });
     }
   });
   
   // Create or update scoring criteria
-  app.post('/api/lead-scoring/:websiteId/criteria', async (req, res) => {
+  app.post('/api/lead-scoring/:websiteId/criteria', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const criterionData: ScoringCriteria = req.body;
-      
+
       if (!criterionData.id) {
         criterionData.id = `criteria-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       }
-      
+
       criterionData.websiteId = websiteId;
-      
+
       await saveScoringCriteria(websiteId, criterionData);
-      
+
       // Recalculate all leads with new criteria
       await batchScoreLeads(websiteId);
-      
+
       res.json({
         success: true,
         criterion: criterionData,
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to save scoring criteria',
+        error: _error instanceof Error ? _error.message : 'Failed to save scoring criteria',
       });
     }
   });
   
   // Update scoring criteria
-  app.put('/api/lead-scoring/:websiteId/criteria/:criteriaId', async (req, res) => {
+  app.put('/api/lead-scoring/:websiteId/criteria/:criteriaId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, criteriaId } = req.params;
       const criterionData: Partial<ScoringCriteria> = req.body;
-      
+
       const existing = await getScoringCriterion(websiteId, criteriaId);
       if (!existing) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Scoring criterion not found',
         });
+        return;
       }
-      
+
       const updated: ScoringCriteria = {
         ...existing,
         ...criterionData,
@@ -116,38 +118,38 @@ export function registerLeadScoringRoutes(app: Express) {
         websiteId,
         updatedAt: new Date(),
       };
-      
+
       await saveScoringCriteria(websiteId, updated);
-      
+
       // Recalculate all leads with updated criteria
       await batchScoreLeads(websiteId);
-      
+
       res.json({
         success: true,
         criterion: updated,
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to update scoring criteria',
+        error: _error instanceof Error ? _error.message : 'Failed to update scoring criteria',
       });
     }
   });
   
   // Delete scoring criteria
-  app.delete('/api/lead-scoring/:websiteId/criteria/:criteriaId', async (req, res) => {
+  app.delete('/api/lead-scoring/:websiteId/criteria/:criteriaId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, criteriaId } = req.params;
       await deleteScoringCriteria(websiteId, criteriaId);
-      
+
       res.json({
         success: true,
         message: 'Scoring criterion deleted successfully',
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete scoring criterion',
+        error: _error instanceof Error ? _error.message : 'Failed to delete scoring criterion',
       });
     }
   });
@@ -155,18 +157,18 @@ export function registerLeadScoringRoutes(app: Express) {
   // ===== LEAD MANAGEMENT =====
   
   // Get all leads for a website
-  app.get('/api/lead-scoring/:websiteId/leads', async (req, res) => {
+  app.get('/api/lead-scoring/:websiteId/leads', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const { qualification, minScore, maxScore, sortBy = 'total', order = 'desc' } = req.query;
-      
+
       let leads = await getLeads(websiteId);
-      
+
       // Filter by qualification
       if (qualification) {
         leads = leads.filter(l => l.qualification === qualification);
       }
-      
+
       // Filter by score range
       if (minScore) {
         leads = leads.filter(l => l.scores.total >= Number(minScore));
@@ -174,69 +176,71 @@ export function registerLeadScoringRoutes(app: Express) {
       if (maxScore) {
         leads = leads.filter(l => l.scores.total <= Number(maxScore));
       }
-      
+
       // Sort
       leads.sort((a, b) => {
-        const aValue = (a.scores as any)[sortBy as string] || 0;
-        const bValue = (b.scores as any)[sortBy as string] || 0;
-        return order === 'desc' ? bValue - aValue : aValue - bValue;
+        const aValue = (a.scores as Record<string, unknown>)[sortBy as string] || 0;
+        const bValue = (b.scores as Record<string, unknown>)[sortBy as string] || 0;
+        return order === 'desc' ? (bValue as number) - (aValue as number) : (aValue as number) - (bValue as number);
       });
-      
+
       res.json({
         success: true,
         leads,
         count: leads.length,
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch leads',
+        error: _error instanceof Error ? _error.message : 'Failed to fetch leads',
       });
     }
   });
   
   // Get a specific lead
-  app.get('/api/lead-scoring/:websiteId/leads/:leadId', async (req, res) => {
+  app.get('/api/lead-scoring/:websiteId/leads/:leadId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, leadId } = req.params;
       const lead = await getLead(websiteId, leadId);
-      
+
       if (!lead) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Lead not found',
         });
+        return;
       }
-      
+
       res.json({
         success: true,
         lead,
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch lead',
+        error: _error instanceof Error ? _error.message : 'Failed to fetch lead',
       });
     }
   });
   
   // Create or update a lead
-  app.post('/api/lead-scoring/:websiteId/leads', async (req, res) => {
+  app.post('/api/lead-scoring/:websiteId/leads', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const leadData: Partial<Lead> = req.body;
-      
+
       if (!leadData.email) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Email is required',
         });
+        return;
       }
-      
+
       // Check if lead exists
       const existingLeads = await getLeads(websiteId);
       let lead = existingLeads.find(l => l.email === leadData.email);
-      
+
       if (lead) {
         // Update existing lead
         lead = {
@@ -276,75 +280,76 @@ export function registerLeadScoringRoutes(app: Express) {
           updatedAt: new Date(),
         };
       }
-      
+
       // Calculate scores
       const scoredLead = await calculateLeadScore(websiteId, lead);
       await saveLead(websiteId, scoredLead);
-      
+
       res.json({
         success: true,
         lead: scoredLead,
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to save lead',
+        error: _error instanceof Error ? _error.message : 'Failed to save lead',
       });
     }
   });
   
   // Update lead behavior
-  app.post('/api/lead-scoring/:websiteId/leads/:leadId/behavior', async (req, res) => {
+  app.post('/api/lead-scoring/:websiteId/leads/:leadId/behavior', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, leadId } = req.params;
       const behaviorUpdate = req.body;
-      
+
       const updatedLead = await updateLeadBehavior(websiteId, leadId, behaviorUpdate);
-      
+
       if (!updatedLead) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Lead not found',
         });
+        return;
       }
-      
+
       res.json({
         success: true,
         lead: updatedLead,
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to update lead behavior',
+        error: _error instanceof Error ? _error.message : 'Failed to update lead behavior',
       });
     }
   });
   
   // Recalculate all leads
-  app.post('/api/lead-scoring/:websiteId/leads/recalculate', async (req, res) => {
+  app.post('/api/lead-scoring/:websiteId/leads/recalculate', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const result = await batchScoreLeads(websiteId);
-      
+
       res.json({
         success: true,
         ...result,
         message: `Recalculated scores for ${result.scored} leads`,
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to recalculate leads',
+        error: _error instanceof Error ? _error.message : 'Failed to recalculate leads',
       });
     }
   });
   
   // Get lead analytics/statistics
-  app.get('/api/lead-scoring/:websiteId/analytics', async (req, res) => {
+  app.get('/api/lead-scoring/:websiteId/analytics', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const leads = await getLeads(websiteId);
-      
+
       const analytics = {
         total: leads.length,
         byQualification: {
@@ -363,15 +368,15 @@ export function registerLeadScoringRoutes(app: Express) {
           '75+': leads.filter(l => l.scores.total >= 75).length,
         },
       };
-      
+
       res.json({
         success: true,
         analytics,
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch analytics',
+        error: _error instanceof Error ? _error.message : 'Failed to fetch analytics',
       });
     }
   });

@@ -4,7 +4,7 @@
  * Now with full database persistence and campaign management
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import { sendEmail, addToMailchimpList, generateLeadCaptureForm } from '../services/marketing';
 import {
   addSubscriber,
@@ -25,15 +25,16 @@ import {
 
 export function registerMarketingRoutes(app: Express) {
   // Capture lead from form submission
-  app.post('/api/marketing/leads', async (req, res) => {
+  app.post('/api/marketing/leads', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, email, name, tags, ...metadata } = req.body;
 
       if (!email || !websiteId) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Email and websiteId are required',
         });
+        return;
       }
 
       // Save to database
@@ -89,15 +90,16 @@ export function registerMarketingRoutes(app: Express) {
   });
 
   // Generate lead capture form code
-  app.post('/api/marketing/generate-form', async (req, res) => {
+  app.post('/api/marketing/generate-form', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, formId, fields, submitText, successMessage } = req.body;
 
       if (!websiteId || !formId || !fields) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId, formId, and fields are required',
         });
+        return;
       }
 
       const formCode = generateLeadCaptureForm({
@@ -121,7 +123,7 @@ export function registerMarketingRoutes(app: Express) {
   });
 
   // Get subscribers
-  app.get('/api/marketing/subscribers/:websiteId', async (req, res) => {
+  app.get('/api/marketing/subscribers/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const { status, tags } = req.query;
@@ -145,15 +147,16 @@ export function registerMarketingRoutes(app: Express) {
   });
 
   // Unsubscribe
-  app.post('/api/marketing/unsubscribe', async (req, res) => {
+  app.post('/api/marketing/unsubscribe', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, email } = req.body;
 
       if (!websiteId || !email) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId and email are required',
         });
+        return;
       }
 
       const success = await unsubscribeSubscriber(websiteId, email);
@@ -167,15 +170,16 @@ export function registerMarketingRoutes(app: Express) {
   });
 
   // Email Templates
-  app.post('/api/marketing/templates', async (req, res) => {
+  app.post('/api/marketing/templates', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, name, subject, htmlContent, textContent, category, variables } = req.body;
 
       if (!websiteId || !name || !subject || !htmlContent) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId, name, subject, and htmlContent are required',
         });
+        return;
       }
 
       const templateId = await createEmailTemplate(
@@ -200,7 +204,7 @@ export function registerMarketingRoutes(app: Express) {
     }
   });
 
-  app.get('/api/marketing/templates/:websiteId', async (req, res) => {
+  app.get('/api/marketing/templates/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const { category } = req.query;
@@ -220,15 +224,16 @@ export function registerMarketingRoutes(app: Express) {
   });
 
   // Campaigns
-  app.post('/api/marketing/campaigns', async (req, res) => {
+  app.post('/api/marketing/campaigns', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, name, subject, htmlContent, textContent, templateId, scheduledAt, segments } = req.body;
 
       if (!websiteId || !name || !subject || !htmlContent) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId, name, subject, and htmlContent are required',
         });
+        return;
       }
 
       const campaignId = await createCampaign(
@@ -254,7 +259,7 @@ export function registerMarketingRoutes(app: Express) {
     }
   });
 
-  app.get('/api/marketing/campaigns/:websiteId', async (req, res) => {
+  app.get('/api/marketing/campaigns/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const { status } = req.query;
@@ -273,17 +278,18 @@ export function registerMarketingRoutes(app: Express) {
     }
   });
 
-  app.get('/api/marketing/campaigns/:campaignId/stats', async (req, res) => {
+  app.get('/api/marketing/campaigns/:campaignId/stats', async (req: Request, res: Response): Promise<void> => {
     try {
       const { campaignId } = req.params;
 
       const stats = await getCampaignStats(campaignId);
 
       if (!stats) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Campaign not found',
         });
+        return;
       }
 
       res.json({
@@ -299,7 +305,7 @@ export function registerMarketingRoutes(app: Express) {
   });
 
   // Send email campaign
-  app.post('/api/marketing/campaigns/:campaignId/send', async (req, res) => {
+  app.post('/api/marketing/campaigns/:campaignId/send', async (req: Request, res: Response): Promise<void> => {
     try {
       const { campaignId } = req.params;
       const { recipientIds } = req.body;
@@ -321,7 +327,7 @@ export function registerMarketingRoutes(app: Express) {
   });
 
   // Email tracking endpoints (for tracking pixels and click tracking)
-  app.get('/api/marketing/track/open/:campaignId/:subscriberId', async (req, res) => {
+  app.get('/api/marketing/track/open/:campaignId/:subscriberId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { campaignId, subscriberId } = req.params;
       const { email } = req.query;
@@ -355,7 +361,7 @@ export function registerMarketingRoutes(app: Express) {
     }
   });
 
-  app.get('/api/marketing/track/click/:campaignId/:subscriberId', async (req, res) => {
+  app.get('/api/marketing/track/click/:campaignId/:subscriberId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { campaignId, subscriberId } = req.params;
       const { url, email } = req.query;
@@ -390,15 +396,16 @@ export function registerMarketingRoutes(app: Express) {
   });
 
   // Legacy: Send email campaign (simple version)
-  app.post('/api/marketing/campaigns/send', async (req, res) => {
+  app.post('/api/marketing/campaigns/send', async (req: Request, res: Response): Promise<void> => {
     try {
       const { to, subject, htmlContent, textContent } = req.body;
 
       if (!to || !subject || !htmlContent) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'to, subject, and htmlContent are required',
         });
+        return;
       }
 
       const result = await sendEmail(to, subject, htmlContent, textContent);

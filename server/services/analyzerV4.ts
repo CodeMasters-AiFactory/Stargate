@@ -3,7 +3,7 @@
  * Multi-Expert Panel with Human Perception Scoring
  */
 
-import { captureScreenshots, ScreenshotAnalysis } from '../analyzer/screenshotEvaluator';
+import { captureScreenshots } from '../analyzer/screenshotEvaluator';
 import {
   evaluateAsUXDesigner,
   evaluateAsProductDesigner,
@@ -14,7 +14,7 @@ import {
 } from '../analyzer/expertAgents';
 import { generateConsensus, type ConsensusResult } from '../analyzer/consensus';
 import { calculatePerceptionScore, type PerceptionScore } from '../analyzer/humanPerception';
-import puppeteer, { Page } from 'puppeteer';
+import puppeteer, { Browser, Page } from 'puppeteer';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -49,17 +49,20 @@ export async function analyzeWebsiteV4(url: string): Promise<V4AnalysisResult> {
     fs.mkdirSync(outputDir, { recursive: true });
   }
   
-  let browser: puppeteer.Browser | null = null;
+  let browser: Browser | null = null;
   let page: Page | null = null;
-  
+
   try {
     // Launch browser
     browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
-    
+
     page = await browser.newPage();
+    if (!page) {
+      throw new Error('Failed to create browser page');
+    }
     await page.setViewport({ width: 1440, height: 900 });
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
     // Wait for page to fully load (replacement for deprecated waitForTimeout)
@@ -248,7 +251,7 @@ async function saveV4Reports(
  */
 async function generateV4Summary(
   outputDir: string,
-  url: string,
+  _url: string,
   data: {
     expertPanel: any;
     consensus: ConsensusResult;
@@ -323,38 +326,38 @@ ${data.consensus.anomalies.length > 0 ? `\n### Anomalies Detected:\n${data.conse
 
 ### UX Designer
 **Strengths:**
-${data.expertPanel.uxDesigner.strengths.map(s => `- ${s}`).join('\n')}
+${data.expertPanel.uxDesigner.strengths.map((s: string) => `- ${s}`).join('\n')}
 
 **Weaknesses:**
-${data.expertPanel.uxDesigner.weaknesses.map(w => `- ${w}`).join('\n')}
+${data.expertPanel.uxDesigner.weaknesses.map((w: string) => `- ${w}`).join('\n')}
 
 ### Product Designer
 **Strengths:**
-${data.expertPanel.productDesigner.strengths.map(s => `- ${s}`).join('\n')}
+${data.expertPanel.productDesigner.strengths.map((s: string) => `- ${s}`).join('\n')}
 
 **Weaknesses:**
-${data.expertPanel.productDesigner.weaknesses.map(w => `- ${w}`).join('\n')}
+${data.expertPanel.productDesigner.weaknesses.map((w: string) => `- ${w}`).join('\n')}
 
 ### Conversion Strategist
 **Strengths:**
-${data.expertPanel.conversionStrategist.strengths.map(s => `- ${s}`).join('\n')}
+${data.expertPanel.conversionStrategist.strengths.map((s: string) => `- ${s}`).join('\n')}
 
 **Weaknesses:**
-${data.expertPanel.conversionStrategist.weaknesses.map(w => `- ${w}`).join('\n')}
+${data.expertPanel.conversionStrategist.weaknesses.map((w: string) => `- ${w}`).join('\n')}
 
 ### SEO Specialist
 **Strengths:**
-${data.expertPanel.seoSpecialist.strengths.map(s => `- ${s}`).join('\n')}
+${data.expertPanel.seoSpecialist.strengths.map((s: string) => `- ${s}`).join('\n')}
 
 **Weaknesses:**
-${data.expertPanel.seoSpecialist.weaknesses.map(w => `- ${w}`).join('\n')}
+${data.expertPanel.seoSpecialist.weaknesses.map((w: string) => `- ${w}`).join('\n')}
 
 ### Brand Analyst
 **Strengths:**
-${data.expertPanel.brandAnalyst.strengths.map(s => `- ${s}`).join('\n')}
+${data.expertPanel.brandAnalyst.strengths.map((s: string) => `- ${s}`).join('\n')}
 
 **Weaknesses:**
-${data.expertPanel.brandAnalyst.weaknesses.map(w => `- ${w}`).join('\n')}
+${data.expertPanel.brandAnalyst.weaknesses.map((w: string) => `- ${w}`).join('\n')}
 
 ---
 

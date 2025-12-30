@@ -1,0 +1,140 @@
+[
+  {
+    "success": true,
+    "duration": "29.22",
+    "result": {
+      "success": true,
+      "projectSlug": "la-bella-vista",
+      "previewUrl": "/website_projects/la-bella-vista/merlin8-output/index.html",
+      "outputPath": "C:\\CURSOR PROJECTS\\StargatePortal\\website_projects\\la-bella-vista\\merlin8-output",
+      "industry": {
+        "id": "restaurant",
+        "name": "Restaurant & Dining"
+      },
+      "imagesGenerated": 5,
+      "images": [
+        {
+          "section": "hero",
+          "url": "images/hero.jpg"
+        },
+        {
+          "section": "services",
+          "url": "images/services.jpg"
+        },
+        {
+          "section": "about",
+          "url": "images/about.jpg"
+        },
+        {
+          "section": "team",
+          "url": "images/team.jpg"
+        },
+        {
+          "section": "background",
+          "url": "images/background.jpg"
+        }
+      ],
+      "duration": 29190,
+      "errors": []
+    },
+    "testCase": {
+      "industry": "restaurant",
+      "businessName": "La Bella Vista",
+      "description": "An authentic Italian restaurant serving traditional recipes passed down through generations",
+      "style": "elegant",
+      "colorScheme": "warm"
+    }
+  },
+  {
+    "success": true,
+    "duration": "31.40",
+    "result": {
+      "success": true,
+      "projectSlug": "cloudsync-pro",
+      "previewUrl": "/website_projects/cloudsync-pro/merlin8-output/index.html",
+      "outputPath": "C:\\CURSOR PROJECTS\\StargatePortal\\website_projects\\cloudsync-pro\\merlin8-output",
+      "industry": {
+        "id": "tech",
+        "name": "Tech Startup & SaaS"
+      },
+      "imagesGenerated": 5,
+      "images": [
+        {
+          "section": "hero",
+          "url": "images/hero.jpg"
+        },
+        {
+          "section": "services",
+          "url": "images/services.jpg"
+        },
+        {
+          "section": "about",
+          "url": "images/about.jpg"
+        },
+        {
+          "section": "team",
+          "url": "images/team.jpg"
+        },
+        {
+          "section": "background",
+          "url": "images/background.jpg"
+        }
+      ],
+      "duration": 31389,
+      "errors": []
+    },
+    "testCase": {
+      "industry": "tech",
+      "businessName": "CloudSync Pro",
+      "description": "A cutting-edge SaaS platform for seamless cloud collaboration and file synchronization",
+      "style": "minimal",
+      "colorScheme": "tech-blue"
+    }
+  },
+  {
+    "success": true,
+    "duration": "26.65",
+    "result": {
+      "success": true,
+      "projectSlug": "sterling-associates",
+      "previewUrl": "/website_projects/sterling-associates/merlin8-output/index.html",
+      "outputPath": "C:\\CURSOR PROJECTS\\StargatePortal\\website_projects\\sterling-associates\\merlin8-output",
+      "industry": {
+        "id": "legal",
+        "name": "Law Firm & Legal Services"
+      },
+      "imagesGenerated": 5,
+      "images": [
+        {
+          "section": "hero",
+          "url": "images/hero.jpg"
+        },
+        {
+          "section": "services",
+          "url": "images/services.jpg"
+        },
+        {
+          "section": "about",
+          "url": "images/about.jpg"
+        },
+        {
+          "section": "team",
+          "url": "images/team.jpg"
+        },
+        {
+          "section": "background",
+          "url": "images/background.jpg"
+        }
+      ],
+      "duration": 26644,
+      "errors": []
+    },
+    "testCase": {
+      "industry": "legal",
+      "businessName": "Sterling & Associates",
+      "description": "A trusted law firm specializing in corporate law, litigation, and legal consulting",
+      "style": "professional",
+      "colorScheme": "corporate"
+    }
+  }
+]

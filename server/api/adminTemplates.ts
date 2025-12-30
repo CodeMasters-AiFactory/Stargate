@@ -10,7 +10,6 @@ import { eq } from 'drizzle-orm';
 import { requireAdmin } from '../middleware/permissions';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 import { BRAND_TEMPLATES } from '../services/brandTemplateLibrary';
-import type { BrandTemplate as LibraryTemplate } from '../services/brandTemplateLibrary';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -19,7 +18,7 @@ const TEMPLATES_DIR = path.join(process.cwd(), 'scraped_templates');
 
 export function registerAdminTemplateRoutes(app: Express) {
   // Get all templates (from DB + files + library)
-  app.get('/api/admin/templates', requireAdmin, async (req, res) => {
+  app.get('/api/admin/templates', requireAdmin, async (_req, res) => {
     try {
       const allTemplates: any[] = [];
 
@@ -34,7 +33,7 @@ export function registerAdminTemplateRoutes(app: Express) {
             .where(eq(brandTemplates.isActive, true));
 
           allTemplates.push(
-            ...dbTemplates.map(t => ({
+            ...dbTemplates.map((t: typeof brandTemplates.$inferSelect) => ({
               ...t,
               source: 'database' as const,
             }))
@@ -157,7 +156,7 @@ export function registerAdminTemplateRoutes(app: Express) {
         return res.status(404).json({ error: 'Page not found' });
       }
       
-      res.json({
+      return res.json({
         success: true,
         page: {
           id: page.id,
@@ -172,7 +171,7 @@ export function registerAdminTemplateRoutes(app: Express) {
     } catch (error: unknown) {
       logError(error, 'Admin Templates - Get Page');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: errorMessage || 'Failed to get template page',
       });
@@ -207,14 +206,14 @@ export function registerAdminTemplateRoutes(app: Express) {
         });
       }
 
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         error: 'Template not found',
       });
     } catch (error: unknown) {
       logError(error, 'Admin Templates - Get by ID');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: errorMessage || 'Failed to get template',
       });
@@ -273,7 +272,7 @@ export function registerAdminTemplateRoutes(app: Express) {
         })
         .returning();
 
-      res.json({
+      return res.json({
         success: true,
         template: newTemplate[0],
         message: 'Template created successfully',
@@ -281,7 +280,7 @@ export function registerAdminTemplateRoutes(app: Express) {
     } catch (error: unknown) {
       logError(error, 'Admin Templates - Create');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: errorMessage || 'Failed to create template',
       });
@@ -323,7 +322,6 @@ export function registerAdminTemplateRoutes(app: Express) {
           darkMode: templateData.darkMode,
           tags: templateData.tags,
           ranking: templateData.ranking,
-          isActive: templateData.isActive !== undefined ? templateData.isActive : true,
           // Design quality fields
           isDesignQuality: templateData.isDesignQuality !== undefined ? templateData.isDesignQuality : existing[0].isDesignQuality,
           designCategory: templateData.designCategory !== undefined ? templateData.designCategory : existing[0].designCategory,
@@ -340,7 +338,7 @@ export function registerAdminTemplateRoutes(app: Express) {
         .where(eq(brandTemplates.id, id))
         .returning();
 
-      res.json({
+      return res.json({
         success: true,
         template: updated[0],
         message: 'Template updated successfully',
@@ -348,7 +346,7 @@ export function registerAdminTemplateRoutes(app: Express) {
     } catch (error: unknown) {
       logError(error, 'Admin Templates - Update');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: errorMessage || 'Failed to update template',
       });
@@ -380,7 +378,7 @@ export function registerAdminTemplateRoutes(app: Express) {
         .where(eq(brandTemplates.id, id))
         .returning();
 
-      res.json({
+      return res.json({
         success: true,
         template: updated[0],
         message: isDesignQuality ? 'Template moved to Design Quality' : 'Template moved to Top Search',
@@ -388,7 +386,7 @@ export function registerAdminTemplateRoutes(app: Express) {
     } catch (error: unknown) {
       logError(error, 'Admin Templates - Move to Design');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({ success: false, error: errorMessage || 'Failed to move template' });
+      return res.status(500).json({ success: false, error: errorMessage || 'Failed to move template' });
     }
   });
 
@@ -509,7 +507,7 @@ export function registerAdminTemplateRoutes(app: Express) {
   });
 
   // Delete ALL templates (hard delete)
-  app.delete('/api/admin/templates', requireAdmin, async (req, res) => {
+  app.delete('/api/admin/templates', requireAdmin, async (_req, res) => {
     console.log('[Admin Templates] DELETE ALL request received');
     
     let deletedCount = 0;
@@ -640,7 +638,7 @@ export function registerAdminTemplateRoutes(app: Express) {
         })
         .returning();
 
-      res.json({
+      return res.json({
         success: true,
         template: duplicated[0],
         message: 'Template duplicated successfully',
@@ -648,7 +646,7 @@ export function registerAdminTemplateRoutes(app: Express) {
     } catch (error: unknown) {
       logError(error, 'Admin Templates - Duplicate');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: errorMessage || 'Failed to duplicate template',
       });
@@ -682,7 +680,7 @@ export function registerAdminTemplateRoutes(app: Express) {
         .where(eq(brandTemplates.id, id))
         .returning();
 
-      res.json({
+      return res.json({
         success: true,
         template: updated[0],
         message: 'Template approved successfully',
@@ -690,7 +688,7 @@ export function registerAdminTemplateRoutes(app: Express) {
     } catch (error: unknown) {
       logError(error, 'Admin Templates - Approve');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: errorMessage || 'Failed to approve template',
       });
@@ -724,7 +722,7 @@ export function registerAdminTemplateRoutes(app: Express) {
         .where(eq(brandTemplates.id, id))
         .returning();
 
-      res.json({
+      return res.json({
         success: true,
         template: updated[0],
         message: 'Template disapproved successfully',
@@ -732,7 +730,7 @@ export function registerAdminTemplateRoutes(app: Express) {
     } catch (error: unknown) {
       logError(error, 'Admin Templates - Disapprove');
       const errorMessage = getErrorMessage(error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: errorMessage || 'Failed to disapprove template',
       });

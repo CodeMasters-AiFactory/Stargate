@@ -97,10 +97,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // If not OK (401, 500, etc.), retry once - backend will auto-create session
       console.log('[AuthContext] ⚠️ Initial auth check failed, retrying with auto-auth...');
-      
+
       // Wait a brief moment before retry to allow backend to initialize
       await new Promise(resolve => setTimeout(resolve, 100));
-      
+
         const retryResponse = await fetchWithTimeout('/api/auth/status', {
           credentials: 'include',
           method: 'GET',
@@ -108,23 +108,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             'Content-Type': 'application/json',
           },
         }, 5000);
-      
+
       console.log('[AuthContext] Retry response status:', retryResponse.status);
-      
+
       if (retryResponse.ok) {
         const userData = await retryResponse.json();
         console.log('[AuthContext] ✅ User authenticated on retry:', userData.username);
         setUser(userData);
       } else {
-        // Backend should always return 200 with auto-auth, but if not, create fallback user
-        console.warn('[AuthContext] ⚠️ Backend auto-auth failed, using fallback user');
-        const fallbackUser = {
-          id: 'auto-user-fallback',
-          username: 'auto-user',
-          email: 'auto@stargate.dev',
-          role: 'administrator' as const,
-        };
-        setUser(fallbackUser);
+        // SECURITY FIX: Do NOT create fallback admin user - user must authenticate properly
+        console.warn('[AuthContext] ⚠️ Authentication failed - user must log in');
+        setUser(null);
       }
     } catch (error: any) {
       console.error('[AuthContext] ❌ Auth check error:', error);
@@ -138,7 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         console.log('[AuthContext] Retrying after error...');
         await new Promise(resolve => setTimeout(resolve, 200));
-        
+
         const retryResponse = await fetchWithTimeout('/api/auth/me', {
           credentials: 'include',
           method: 'GET',
@@ -146,32 +140,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             'Content-Type': 'application/json',
           },
         }, 5000);
-        
+
         if (retryResponse.ok) {
           const userData = await retryResponse.json();
           console.log('[AuthContext] ✅ User authenticated after error retry:', userData.username);
           setUser(userData);
         } else {
-          // Even on retry failure, set fallback user instead of null
-          console.warn('[AuthContext] ⚠️ Retry failed, using fallback user');
-          const fallbackUser = {
-            id: 'auto-user-fallback',
-            username: 'auto-user',
-            email: 'auto@stargate.dev',
-            role: 'administrator' as const,
-          };
-          setUser(fallbackUser);
+          // SECURITY FIX: Do NOT create fallback admin user - user must authenticate properly
+          console.warn('[AuthContext] ⚠️ Retry failed - user must log in');
+          setUser(null);
         }
       } catch (retryError: any) {
         console.error('[AuthContext] ❌ Retry also failed:', retryError);
-        // CRITICAL: Always set a user, never null (bypass mode)
-        const fallbackUser = {
-          id: 'auto-user-fallback',
-          username: 'auto-user',
-          email: 'auto@stargate.dev',
-          role: 'administrator' as const,
-        };
-        setUser(fallbackUser);
+        // SECURITY FIX: Do NOT create fallback admin user - user must authenticate properly
+        console.warn('[AuthContext] ⚠️ All auth attempts failed - user must log in');
+        setUser(null);
       }
     } finally {
       setIsLoading(false);

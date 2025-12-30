@@ -10,7 +10,28 @@
 import { IndustryDNA, generateCSSVariables } from './industryDNA';
 import { GeneratedImage } from './leonardoIntegration';
 
+/**
+ * Escape HTML special characters to prevent XSS and broken HTML
+ */
+function escapeHtml(text: string | undefined | null): string {
+  if (text == null) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
+ * Escape for HTML attribute values (same as escapeHtml but explicit name)
+ */
+function escapeAttr(text: string | undefined | null): string {
+  return escapeHtml(text);
+}
+
 export interface WebsiteContent {
+  // Basic Info
   businessName: string;
   tagline: string;
   description: string;
@@ -18,6 +39,56 @@ export interface WebsiteContent {
   location?: string;
   phone?: string;
   email?: string;
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // USER PREFERENCES (from intake form)
+  // ═══════════════════════════════════════════════════════════════════════════════
+
+  // Business Type
+  businessType?: string;
+
+  // Website Goals
+  goals?: string[];
+
+  // Target Audience
+  targetAudience?: {
+    ageGroups?: string[];
+    audienceType?: string;
+    incomeLevel?: string;
+  };
+
+  // Design Preferences
+  designPreferences?: {
+    colorMood?: string;
+    primaryColor?: string;
+    secondaryColor?: string;
+    designElements?: string[];
+  };
+
+  // Features
+  features?: string[];
+
+  // Pages/Sections
+  pages?: string[];
+
+  // Contact Info
+  contactInfo?: {
+    phone?: string;
+    email?: string;
+    address?: string;
+    hours?: string;
+    socialPlatforms?: string[];
+  };
+
+  // Tone & Messaging
+  tone?: {
+    brandVoice?: string;
+    ctaStyle?: string;
+    keyMessage?: string;
+  };
+
+  // Stats/Trust Indicators (optional - shown in stats bar if provided)
+  stats?: Array<{ value: string; label: string }>;
 }
 
 export interface GeneratedWebsite {
@@ -202,13 +273,13 @@ nav {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.3);
+  filter: brightness(0.9);
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.5) 100%);
+  background: linear-gradient(90deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.1) 100%);
 }
 
 .hero-content {
@@ -459,12 +530,12 @@ section {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
-   FOOTER
+   FOOTER (Enhanced with contact info & social)
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 footer {
   background: ${industry.design.colorScheme === 'dark' ? '#0A0A0A' : '#F8F9FA'};
-  padding: 3rem 0;
+  padding: 4rem 0 2rem;
   border-top: 1px solid ${industry.design.colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
 }
 
@@ -472,33 +543,122 @@ footer {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+}
+
+.footer-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid ${industry.design.colorScheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+}
+
+@media (max-width: 768px) {
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.footer-brand {
+  max-width: 300px;
 }
 
 .footer-logo {
   font-family: var(--font-heading);
   font-weight: 700;
+  font-size: 1.5rem;
   color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.footer-tagline {
+  opacity: 0.7;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.5rem;
+}
+
+.social-link {
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.social-link:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.footer-contact h4,
+.footer-links h4 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1.5rem;
+  color: var(--color-primary);
+}
+
+.footer-contact p {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+.footer-contact a {
+  color: inherit;
 }
 
 .footer-links {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .footer-links a {
   color: var(--color-text);
   opacity: 0.7;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
 }
 
 .footer-links a:hover {
   opacity: 1;
   color: var(--color-primary);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-bottom p {
+  opacity: 0.6;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.footer-legal {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-legal a {
+  color: var(--color-text);
+  opacity: 0.6;
+  font-size: 0.875rem;
+}
+
+.footer-legal a:hover {
+  opacity: 1;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -525,31 +685,174 @@ footer {
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
+  .hero {
+    min-height: 80vh;
+  }
+
   .hero h1 {
     font-size: 2.5rem;
+    line-height: 1.2;
   }
-  
+
   .hero .subtitle {
     font-size: 1rem;
+    line-height: 1.5;
   }
-  
+
+  .hero-content {
+    padding: 0 1rem;
+  }
+
   .btn {
     padding: 0.875rem 1.5rem;
     font-size: 0.8rem;
+    width: 100%;
+    text-align: center;
   }
-  
+
   .btn-outline {
     margin-left: 0;
     margin-top: 1rem;
     display: block;
     text-align: center;
   }
-  
+
   section {
-    padding: 4rem 0;
+    padding: 3rem 0;
+  }
+
+  .section-container {
+    padding: 0 1rem;
+  }
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .card img {
+    height: 200px;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+}
+
+/* Extra small devices (phones, 480px and down) */
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .hero .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-main {
+    text-align: center;
+  }
+
+  .footer-brand {
+    max-width: 100%;
+    margin: 0 auto;
   }
 }
   `.trim();
+}
+
+/**
+ * Generate CTA text based on user's tone preferences
+ */
+function generateCTAText(content: WebsiteContent, industry: IndustryDNA): { primary: string; secondary: string } {
+  const ctaStyle = content.tone?.ctaStyle || 'direct';
+  const brandVoice = content.tone?.brandVoice || 'professional';
+
+  // CTA text based on style
+  const ctaOptions: Record<string, { primary: string; secondary: string }> = {
+    urgent: { primary: 'Get Started Now', secondary: 'Don\'t Wait' },
+    soft: { primary: 'Learn More', secondary: 'Discover How' },
+    direct: { primary: 'Contact Us', secondary: 'Get Quote' },
+    consultative: { primary: 'Schedule Consultation', secondary: 'Explore Options' },
+  };
+
+  // If user has specific goals, customize CTA
+  const goals = content.goals || [];
+  if (goals.includes('leads')) {
+    return { primary: 'Get Free Quote', secondary: 'Request Info' };
+  }
+  if (goals.includes('bookings')) {
+    return { primary: 'Book Now', secondary: 'Check Availability' };
+  }
+  if (goals.includes('sell')) {
+    return { primary: 'Shop Now', secondary: 'View Products' };
+  }
+  if (goals.includes('donations')) {
+    return { primary: 'Donate Now', secondary: 'Support Us' };
+  }
+
+  return ctaOptions[ctaStyle] || { primary: industry.copy.ctaText[0], secondary: industry.copy.ctaText[1] || 'Learn More' };
+}
+
+/**
+ * Generate navigation links based on user's selected pages
+ */
+function generateNavLinks(content: WebsiteContent): string {
+  const selectedPages = content.pages || ['home', 'services', 'about', 'contact'];
+
+  const pageLabels: Record<string, string> = {
+    home: 'Home',
+    about: 'About',
+    services: 'Services',
+    products: 'Products',
+    portfolio: 'Portfolio',
+    team: 'Team',
+    testimonials: 'Testimonials',
+    blog: 'Blog',
+    faq: 'FAQ',
+    contact: 'Contact',
+    pricing: 'Pricing',
+    careers: 'Careers',
+  };
+
+  return selectedPages
+    .filter(page => pageLabels[page])
+    .map(page => `<li><a href="#${escapeAttr(page)}">${escapeHtml(pageLabels[page])}</a></li>`)
+    .join('\n        ');
+}
+
+/**
+ * Generate social media links based on user's selected platforms
+ */
+function generateSocialLinks(content: WebsiteContent): string {
+  const platforms = content.contactInfo?.socialPlatforms || [];
+
+  if (platforms.length === 0) return '';
+
+  const socialIcons: Record<string, string> = {
+    facebook: '📘',
+    instagram: '📷',
+    twitter: '🐦',
+    linkedin: '💼',
+    youtube: '▶️',
+    tiktok: '🎵',
+    pinterest: '📌',
+    whatsapp: '💬',
+  };
+
+  const links = platforms
+    .filter(p => socialIcons[p])
+    .map(p => `<a href="#" class="social-link" title="${escapeAttr(p)}">${socialIcons[p]}</a>`)
+    .join(' ');
+
+  return links ? `<div class="social-links">${links}</div>` : '';
 }
 
 /**
@@ -564,53 +867,70 @@ function generateHTML(
   const servicesImage = images.find(img => img.section === 'services')?.url || '';
   const aboutImage = images.find(img => img.section === 'about')?.url || '';
   const teamImage = images.find(img => img.section === 'team')?.url || '';
-  
-  const ctaText = industry.copy.ctaText[0];
-  const secondaryCta = industry.copy.ctaText[1] || 'Learn More';
+
+  // Use user preferences for CTA text
+  const ctas = generateCTAText(content, industry);
+  const ctaText = ctas.primary;
+  const secondaryCta = ctas.secondary;
+
+  // Get user's selected pages
+  const selectedPages = content.pages || ['home', 'services', 'about', 'contact'];
+
+  // Get brand voice for copy tone
+  const brandVoice = content.tone?.brandVoice || 'professional';
+
+  // Get contact info
+  const phone = content.contactInfo?.phone || content.phone;
+  const email = content.contactInfo?.email || content.email;
+  const address = content.contactInfo?.address || content.location;
+  const hours = content.contactInfo?.hours;
   
   // Generate services cards
   const servicesHTML = content.services.slice(0, 3).map((service, index) => `
       <div class="card">
-        <img src="${index === 0 ? servicesImage : (index === 1 ? aboutImage : teamImage)}" alt="${service.name}">
+        <img src="${escapeAttr(index === 0 ? servicesImage : (index === 1 ? aboutImage : teamImage))}" alt="${escapeAttr(service.name)}">
         <div class="card-content">
-          <h3>${service.name}</h3>
-          <p>${service.description}</p>
+          <h3>${escapeHtml(service.name)}</h3>
+          <p>${escapeHtml(service.description)}</p>
         </div>
       </div>`).join('\n');
+
+  // Generate navigation based on user's selected pages
+  const navLinksHTML = generateNavLinks(content);
+
+  // Generate social links if user selected social platforms
+  const socialLinksHTML = generateSocialLinks(content);
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${content.businessName} | ${content.tagline}</title>
-  <meta name="description" content="${content.description}">
-  
+  <title>${escapeHtml(content.businessName)} | ${escapeHtml(content.tagline)}</title>
+  <meta name="description" content="${escapeAttr(content.description)}">
+
   <!-- Open Graph -->
-  <meta property="og:title" content="${content.businessName}">
-  <meta property="og:description" content="${content.description}">
-  <meta property="og:image" content="${heroImage}">
+  <meta property="og:title" content="${escapeAttr(content.businessName)}">
+  <meta property="og:description" content="${escapeAttr(content.description)}">
+  <meta property="og:image" content="${escapeAttr(heroImage)}">
   <meta property="og:type" content="website">
-  
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(industry.design.fonts.heading.split(',')[0].replace(/'/g, '').trim())}:wght@400;700;900&family=${encodeURIComponent(industry.design.fonts.body.split(',')[0].replace(/'/g, '').trim())}:wght@300;400;600&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent((industry.design?.fonts?.heading || 'Inter').split(',')[0].replace(/'/g, '').trim())}:wght@400;700;900&family=${encodeURIComponent((industry.design?.fonts?.body || 'Inter').split(',')[0].replace(/'/g, '').trim())}:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
 ${generateCSS(industry)}
   </style>
 </head>
 <body>
-  <!-- Navigation -->
+  <!-- Navigation - Based on user's selected pages -->
   <nav>
     <div class="nav-container">
-      <a href="#" class="logo">${content.businessName.toUpperCase()}</a>
+      <a href="#" class="logo">${escapeHtml(content.businessName.toUpperCase())}</a>
       <ul class="nav-links">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
+        ${navLinksHTML}
       </ul>
       <button class="mobile-menu-btn">☰</button>
     </div>
@@ -619,39 +939,28 @@ ${generateCSS(industry)}
   <!-- Hero Section -->
   <section class="hero" id="home">
     <div class="hero-background">
-      <img src="${heroImage}" alt="${content.businessName}">
+      <img src="${escapeAttr(heroImage)}" alt="${escapeAttr(content.businessName)}">
       <div class="hero-overlay"></div>
     </div>
     <div class="hero-content">
-      <h1>${content.tagline.split(' ').slice(0, Math.ceil(content.tagline.split(' ').length / 2)).join(' ')}<br>
-        <span class="highlight">${content.tagline.split(' ').slice(Math.ceil(content.tagline.split(' ').length / 2)).join(' ')}</span>
+      <h1>${escapeHtml(content.tagline.split(' ').slice(0, Math.ceil(content.tagline.split(' ').length / 2)).join(' '))}<br>
+        <span class="highlight">${escapeHtml(content.tagline.split(' ').slice(Math.ceil(content.tagline.split(' ').length / 2)).join(' '))}</span>
       </h1>
-      <p class="subtitle">${content.description}</p>
-      <a href="#contact" class="btn btn-primary">${ctaText}</a>
-      <a href="#services" class="btn btn-outline">${secondaryCta}</a>
+      <p class="subtitle">${escapeHtml(content.description)}</p>
+      <a href="#contact" class="btn btn-primary">${escapeHtml(ctaText)}</a>
+      <a href="#services" class="btn btn-outline">${escapeHtml(secondaryCta)}</a>
     </div>
   </section>
 
-  ${industry.sections.includes('stats') ? `
+  ${industry.sections.includes('stats') && content.stats && content.stats.length > 0 ? `
   <!-- Stats Bar -->
   <section class="stats-bar">
     <div class="stats-container">
+      ${content.stats.slice(0, 4).map(stat => `
       <div class="stat-item">
-        <h3>10+</h3>
-        <p>Years Experience</p>
-      </div>
-      <div class="stat-item">
-        <h3>500+</h3>
-        <p>Happy Clients</p>
-      </div>
-      <div class="stat-item">
-        <h3>100%</h3>
-        <p>Satisfaction</p>
-      </div>
-      <div class="stat-item">
-        <h3>24/7</h3>
-        <p>Support</p>
-      </div>
+        <h3>${escapeHtml(stat.value)}</h3>
+        <p>${escapeHtml(stat.label)}</p>
+      </div>`).join('')}
     </div>
   </section>
   ` : ''}
@@ -661,7 +970,7 @@ ${generateCSS(industry)}
     <div class="section-container">
       <div class="section-header">
         <h2>What We Offer</h2>
-        <p>${content.description}</p>
+        <p>${escapeHtml(content.description)}</p>
       </div>
       <div class="cards-grid">
 ${servicesHTML}
@@ -674,13 +983,13 @@ ${servicesHTML}
     <div class="section-container">
       <div class="two-column">
         <div class="two-column-image">
-          <img src="${teamImage}" alt="About ${content.businessName}">
+          <img src="${escapeAttr(teamImage)}" alt="About ${escapeAttr(content.businessName)}">
         </div>
         <div class="two-column-content">
           <h2>About Us</h2>
-          <p>${content.description}</p>
-          <p>We are committed to delivering exceptional results and exceeding expectations with every project we undertake.</p>
-          <a href="#contact" class="btn btn-primary">${ctaText}</a>
+          <p>${escapeHtml(content.description)}</p>
+          <p>${escapeHtml(content.tone?.keyMessage || `${content.businessName} is dedicated to providing outstanding service and quality results for every client.`)}</p>
+          <a href="#contact" class="btn btn-primary">${escapeHtml(ctaText)}</a>
         </div>
       </div>
     </div>
@@ -690,19 +999,43 @@ ${servicesHTML}
   <section class="cta-section">
     <div class="section-container">
       <h2>Ready to Get Started?</h2>
-      <p>Contact us today and let's discuss how we can help you achieve your goals.</p>
-      <a href="#contact" class="btn">${ctaText}</a>
+      <p>Contact ${escapeHtml(content.businessName)} today and let us help you achieve your goals.</p>
+      <a href="#contact" class="btn">${escapeHtml(ctaText)}</a>
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- Footer / Contact Section -->
   <footer id="contact">
     <div class="footer-container">
-      <div class="footer-logo">${content.businessName.toUpperCase()}</div>
-      <div class="footer-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-        ${content.email ? `<a href="mailto:${content.email}">Contact</a>` : ''}
+      <div class="footer-main">
+        <div class="footer-brand">
+          <div class="footer-logo">${escapeHtml(content.businessName.toUpperCase())}</div>
+          <p class="footer-tagline">${escapeHtml(content.tagline)}</p>
+          ${socialLinksHTML}
+        </div>
+
+        ${selectedPages.includes('contact') ? `
+        <div class="footer-contact">
+          <h4>Contact Us</h4>
+          ${phone ? `<p>📞 ${escapeHtml(phone)}</p>` : ''}
+          ${email ? `<p>✉️ <a href="mailto:${escapeAttr(email)}">${escapeHtml(email)}</a></p>` : ''}
+          ${address ? `<p>📍 ${escapeHtml(address)}</p>` : ''}
+          ${hours ? `<p>🕐 ${escapeHtml(hours)}</p>` : ''}
+        </div>
+        ` : ''}
+
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          ${selectedPages.slice(0, 5).map(page => `<a href="#${escapeAttr(page)}">${escapeHtml(page.charAt(0).toUpperCase() + page.slice(1))}</a>`).join('\n          ')}
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; ${new Date().getFullYear()} ${escapeHtml(content.businessName)}. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
       </div>
     </div>
   </footer>

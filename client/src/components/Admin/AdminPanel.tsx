@@ -2,7 +2,6 @@ import React, { useState, lazy, Suspense } from 'react';
 import { DepartmentAccess } from './DepartmentAccess';
 import { RoleManagement } from './RoleManagement';
 import { TemplateManagement } from './TemplateManagement';
-import { TemplateQualityAssurance } from './TemplateQualityAssurance';
 import { TemplateFineTuning } from './TemplateFineTuning';
 import { TemplateQA } from './TemplateQA';
 import { FinalProduct } from './FinalProduct';
@@ -11,14 +10,12 @@ import { ReimagedTemplates } from './ReimagedTemplates';
 import { SEOTemplates } from './SEOTemplates';
 import { VerifiedTemplates } from './VerifiedTemplates';
 const WebsiteScraper = lazy(() => import('./WebsiteScraper').then(m => ({ default: m.WebsiteScraper })));
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  Shield, 
-  Users, 
-  Building2, 
-  FileText, 
-  Globe, 
+import {
+  Building2,
+  FileText,
+  Globe,
   Key,
   Sparkles,
   CheckCircle2,

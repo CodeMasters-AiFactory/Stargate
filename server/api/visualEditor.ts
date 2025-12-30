@@ -6,7 +6,7 @@
 import type { Express } from 'express';
 import archiver from 'archiver';
 import { generateComponentHTML } from '../services/componentHTMLGenerator';
-import { getStorageService, saveWebsiteFile, readWebsiteFile, listWebsiteFiles } from '../services/azureStorage';
+import { saveWebsiteFile, readWebsiteFile } from '../services/azureStorage';
 import { getAIDesignRecommendations, voteOnDesignDecision } from '../services/aiDesignCritic';
 import {
   trackDesignDecision,
@@ -35,15 +35,16 @@ import {
 
 export function registerVisualEditorRoutes(app: Express) {
   // Get AI design recommendations
-  app.post('/api/visual-editor/ai-recommendations', async (req, res) => {
+  app.post('/api/visual-editor/ai-recommendations', async (req, res): Promise<void> => {
     try {
       const { website, selectedElement, context } = req.body;
 
       if (!website) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'website is required',
         });
+        return;
       }
 
       const result = await getAIDesignRecommendations({
@@ -67,15 +68,16 @@ export function registerVisualEditorRoutes(app: Express) {
   });
 
   // Vote on design decision
-  app.post('/api/visual-editor/ai-vote', async (req, res) => {
+  app.post('/api/visual-editor/ai-vote', async (req, res): Promise<void> => {
     try {
       const { prompt, context } = req.body;
 
       if (!prompt) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'prompt is required',
         });
+        return;
       }
 
       const result = await voteOnDesignDecision(prompt, context);
@@ -97,15 +99,16 @@ export function registerVisualEditorRoutes(app: Express) {
   // ============================================
 
   // Track design decision
-  app.post('/api/visual-editor/track-decision', async (req, res) => {
+  app.post('/api/visual-editor/track-decision', async (req, res): Promise<void> => {
     try {
       const { userId, projectId, decisionType, action, before, after, context, metadata } = req.body;
 
       if (!userId || !projectId || !decisionType || !action) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'userId, projectId, decisionType, and action are required',
         });
+        return;
       }
 
       await trackDesignDecision({
@@ -152,15 +155,16 @@ export function registerVisualEditorRoutes(app: Express) {
   });
 
   // Get learned recommendations
-  app.post('/api/visual-editor/learned-recommendations', async (req, res) => {
+  app.post('/api/visual-editor/learned-recommendations', async (req, res): Promise<void> => {
     try {
       const { userId, projectId, context } = req.body;
 
       if (!userId || !projectId) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'userId and projectId are required',
         });
+        return;
       }
 
       const recommendations = await getLearnedRecommendations(userId, projectId, context || {});
@@ -180,15 +184,16 @@ export function registerVisualEditorRoutes(app: Express) {
   });
 
   // Auto-apply learned styles
-  app.post('/api/visual-editor/auto-apply-styles', async (req, res) => {
+  app.post('/api/visual-editor/auto-apply-styles', async (req, res): Promise<void> => {
     try {
       const { userId, projectId, componentType, baseStyles } = req.body;
 
       if (!userId || !projectId || !componentType) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'userId, projectId, and componentType are required',
         });
+        return;
       }
 
       const result = await autoApplyLearnedStyles(userId, projectId, componentType, baseStyles || {});
@@ -201,7 +206,7 @@ export function registerVisualEditorRoutes(app: Express) {
       res.status(500).json({
         success: false,
         error: error instanceof Error ? error.message : 'Failed to auto-apply styles',
-        styles: baseStyles || {},
+        styles: req.body?.baseStyles || {},
         applied: [],
       });
     }
@@ -236,7 +241,7 @@ export function registerVisualEditorRoutes(app: Express) {
   // ============================================
 
   // Get all variants
-  app.get('/api/visual-editor/variants', (req, res) => {
+  app.get('/api/visual-editor/variants', (_req, res) => {
     try {
       const allVariants = getAllVariants();
       const stats = getVariantStatistics(allVariants);
@@ -278,17 +283,18 @@ export function registerVisualEditorRoutes(app: Express) {
   });
 
   // Get variant by ID
-  app.get('/api/visual-editor/variants/:variantId', (req, res) => {
+  app.get('/api/visual-editor/variants/:variantId', (req, res): void => {
     try {
       const { variantId } = req.params;
       const allVariants = getAllVariants();
       const variant = getVariantById(variantId, allVariants);
 
       if (!variant) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Variant not found',
         });
+        return;
       }
 
       res.json({
@@ -348,7 +354,7 @@ export function registerVisualEditorRoutes(app: Express) {
   });
 
   // Get variant statistics
-  app.get('/api/visual-editor/variants/stats', (req, res) => {
+  app.get('/api/visual-editor/variants/stats', (_req, res) => {
     try {
       const allVariants = getAllVariants();
       const stats = getVariantStatistics(allVariants);
@@ -374,7 +380,7 @@ export function registerVisualEditorRoutes(app: Express) {
   // ============================================
 
   // Get all agent profiles
-  app.get('/api/visual-editor/agent-competition/profiles', (req, res) => {
+  app.get('/api/visual-editor/agent-competition/profiles', (_req, res) => {
     try {
       const profiles = getAgentProfiles();
 
@@ -392,15 +398,16 @@ export function registerVisualEditorRoutes(app: Express) {
   });
 
   // Start agent competition
-  app.post('/api/visual-editor/agent-competition/start', async (req, res) => {
+  app.post('/api/visual-editor/agent-competition/start', async (req, res): Promise<void> => {
     try {
       const { componentType, context, requirements, userId, projectId } = req.body;
 
       if (!componentType) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'componentType is required',
         });
+        return;
       }
 
       const competition = await startAgentCompetition({
@@ -425,16 +432,17 @@ export function registerVisualEditorRoutes(app: Express) {
   });
 
   // Get competition result by ID
-  app.get('/api/visual-editor/agent-competition/:competitionId', (req, res) => {
+  app.get('/api/visual-editor/agent-competition/:competitionId', (req, res): void => {
     try {
       const { competitionId } = req.params;
       const competition = getCompetitionResult(competitionId);
 
       if (!competition) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Competition not found',
         });
+        return;
       }
 
       res.json({
@@ -471,24 +479,26 @@ export function registerVisualEditorRoutes(app: Express) {
   });
 
   // Select winner
-  app.post('/api/visual-editor/agent-competition/select-winner', async (req, res) => {
+  app.post('/api/visual-editor/agent-competition/select-winner', async (req, res): Promise<void> => {
     try {
       const { competitionId, winnerAgentId, userId, projectId } = req.body;
 
       if (!competitionId || !winnerAgentId) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'competitionId and winnerAgentId are required',
         });
+        return;
       }
 
       const competition = selectWinner(competitionId, winnerAgentId, userId, projectId);
 
       if (!competition) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Competition not found',
         });
+        return;
       }
 
       res.json({
@@ -522,15 +532,16 @@ export function registerVisualEditorRoutes(app: Express) {
   });
 
   // Generate single design (non-competitive mode)
-  app.post('/api/visual-editor/agent-competition/generate-single', async (req, res) => {
+  app.post('/api/visual-editor/agent-competition/generate-single', async (req, res): Promise<void> => {
     try {
       const { philosophy, componentType, context, requirements, userId, projectId } = req.body;
 
       if (!philosophy || !componentType) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'philosophy and componentType are required',
         });
+        return;
       }
 
       const design = await generateSingleDesign(philosophy, {
@@ -559,12 +570,12 @@ export function registerVisualEditorRoutes(app: Express) {
   // ============================================
 
   // Generate component HTML
-  app.post('/api/visual-editor/generate-component', async (req, res) => {
+  app.post('/api/visual-editor/generate-component', async (req, res): Promise<void> => {
     try {
       const { componentId, variantId, props } = req.body;
 
       if (!componentId) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'componentId is required',
         });
@@ -587,16 +598,17 @@ export function registerVisualEditorRoutes(app: Express) {
   });
 
   // Save visual editor state
-  app.post('/api/visual-editor/save/:projectSlug', async (req, res) => {
+  app.post('/api/visual-editor/save/:projectSlug', async (req, res): Promise<void> => {
     try {
       const { projectSlug } = req.params;
       const { websitePackage, editorState } = req.body;
 
       if (!websitePackage) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websitePackage is required',
         });
+        return;
       }
 
       // Save website package
@@ -656,7 +668,7 @@ export function registerVisualEditorRoutes(app: Express) {
   });
 
   // Export website to HTML/CSS/JS
-  app.post('/api/visual-editor/export/:projectSlug', async (req, res) => {
+  app.post('/api/visual-editor/export/:projectSlug', async (req, res): Promise<void> => {
     try {
       const { projectSlug } = req.params;
       const { format = 'zip' } = req.query;
@@ -668,11 +680,12 @@ export function registerVisualEditorRoutes(app: Express) {
         try {
           const packageContent = await readWebsiteFile(projectSlug, 'website-package.json');
           packageToExport = JSON.parse(packageContent);
-        } catch (e) {
-          return res.status(404).json({
+        } catch (_e) {
+          res.status(404).json({
             success: false,
             error: 'Website package not found',
           });
+          return;
         }
       }
 

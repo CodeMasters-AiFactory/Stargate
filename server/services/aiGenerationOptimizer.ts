@@ -3,7 +3,6 @@
  * Implements parallel processing, caching, and streaming for faster generation
  */
 
-import { cacheWrapped, generateCacheKey } from './cacheService';
 import type { ProjectConfig } from './projectConfig';
 
 export interface GenerationJob {
@@ -11,7 +10,7 @@ export interface GenerationJob {
   type: 'design' | 'content' | 'image' | 'seo' | 'code';
   config: ProjectConfig;
   status: 'pending' | 'processing' | 'completed' | 'failed';
-  result?: any;
+  result?: unknown;
   error?: string;
   progress: number;
   startedAt?: Date;
@@ -22,7 +21,7 @@ class AIGenerationOptimizer {
   private jobQueue: Map<string, GenerationJob> = new Map();
   private activeJobs: Set<string> = new Set();
   private maxConcurrentJobs = 5; // Maximum parallel jobs
-  private cache: Map<string, { result: any; timestamp: number }> = new Map();
+  private cache: Map<string, { result: unknown; timestamp: number }> = new Map();
   private readonly CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
   /**
@@ -44,7 +43,7 @@ class AIGenerationOptimizer {
       const promise = (async () => {
         try {
           // Check cache first
-          const cached = this.getCached(task.key);
+          const cached = this.getCached<T>(task.key);
           if (cached) {
             results.set(task.key, cached);
             return;
@@ -56,9 +55,9 @@ class AIGenerationOptimizer {
 
           // Cache result
           this.setCached(task.key, result);
-        } catch (error) {
-          console.error(`[AIOptimizer] Task ${task.key} failed:`, error);
-          throw error;
+        } catch (_error: unknown) {
+          console.error(`[AIOptimizer] Task ${task.key} failed:`, _error);
+          throw _error;
         } finally {
           executing.delete(promise);
         }
@@ -77,9 +76,9 @@ class AIGenerationOptimizer {
    * Generate with request batching
    */
   async generateBatched<T>(
-    items: Array<{ id: string; data: any }>,
+    items: Array<{ id: string; data: unknown }>,
     batchSize: number = 10,
-    generator: (batch: Array<{ id: string; data: any }>) => Promise<Map<string, T>>
+    generator: (batch: Array<{ id: string; data: unknown }>) => Promise<Map<string, T>>
   ): Promise<Map<string, T>> {
     const results = new Map<string, T>();
 
@@ -130,7 +129,7 @@ class AIGenerationOptimizer {
   /**
    * Update job progress
    */
-  updateJobProgress(jobId: string, progress: number, result?: any, error?: string): void {
+  updateJobProgress(jobId: string, progress: number, result?: unknown, error?: string): void {
     const job = this.jobQueue.get(jobId);
     if (job) {
       job.progress = progress;
@@ -181,7 +180,7 @@ class AIGenerationOptimizer {
     }
 
     let count = 0;
-    for (const key of this.cache.keys()) {
+    for (const key of Array.from(this.cache.keys())) {
       if (key.includes(pattern)) {
         this.cache.delete(key);
         count++;
@@ -227,15 +226,44 @@ export const aiGenerationOptimizer = new AIGenerationOptimizer();
  * Parallel image generation
  */
 export async function generateImagesParallel(
-  prompts: Array<{ id: string; prompt: string; style?: string }>,
+  prompts: Array<{
+    id: string;
+    prompt: string;
+    style: 'hero' | 'product' | 'icon' | 'illustration' | 'background' | 'testimonial' | 'feature' | 'gallery';
+    businessContext: {
+      name: string;
+      industry: string;
+      colorScheme: string[];
+      styleKeywords?: string[];
+      mood?: 'professional' | 'modern' | 'elegant' | 'bold' | 'minimalist' | 'luxury';
+    };
+    quality: 'standard' | 'hd' | 'ultra-hd';
+  }>,
   maxConcurrent: number = 3
-): Promise<Map<string, string>> {
+): Promise<Map<string, { url: string; alt: string; style: string; dimensions: { width: number; height: number } }>> {
   const { generateStunningImage } = await import('./advancedImageService');
 
-  const tasks = prompts.map(p => ({
+  const tasks = prompts.map((p: {
+    id: string;
+    prompt: string;
+    style: 'hero' | 'product' | 'icon' | 'illustration' | 'background' | 'testimonial' | 'feature' | 'gallery';
+    businessContext: {
+      name: string;
+      industry: string;
+      colorScheme: string[];
+      styleKeywords?: string[];
+      mood?: 'professional' | 'modern' | 'elegant' | 'bold' | 'minimalist' | 'luxury';
+    };
+    quality: 'standard' | 'hd' | 'ultra-hd';
+  }) => ({
     key: p.id,
     generator: async () => {
-      return await generateStunningImage(p.prompt, p.style);
+      return await generateStunningImage({
+        prompt: p.prompt,
+        style: p.style,
+        businessContext: p.businessContext,
+        quality: p.quality,
+      });
     },
   }));
 
@@ -246,16 +274,16 @@ export async function generateImagesParallel(
  * Batch content generation
  */
 export async function generateContentBatched(
-  sections: Array<{ id: string; context: any }>,
-  generator: (context: any) => Promise<string>
+  sections: Array<{ id: string; context: unknown }>,
+  generator: (context: unknown) => Promise<string>
 ): Promise<Map<string, string>> {
   return await aiGenerationOptimizer.generateBatched(
-    sections.map(s => ({ id: s.id, data: s.context })),
+    sections.map((s: { id: string; context: unknown }) => ({ id: s.id, data: s.context })),
     5, // Batch size
-    async (batch) => {
+    async (batch: Array<{ id: string; data: unknown }>) => {
       const results = new Map<string, string>();
       await Promise.all(
-        batch.map(async (item) => {
+        batch.map(async (item: { id: string; data: unknown }) => {
           const content = await generator(item.data);
           results.set(item.id, content);
         })

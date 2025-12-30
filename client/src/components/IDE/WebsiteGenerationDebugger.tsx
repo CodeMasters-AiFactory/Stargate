@@ -214,8 +214,8 @@ export function WebsiteGenerationDebugger({ onComplete, onError }: WebsiteGenera
     setIsPaused(false);
     setErrors([]);
     setOverallProgress(0);
-    setCurrentPhase(0);
-    setCurrentStep(null);
+    _setCurrentPhase(0);
+    _setCurrentStep(null);
     setGeneratedWebsite(null);
 
     // Simple test website requirements - 1 PAGE ONLY
@@ -292,7 +292,7 @@ export function WebsiteGenerationDebugger({ onComplete, onError }: WebsiteGenera
 
         for (const line of lines) {
           if (line.startsWith('data: ')) {
-            const data = JSON.parse(line.slice(6));
+            const data = JSON.parse(line.slice(6)) as { error?: string; stage?: string; data?: unknown; progress?: number; [key: string]: unknown };
             handleDebugEvent(data);
           }
         }
@@ -342,7 +342,7 @@ export function WebsiteGenerationDebugger({ onComplete, onError }: WebsiteGenera
     };
   }, []);
 
-  const handleDebugEvent = (event: { error?: string; [key: string]: unknown }) => {
+  const handleDebugEvent = (event: { error?: string; stage?: string; data?: unknown; progress?: number; [key: string]: unknown }) => {
     if (event.error) {
       setErrors(prev => [
         ...prev,
@@ -356,7 +356,7 @@ export function WebsiteGenerationDebugger({ onComplete, onError }: WebsiteGenera
     if (event.stage === 'complete' && event.data) {
       setOverallProgress(100);
       setIsRunning(false);
-      setGenerationResult(event.data);
+      _setGenerationResult(event.data);
       setGeneratedWebsite(event.data);
       // PAUSE HERE - Website is displayed
       setIsPaused(true);
@@ -365,7 +365,7 @@ export function WebsiteGenerationDebugger({ onComplete, onError }: WebsiteGenera
     }
 
     if (event.progress !== undefined) {
-      setOverallProgress(event.progress);
+      setOverallProgress(Number(event.progress));
     }
   };
 
@@ -489,15 +489,16 @@ export function WebsiteGenerationDebugger({ onComplete, onError }: WebsiteGenera
               <iframe
                 srcDoc={(() => {
                   // Extract HTML from generated website
-                  if (generatedWebsite.files) {
+                  const website = generatedWebsite as { files?: Record<string, { content?: string } | string>; assets?: { css?: string; js?: string } };
+                  if (website.files) {
                     const firstPage =
-                      generatedWebsite.files['pages/index.html'] ||
-                      generatedWebsite.files['index.html'] ||
-                      Object.values(generatedWebsite.files)[0];
+                      website.files['pages/index.html'] ||
+                      website.files['index.html'] ||
+                      Object.values(website.files)[0];
                     if (firstPage) {
-                      const html = firstPage.content || firstPage;
-                      const css = generatedWebsite.assets?.css || '';
-                      const js = generatedWebsite.assets?.js || '';
+                      const html = typeof firstPage === 'string' ? firstPage : (firstPage.content || '');
+                      const css = website.assets?.css || '';
+                      const js = website.assets?.js || '';
                       return html.includes('</head>')
                         ? html
                             .replace('</head>', `<style>${css}</style></head>`)

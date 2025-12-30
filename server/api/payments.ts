@@ -1,15 +1,19 @@
 /**
  * STARGATE PORTAL - Stripe Payment Integration
- * 
+ *
  * Handles:
  * - Package subscriptions
  * - Credit pack purchases
+ * - Premium template purchases
  * - Webhook handling
  */
 
 import Stripe from 'stripe';
 import type { Express, Request, Response } from 'express';
 import { PACKAGES, CREDIT_PACKS } from '../services/creditsSystem';
+import { db } from '../db';
+import { brandTemplates, userTemplatePurchases } from '../../shared/schema';
+import { eq, and } from 'drizzle-orm';
 
 // Initialize Stripe (use test keys for testing)
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY || 'sk_test_PLACEHOLDER';
@@ -91,12 +95,13 @@ export function registerPaymentRoutes(app: Express) {
   });
 
   // Create checkout session for subscription
-  app.post('/api/payments/create-subscription', async (req: Request, res: Response) => {
+  app.post('/api/payments/create-subscription', async (req: Request, res: Response): Promise<void> => {
     if (!stripe) {
-      return res.status(503).json({ 
-        success: false, 
-        error: 'Payments not configured. Add STRIPE_SECRET_KEY to enable.' 
+      res.status(503).json({
+        success: false,
+        error: 'Payments not configured. Add STRIPE_SECRET_KEY to enable.'
       });
+      return;
     }
 
     try {
@@ -104,7 +109,8 @@ export function registerPaymentRoutes(app: Express) {
 
       const pkg = PACKAGES[packageKey as keyof typeof PACKAGES];
       if (!pkg || pkg.price === 0) {
-        return res.status(400).json({ success: false, error: 'Invalid package' });
+        res.status(400).json({ success: false, error: 'Invalid package' });
+        return;
       }
 
       const stripeProduct = STRIPE_PRODUCTS[packageKey];
@@ -136,12 +142,13 @@ export function registerPaymentRoutes(app: Express) {
   });
 
   // Create checkout for credit pack (one-time)
-  app.post('/api/payments/buy-credits', async (req: Request, res: Response) => {
+  app.post('/api/payments/buy-credits', async (req: Request, res: Response): Promise<void> => {
     if (!stripe) {
-      return res.status(503).json({ 
-        success: false, 
-        error: 'Payments not configured. Add STRIPE_SECRET_KEY to enable.' 
+      res.status(503).json({
+        success: false,
+        error: 'Payments not configured. Add STRIPE_SECRET_KEY to enable.'
       });
+      return;
     }
 
     try {
@@ -149,7 +156,8 @@ export function registerPaymentRoutes(app: Express) {
       
       const pack = CREDIT_PACKS[creditPackIndex];
       if (!pack) {
-        return res.status(400).json({ success: false, error: 'Invalid credit pack' });
+        res.status(400).json({ success: false, error: 'Invalid credit pack' });
+        return;
       }
 
       const session = await stripe.checkout.sessions.create({
@@ -184,11 +192,12 @@ export function registerPaymentRoutes(app: Express) {
   });
 
   // Stripe webhook handler
-  app.post('/api/payments/webhook', 
+  app.post('/api/payments/webhook',
     // Use raw body for signature verification
-    (req: Request, res: Response) => {
+    (req: Request, res: Response): void => {
       if (!stripe) {
-        return res.status(503).send('Payments not configured');
+        res.status(503).send('Payments not configured');
+        return;
       }
 
       const sig = req.headers['stripe-signature'] as string;
@@ -202,7 +211,8 @@ export function registerPaymentRoutes(app: Express) {
         );
       } catch (err: any) {
         console.error('[Stripe Webhook] Signature verification failed:', err.message);
-        return res.status(400).send(`Webhook Error: ${err.message}`);
+        res.status(400).send(`Webhook Error: ${err.message}`);
+        return;
       }
 
       // Handle the event
@@ -210,16 +220,34 @@ export function registerPaymentRoutes(app: Express) {
         case 'checkout.session.completed': {
           const session = event.data.object as Stripe.Checkout.Session;
           console.log('[Stripe] Checkout completed:', session.id);
-          
-          // TODO: Update user's package/credits in database
-          const { packageKey, userId, type, credits } = session.metadata || {};
-          
-          if (type === 'credit_pack' && credits) {
+
+          const { packageKey, userId, type, credits, templateId, templateName } = session.metadata || {};
+
+          // Handle template purchase
+          if (type === 'template_purchase' && templateId && userId) {
+            console.log(`[Stripe] Recording template purchase: ${templateName} for user ${userId}`);
+            try {
+              await db.insert(userTemplatePurchases).values({
+                userId,
+                templateId,
+                price: ((session.amount_total || 0) / 100).toString(),
+                currency: session.currency || 'usd',
+                stripeSessionId: session.id,
+                stripePaymentIntentId: typeof session.payment_intent === 'string'
+                  ? session.payment_intent
+                  : session.payment_intent?.id || null,
+                status: 'completed',
+              });
+              console.log(`[Stripe] ✅ Template purchase recorded: ${templateId}`);
+            } catch (dbError) {
+              console.error('[Stripe] Failed to record template purchase:', dbError);
+            }
+          } else if (type === 'credit_pack' && credits) {
             console.log(`[Stripe] Adding ${credits} credits to user ${userId}`);
-            // Add credits to user
+            // TODO: Add credits to user
           } else if (packageKey) {
             console.log(`[Stripe] Activating ${packageKey} for user ${userId}`);
-            // Activate subscription
+            // TODO: Activate subscription
           }
           break;
         }
@@ -248,9 +276,10 @@ export function registerPaymentRoutes(app: Express) {
   );
 
   // Payment success page data
-  app.get('/api/payments/session/:sessionId', async (req: Request, res: Response) => {
+  app.get('/api/payments/session/:sessionId', async (req: Request, res: Response): Promise<void> => {
     if (!stripe) {
-      return res.status(503).json({ success: false, error: 'Payments not configured' });
+      res.status(503).json({ success: false, error: 'Payments not configured' });
+      return;
     }
 
     try {
@@ -267,14 +296,15 @@ export function registerPaymentRoutes(app: Express) {
   });
 
   // Get customer portal link (for managing subscription)
-  app.post('/api/payments/customer-portal', async (req: Request, res: Response) => {
+  app.post('/api/payments/customer-portal', async (req: Request, res: Response): Promise<void> => {
     if (!stripe) {
-      return res.status(503).json({ success: false, error: 'Payments not configured' });
+      res.status(503).json({ success: false, error: 'Payments not configured' });
+      return;
     }
 
     try {
       const { customerId } = req.body;
-      
+
       const portalSession = await stripe.billingPortal.sessions.create({
         customer: customerId,
         return_url: `${process.env.APP_URL || 'http://localhost:5000'}/account`,
@@ -282,6 +312,191 @@ export function registerPaymentRoutes(app: Express) {
 
       res.json({ success: true, url: portalSession.url });
     } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // ============================================
+  // PREMIUM TEMPLATE PURCHASE ENDPOINTS
+  // ============================================
+
+  // Purchase a premium template
+  app.post('/api/payments/purchase-template', async (req: Request, res: Response): Promise<void> => {
+    if (!stripe) {
+      res.status(503).json({
+        success: false,
+        error: 'Payments not configured. Add STRIPE_SECRET_KEY to enable.'
+      });
+      return;
+    }
+
+    try {
+      const { templateId } = req.body;
+      const userId = (req.session as any)?.userId;
+
+      // Check if user is logged in
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'Login required to purchase templates',
+          requiresLogin: true
+        });
+        return;
+      }
+
+      // Get template details
+      const [template] = await db
+        .select()
+        .from(brandTemplates)
+        .where(eq(brandTemplates.id, templateId))
+        .limit(1);
+
+      if (!template) {
+        res.status(404).json({ success: false, error: 'Template not found' });
+        return;
+      }
+
+      if (!template.isPremium) {
+        res.status(400).json({ success: false, error: 'This template is free' });
+        return;
+      }
+
+      if (!template.price) {
+        res.status(400).json({ success: false, error: 'Template price not set' });
+        return;
+      }
+
+      // Check if user already owns this template
+      const [existingPurchase] = await db
+        .select()
+        .from(userTemplatePurchases)
+        .where(
+          and(
+            eq(userTemplatePurchases.userId, userId),
+            eq(userTemplatePurchases.templateId, templateId),
+            eq(userTemplatePurchases.status, 'completed')
+          )
+        )
+        .limit(1);
+
+      if (existingPurchase) {
+        res.status(400).json({
+          success: false,
+          error: 'You already own this template',
+          alreadyOwned: true
+        });
+        return;
+      }
+
+      // Create Stripe checkout session
+      const priceInCents = Math.round(parseFloat(template.price) * 100);
+
+      const session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        payment_method_types: ['card'],
+        line_items: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `Premium Template: ${template.name}`,
+              description: `${template.brand} - ${template.category} template`,
+              images: template.thumbnail ? [template.thumbnail] : undefined,
+            },
+            unit_amount: priceInCents,
+          },
+          quantity: 1,
+        }],
+        metadata: {
+          type: 'template_purchase',
+          templateId,
+          userId,
+          templateName: template.name,
+        },
+        success_url: `${process.env.APP_URL || 'http://localhost:5000'}/merlin8/templates?purchased=${templateId}`,
+        cancel_url: `${process.env.APP_URL || 'http://localhost:5000'}/merlin8/templates?type=premium`,
+      });
+
+      res.json({
+        success: true,
+        sessionId: session.id,
+        url: session.url
+      });
+    } catch (error: any) {
+      console.error('[Stripe] Template purchase error:', error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // Check if user owns a template
+  app.get('/api/payments/template-access/:templateId', async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { templateId } = req.params;
+      const userId = (req.session as any)?.userId;
+
+      // If not logged in, they don't own it
+      if (!userId) {
+        res.json({
+          success: true,
+          owned: false,
+          requiresLogin: true
+        });
+        return;
+      }
+
+      // Check for completed purchase
+      const [purchase] = await db
+        .select()
+        .from(userTemplatePurchases)
+        .where(
+          and(
+            eq(userTemplatePurchases.userId, userId),
+            eq(userTemplatePurchases.templateId, templateId),
+            eq(userTemplatePurchases.status, 'completed')
+          )
+        )
+        .limit(1);
+
+      res.json({
+        success: true,
+        owned: !!purchase,
+        purchaseDate: purchase?.purchasedAt
+      });
+    } catch (error: any) {
+      console.error('[Payments] Template access check error:', error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // Get user's purchased templates
+  app.get('/api/payments/my-templates', async (req: Request, res: Response): Promise<void> => {
+    try {
+      const userId = (req.session as any)?.userId;
+
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'Login required'
+        });
+        return;
+      }
+
+      const purchases = await db
+        .select()
+        .from(userTemplatePurchases)
+        .where(
+          and(
+            eq(userTemplatePurchases.userId, userId),
+            eq(userTemplatePurchases.status, 'completed')
+          )
+        );
+
+      res.json({
+        success: true,
+        purchases,
+        count: purchases.length
+      });
+    } catch (error: any) {
+      console.error('[Payments] Get user templates error:', error);
       res.status(500).json({ success: false, error: error.message });
     }
   });

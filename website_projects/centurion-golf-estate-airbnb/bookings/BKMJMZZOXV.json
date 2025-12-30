@@ -1,0 +1,15 @@
+{
+  "bookingRef": "BKMJMZZOXV",
+  "guestName": "FGHDSGDS",
+  "guestEmail": "fsdutoit@gmail.com",
+  "guestPhone": "0732791843",
+  "checkIn": "2025-12-25",
+  "checkOut": "2025-12-26",
+  "roomType": "Master Suite - R2,500/night",
+  "guests": 2,
+  "totalPrice": 3150,
+  "specialRequests": "",
+  "propertyName": "Centurion Golf Estate",
+  "status": "pending",
+  "createdAt": "2025-12-26T14:59:42.211Z"
+}

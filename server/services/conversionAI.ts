@@ -5,7 +5,7 @@
 
 import * as cheerio from 'cheerio';
 import { generate } from './multiModelAIOrchestrator';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
 import { PERFORMANCE_CONSTANTS } from '../utils/constants';
 
 export interface HeatmapPrediction {
@@ -33,7 +33,7 @@ export interface ConversionAnalysis {
   };
   behavioralTriggers: Array<{
     type: 'exit-intent' | 'scroll' | 'time' | 'click';
-    config: Record<string, any>;
+    config: Record<string, unknown>;
     recommendation: string;
   }>;
   benchmarkComparison: {
@@ -62,8 +62,8 @@ export async function predictHeatmap(html: string, pageType: string = 'landing')
     ];
 
     for (const { selector, weight } of elements) {
-      $(selector).each((index, el) => {
-        if (index >= 5) return false; // Limit to first 5 of each type
+      $(selector).each((_index: number, el: cheerio.Element) => {
+        if (_index >= 5) return false; // Limit to first 5 of each type
 
         const $el = $(el);
         const text = $el.text().trim();
@@ -130,7 +130,7 @@ Format: [{"element": "selector", "attentionScore": 0-100, "clickProbability": 0-
       if (Array.isArray(aiPredictions)) {
         predictions.push(...aiPredictions.slice(0, 10));
       }
-    } catch (e) {
+    } catch (_error: unknown) {
       // Continue with rule-based predictions if AI fails
       console.warn('[ConversionAI] AI enhancement failed, using rule-based predictions');
     }
@@ -139,7 +139,7 @@ Format: [{"element": "selector", "attentionScore": 0-100, "clickProbability": 0-
     predictions.sort((a, b) => b.attentionScore - a.attentionScore);
 
     return predictions.slice(0, 20);
-  } catch (error) {
+  } catch (error: unknown) {
     logError(error, 'ConversionAI - PredictHeatmap');
     throw error;
   }
@@ -223,7 +223,7 @@ Return JSON array:
     console.log(`[ConversionAI] ✅ Generated ${variations.length} A/B test variations`);
 
     return variations;
-  } catch (error) {
+  } catch (error: unknown) {
     logError(error, 'ConversionAI - GenerateABTestVariations');
     throw error;
   }
@@ -241,8 +241,8 @@ export async function analyzeConversion(html: string, industry: string): Promise
 
     // Analyze CTA placements
     const ctaPlacements: Array<{ selector: string; score: number; reason: string }> = [];
-    $('button, .btn, a[class*="button"], a[class*="cta"]').each((index, el) => {
-      if (index >= 10) return false;
+    $('button, .btn, a[class*="button"], a[class*="cta"]').each((_index: number, el: cheerio.Element) => {
+      if (_index >= 10) return false;
       const $el = $(el);
       const top = $el.offset()?.top || 0;
       const isAboveFold = top < 800;
@@ -328,7 +328,7 @@ export async function analyzeConversion(html: string, industry: string): Promise
         improvement: Math.round(improvement * 10) / 10,
       },
     };
-  } catch (error) {
+  } catch (error: unknown) {
     logError(error, 'ConversionAI - AnalyzeConversion');
     throw error;
   }

@@ -3,9 +3,10 @@
  * Real-time design suggestions and recommendations
  */
 
+import type { Request, Response } from 'express';
 import { Router } from 'express';
-import { 
-  analyzeDesign, 
+import {
+  analyzeDesign,
   getAIDesignRecommendations,
   autoFixAccessibility,
   generateColorHarmonies,
@@ -35,14 +36,15 @@ const router = Router();
 /**
  * Analyze current design and get suggestions
  */
-router.post('/analyze', async (req, res) => {
+router.post('/analyze', async (req: Request, res: Response): Promise<void> => {
   try {
     const context: DesignContext = req.body;
-    
+
     if (!context.industry || !context.businessName) {
-      return res.status(400).json({ 
-        error: 'Missing required fields: industry, businessName' 
+      res.status(400).json({
+        error: 'Missing required fields: industry, businessName'
       });
+      return;
     }
 
     const suggestions = await analyzeDesign(context);
@@ -65,7 +67,7 @@ router.post('/analyze', async (req, res) => {
 /**
  * Get AI-powered design recommendations
  */
-router.post('/recommendations', async (req, res) => {
+router.post('/recommendations', async (req: Request, res: Response): Promise<void> => {
   try {
     const context: DesignContext = req.body;
     
@@ -87,7 +89,7 @@ router.post('/recommendations', async (req, res) => {
 /**
  * Get color harmonies
  */
-router.get('/colors/harmonies', (req, res) => {
+router.get('/colors/harmonies', (req: Request, res: Response): void => {
   try {
     const baseColor = req.query.baseColor as string || '#3B82F6';
     const harmonies = generateColorHarmonies(baseColor);
@@ -104,7 +106,7 @@ router.get('/colors/harmonies', (req, res) => {
 /**
  * Get typography pairings
  */
-router.get('/typography/pairings', (req, res) => {
+router.get('/typography/pairings', (req: Request, res: Response): void => {
   try {
     const category = req.query.category as string | undefined;
     const pairings = getTypographyPairings(category as any);
@@ -121,7 +123,7 @@ router.get('/typography/pairings', (req, res) => {
 /**
  * Auto-fix accessibility issues
  */
-router.post('/accessibility/fix', (req, res) => {
+router.post('/accessibility/fix', (req: Request, res: Response): void => {
   try {
     const { colors } = req.body;
     const fixed = autoFixAccessibility(colors);
@@ -140,12 +142,13 @@ router.post('/accessibility/fix', (req, res) => {
 /**
  * Generate accessibility report
  */
-router.post('/accessibility/report', (req, res) => {
+router.post('/accessibility/report', (req: Request, res: Response): void => {
   try {
     const { html, css, colorPairs } = req.body;
-    
+
     if (!html) {
-      return res.status(400).json({ error: 'HTML content is required' });
+      res.status(400).json({ error: 'HTML content is required' });
+      return;
     }
 
     const report = generateAccessibilityReport(
@@ -167,12 +170,13 @@ router.post('/accessibility/report', (req, res) => {
 /**
  * Auto-fix accessibility issues in code
  */
-router.post('/accessibility/autofix', (req, res) => {
+router.post('/accessibility/autofix', (req: Request, res: Response): void => {
   try {
     const { html, css } = req.body;
-    
+
     if (!html) {
-      return res.status(400).json({ error: 'HTML content is required' });
+      res.status(400).json({ error: 'HTML content is required' });
+      return;
     }
 
     const result = autoFixAccessibilityIssues(html, css || '');
@@ -189,7 +193,7 @@ router.post('/accessibility/autofix', (req, res) => {
 /**
  * Get WCAG guidelines reference
  */
-router.get('/accessibility/guidelines', (req, res) => {
+router.get('/accessibility/guidelines', (_req: Request, res: Response): void => {
   try {
     const guidelines = getWCAGGuidelines();
     res.json({
@@ -206,14 +210,15 @@ router.get('/accessibility/guidelines', (req, res) => {
 /**
  * Create a new snapshot
  */
-router.post('/versions/snapshot', (req, res) => {
+router.post('/versions/snapshot', (req: Request, res: Response): void => {
   try {
     const { projectId, data, message, author, branch, tags } = req.body;
-    
+
     if (!projectId || !data || !message) {
-      return res.status(400).json({ 
-        error: 'Missing required fields: projectId, data, message' 
+      res.status(400).json({
+        error: 'Missing required fields: projectId, data, message'
       });
+      return;
     }
 
     const snapshot = createSnapshot(projectId, data, {
@@ -236,7 +241,7 @@ router.post('/versions/snapshot', (req, res) => {
 /**
  * Get project snapshots
  */
-router.get('/versions/:projectId', (req, res) => {
+router.get('/versions/:projectId', (req: Request, res: Response): void => {
   try {
     const { projectId } = req.params;
     const { branch, limit, includeAutoSaves } = req.query;
@@ -259,13 +264,14 @@ router.get('/versions/:projectId', (req, res) => {
 /**
  * Get specific snapshot
  */
-router.get('/versions/snapshot/:snapshotId', (req, res) => {
+router.get('/versions/snapshot/:snapshotId', (req: Request, res: Response): void => {
   try {
     const { snapshotId } = req.params;
     const snapshot = getSnapshot(snapshotId);
 
     if (!snapshot) {
-      return res.status(404).json({ error: 'Snapshot not found' });
+      res.status(404).json({ error: 'Snapshot not found' });
+      return;
     }
 
     res.json({
@@ -280,13 +286,14 @@ router.get('/versions/snapshot/:snapshotId', (req, res) => {
 /**
  * Compare two snapshots
  */
-router.get('/versions/diff/:snapshotA/:snapshotB', (req, res) => {
+router.get('/versions/diff/:snapshotA/:snapshotB', (req: Request, res: Response): void => {
   try {
     const { snapshotA, snapshotB } = req.params;
     const diff = compareSnapshots(snapshotA, snapshotB);
 
     if (!diff) {
-      return res.status(404).json({ error: 'One or both snapshots not found' });
+      res.status(404).json({ error: 'One or both snapshots not found' });
+      return;
     }
 
     res.json({
@@ -301,20 +308,22 @@ router.get('/versions/diff/:snapshotA/:snapshotB', (req, res) => {
 /**
  * Rollback to a snapshot
  */
-router.post('/versions/rollback', (req, res) => {
+router.post('/versions/rollback', (req: Request, res: Response): void => {
   try {
     const { projectId, snapshotId, author, message } = req.body;
-    
+
     if (!projectId || !snapshotId) {
-      return res.status(400).json({ 
-        error: 'Missing required fields: projectId, snapshotId' 
+      res.status(400).json({
+        error: 'Missing required fields: projectId, snapshotId'
       });
+      return;
     }
 
     const snapshot = rollback(projectId, snapshotId, author || 'anonymous', message);
 
     if (!snapshot) {
-      return res.status(404).json({ error: 'Snapshot not found' });
+      res.status(404).json({ error: 'Snapshot not found' });
+      return;
     }
 
     res.json({
@@ -329,7 +338,7 @@ router.post('/versions/rollback', (req, res) => {
 /**
  * Get version timeline
  */
-router.get('/versions/:projectId/timeline', (req, res) => {
+router.get('/versions/:projectId/timeline', (req: Request, res: Response): void => {
   try {
     const { projectId } = req.params;
     const timeline = getVersionTimeline(projectId);
@@ -346,7 +355,7 @@ router.get('/versions/:projectId/timeline', (req, res) => {
 /**
  * Get project branches
  */
-router.get('/versions/:projectId/branches', (req, res) => {
+router.get('/versions/:projectId/branches', (req: Request, res: Response): void => {
   try {
     const { projectId } = req.params;
     const branches = getProjectBranches(projectId);

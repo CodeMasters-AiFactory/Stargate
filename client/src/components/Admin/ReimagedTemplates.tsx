@@ -231,7 +231,7 @@ export function ReimagedTemplates() {
         <div>
           <h2 className="text-2xl font-bold mb-2 text-blue-700 dark:text-blue-300">Reimaged Templates</h2>
           <p className="text-blue-600 dark:text-blue-400">
-            Regenerate images with AI (Leonardo) and manage completed reimages
+            Regenerate images with AI and manage completed reimages
           </p>
         </div>
         <Button

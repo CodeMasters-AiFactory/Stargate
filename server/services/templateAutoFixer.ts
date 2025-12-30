@@ -20,7 +20,7 @@ export interface AutoFixResult {
  * Automatically fix all common template issues
  * Now includes comprehensive fixes based on deep inspection
  */
-export function autoFixTemplate(html: string, template?: any): { html: string; result: AutoFixResult } {
+export function autoFixTemplate(html: string, _template?: any): { html: string; result: AutoFixResult } {
   const result: AutoFixResult = {
     fixed: false,
     fixes: [],
@@ -31,7 +31,7 @@ export function autoFixTemplate(html: string, template?: any): { html: string; r
   let fixedHtml = html;
 
   try {
-    const $ = cheerio.load(html, { decodeEntities: false });
+    const $ = cheerio.load(html);
 
     // ============================================
     // FIX 1: Remove Cookie Consent Pop-ups (AGGRESSIVE)
@@ -77,7 +77,7 @@ export function autoFixTemplate(html: string, template?: any): { html: string; r
     });
 
     // Also remove any divs that contain cookie-related text
-    $('div, section, aside').each((i, el) => {
+    $('div, section, aside').each((_i, el) => {
       const $el = $(el);
       const text = $el.text().toLowerCase();
       const html = $el.html() || '';
@@ -102,14 +102,12 @@ export function autoFixTemplate(html: string, template?: any): { html: string; r
     // ============================================
     // FIX 2: Remove Cookie Consent Scripts (AGGRESSIVE)
     // ============================================
-    $('script').each((i, el) => {
+    $('script').each((_i, el) => {
       const scriptContent = $(el).html() || '';
       const scriptSrc = $(el).attr('src') || '';
       const scriptDataDomain = $(el).attr('data-domain-script') || '';
       const scriptDataLanguage = $(el).attr('data-language') || '';
-      const scriptType = $(el).attr('type') || '';
-      const scriptCharset = $(el).attr('charset') || '';
-      
+
       // Remove OneTrust scripts (check ALL attributes and content)
       if (
         scriptSrc.includes('cookielaw.org') ||
@@ -166,7 +164,7 @@ export function autoFixTemplate(html: string, template?: any): { html: string; r
     });
 
     // Remove cookie-related style tags
-    $('style').each((i, el) => {
+    $('style').each((_i, el) => {
       const styleContent = $(el).html() || '';
       if (
         styleContent.toLowerCase().includes('cookie') &&
@@ -181,7 +179,7 @@ export function autoFixTemplate(html: string, template?: any): { html: string; r
     // ============================================
     // FIX 3: Fix Broken Script Tags
     // ============================================
-    $('script').each((i, el) => {
+    $('script').each((_i, el) => {
       const scriptContent = $(el).html() || '';
       
       // Fix common script errors
@@ -211,7 +209,7 @@ export function autoFixTemplate(html: string, template?: any): { html: string; r
     // ============================================
     // FIX 4: Fix Broken Image Sources
     // ============================================
-    $('img').each((i, el) => {
+    $('img').each((_i, el) => {
       const src = $(el).attr('src') || '';
       
       // Fix relative URLs that might break
@@ -232,7 +230,7 @@ export function autoFixTemplate(html: string, template?: any): { html: string; r
     // ============================================
     // FIX 5: Fix Broken Links
     // ============================================
-    $('a').each((i, el) => {
+    $('a').each((_i, el) => {
       const href = $(el).attr('href') || '';
       
       // Fix empty hrefs
@@ -253,7 +251,7 @@ export function autoFixTemplate(html: string, template?: any): { html: string; r
     // ============================================
     // FIX 6: Remove Broken Event Listeners
     // ============================================
-    $('[onclick], [onerror], [onload]').each((i, el) => {
+    $('[onclick], [onerror], [onload]').each((_i, el) => {
       const onclick = $(el).attr('onclick') || '';
       
       // Remove broken onclick handlers
@@ -290,7 +288,7 @@ export function autoFixTemplate(html: string, template?: any): { html: string; r
     // ============================================
     // FIX 8: Remove Tracking Scripts That Might Break
     // ============================================
-    $('script').each((i, el) => {
+    $('script').each((_i, el) => {
       const scriptSrc = $(el).attr('src') || '';
       const scriptContent = $(el).html() || '';
       
@@ -332,6 +330,17 @@ export function autoFixTemplate(html: string, template?: any): { html: string; r
     overflow: hidden !important;
     position: absolute !important;
     left: -9999px !important;
+  }
+
+  /* Hide preloader elements - they block content in iframes */
+  .js-preloader, #js-preloader, .preloader, #preloader,
+  [id*="preloader"], [class*="preloader"],
+  .loader-wrapper, #loader-wrapper, .page-loader, #page-loader,
+  .loading-screen, #loading-screen, .sk-bounce, .spinner-wrapper {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
   }
 </style>
 `;
@@ -461,7 +470,7 @@ export function smokeTestTemplate(html: string): {
     }
 
     // Test 2: Check for broken images
-    $('img').each((i, el) => {
+    $('img').each((_i, el) => {
       const src = $(el).attr('src') || '';
       if (!src || src === 'undefined' || src === 'null') {
         issues.push(`Broken image found (missing src)`);
@@ -469,7 +478,7 @@ export function smokeTestTemplate(html: string): {
     });
 
     // Test 3: Check for broken links
-    $('a[href="#"], a[href=""]').each((i, el) => {
+    $('a[href="#"], a[href=""]').each((_i, el) => {
       const href = $(el).attr('href') || '';
       if (href === '' || href === '#') {
         warnings.push(`Empty link found`);
@@ -489,7 +498,7 @@ export function smokeTestTemplate(html: string): {
     }
 
     // Test 5: Check for broken scripts
-    $('script').each((i, el) => {
+    $('script').each((_i, el) => {
       const scriptContent = $(el).html() || '';
       if (scriptContent.includes('undefined') && scriptContent.includes('is not defined')) {
         issues.push('Script contains undefined variable errors');

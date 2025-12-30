@@ -18,6 +18,8 @@ import * as path from 'path';
 import { detectIndustry, getIndustryDNA, getAllIndustries, IndustryDNA } from './industryDNA';
 import { generateWebsiteImages, GeneratedImage, downloadImage } from './leonardoIntegration';
 import { generateWebsite, WebsiteContent, GeneratedWebsite } from './htmlGenerator';
+import { generateFromTemplate, ClientInfo } from '../../services/templateBasedGenerator';
+import { autoFixTemplate } from '../../services/templateAutoFixer';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // TYPES
@@ -27,20 +29,70 @@ export interface Merlin8Input {
   // Required
   businessName: string;
   description: string;
-  
+
   // Optional - will be auto-detected if not provided
   industryId?: string;
-  
+
   // Optional details
   tagline?: string;
   services?: Array<{ name: string; description: string }>;
   location?: string;
   phone?: string;
   email?: string;
-  
+
   // Options
   generateImages?: boolean; // Default true
   downloadImages?: boolean; // Save images locally, default true
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // NEW EXPANDED INTAKE FIELDS (User Preference Form)
+  // ═══════════════════════════════════════════════════════════════════════════════
+
+  // Business Basics
+  businessType?: 'startup' | 'small' | 'medium' | 'enterprise' | 'personal' | 'nonprofit';
+
+  // Website Goals
+  goals?: string[]; // e.g., ['leads', 'sell', 'brand', 'info', 'portfolio', 'bookings', 'community', 'donations']
+
+  // Target Audience
+  targetAudience?: {
+    ageGroups?: string[]; // e.g., ['18-25', '26-35', '36-45', '46-55', '55+', 'all']
+    audienceType?: 'b2b' | 'b2c' | 'both';
+    incomeLevel?: 'budget' | 'mid' | 'premium' | 'na';
+  };
+
+  // Design Preferences
+  designPreferences?: {
+    colorMood?: string; // e.g., 'professional', 'modern', 'bold', 'elegant', 'friendly', 'natural', 'dark', 'classic'
+    primaryColor?: string; // hex color
+    secondaryColor?: string; // hex color
+    designElements?: string[]; // e.g., ['hero', 'video', 'animations', 'testimonials', 'team', 'faq', 'blog', 'portfolio', 'pricing', 'stats', 'logos', 'social-proof']
+  };
+
+  // Features
+  features?: string[]; // e.g., ['contact-form', 'live-chat', 'newsletter', 'social-links', 'google-maps', 'booking', 'ecommerce', 'search', 'multilang', 'member-portal', 'reviews', 'downloads']
+
+  // Pages/Sections
+  pages?: string[]; // e.g., ['home', 'about', 'services', 'products', 'portfolio', 'team', 'testimonials', 'blog', 'faq', 'contact', 'pricing', 'careers']
+
+  // Contact Info
+  contactInfo?: {
+    phone?: string;
+    email?: string;
+    address?: string;
+    hours?: string;
+    socialPlatforms?: string[]; // e.g., ['facebook', 'instagram', 'twitter', 'linkedin', 'youtube', 'tiktok', 'pinterest', 'whatsapp']
+  };
+
+  // Tone & Messaging
+  tone?: {
+    brandVoice?: string; // e.g., 'professional', 'friendly', 'casual', 'authoritative', 'inspirational', 'playful', 'luxury'
+    ctaStyle?: string; // e.g., 'urgent', 'soft', 'direct', 'consultative'
+    keyMessage?: string;
+  };
+
+  // Template (if using a template)
+  templateId?: string;
 }
 
 export interface Merlin8Progress {
@@ -80,30 +132,30 @@ export async function generateWithMerlin8(
   console.log('\n═══════════════════════════════════════════════════════════════════');
   console.log('🚀 MERLIN 8.0 - Starting Generation');
   console.log('═══════════════════════════════════════════════════════════════════\n');
-  
+
   // ─────────────────────────────────────────────────────────────────────────────
   // PHASE 1: INITIALIZATION
   // ─────────────────────────────────────────────────────────────────────────────
   sendProgress(onProgress, 1, 8, 'Initialization', 'Setting up project...', 5);
-  
+
   const projectSlug = generateSlug(input.businessName);
   const outputPath = path.join(process.cwd(), 'website_projects', projectSlug, 'merlin8-output');
-  
+
   // Create output directory
   if (!fs.existsSync(outputPath)) {
     fs.mkdirSync(outputPath, { recursive: true });
   }
-  
+
   console.log(`📁 Project: ${projectSlug}`);
   console.log(`📂 Output: ${outputPath}\n`);
-  
+
   // ─────────────────────────────────────────────────────────────────────────────
   // PHASE 2: INDUSTRY DETECTION
   // ─────────────────────────────────────────────────────────────────────────────
   sendProgress(onProgress, 2, 8, 'Industry Analysis', 'Detecting industry...', 15);
-  
+
   let industry: IndustryDNA;
-  
+
   if (input.industryId) {
     industry = getIndustryDNA(input.industryId);
     console.log(`🎯 Industry (selected): ${industry.name}`);
@@ -111,20 +163,196 @@ export async function generateWithMerlin8(
     industry = detectIndustry(input.businessName, input.description);
     console.log(`🎯 Industry (detected): ${industry.name}`);
   }
-  
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // TEMPLATE-BASED GENERATION (if templateId is provided)
+  // ═══════════════════════════════════════════════════════════════════════════════
+  if (input.templateId) {
+    console.log(`\n🎨 TEMPLATE MODE: Using template ${input.templateId}`);
+    sendProgress(onProgress, 3, 8, 'Template Mode', 'Loading template...', 25);
+
+    // Convert Merlin8Input to ClientInfo format for template generator
+    const clientInfo: ClientInfo = {
+      businessName: input.businessName,
+      industry: industry.name,
+      location: {
+        city: '',
+        state: '',
+        country: '',
+      },
+      services: (input.services || generateDefaultServices(industry)).map(s => ({
+        name: s.name,
+        description: s.description,
+      })),
+      phone: input.contactInfo?.phone || input.phone || '',
+      email: input.contactInfo?.email || input.email || '',
+      address: input.contactInfo?.address || input.location || '',
+      tagline: input.tagline || input.tone?.keyMessage || generateTagline(input.businessName, industry),
+      brandColors: input.designPreferences ? {
+        primary: input.designPreferences.primaryColor || '#3b82f6',
+        secondary: input.designPreferences.secondaryColor || '#8b5cf6',
+      } : undefined,
+    };
+
+    sendProgress(onProgress, 4, 8, 'Template Mode', 'Generating from template...', 40);
+
+    try {
+      const templateResult = await generateFromTemplate(
+        input.templateId,
+        clientInfo,
+        {
+          skipImages: input.generateImages === false,
+          onProgress: (phase, current, total) => {
+            const pct = 40 + (current / total) * 30;
+            sendProgress(onProgress, 5, 8, 'Template Mode', `${phase}: ${current}/${total}`, pct);
+          },
+        }
+      );
+
+      if (!templateResult.success) {
+        console.log(`⚠️ Template generation failed, falling back to scratch generation`);
+        errors.push(...(templateResult.errors || ['Template generation failed']));
+        // Fall through to scratch generation below
+      } else {
+        // Template generation succeeded - save and return
+        sendProgress(onProgress, 6, 8, 'Saving Files', 'Writing files to disk...', 80);
+
+        const images: GeneratedImage[] = [];
+
+        try {
+          // Save HTML - apply auto-fixes first (hide preloaders, cookies, etc.)
+          const htmlPath = path.join(outputPath, 'index.html');
+          const { html: fixedHtml, result: fixResult } = autoFixTemplate(templateResult.html);
+          fs.writeFileSync(htmlPath, fixedHtml, 'utf-8');
+          console.log(`📄 Saved: index.html (from template, ${fixResult.fixes.length} auto-fixes applied)`);
+
+          // Save CSS
+          const cssPath = path.join(outputPath, 'styles.css');
+          fs.writeFileSync(cssPath, templateResult.css || '', 'utf-8');
+          console.log(`🎨 Saved: styles.css`);
+
+          // Save images if template replaced any
+          const imagesDir = path.join(outputPath, 'images');
+          if (!fs.existsSync(imagesDir)) {
+            fs.mkdirSync(imagesDir, { recursive: true });
+          }
+
+          // Download replaced images
+          for (const img of templateResult.replacedImages) {
+            if (img.newUrl && !img.newUrl.startsWith('data:')) {
+              const filename = `${img.context || 'image'}-${images.length}.jpg`;
+              const filepath = path.join(imagesDir, filename);
+              try {
+                const downloadResult = await downloadImage(img.newUrl, filepath);
+                if (downloadResult.success) {
+                  images.push({
+                    section: img.context || 'image',
+                    url: `images/${filename}`,
+                    prompt: img.prompt || '',
+                    width: 800,  // Default width for template images
+                    height: 600, // Default height for template images
+                  });
+                  console.log(`💾 Saved: ${filename}`);
+                }
+              } catch (downloadError) {
+                console.error(`❌ Failed to download image ${filename}:`, downloadError instanceof Error ? downloadError.message : 'Unknown error');
+                errors.push(`Failed to download image: ${filename}`);
+              }
+            }
+          }
+
+          // Save metadata
+          const metadataPath = path.join(outputPath, 'metadata.json');
+          fs.writeFileSync(metadataPath, JSON.stringify({
+            businessName: input.businessName,
+            industry: industry.id,
+            industryName: industry.name,
+            generatedAt: new Date().toISOString(),
+            version: '8.0-template',
+            templateId: input.templateId,
+            images: images.map(img => ({ section: img.section, url: img.url })),
+            userPreferences: {
+              businessType: input.businessType,
+              tagline: input.tagline,
+              goals: input.goals,
+              targetAudience: input.targetAudience,
+              designPreferences: input.designPreferences,
+              features: input.features,
+              pages: input.pages,
+              contactInfo: input.contactInfo,
+              tone: input.tone,
+              templateId: input.templateId,
+            },
+          }, null, 2), 'utf-8');
+          console.log(`📋 Saved: metadata.json\n`);
+        } catch (fileWriteError) {
+          const errorMessage = fileWriteError instanceof Error ? fileWriteError.message : 'Unknown error';
+          console.error('❌ Failed to save template files:', errorMessage);
+          errors.push(`Failed to save template files: ${errorMessage}`);
+        }
+
+        sendProgress(onProgress, 8, 8, 'Complete', 'Website generated from template!', 100);
+
+        const duration = Date.now() - startTime;
+
+        console.log('═══════════════════════════════════════════════════════════════════');
+        console.log('✅ MERLIN 8.0 - Template Generation Complete!');
+        console.log('═══════════════════════════════════════════════════════════════════');
+        console.log(`⏱️  Duration: ${(duration / 1000).toFixed(1)}s`);
+        console.log(`📁 Output: ${outputPath}`);
+        console.log(`🎨 Template: ${input.templateId}`);
+        console.log(`🖼️  Images: ${images.length}`);
+        console.log('═══════════════════════════════════════════════════════════════════\n');
+
+        return {
+          success: true,
+          projectSlug,
+          outputPath,
+          previewUrl: `/website_projects/${projectSlug}/merlin8-output/index.html`,
+          website: {
+            html: templateResult.html,
+            css: templateResult.css || '',
+          },
+          images,
+          industry,
+          duration,
+          errors: templateResult.errors || [],
+        };
+      }
+    } catch (templateError) {
+      console.error('❌ Template generation error:', templateError);
+      errors.push(`Template error: ${templateError instanceof Error ? templateError.message : 'Unknown error'}`);
+      console.log(`⚠️ Falling back to scratch generation...`);
+      // Fall through to scratch generation below
+    }
+  }
+
   // ─────────────────────────────────────────────────────────────────────────────
-  // PHASE 3: CONTENT PREPARATION
+  // PHASE 3: CONTENT PREPARATION (Scratch Generation)
   // ─────────────────────────────────────────────────────────────────────────────
   sendProgress(onProgress, 3, 8, 'Content Preparation', 'Preparing content...', 25);
   
   const content: WebsiteContent = {
+    // Basic info
     businessName: input.businessName,
-    tagline: input.tagline || generateTagline(input.businessName, industry),
+    tagline: input.tagline || input.tone?.keyMessage || generateTagline(input.businessName, industry),
     description: input.description,
     services: input.services || generateDefaultServices(industry),
-    location: input.location,
-    phone: input.phone,
-    email: input.email,
+    location: input.contactInfo?.address || input.location,
+    phone: input.contactInfo?.phone || input.phone,
+    email: input.contactInfo?.email || input.email,
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // USER PREFERENCES (from intake form) - THE BIBLE
+    // ═══════════════════════════════════════════════════════════════════════════════
+    businessType: input.businessType,
+    goals: input.goals,
+    targetAudience: input.targetAudience,
+    designPreferences: input.designPreferences,
+    features: input.features,
+    pages: input.pages,
+    contactInfo: input.contactInfo,
+    tone: input.tone,
   };
   
   console.log(`✏️  Tagline: "${content.tagline}"`);
@@ -134,28 +362,38 @@ export async function generateWithMerlin8(
   // PHASE 4: IMAGE GENERATION (Leonardo AI)
   // ─────────────────────────────────────────────────────────────────────────────
   let images: GeneratedImage[] = [];
-  
-  if (input.generateImages !== false) {
+
+  // Check if Leonardo is disabled via environment variable (for testing)
+  const leonardoDisabled = process.env.DISABLE_LEONARDO === 'true';
+
+  if (input.generateImages !== false && !leonardoDisabled) {
     sendProgress(onProgress, 4, 8, 'Image Generation', 'Generating images with Leonardo AI...', 35);
-    
+
     console.log('🎨 Starting Leonardo AI image generation...\n');
-    
-    const imageResult = await generateWebsiteImages(
-      input.businessName,
-      industry,
-      (msg, pct) => {
-        sendProgress(onProgress, 4, 8, 'Image Generation', msg, 35 + (pct * 0.3));
+
+    try {
+      const imageResult = await generateWebsiteImages(
+        input.businessName,
+        industry,
+        (msg, pct) => {
+          sendProgress(onProgress, 4, 8, 'Image Generation', msg, 35 + (pct * 0.3));
+        }
+      );
+
+      images = imageResult.images;
+
+      if (imageResult.errors.length > 0) {
+        errors.push(...imageResult.errors);
       }
-    );
-    
-    images = imageResult.images;
-    
-    if (imageResult.errors.length > 0) {
-      errors.push(...imageResult.errors);
+
+      console.log(`\n✅ Generated ${images.length} images`);
+      console.log(`📊 Leonardo usage: ${imageResult.usage.generated} today, ${imageResult.usage.remaining} remaining\n`);
+    } catch (imageGenError) {
+      const errorMessage = imageGenError instanceof Error ? imageGenError.message : 'Unknown error';
+      console.error('❌ Image generation failed:', errorMessage);
+      errors.push(`Image generation failed: ${errorMessage}`);
+      // Continue with empty images array - website will use placeholders
     }
-    
-    console.log(`\n✅ Generated ${images.length} images`);
-    console.log(`📊 Leonardo usage: ${imageResult.usage.generated} today, ${imageResult.usage.remaining} remaining\n`);
     
     // ─────────────────────────────────────────────────────────────────────────────
     // PHASE 5: DOWNLOAD IMAGES (Optional)
@@ -172,57 +410,123 @@ export async function generateWithMerlin8(
         const filename = `${img.section}.jpg`;
         const filepath = path.join(imagesDir, filename);
         
-        const downloaded = await downloadImage(img.url, filepath);
-        if (downloaded) {
+        const downloadResult = await downloadImage(img.url, filepath);
+        if (downloadResult.success) {
           // Update image URL to local path
           img.url = `images/${filename}`;
           console.log(`💾 Saved: ${filename}`);
+        } else {
+          console.warn(`⚠️ Failed to download ${filename}: ${downloadResult.error || 'Unknown error'}`);
         }
       }
       console.log('');
     }
   } else {
     sendProgress(onProgress, 5, 8, 'Skipping Images', 'Using placeholders...', 65);
-    console.log('⚠️  Image generation disabled, using placeholders\n');
+    if (leonardoDisabled) {
+      console.log('⚠️  Leonardo AI disabled via DISABLE_LEONARDO env var, using placeholders\n');
+    } else {
+      console.log('⚠️  Image generation disabled, using placeholders\n');
+    }
   }
   
   // ─────────────────────────────────────────────────────────────────────────────
   // PHASE 6: HTML/CSS GENERATION
   // ─────────────────────────────────────────────────────────────────────────────
   sendProgress(onProgress, 6, 8, 'Building Website', 'Generating HTML/CSS...', 75);
-  
+
   console.log('🏗️  Generating HTML/CSS...');
-  
-  const website = generateWebsite(content, industry, images);
-  
-  console.log('✅ HTML/CSS generated\n');
+
+  let website: GeneratedWebsite;
+  try {
+    website = generateWebsite(content, industry, images);
+    console.log('✅ HTML/CSS generated\n');
+  } catch (websiteGenError) {
+    const errorMessage = websiteGenError instanceof Error ? websiteGenError.message : 'Unknown error';
+    console.error('❌ Website generation failed:', errorMessage);
+    errors.push(`Website generation failed: ${errorMessage}`);
+
+    // Return early with error result
+    return {
+      success: false,
+      projectSlug,
+      outputPath,
+      previewUrl: undefined,
+      website: { html: '', css: '', pages: [] },
+      images,
+      industry,
+      duration: Date.now() - startTime,
+      errors,
+    };
+  }
   
   // ─────────────────────────────────────────────────────────────────────────────
   // PHASE 7: SAVE FILES
   // ─────────────────────────────────────────────────────────────────────────────
   sendProgress(onProgress, 7, 8, 'Saving Files', 'Writing files to disk...', 85);
-  
-  // Save HTML
-  const htmlPath = path.join(outputPath, 'index.html');
-  fs.writeFileSync(htmlPath, website.html, 'utf-8');
-  console.log(`📄 Saved: index.html`);
-  
-  // Save CSS separately (optional, it's also inline)
-  const cssPath = path.join(outputPath, 'styles.css');
-  fs.writeFileSync(cssPath, website.css, 'utf-8');
-  console.log(`🎨 Saved: styles.css`);
-  
-  // Save metadata
-  const metadataPath = path.join(outputPath, 'metadata.json');
-  fs.writeFileSync(metadataPath, JSON.stringify({
-    businessName: input.businessName,
-    industry: industry.id,
-    industryName: industry.name,
-    generatedAt: new Date().toISOString(),
-    version: '8.0',
-    images: images.map(img => ({ section: img.section, url: img.url })),
-  }, null, 2), 'utf-8');
-  console.log(`📋 Saved: metadata.json\n`);
+
+  try {
+    // Save HTML - apply auto-fixes first (hide preloaders, cookies, etc.)
+    const htmlPath = path.join(outputPath, 'index.html');
+    const { html: fixedHtml, result: fixResult } = autoFixTemplate(website.html);
+    fs.writeFileSync(htmlPath, fixedHtml, 'utf-8');
+    console.log(`📄 Saved: index.html (${fixResult.fixes.length} auto-fixes applied)`);
+
+    // Save CSS separately (optional, it's also inline)
+    const cssPath = path.join(outputPath, 'styles.css');
+    fs.writeFileSync(cssPath, website.css, 'utf-8');
+    console.log(`🎨 Saved: styles.css`);
+
+    // Save metadata with ALL user preferences (this is the "bible" for the website)
+    const metadataPath = path.join(outputPath, 'metadata.json');
+    fs.writeFileSync(metadataPath, JSON.stringify({
+      // Basic info
+      businessName: input.businessName,
+      industry: industry.id,
+      industryName: industry.name,
+      generatedAt: new Date().toISOString(),
+      version: '8.0',
+      images: images.map(img => ({ section: img.section, url: img.url })),
+
+      // ═══════════════════════════════════════════════════════════════════════════════
+      // USER PREFERENCES (from intake form) - THE BIBLE FOR THIS WEBSITE
+      // ═══════════════════════════════════════════════════════════════════════════════
+      userPreferences: {
+        // Business Basics
+        businessType: input.businessType,
+        tagline: input.tagline,
+
+        // Website Goals
+        goals: input.goals,
+
+        // Target Audience
+        targetAudience: input.targetAudience,
+
+        // Design Preferences
+        designPreferences: input.designPreferences,
+
+        // Features & Functionality
+        features: input.features,
+
+        // Pages/Sections
+        pages: input.pages,
+
+        // Contact Info
+        contactInfo: input.contactInfo,
+
+        // Tone & Messaging
+        tone: input.tone,
+
+        // Template (if using one)
+        templateId: input.templateId,
+      },
+    }, null, 2), 'utf-8');
+    console.log(`📋 Saved: metadata.json (with full user preferences)\n`);
+  } catch (fileWriteError) {
+    const errorMessage = fileWriteError instanceof Error ? fileWriteError.message : 'Unknown error';
+    console.error('❌ Failed to save files:', errorMessage);
+    errors.push(`Failed to save files: ${errorMessage}`);
+  }
   
   // ─────────────────────────────────────────────────────────────────────────────
   // PHASE 8: COMPLETE

@@ -5,23 +5,10 @@
  */
 
 import {
-  Layout, Image, FileText, ShoppingCart, Users, Mail, Star, BarChart3,
-  Navigation, Menu, Search, Bell, Heart, Share2, Calendar, Clock,
-  MapPin, Phone, Globe, Youtube, MessageCircle, Award, Quote,
-  CreditCard, Package, Truck, Shield, CheckCircle, ArrowRight,
-  Play, Pause, Volume2, Download, ExternalLink, Copy, Link,
-  Bookmark, Tag, Hash, AtSign, Percent, Gift, Zap,
-  Sun, Moon, Cloud, Droplet, Wind, ThermometerSun, Umbrella,
-  Camera, Film, Mic, Headphones, Radio, Tv, Gamepad2,
-  Briefcase, GraduationCap, Building2, Home, Car, Plane, Anchor,
-  Utensils, Coffee, Wine, Pizza, Cake, IceCream, Cookie,
-  Scissors, Paintbrush, Palette, Pen, Ruler, Compass, Aperture,
-  Dumbbell, Bike, Timer, Target, Trophy, Medal, Flag,
-  Heart as HeartIcon, Stethoscope, Pill, Syringe, Thermometer, Activity,
-  BookOpen, Library, Newspaper, FileCheck, FilePlus, Folder,
-  Cpu, Server, Database, HardDrive, Wifi, Bluetooth, Signal,
-  Lock, Unlock, Key, Eye, EyeOff, Fingerprint, ShieldCheck,
-  MoreHorizontal, MoreVertical, Grid, List, Columns, Rows, Layers,
+  Activity, ArrowRight, BarChart3, Bell, Calendar, Clock, Columns, Cpu,
+  CreditCard, Eye, FileText, Globe, Grid, Image, Layers, Layout, List,
+  Lock, Mail, Menu, MessageCircle, MoreHorizontal, Navigation, Package,
+  Play, Quote, Rows, Search, Share2, Shield, ShoppingCart, Star, Tag, Users,
 } from 'lucide-react';
 
 export interface AdvancedComponent {

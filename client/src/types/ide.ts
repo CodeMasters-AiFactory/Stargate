@@ -89,7 +89,14 @@ export interface IDEState {
     | 'nero'       // Nero Core service
     | 'titan-ticket'  // Titan Ticket Master
     | 'titan-support' // Titan Support Master
-    | 'ai-factory';   // AI Factory
+    | 'ai-factory'   // AI Factory
+    | 'blog'         // Blog management
+    | 'blog-editor'  // Blog editor
+    | 'blog-post'    // Blog post view
+    | 'performance'  // Performance analytics
+    | 'cms'          // Content management
+    | 'settings'     // Settings panel
+    | 'backup';      // Backup management
   merlinPackage?: MerlinPackageSelection;
   merlinQuickGenerate?: {
     requirements: Record<string, unknown>;

@@ -4,15 +4,11 @@
  */
 
 import { db } from '../db';
-import { 
-  emailSubscribers, 
-  emailCampaigns, 
-  emailTemplates, 
+import {
+  emailSubscribers,
+  emailCampaigns,
+  emailTemplates,
   emailTracking,
-  type InsertEmailSubscriber,
-  type InsertEmailCampaign,
-  type InsertEmailTemplate,
-  type InsertEmailTracking,
 } from '@shared/schema';
 import { eq, and, desc, inArray } from 'drizzle-orm';
 import { sendEmail } from './marketing';
@@ -134,8 +130,8 @@ export async function unsubscribeSubscriber(
         )
       );
     return true;
-  } catch (error) {
-    console.error('[EmailMarketing] Unsubscribe error:', error);
+  } catch (_error: unknown) {
+    console.error('[EmailMarketing] Unsubscribe error:', _error);
     return false;
   }
 }
@@ -154,8 +150,8 @@ export async function updateSubscriberTags(
       .set({ tags })
       .where(eq(emailSubscribers.id, subscriberId));
     return true;
-  } catch (error) {
-    console.error('[EmailMarketing] Update tags error:', error);
+  } catch (_error: unknown) {
+    console.error('[EmailMarketing] Update tags error:', _error);
     return false;
   }
 }
@@ -357,7 +353,7 @@ export async function sendCampaign(
     if (campaign.segments && Array.isArray(campaign.segments) && campaign.segments.length > 0) {
       subscribers = subscribers.filter(sub => {
         const subTags = (sub.tags as string[] || []);
-        return campaign.segments.some((segment: string) => subTags.includes(segment));
+        return (campaign.segments as string[]).some((segment: string) => subTags.includes(segment));
       });
     }
   }
@@ -395,10 +391,10 @@ export async function sendCampaign(
       // Replace variables
       Object.entries(variables).forEach(([key, value]) => {
         const placeholder = `{{${key}}}`;
-        subject = subject.replace(new RegExp(placeholder, 'g'), value);
-        htmlContent = htmlContent.replace(new RegExp(placeholder, 'g'), value);
+        subject = subject.replace(new RegExp(placeholder, 'g'), String(value));
+        htmlContent = htmlContent.replace(new RegExp(placeholder, 'g'), String(value));
         if (textContent) {
-          textContent = textContent.replace(new RegExp(placeholder, 'g'), value);
+          textContent = textContent.replace(new RegExp(placeholder, 'g'), String(value));
         }
       });
 
@@ -431,9 +427,9 @@ export async function sendCampaign(
         failed++;
         console.error(`[EmailMarketing] Failed to send to ${subscriber.email}:`, result.error);
       }
-    } catch (error) {
+    } catch (_error: unknown) {
       failed++;
-      console.error(`[EmailMarketing] Error sending to ${subscriber.email}:`, error);
+      console.error(`[EmailMarketing] Error sending to ${subscriber.email}:`, _error);
     }
   }
 
@@ -492,7 +488,7 @@ export async function trackEmailEvent(
   if (campaignId) {
     const campaign = await getCampaign(campaignId);
     if (campaign) {
-      const stats = campaign.stats as any || {};
+      const stats = campaign.stats as Record<string, number> || {};
       stats[eventType] = (stats[eventType] || 0) + 1;
 
       await db
@@ -504,7 +500,7 @@ export async function trackEmailEvent(
 
   // Update subscriber tracking
   if (subscriberId) {
-    const updates: any = {};
+    const updates: Partial<typeof emailSubscribers.$inferInsert> = {};
     if (eventType === 'opened') {
       updates.lastEmailOpenedAt = new Date();
     } else if (eventType === 'clicked') {
@@ -544,7 +540,7 @@ export async function getCampaignStats(campaignId: string): Promise<{
     return null;
   }
 
-  const stats = campaign.stats as any || {};
+  const stats = campaign.stats as Record<string, number> || {};
   const sent = stats.sent || 0;
   const delivered = stats.delivered || 0;
   const opened = stats.opened || 0;
@@ -628,7 +624,7 @@ export async function getCampaignMetrics(websiteId: string): Promise<{
   let totalClicked = 0;
 
   campaigns.forEach(campaign => {
-    const stats = (campaign.stats as any) || {};
+    const stats = (campaign.stats as Record<string, number>) || {};
     totalSent += stats.sent || 0;
     totalOpened += stats.opened || 0;
     totalClicked += stats.clicked || 0;
@@ -655,7 +651,7 @@ export async function updateCampaignMetrics(campaignId: string, metrics: Record<
       return false;
     }
 
-    const stats = { ...(campaign.stats as any || {}), ...metrics };
+    const stats = { ...(campaign.stats as Record<string, number> || {}), ...metrics };
 
     await db
       .update(emailCampaigns)
@@ -663,8 +659,8 @@ export async function updateCampaignMetrics(campaignId: string, metrics: Record<
       .where(eq(emailCampaigns.id, campaignId));
 
     return true;
-  } catch (error) {
-    console.error('[EmailMarketing] Update metrics error:', error);
+  } catch (_error: unknown) {
+    console.error('[EmailMarketing] Update metrics error:', _error);
     return false;
   }
 }

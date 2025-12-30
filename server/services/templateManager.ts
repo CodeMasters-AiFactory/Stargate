@@ -60,10 +60,10 @@ export async function processNewTemplate(templateId: string): Promise<TemplatePr
       throw new Error(`Template not found: ${templateId}`);
     }
 
-    const contentData = (template.contentData as any) || {};
-    let html = contentData.html || '';
-    let css = template.css || contentData.css || '';
-    let js = contentData.js || '';
+    const contentData = (template.contentData as Record<string, any>) || {};
+    let html = (contentData.html as string) || '';
+    let css = (template.css || contentData.css || '') as string;
+    let js = (contentData.js as string) || '';
 
     // Get source URL from metadata
     const sourceUrl = contentData.metadata?.url || contentData.metadata?.sourceUrl || '';
@@ -77,7 +77,7 @@ export async function processNewTemplate(templateId: string): Promise<TemplatePr
       const $ = cheerio.load(html);
       
       // Extract inline CSS from <style> tags
-      $('style').each((_, el) => {
+      $('style').each((_index, el) => {
         const inlineCSS = $(el).html() || '';
         if (inlineCSS && !css.includes(inlineCSS)) {
           css += '\n' + inlineCSS;
@@ -86,7 +86,7 @@ export async function processNewTemplate(templateId: string): Promise<TemplatePr
 
       // Extract external CSS URLs and download them
       const cssLinks: string[] = [];
-      $('link[rel="stylesheet"]').each((_, el) => {
+      $('link[rel="stylesheet"]').each((_index, el) => {
         const href = $(el).attr('href');
         if (href && !href.startsWith('data:')) {
           cssLinks.push(href);
@@ -111,7 +111,7 @@ export async function processNewTemplate(templateId: string): Promise<TemplatePr
       const $ = cheerio.load(html);
       
       // Extract inline JS from <script> tags
-      $('script:not([src])').each((_, el) => {
+      $('script:not([src])').each((_index, el) => {
         const inlineJS = $(el).html() || '';
         if (inlineJS && !js.includes(inlineJS)) {
           js += '\n' + inlineJS;
@@ -120,9 +120,9 @@ export async function processNewTemplate(templateId: string): Promise<TemplatePr
 
       // Extract external JS URLs and download them (skip analytics)
       const jsLinks: string[] = [];
-      $('script[src]').each((_, el) => {
+      $('script[src]').each((_index, el) => {
         const src = $(el).attr('src');
-        if (src && 
+        if (src &&
             !src.startsWith('data:') &&
             !src.includes('google-analytics') &&
             !src.includes('gtag') &&
@@ -161,21 +161,21 @@ export async function processNewTemplate(templateId: string): Promise<TemplatePr
         const baseUrl = new URL(sourceUrl);
         
         // Convert CSS links
-        html = html.replace(/href=["'](\/[^"']+)["']/g, (match, path) => {
+        html = html.replace(/href=["'](\/[^"']+)["']/g, (match: string, path: string) => {
           if (path.startsWith('//') || path.startsWith('http')) return match;
           urlsConverted++;
           return `href="${baseUrl.origin}${path}"`;
         });
 
         // Convert JS sources
-        html = html.replace(/src=["'](\/[^"']+)["']/g, (match, path) => {
+        html = html.replace(/src=["'](\/[^"']+)["']/g, (match: string, path: string) => {
           if (path.startsWith('//') || path.startsWith('http')) return match;
           urlsConverted++;
           return `src="${baseUrl.origin}${path}"`;
         });
 
         // Convert image sources
-        html = html.replace(/<img([^>]*)\ssrc=["'](\/[^"']+)["']/g, (match, attrs, path) => {
+        html = html.replace(/<img([^>]*)\ssrc=["'](\/[^"']+)["']/g, (match: string, attrs: string, path: string) => {
           if (path.startsWith('//') || path.startsWith('http')) return match;
           urlsConverted++;
           imagesProcessed++;
@@ -207,10 +207,10 @@ export async function processNewTemplate(templateId: string): Promise<TemplatePr
     let bundledHTML = html;
     if (sourceUrl) {
       try {
-        const images = contentData.images || [];
+        const images = (contentData.images as Array<{ url?: string; data?: string }>) || [];
         const imagesWithDataUri = images
-          .filter((img: any) => img.data)
-          .map((img: any) => ({ url: img.url, dataUri: img.data }));
+          .filter((img) => img.data)
+          .map((img) => ({ url: img.url || '', dataUri: img.data || '' }));
         
         const bundled = await createBundledTemplate(html, css, sourceUrl, imagesWithDataUri);
         bundledHTML = bundled.html;
@@ -296,8 +296,8 @@ export async function processNewTemplate(templateId: string): Promise<TemplatePr
           status: 'failed',
           errorMessage: getErrorMessage(error),
         });
-      } catch (logError) {
-        console.error('[TemplateManager] Failed to log error:', logError);
+      } catch (logErr) {
+        console.error('[TemplateManager] Failed to log error:', logErr);
       }
     }
 
@@ -329,7 +329,7 @@ export async function verifyTemplate(templateId: string): Promise<boolean> {
     if (!template) return false;
 
     // Check if template has required data
-    const contentData = (template.contentData as any) || {};
+    const contentData = (template.contentData as Record<string, any>) || {};
     const hasHTML = !!contentData.html;
     const hasCSS = !!(template.css || contentData.css);
     
@@ -361,7 +361,7 @@ export async function updateTemplate(templateId: string): Promise<TemplateProces
       throw new Error(`Template not found: ${templateId}`);
     }
 
-    const contentData = (template.contentData as any) || {};
+    const contentData = (template.contentData as Record<string, any>) || {};
     const sourceUrl = contentData.metadata?.sourceUrl || contentData.metadata?.url;
 
     if (!sourceUrl) {
@@ -430,7 +430,7 @@ export async function checkTemplateForChanges(templateId: string): Promise<{
       throw new Error(`Template not found: ${templateId}`);
     }
 
-    const contentData = (template.contentData as any) || {};
+    const contentData = (template.contentData as Record<string, any>) || {};
     const sourceUrl = contentData.metadata?.sourceUrl || contentData.metadata?.url;
     const storedHash = template.sourceHash;
 

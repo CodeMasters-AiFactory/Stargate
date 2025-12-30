@@ -9,10 +9,11 @@ export type WizardStage =
   | 'confirm'
   | 'research'
   | 'commit'
-  // NEW 3-PHASE ULTRA-SIMPLIFIED WORKFLOW
+  // NEW 4-PHASE WORKFLOW (with Quick Business Form)
   | 'package-select'       // Phase 1: Choose Package
   | 'template-select'      // Phase 2: Design Template Selection (LOOK/Layout)
-  | 'final-website'        // Phase 3: Display final website
+  | 'quick-form'           // Phase 3: Quick Business Form (4-5 questions)
+  | 'final-website'        // Phase 4: Display final website with auto-build progress
   // Deprecated phases (removed from workflow, kept for compatibility)
   | 'keywords-collection'  // REMOVED: Old Phase 3
   | 'content-rewriting'    // REMOVED: Old Phase 3/4
@@ -475,6 +476,18 @@ export interface WizardState {
   // Project ID - links to user's saved project in database
   projectId?: string;
   projectName?: string;
+
+  // NEW: Business info from QuickBusinessForm (Phase 3)
+  businessInfo?: {
+    businessName: string;
+    industry: string;
+    location: string;
+    email: string;
+    hasOwnPhotos: boolean;
+  };
+
+  // NEW: Auto-build flag (triggers progress bar on final-website)
+  autoBuildPending?: boolean;
 
   // Legacy fields - deprecated
   selectedContentTemplate?: BrandTemplate | null; // DEPRECATED: Use pageKeywords

@@ -49,6 +49,10 @@ export const projects = pgTable("projects", {
   isPublic: boolean("is_public").default(false),
   files: jsonb("files").notNull().default({}), // Additional files/assets
 
+  // Soft delete support - projects go to trash for 60 days before permanent deletion
+  isDeleted: boolean("is_deleted").default(false),
+  deletedAt: timestamp("deleted_at"), // When the project was moved to trash
+
   // Timestamps
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -265,6 +269,22 @@ export const usageTracking = pgTable("usage_tracking", {
 });
 
 export type UsageTracking = typeof usageTracking.$inferSelect;
+
+// User Template Purchases table - Track premium template purchases
+export const userTemplatePurchases = pgTable("user_template_purchases", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  templateId: varchar("template_id").notNull(),
+  price: text("price").notNull(), // Amount paid
+  currency: text("currency").default('USD'),
+  stripeSessionId: text("stripe_session_id"),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  status: text("status").notNull().default('completed'), // 'pending', 'completed', 'refunded'
+  purchasedAt: timestamp("purchased_at").defaultNow(),
+});
+
+export type UserTemplatePurchase = typeof userTemplatePurchases.$inferSelect;
+export type InsertUserTemplatePurchase = typeof userTemplatePurchases.$inferInsert;
 
 // Template Sources table - Track companies/websites being monitored
 export const templateSources = pgTable("template_sources", {

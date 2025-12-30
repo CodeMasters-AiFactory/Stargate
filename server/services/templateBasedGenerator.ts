@@ -21,6 +21,57 @@ import { brandTemplates } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 
 // ============================================
+// SECURITY UTILITIES
+// ============================================
+
+/**
+ * Escape HTML special characters to prevent XSS attacks
+ * Used when inserting user content into HTML text nodes
+ */
+function escapeHtml(text: string): string {
+  if (typeof text !== 'string') return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
+ * Escape content for use in HTML attributes
+ * More restrictive than escapeHtml for attribute context
+ */
+function escapeAttr(text: string): string {
+  if (typeof text !== 'string') return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/`/g, '&#96;');
+}
+
+/**
+ * Sanitize email for safe use in mailto: links
+ */
+function sanitizeEmail(email: string): string {
+  if (typeof email !== 'string') return '';
+  // Only allow valid email characters
+  return email.replace(/[^a-zA-Z0-9._%+-@]/g, '');
+}
+
+/**
+ * Sanitize phone number for safe use in tel: links
+ */
+function sanitizePhone(phone: string): string {
+  if (typeof phone !== 'string') return '';
+  // Only allow digits, plus, parentheses, spaces, and dashes
+  return phone.replace(/[^0-9+\-() ]/g, '');
+}
+
+// ============================================
 // TYPES & INTERFACES
 // ============================================
 
@@ -121,6 +172,17 @@ const TEMPLATES_DIR = path.join(process.cwd(), 'scraped_templates');
  */
 export async function loadTemplate(templateId: string): Promise<ScrapedTemplate | null> {
   try {
+    // Security: Validate templateId to prevent path traversal attacks
+    if (!templateId || typeof templateId !== 'string') {
+      console.error('[TemplateGenerator] Invalid templateId: must be a non-empty string');
+      return null;
+    }
+    // Only allow alphanumeric, hyphens, and underscores in template IDs
+    if (!/^[a-zA-Z0-9_-]+$/.test(templateId)) {
+      console.error(`[TemplateGenerator] Invalid templateId format: ${templateId}`);
+      return null;
+    }
+
     // ============================================
     // STEP 1: Try DATABASE first (preferred)
     // ============================================
@@ -136,8 +198,8 @@ export async function loadTemplate(templateId: string): Promise<ScrapedTemplate 
           console.log(`[TemplateGenerator] ✅ Loaded template from DATABASE: ${dbTemplate.name}`);
           
           // Extract from database structure
-          const contentData = (dbTemplate.contentData as any) || {};
-          const layout = (dbTemplate.layout as any) || {};
+          const contentData = (dbTemplate.contentData as Record<string, unknown>) || {};
+          const layout = (dbTemplate.layout as Record<string, unknown>) || {};
           
           const template: ScrapedTemplate = {
             id: dbTemplate.id,
@@ -147,18 +209,20 @@ export async function loadTemplate(templateId: string): Promise<ScrapedTemplate 
             locationCountry: dbTemplate.locationCountry || '',
             locationState: dbTemplate.locationState || '',
             // HTML: from contentData.html
-            html: contentData.html || '',
+            html: typeof contentData.html === 'string' ? contentData.html : '',
             // CSS: from css field
             css: dbTemplate.css || '',
             // Images: from contentData.images
-            images: contentData.images || [],
+            images: Array.isArray(contentData.images) ? contentData.images as Array<{url: string; alt?: string; context?: string}> : [],
             // Text: from contentData.text
-            text: contentData.text || {
-              title: dbTemplate.name,
-              headings: [],
-              paragraphs: [],
-            },
-            sections: layout.sections || [],
+            text: (contentData.text && typeof contentData.text === 'object' && 'title' in contentData.text)
+              ? contentData.text as { title: string; headings?: string[]; paragraphs?: string[] }
+              : {
+                  title: dbTemplate.name,
+                  headings: [],
+                  paragraphs: [],
+                },
+            sections: Array.isArray(layout.sections) ? layout.sections as Array<{type: string; content: string}> : [],
           };
           
           console.log(`[TemplateGenerator]    HTML: ${template.html?.length || 0} chars`);
@@ -495,19 +559,39 @@ async function generateReplacementImage(
   
   try {
     console.log(`[TemplateGenerator] 🎨 Generating image for context: ${context}`);
-    
+
+    // Map context to valid AdvancedImageOptions style
+    const styleMap: Record<string, 'hero' | 'product' | 'icon' | 'illustration' | 'background' | 'testimonial' | 'feature' | 'gallery'> = {
+      'hero': 'hero',
+      'service': 'feature',
+      'about': 'gallery',
+      'general': 'feature',
+      'logo': 'icon',
+      'icon': 'icon',
+    };
+    const imageStyle = styleMap[context] || 'feature';
+
     // Use the advanced image service to generate
     const result = await generateStunningImage({
+      style: imageStyle,
+      businessContext: {
+        name: clientInfo.businessName,
+        industry: clientInfo.industry,
+        colorScheme: clientInfo.brandColors
+          ? [clientInfo.brandColors.primary, clientInfo.brandColors.secondary]
+          : ['#0066cc', '#003d7a'],
+        mood: 'professional',
+      },
       prompt,
-      style: 'photorealistic',
-      aspectRatio: context === 'hero' ? '16:9' : '1:1',
-      quality: 'high'
+      quality: context === 'hero' ? 'hd' : 'standard',
+      artisticStyle: 'photorealistic',
     });
-    
-    if (result.success && result.imageUrl) {
+
+    // Result returns { url, alt, style, dimensions }
+    if (result && result.url) {
       return {
         originalUrl: originalImage.url,
-        newUrl: result.imageUrl,
+        newUrl: result.url,
         context,
         prompt
       };
@@ -643,10 +727,11 @@ async function rewriteAllContent(
   
   // 2. Replace phone numbers COMPREHENSIVELY
   if (clientInfo.phone) {
-    const cleanPhone = clientInfo.phone.replace(/[^0-9+]/g, '');
-    const formattedPhone = clientInfo.phone;
-    
-    // Pattern 1: Replace tel: links
+    // Sanitize phone for tel: links (XSS protection)
+    const cleanPhone = sanitizePhone(clientInfo.phone).replace(/[^0-9+]/g, '');
+    const formattedPhone = escapeHtml(clientInfo.phone);
+
+    // Pattern 1: Replace tel: links (use sanitized phone)
     const telRegex = /href=["']tel:([^"']+)["']/gi;
     const telMatches = updatedHtml.match(telRegex);
     if (telMatches) {
@@ -659,26 +744,43 @@ async function rewriteAllContent(
     // Match phone patterns: (404) 555-1234, 404-555-1234, 404.555.1234, etc.
     const phonePattern = /(\+?1[-.\s]?)?\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})/g;
     let phoneReplaceCount = 0;
-    
-    updatedHtml = updatedHtml.replace(phonePattern, (match, fullMatch) => {
+
+    // BUG FIX: Use replace with offset parameter to correctly determine context
+    // The previous implementation used indexOf which always found the FIRST match
+    updatedHtml = updatedHtml.replace(phonePattern, (match: string, _p1: string, _p2: string, _p3: string, _p4: string, _offset: number) => {
       // Skip if it's inside a script tag, style tag, or data attribute
-      const beforeMatch = updatedHtml.substring(0, updatedHtml.indexOf(match));
+      // Use the offset parameter (position of the match in the string)
+      const beforeMatch = updatedHtml.substring(0, _offset);
       const openScripts = (beforeMatch.match(/<script[^>]*>/gi) || []).length;
       const closeScripts = (beforeMatch.match(/<\/script>/gi) || []).length;
       const openStyles = (beforeMatch.match(/<style[^>]*>/gi) || []).length;
       const closeStyles = (beforeMatch.match(/<\/style>/gi) || []).length;
-      
+
       // If we're inside a script or style, skip
       if (openScripts > closeScripts || openStyles > closeStyles) {
         return match;
       }
-      
-      // Skip if it's in a data attribute, id, or class
+
+      // Skip if it's in a data attribute, id, or class (check recent context)
       const recentContext = beforeMatch.substring(Math.max(0, beforeMatch.length - 100));
-      if (recentContext.includes('id=') || recentContext.includes('class=') || recentContext.includes('data-')) {
-        return match;
+      // More precise check: look for unclosed attribute quotes
+      const lastAttrStart = Math.max(
+        recentContext.lastIndexOf('id="'),
+        recentContext.lastIndexOf("id='"),
+        recentContext.lastIndexOf('class="'),
+        recentContext.lastIndexOf("class='"),
+        recentContext.lastIndexOf('data-')
+      );
+      if (lastAttrStart >= 0) {
+        // Check if the attribute is still open (no closing quote after attr start)
+        const afterAttr = recentContext.substring(lastAttrStart);
+        const quoteCount = (afterAttr.match(/["']/g) || []).length;
+        // If odd number of quotes, we're inside an attribute value
+        if (quoteCount % 2 === 1) {
+          return match;
+        }
       }
-      
+
       phoneReplaceCount++;
       return formattedPhone;
     });
@@ -694,7 +796,7 @@ async function rewriteAllContent(
     
     // Pattern 4: Replace in meta tags
     const metaPhoneRegex = /<meta[^>]*content=["']([^"']*)(\+?1?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})([^"']*)["'][^>]*>/gi;
-    updatedHtml = updatedHtml.replace(metaPhoneRegex, (match, before, phone, after) => {
+    updatedHtml = updatedHtml.replace(metaPhoneRegex, (match: string, before: string, _phoneMatch: string, after: string) => {
       const newContent = `${before}${formattedPhone}${after}`;
       return match.replace(/content=["'][^"']*["']/, `content="${newContent}"`);
     });
@@ -702,15 +804,19 @@ async function rewriteAllContent(
   
   // 3. Replace email addresses SAFELY (only in visible text and href="mailto:")
   if (clientInfo.email) {
-    // Replace mailto: links
+    // Sanitize email to prevent injection attacks
+    const safeEmail = sanitizeEmail(clientInfo.email);
+    const escapedEmail = escapeHtml(clientInfo.email);
+
+    // Replace mailto: links (use sanitized version for href)
     const mailtoRegex = /href=["']mailto:([^"']+)["']/gi;
     const mailtoMatches = updatedHtml.match(mailtoRegex);
     if (mailtoMatches) {
-      updatedHtml = updatedHtml.replace(mailtoRegex, `href="mailto:${clientInfo.email}"`);
+      updatedHtml = updatedHtml.replace(mailtoRegex, `href="mailto:${safeEmail}"`);
       changesCount += mailtoMatches.length;
       console.log(`[TemplateGenerator] ✅ Replaced mailto links (${mailtoMatches.length})`);
     }
-    
+
     // For visible text emails, we need to be careful
     // Only replace emails that appear in text nodes, not in script src, data attributes, etc.
     // Simple approach: look for emails followed by </a> or </span> or </p> or whitespace
@@ -718,9 +824,10 @@ async function rewriteAllContent(
     const visibleEmails = updatedHtml.match(visibleEmailRegex);
     if (visibleEmails) {
       const trackingDomains = ['google', 'facebook', 'analytics', 'pixel', 'tracking', 'callrail', 'bing'];
-      visibleEmails.forEach(email => {
-        if (!trackingDomains.some(d => email.toLowerCase().includes(d))) {
-          updatedHtml = updatedHtml.replace(new RegExp(email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), clientInfo.email);
+      visibleEmails.forEach((email: string) => {
+        if (!trackingDomains.some((_domain: string) => email.toLowerCase().includes(_domain))) {
+          // Use escaped version for visible text
+          updatedHtml = updatedHtml.replace(new RegExp(email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), escapedEmail);
           changesCount++;
         }
       });
@@ -728,16 +835,20 @@ async function rewriteAllContent(
     }
   }
   
-  // 4. Update page title
+  // 4. Update page title (escape user content to prevent XSS)
   if (template.text?.title && clientInfo.businessName) {
     const titleRegex = /<title>[\s\S]*?<\/title>/i;
-    const newTitle = `<title>${clientInfo.businessName} | ${clientInfo.industry} Services in ${clientInfo.location.city}, ${clientInfo.location.state}</title>`;
+    const escapedBusinessName = escapeHtml(clientInfo.businessName);
+    const escapedIndustry = escapeHtml(clientInfo.industry);
+    const escapedCity = escapeHtml(clientInfo.location.city);
+    const escapedState = escapeHtml(clientInfo.location.state);
+    const newTitle = `<title>${escapedBusinessName} | ${escapedIndustry} Services in ${escapedCity}, ${escapedState}</title>`;
     updatedHtml = updatedHtml.replace(titleRegex, newTitle);
     changesCount++;
     console.log(`[TemplateGenerator] ✅ Updated page title`);
   }
   
-  // 5. Update meta description with AI-powered rewrite
+  // 5. Update meta description with AI-powered rewrite (escape for attribute context)
   const metaDescRegex = /<meta\s+name=["']description["']\s+content=["']([^"']*)["']\s*\/?>/i;
   const metaDescMatch = updatedHtml.match(metaDescRegex);
   if (metaDescMatch) {
@@ -746,40 +857,40 @@ async function rewriteAllContent(
       // Use AI to rewrite the description if it contains location/company info
       if (originalDesc.length > 20 && (originalDesc.toLowerCase().includes('new jersey') || originalDesc.toLowerCase().includes('pennsylvania') || originalDesc.toLowerCase().includes('horizon'))) {
         const rewritePrompt = `Rewrite this website meta description for "${clientInfo.businessName}", an ${clientInfo.industry} business in ${clientInfo.location.city}, ${clientInfo.location.state}. Keep it SEO-optimized and under 160 characters. Original: "${originalDesc}"`;
-        
+
         const aiResult = await generate({
           task: 'content',
           prompt: rewritePrompt,
           temperature: 0.7,
           maxTokens: 200,
         });
-        
-        const rewrittenDesc = aiResult.content.trim().replace(/^["']|["']$/g, '').substring(0, 160);
+
+        const rewrittenDesc = escapeAttr(aiResult.content.trim().replace(/^["']|["']$/g, '').substring(0, 160));
         updatedHtml = updatedHtml.replace(metaDescRegex, `<meta name="description" content="${rewrittenDesc}">`);
         changesCount++;
         console.log(`[TemplateGenerator] ✅ AI-rewrote meta description`);
       } else {
-        // Simple replacement
-        const newMetaDesc = `${clientInfo.businessName} offers professional ${clientInfo.industry.toLowerCase()} services in ${clientInfo.location.city}, ${clientInfo.location.state}. ${clientInfo.tagline || 'Contact us today!'}`;
+        // Simple replacement with escaping
+        const newMetaDesc = escapeAttr(`${clientInfo.businessName} offers professional ${clientInfo.industry.toLowerCase()} services in ${clientInfo.location.city}, ${clientInfo.location.state}. ${clientInfo.tagline || 'Contact us today!'}`);
         updatedHtml = updatedHtml.replace(metaDescRegex, `<meta name="description" content="${newMetaDesc}">`);
         changesCount++;
         console.log(`[TemplateGenerator] ✅ Updated meta description`);
       }
     } catch (error) {
       console.error(`[TemplateGenerator] ⚠️ AI rewrite failed, using simple replacement:`, getErrorMessage(error));
-      const newMetaDesc = `${clientInfo.businessName} offers professional ${clientInfo.industry.toLowerCase()} services in ${clientInfo.location.city}, ${clientInfo.location.state}. ${clientInfo.tagline || 'Contact us today!'}`;
+      const newMetaDesc = escapeAttr(`${clientInfo.businessName} offers professional ${clientInfo.industry.toLowerCase()} services in ${clientInfo.location.city}, ${clientInfo.location.state}. ${clientInfo.tagline || 'Contact us today!'}`);
       updatedHtml = updatedHtml.replace(metaDescRegex, `<meta name="description" content="${newMetaDesc}">`);
       changesCount++;
     }
   }
-  
-  // 5b. Rewrite OG description if it contains original location
+
+  // 5b. Rewrite OG description if it contains original location (escape for attribute context)
   const ogDescRegex = /<meta\s+property=["']og:description["']\s+content=["']([^"']*)["']\s*\/?>/i;
   const ogDescMatch = updatedHtml.match(ogDescRegex);
   if (ogDescMatch) {
     const ogDesc = ogDescMatch[1];
     if (ogDesc.toLowerCase().includes('new jersey') || ogDesc.toLowerCase().includes('pennsylvania')) {
-      const newOgDesc = `${clientInfo.businessName} offers professional ${clientInfo.industry.toLowerCase()} services in ${clientInfo.location.city}, ${clientInfo.location.state}. ${clientInfo.tagline || 'Contact us today!'}`;
+      const newOgDesc = escapeAttr(`${clientInfo.businessName} offers professional ${clientInfo.industry.toLowerCase()} services in ${clientInfo.location.city}, ${clientInfo.location.state}. ${clientInfo.tagline || 'Contact us today!'}`);
       updatedHtml = updatedHtml.replace(ogDescRegex, `<meta property="og:description" content="${newOgDesc}">`);
       changesCount++;
       console.log(`[TemplateGenerator] ✅ Updated OG description`);
@@ -797,38 +908,39 @@ async function rewriteAllContent(
   
   // Replace in content attributes (meta tags, schema, etc.) - safe context
   originalLocations.forEach(({ pattern, replace }) => {
-    updatedHtml = updatedHtml.replace(/(content=["'])([^"']*?)(["'])/gi, (match, start, content, end) => {
+    updatedHtml = updatedHtml.replace(/(content=["'])([^"']*?)(["'])/gi, (_match: string, start: string, content: string, end: string) => {
       if (pattern.test(content)) {
         changesCount++;
         return `${start}${content.replace(pattern, replace)}${end}`;
       }
-      return match;
+      return _match;
     });
   });
   
   // Replace in title tags - safe context
   originalLocations.forEach(({ pattern, replace }) => {
-    updatedHtml = updatedHtml.replace(/(<title>)([^<]*?)(<\/title>)/gi, (match, start, title, end) => {
+    updatedHtml = updatedHtml.replace(/(<title>)([^<]*?)(<\/title>)/gi, (_match: string, start: string, title: string, end: string) => {
       if (pattern.test(title)) {
         changesCount++;
         return `${start}${title.replace(pattern, replace)}${end}`;
       }
-      return match;
+      return _match;
     });
   });
   
   // Replace in visible text content (between >text<) - careful with word boundaries
+  // BUG FIX: Use offset parameter instead of indexOf which always finds first match
   originalLocations.forEach(({ pattern, replace }) => {
-    updatedHtml = updatedHtml.replace(/(>)([^<]+?)(<)/g, (match, open, text, close) => {
-      // Skip if inside script/style tags
-      const beforeMatch = updatedHtml.substring(0, updatedHtml.indexOf(match));
+    updatedHtml = updatedHtml.replace(/(>)([^<]+?)(<)/g, (match: string, open: string, text: string, close: string, _offset: number) => {
+      // Skip if inside script/style tags - use offset for correct position
+      const beforeMatch = updatedHtml.substring(0, _offset);
       const inScript = (beforeMatch.match(/<script[^>]*>/gi) || []).length > (beforeMatch.match(/<\/script>/gi) || []).length;
       const inStyle = (beforeMatch.match(/<style[^>]*>/gi) || []).length > (beforeMatch.match(/<\/style>/gi) || []).length;
-      
+
       if (inScript || inStyle) {
         return match;
       }
-      
+
       // Only replace complete words, not parts of words
       if (pattern.test(text)) {
         changesCount++;
@@ -888,7 +1000,7 @@ async function rewriteAllContent(
         }
         
         // Match to a client service
-        const matchingService = clientInfo.services.find(s => 
+        const matchingService = clientInfo.services.find((s: { name: string; description: string }) =>
           serviceHeading.toLowerCase().includes(s.name.toLowerCase().split(' ')[0]) ||
           serviceDesc.toLowerCase().includes(s.name.toLowerCase().split(' ')[0])
         );
@@ -929,8 +1041,305 @@ async function rewriteAllContent(
     }
   }
   
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // 9. COMPREHENSIVE AI CONTENT REWRITING
+  // ═══════════════════════════════════════════════════════════════════════════════
+
+  console.log(`[TemplateGenerator] 🤖 Starting comprehensive AI content rewriting...`);
+
+  // 9a. Rewrite hero section (title + subtitle)
+  try {
+    // Match hero section patterns - look for large headings with subtitles
+    const heroPatterns = [
+      // Pattern 1: h1 followed by p with hero/subtitle class
+      /<h1[^>]*class="[^"]*hero[^"]*"[^>]*>([\s\S]*?)<\/h1>[\s\S]*?<p[^>]*class="[^"]*(?:hero|subtitle)[^"]*"[^>]*>([\s\S]*?)<\/p>/i,
+      // Pattern 2: Any h1 followed by p in a hero/banner section
+      /<(?:section|div)[^>]*class="[^"]*(?:hero|banner)[^"]*"[^>]*>[\s\S]*?<h1[^>]*>([\s\S]*?)<\/h1>[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/i,
+      // Pattern 3: Simple h1 > p pattern at page top
+      /<h1[^>]*>([\s\S]*?)<\/h1>\s*<p[^>]*>([\s\S]*?)<\/p>/i,
+    ];
+
+    for (const pattern of heroPatterns) {
+      const heroMatch = updatedHtml.match(pattern);
+      if (heroMatch) {
+        const originalTitle = heroMatch[1].replace(/<[^>]+>/g, '').trim();
+        const originalSubtitle = heroMatch[2].replace(/<[^>]+>/g, '').trim();
+
+        // Skip if already customized
+        if (originalTitle.toLowerCase().includes(clientInfo.businessName.toLowerCase())) {
+          break;
+        }
+
+        // Generate new hero content
+        const heroPrompt = `Create a compelling hero section for "${clientInfo.businessName}", an ${clientInfo.industry} business in ${clientInfo.location.city}, ${clientInfo.location.state}.
+
+Business description: ${'description' in clientInfo && typeof (clientInfo as Record<string, unknown>).description === 'string' ? (clientInfo as Record<string, unknown>).description : 'Professional ' + clientInfo.industry + ' services'}
+
+Generate:
+1. A short, powerful headline (3-6 words) that captures the essence of the business
+2. A compelling subtitle (15-25 words) that explains the value proposition
+
+Format your response as:
+HEADLINE: [your headline]
+SUBTITLE: [your subtitle]
+
+Be professional, clear, and avoid jargon. Focus on benefits to customers.`;
+
+        try {
+          const heroResult = await generate({
+            task: 'content',
+            prompt: heroPrompt,
+            temperature: 0.7,
+            maxTokens: 200,
+          });
+
+          const headlineMatch = heroResult.content.match(/HEADLINE:\s*(.+)/i);
+          const subtitleMatch = heroResult.content.match(/SUBTITLE:\s*(.+)/i);
+
+          if (headlineMatch && subtitleMatch) {
+            const newHeadline = escapeHtml(headlineMatch[1].trim());
+            const newSubtitle = escapeHtml(subtitleMatch[1].trim());
+
+            // Replace the hero content, preserving any HTML tags inside
+            const fullMatch = heroMatch[0];
+            let updatedHero = fullMatch;
+
+            // Replace h1 content
+            updatedHero = updatedHero.replace(
+              /(<h1[^>]*>)([\s\S]*?)(<\/h1>)/i,
+              `$1${newHeadline}$3`
+            );
+
+            // Replace first p content (subtitle)
+            updatedHero = updatedHero.replace(
+              /(<p[^>]*>)([\s\S]*?)(<\/p>)/i,
+              `$1${newSubtitle}$3`
+            );
+
+            updatedHtml = updatedHtml.replace(fullMatch, updatedHero);
+            changesCount += 2;
+            console.log(`[TemplateGenerator] ✅ Rewrote hero section`);
+            console.log(`   Title: "${originalTitle}" → "${newHeadline}"`);
+            console.log(`   Subtitle: "${originalSubtitle.substring(0, 50)}..." → "${newSubtitle.substring(0, 50)}..."`);
+          }
+        } catch (error) {
+          console.error(`[TemplateGenerator] ⚠️ Hero rewrite failed:`, getErrorMessage(error));
+        }
+        break; // Only process first hero match
+      }
+    }
+  } catch (error) {
+    console.error(`[TemplateGenerator] ⚠️ Hero section error:`, getErrorMessage(error));
+  }
+
+  // 9b. Rewrite feature cards
+  try {
+    // Pattern to match feature/service cards (div with icon + h3 + p)
+    const featureCardRegex = /<div[^>]*class="[^"]*(?:feature|service|card|benefit)[^"]*"[^>]*>[\s\S]*?<(?:div|span)[^>]*class="[^"]*icon[^"]*"[^>]*>([^<]*)<\/(?:div|span)>[\s\S]*?<h[2-4][^>]*>([^<]+)<\/h[2-4]>[\s\S]*?<p[^>]*>([^<]+)<\/p>[\s\S]*?<\/div>/gi;
+
+    const featureMatches: RegExpMatchArray[] = Array.from(updatedHtml.matchAll(featureCardRegex));
+
+    if (featureMatches.length > 0) {
+      console.log(`[TemplateGenerator] 🔍 Found ${featureMatches.length} feature cards to rewrite`);
+
+      // Generate all features at once for consistency
+      const services = clientInfo.services || [
+        { name: 'Professional Service', description: 'Expert solutions tailored to your needs' },
+        { name: 'Quality Support', description: 'Dedicated customer service available when you need it' },
+        { name: 'Fast Delivery', description: 'Quick turnaround times without compromising quality' },
+      ];
+
+      const featuresPrompt = `Generate ${Math.min(featureMatches.length, 6)} feature/benefit cards for "${clientInfo.businessName}", an ${clientInfo.industry} business.
+
+Services they offer: ${services.map((s: { name: string; description: string }) => s.name).join(', ')}
+
+For each feature, provide:
+1. An appropriate emoji icon
+2. A short title (2-4 words)
+3. A benefit-focused description (15-25 words)
+
+Format as:
+FEATURE 1:
+ICON: [emoji]
+TITLE: [title]
+DESC: [description]
+
+FEATURE 2:
+...
+
+Be professional and focus on customer benefits. Avoid generic buzzwords.`;
+
+      try {
+        const featuresResult = await generate({
+          task: 'content',
+          prompt: featuresPrompt,
+          temperature: 0.7,
+          maxTokens: 800,
+        });
+
+        // Parse the features
+        const featureBlocks = featuresResult.content.split(/FEATURE \d+:/i).filter(Boolean);
+
+        featureMatches.forEach((match: RegExpMatchArray, _index: number) => {
+          if (_index < featureBlocks.length) {
+            const block = featureBlocks[_index];
+            const iconMatch = block.match(/ICON:\s*(.+)/i);
+            const titleMatch = block.match(/TITLE:\s*(.+)/i);
+            const descMatch = block.match(/DESC:\s*(.+)/i);
+
+            if (iconMatch && titleMatch && descMatch) {
+              const newIcon = iconMatch[1].trim();
+              const newTitle = escapeHtml(titleMatch[1].trim());
+              const newDesc = escapeHtml(descMatch[1].trim());
+
+              let updatedCard = match[0];
+
+              // Replace icon content
+              updatedCard = updatedCard.replace(
+                /(<(?:div|span)[^>]*class="[^"]*icon[^"]*"[^>]*>)[^<]*(<\/(?:div|span)>)/i,
+                `$1${newIcon}$2`
+              );
+
+              // Replace h3/h4 title
+              updatedCard = updatedCard.replace(
+                /(<h[2-4][^>]*>)[^<]+(<\/h[2-4]>)/i,
+                `$1${newTitle}$2`
+              );
+
+              // Replace p description
+              updatedCard = updatedCard.replace(
+                /(<p[^>]*>)[^<]+(<\/p>)/i,
+                `$1${newDesc}$2`
+              );
+
+              updatedHtml = updatedHtml.replace(match[0], updatedCard);
+              changesCount++;
+            }
+          }
+        });
+
+        console.log(`[TemplateGenerator] ✅ Rewrote ${Math.min(featureMatches.length, featureBlocks.length)} feature cards`);
+      } catch (error) {
+        console.error(`[TemplateGenerator] ⚠️ Feature rewrite failed:`, getErrorMessage(error));
+      }
+    }
+  } catch (error) {
+    console.error(`[TemplateGenerator] ⚠️ Feature cards error:`, getErrorMessage(error));
+  }
+
+  // 9c. Rewrite form labels and sci-fi content to be professional
+  try {
+    const formLabelReplacements: Record<string, string> = {
+      // Form labels
+      'Neural ID': 'Full Name',
+      'Quantum Address': 'Email Address',
+      'Transmission': 'Message',
+      'neural link': 'month',
+      'per neural link': 'per month',
+      'Enter your designation': 'Enter your name',
+      'Compose your message to the network': 'How can we help you?',
+      'Transmit Message': 'Send Message',
+      'Access Terminal': 'Get Started',
+      'All realities reserved': 'All rights reserved',
+
+      // Feature names
+      'quantum processing': 'professional service',
+      'quantum encryption': 'data security',
+      'quantum-inspired algorithms': 'advanced technology',
+      'Neural Networks': 'Expert Support',
+      'Quantum Processing': 'Fast Processing',
+      'Quantum Encryption': 'Data Security',
+      'neural support': 'customer support',
+      'Priority neural support': 'Priority support',
+      'Direct neural interface': 'Dedicated account manager',
+      'Quantum entanglement sync': 'Real-time collaboration',
+      'Advanced quantum algorithms': 'Advanced automation',
+      'Basic quantum processing': 'Essential features',
+
+      // Pricing plan names
+      '>Nexus<': '>Professional<',
+
+      // Hero section - subtitle
+      'The quantum leap in team collaboration': 'Expert technology solutions for your business',
+      'Connect minds, sync realities, achieve impossible': 'Reliable, secure, and efficient IT services',
+      'The quantum leap in team collaboration. Connect minds, sync realities, achieve impossible.': 'Expert technology solutions for your business. Reliable, secure, and efficient IT services.',
+
+      // Contact section
+      'Send a transmission through the neural network': 'Get in touch with our team',
+      'Send a Message through the neural network': 'Get in touch with our team',
+      'through the neural network': 'with our team',
+
+      // Feature descriptions
+      'quantum-inspired': 'cutting-edge',
+      'handle complex workflows in microseconds': 'streamline your business operations',
+    };
+
+    let labelReplacements = 0;
+    for (const [oldText, newText] of Object.entries(formLabelReplacements)) {
+      const regex = new RegExp(oldText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+      const matches = updatedHtml.match(regex);
+      if (matches) {
+        updatedHtml = updatedHtml.replace(regex, () => newText);
+        labelReplacements += matches.length;
+      }
+    }
+
+    if (labelReplacements > 0) {
+      changesCount += labelReplacements;
+      console.log(`[TemplateGenerator] ✅ Replaced ${labelReplacements} sci-fi/placeholder terms with professional text`);
+    }
+  } catch (error) {
+    console.error(`[TemplateGenerator] ⚠️ Form label replacement error:`, getErrorMessage(error));
+  }
+
+  // 9d. Update page title to be professional
+  try {
+    const titleRegex = /<title>([^<]+)<\/title>/i;
+    const titleMatch = updatedHtml.match(titleRegex);
+    if (titleMatch) {
+      const originalTitle = titleMatch[1];
+      // Only update if it contains template-specific terms
+      if (!originalTitle.toLowerCase().includes(clientInfo.businessName.toLowerCase()) ||
+          originalTitle.toLowerCase().includes('nexus') ||
+          originalTitle.toLowerCase().includes('flow') ||
+          originalTitle.toLowerCase().includes('collaboration')) {
+        const newTitle = `${escapeHtml(clientInfo.businessName)} | Professional ${escapeHtml(clientInfo.industry)} Services`;
+        updatedHtml = updatedHtml.replace(titleRegex, `<title>${newTitle}</title>`);
+        changesCount++;
+        console.log(`[TemplateGenerator] ✅ Updated page title: "${originalTitle}" → "${newTitle}"`);
+      }
+    }
+  } catch (error) {
+    console.error(`[TemplateGenerator] ⚠️ Title update error:`, getErrorMessage(error));
+  }
+
+  // 9e. Replace hero title (NEXUSFLOW style spans) with business name
+  try {
+    // Pattern for NexusFlow-style hero titles with spans
+    const heroTitlePattern = /<span[^>]*class="[^"]*hero-nexus[^"]*"[^>]*>[^<]*<\/span>\s*<span[^>]*class="[^"]*hero-flow[^"]*"[^>]*>[^<]*<\/span>/gi;
+    const heroTitleMatch = updatedHtml.match(heroTitlePattern);
+    if (heroTitleMatch) {
+      // Split business name into two parts for styling
+      const nameParts = clientInfo.businessName.split(' ');
+      let part1: string, part2: string;
+      if (nameParts.length >= 2) {
+        part1 = nameParts[0];
+        part2 = nameParts.slice(1).join(' ');
+      } else {
+        part1 = clientInfo.businessName;
+        part2 = 'Services';
+      }
+      const newHeroTitle = `<span class="hero-nexus">${escapeHtml(part1.toUpperCase())}</span><span class="hero-flow">${escapeHtml(part2.toUpperCase())}</span>`;
+      updatedHtml = updatedHtml.replace(heroTitlePattern, newHeroTitle);
+      changesCount++;
+      console.log(`[TemplateGenerator] ✅ Replaced hero title with business name: "${part1} ${part2}"`);
+    }
+  } catch (error) {
+    console.error(`[TemplateGenerator] ⚠️ Hero title replacement error:`, getErrorMessage(error));
+  }
+
   console.log(`[TemplateGenerator] ✅ Total content changes: ${changesCount}`);
-  
+
   return { html: updatedHtml, changesCount };
 }
 
@@ -942,6 +1351,11 @@ async function rewriteAllContent(
  * Replace all colors with blue shades only
  */
 function replaceAllColorsWithBlue(html: string, css: string): { html: string; css: string } {
+  // Handle null/undefined inputs gracefully
+  if (!html && !css) {
+    return { html: html || '', css: css || '' };
+  }
+
   // Blue color palette - various shades
   const blueShades = [
     '#0066cc', // Primary blue
@@ -990,56 +1404,70 @@ function replaceAllColorsWithBlue(html: string, css: string): { html: string; cs
     return blueShades[0];
   };
   
-  let updatedHtml = html;
-  let updatedCss = css;
-  
-  // Replace hex colors in CSS
+  let updatedHtml = html || '';
+  let updatedCss = css || '';
+
+  // Replace hex colors in CSS (only if CSS exists)
   const hexColorRegex = /#([0-9a-f]{3}|[0-9a-f]{6})\b/gi;
-  updatedCss = updatedCss.replace(hexColorRegex, (match) => {
-    if (match.toLowerCase() === '#fff' || match.toLowerCase() === '#ffffff' ||
-        match.toLowerCase() === '#000' || match.toLowerCase() === '#000000') {
-      return match; // Keep pure white and black
-    }
-    return getBlueReplacement(match);
-  });
-  
-  // Replace hex colors in inline styles
-  updatedHtml = updatedHtml.replace(/style=["']([^"']*)["']/gi, (match, styleContent) => {
-    const updatedStyle = styleContent.replace(hexColorRegex, (colorMatch) => {
-      if (colorMatch.toLowerCase() === '#fff' || colorMatch.toLowerCase() === '#ffffff' ||
-          colorMatch.toLowerCase() === '#000' || colorMatch.toLowerCase() === '#000000') {
-        return colorMatch; // Keep pure white and black
+  if (updatedCss) {
+    updatedCss = updatedCss.replace(hexColorRegex, (match: string) => {
+      if (match.toLowerCase() === '#fff' || match.toLowerCase() === '#ffffff' ||
+          match.toLowerCase() === '#000' || match.toLowerCase() === '#000000') {
+        return match; // Keep pure white and black
       }
-      return getBlueReplacement(colorMatch);
+      return getBlueReplacement(match);
     });
-    return `style="${updatedStyle}"`;
-  });
-  
+  }
+
+  // Replace hex colors in inline styles (only if HTML exists)
+  if (updatedHtml) {
+    updatedHtml = updatedHtml.replace(/style=["']([^"']*)["']/gi, (match: string, styleContent: string) => {
+      const updatedStyle = styleContent.replace(hexColorRegex, (colorMatch: string) => {
+        if (colorMatch.toLowerCase() === '#fff' || colorMatch.toLowerCase() === '#ffffff' ||
+            colorMatch.toLowerCase() === '#000' || colorMatch.toLowerCase() === '#000000') {
+          return colorMatch; // Keep pure white and black
+        }
+        return getBlueReplacement(colorMatch);
+      });
+      return `style="${updatedStyle}"`;
+    });
+  }
+
   // Replace rgb/rgba colors
   const rgbRegex = /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/gi;
-  updatedCss = updatedCss.replace(rgbRegex, (match, r, g, b) => {
-    const brightness = (parseInt(r) + parseInt(g) + parseInt(b)) / 3;
-    if (brightness < 50) {
-      return 'rgb(0, 61, 122)'; // Dark blue
-    } else if (brightness > 200) {
-      return 'rgb(77, 166, 255)'; // Light blue
-    }
-    return 'rgb(0, 102, 204)'; // Primary blue
-  });
-  
-  updatedHtml = updatedHtml.replace(/style=["']([^"']*)["']/gi, (match, styleContent) => {
-    const updatedStyle = styleContent.replace(rgbRegex, (colorMatch, r, g, b) => {
+  if (updatedCss) {
+    updatedCss = updatedCss.replace(rgbRegex, (_match: string, _r: string, _g: string, _b: string) => {
+      const r = _r;
+      const g = _g;
+      const b = _b;
       const brightness = (parseInt(r) + parseInt(g) + parseInt(b)) / 3;
       if (brightness < 50) {
-        return 'rgb(0, 61, 122)';
+        return 'rgb(0, 61, 122)'; // Dark blue
       } else if (brightness > 200) {
-        return 'rgb(77, 166, 255)';
+        return 'rgb(77, 166, 255)'; // Light blue
       }
-      return 'rgb(0, 102, 204)';
+      return 'rgb(0, 102, 204)'; // Primary blue
     });
-    return `style="${updatedStyle}"`;
-  });
-  
+  }
+
+  if (updatedHtml) {
+    updatedHtml = updatedHtml.replace(/style=["']([^"']*)["']/gi, (match: string, styleContent: string) => {
+      const updatedStyle = styleContent.replace(rgbRegex, (_colorMatch: string, _r: string, _g: string, _b: string) => {
+        const r = _r;
+        const g = _g;
+        const b = _b;
+        const brightness = (parseInt(r) + parseInt(g) + parseInt(b)) / 3;
+        if (brightness < 50) {
+          return 'rgb(0, 61, 122)';
+        } else if (brightness > 200) {
+          return 'rgb(77, 166, 255)';
+        }
+        return 'rgb(0, 102, 204)';
+      });
+      return `style="${updatedStyle}"`;
+    });
+  }
+
   // Replace common color names with blue
   const colorNameMap: Record<string, string> = {
     'red': blueShades[0],
@@ -1053,7 +1481,7 @@ function replaceAllColorsWithBlue(html: string, css: string): { html: string; cs
     'grey': blueShades[4],
   };
   
-  Object.entries(colorNameMap).forEach(([colorName, blueColor]) => {
+  Object.entries(colorNameMap).forEach(([colorName, blueColor]: [string, string]) => {
     const colorRegex = new RegExp(`\\b${colorName}\\b`, 'gi');
     updatedCss = updatedCss.replace(colorRegex, () => blueColor);
   });
@@ -1115,6 +1543,70 @@ function cleanupHtml(html: string): string {
   console.log(`[TemplateGenerator] 🧹 Cleaned up ${removedCount} tracking scripts (safe mode)`);
   
   return cleanHtml;
+}
+
+// ============================================
+// CSS INJECTION - FIX FOR BROKEN TEMPLATES
+// ============================================
+
+/**
+ * Remove external CSS links and inject CSS inline into HTML
+ * This ensures the website works standalone without external dependencies
+ */
+function injectCssIntoHtml(html: string, css: string): string {
+  if (!html) return '';
+  if (!css) return html;
+
+  let updatedHtml = html;
+
+  // Step 1: Remove all external CSS link tags (vendor, assets, etc.)
+  // These reference files that don't exist in output directory
+  const externalCssLinkRegex = /<link[^>]*rel=["']stylesheet["'][^>]*href=["'](?!https?:\/\/)(?!\/\/)[^"']*\.css["'][^>]*\/?>/gi;
+  const externalCssLinkRegex2 = /<link[^>]*href=["'](?!https?:\/\/)(?!\/\/)[^"']*\.css["'][^>]*rel=["']stylesheet["'][^>]*\/?>/gi;
+
+  // Count removed links for logging
+  const removedLinks1 = (updatedHtml.match(externalCssLinkRegex) || []).length;
+  const removedLinks2 = (updatedHtml.match(externalCssLinkRegex2) || []).length;
+
+  updatedHtml = updatedHtml.replace(externalCssLinkRegex, '');
+  updatedHtml = updatedHtml.replace(externalCssLinkRegex2, '');
+
+  // Also remove empty line artifacts from removed links
+  updatedHtml = updatedHtml.replace(/\n\s*\n\s*\n/g, '\n\n');
+
+  console.log(`[TemplateGenerator] 🔗 Removed ${removedLinks1 + removedLinks2} external CSS links`);
+
+  // Step 2: Check if there's already a <style> tag in the head
+  const hasStyleTag = /<style[^>]*>[\s\S]*?<\/style>/i.test(updatedHtml);
+
+  // Step 3: Inject CSS inline into <head>
+  // Find the </head> tag and insert <style> block before it
+  const headCloseIndex = updatedHtml.toLowerCase().indexOf('</head>');
+
+  if (headCloseIndex !== -1) {
+    const styleBlock = `
+<style id="template-styles">
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TEMPLATE CSS - Injected by Merlin 8.0 Template Generator
+   All external CSS dependencies have been inlined for standalone operation
+   ═══════════════════════════════════════════════════════════════════════════════ */
+${css}
+</style>
+`;
+
+    updatedHtml =
+      updatedHtml.substring(0, headCloseIndex) +
+      styleBlock +
+      updatedHtml.substring(headCloseIndex);
+
+    console.log(`[TemplateGenerator] 💉 Injected ${css.length.toLocaleString()} chars of CSS into HTML`);
+  } else {
+    // No </head> found - try to add at the beginning of the file
+    console.warn('[TemplateGenerator] ⚠️ No </head> tag found, prepending style block');
+    updatedHtml = `<style id="template-styles">${css}</style>\n` + updatedHtml;
+  }
+
+  return updatedHtml;
 }
 
 // ============================================
@@ -1196,14 +1688,20 @@ export async function generateFromTemplate(
   if (!options?.skipCleanup) {
     html = cleanupHtml(html);
   }
-  
+
+  // Step 5: CRITICAL - Inject CSS inline into HTML
+  // This fixes the broken template CSS issue where external links don't work
+  if (css) {
+    html = injectCssIntoHtml(html, css);
+  }
+
   console.log(`\n[TemplateGenerator] ═══════════════════════════════════════`);
   console.log(`[TemplateGenerator] ✅ Generation Complete!`);
   console.log(`[TemplateGenerator] Images Replaced: ${replacedImages.length}`);
   console.log(`[TemplateGenerator] Content Changes: ${contentChanges}`);
   console.log(`[TemplateGenerator] Errors: ${errors.length}`);
   console.log(`[TemplateGenerator] ═══════════════════════════════════════\n`);
-  
+
   return {
     success: errors.length === 0,
     html,

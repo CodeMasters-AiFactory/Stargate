@@ -157,8 +157,8 @@ export function ServicesDashboard() {
     // Route to appropriate view based on service
     switch (serviceId) {
       case 'websites':
-        // Go to package selection first, then wizard
-        setState(prev => ({ ...prev, currentView: 'merlin-packages' }));
+        // Go directly to website wizard (has built-in package selection)
+        setState(prev => ({ ...prev, currentView: 'stargate-websites' }));
         break;
       case 'stargate':
         setState(prev => ({ ...prev, currentView: 'website' }));

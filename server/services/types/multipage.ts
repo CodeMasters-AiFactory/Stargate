@@ -25,7 +25,7 @@ export interface PageSpec {
 
 export interface SectionSpec {
   id: string;
-  type: 'hero' | 'features' | 'testimonials' | 'pricing' | 'contact' | 'cta' | 'gallery' | 'team' | 'stats' | 'faq';
+  type: 'hero' | 'features' | 'testimonials' | 'pricing' | 'contact' | 'cta' | 'gallery' | 'team' | 'stats' | 'faq' | 'services' | 'about' | 'content';
   title: string;
   content: string;
   order: number;
@@ -73,6 +73,7 @@ export interface DesignSystem {
     sizes: {
       h1: string;
       h2: string;
+      h3?: string;
       body: string;
     };
   };

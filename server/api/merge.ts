@@ -17,12 +17,13 @@ export function registerMergeRoutes(app: Express) {
    * POST /api/merge/preview
    * Merge design template with content template
    */
-  app.post('/api/merge/preview', async (req: Request, res: Response) => {
+  app.post('/api/merge/preview', async (req: Request, res: Response): Promise<void> => {
     try {
       const { designTemplate, contentTemplate } = req.body;
 
       if (!designTemplate || !contentTemplate) {
-        return res.status(400).json({ error: 'Both designTemplate and contentTemplate are required' });
+        res.status(400).json({ error: 'Both designTemplate and contentTemplate are required' });
+        return;
       }
 
       // Ensure templates have HTML content - load from database if needed
@@ -39,13 +40,13 @@ export function registerMergeRoutes(app: Express) {
           if (db) {
             const [dbTemplate] = await db.select().from(brandTemplates).where(eq(brandTemplates.id, designTemplate.id));
             if (dbTemplate) {
-              const contentData = (dbTemplate.contentData as any) || {};
+              const contentData = (dbTemplate.contentData as Record<string, unknown>) || {};
               designHtml = contentData.html || '';
               designTemplate.contentData = { html: designHtml, css: dbTemplate.css || '' };
             }
           }
-        } catch (err) {
-          console.warn('[Merge API] Failed to load design template HTML from database:', err);
+        } catch (_err: unknown) {
+          console.warn('[Merge API] Failed to load design template HTML from database:', _err);
         }
       }
 
@@ -58,22 +59,24 @@ export function registerMergeRoutes(app: Express) {
           if (db) {
             const [dbTemplate] = await db.select().from(brandTemplates).where(eq(brandTemplates.id, contentTemplate.id));
             if (dbTemplate) {
-              const contentData = (dbTemplate.contentData as any) || {};
+              const contentData = (dbTemplate.contentData as Record<string, unknown>) || {};
               contentHtml = contentData.html || '';
               contentTemplate.contentData = { html: contentHtml, css: dbTemplate.css || '' };
             }
           }
-        } catch (err) {
-          console.warn('[Merge API] Failed to load content template HTML from database:', err);
+        } catch (_err: unknown) {
+          console.warn('[Merge API] Failed to load content template HTML from database:', _err);
         }
       }
 
       if (!designHtml) {
-        return res.status(400).json({ error: 'Design template has no HTML content' });
+        res.status(400).json({ error: 'Design template has no HTML content' });
+        return;
       }
 
       if (!contentHtml) {
-        return res.status(400).json({ error: 'Content template has no HTML content' });
+        res.status(400).json({ error: 'Content template has no HTML content' });
+        return;
       }
 
       const merged = await mergeTemplates(designTemplate, contentTemplate);
@@ -93,7 +96,7 @@ export function registerMergeRoutes(app: Express) {
    * POST /api/merge/analyze-images
    * Analyze all images in merged template
    */
-  app.post('/api/merge/analyze-images', async (req: Request, res: Response) => {
+  app.post('/api/merge/analyze-images', async (req: Request, res: Response): Promise<void> => {
     try {
       const { mergedTemplate, businessContext, singleImageSrc } = req.body;
 
@@ -105,16 +108,19 @@ export function registerMergeRoutes(app: Express) {
             singleImageSrc,
             businessContext
           );
-          return res.json({ analyses: [analysis] });
+          res.json({ analyses: [analysis] });
+          return;
         } catch (err) {
           logError(err, 'Merge API - Analyze Single Image');
-          return res.status(500).json({ error: getErrorMessage(err) });
+          res.status(500).json({ error: getErrorMessage(err) });
+          return;
         }
       }
 
       // Handle full template analysis
       if (!mergedTemplate || !mergedTemplate.html) {
-        return res.status(400).json({ error: 'mergedTemplate with HTML is required' });
+        res.status(400).json({ error: 'mergedTemplate with HTML is required' });
+        return;
       }
 
       const analyses = await analyzeImages(mergedTemplate, businessContext);
@@ -130,12 +136,13 @@ export function registerMergeRoutes(app: Express) {
    * POST /api/merge/generate-image
    * Generate single image via Leonardo AI
    */
-  app.post('/api/merge/generate-image', async (req: Request, res: Response) => {
+  app.post('/api/merge/generate-image', async (req: Request, res: Response): Promise<void> => {
     try {
       const { prompt, section, businessContext } = req.body;
 
       if (!prompt) {
-        return res.status(400).json({ error: 'Prompt is required' });
+        res.status(400).json({ error: 'Prompt is required' });
+        return;
       }
 
       // Generate image using Leonardo
@@ -159,11 +166,11 @@ export function registerMergeRoutes(app: Express) {
    * POST /api/merge/rewrite-section
    * Rewrite content for a single section using SEO keywords
    */
-  app.post('/api/merge/rewrite-section', async (req: Request, res: Response) => {
+  app.post('/api/merge/rewrite-section', async (req: Request, res: Response): Promise<void> => {
     try {
-      const { 
-        html, 
-        sectionType, 
+      const {
+        html,
+        sectionType,
         businessContext,
         keywords,        // NEW: SEO keywords for this section
         allKeywords,     // NEW: All keywords for general context
@@ -171,7 +178,8 @@ export function registerMergeRoutes(app: Express) {
       } = req.body;
 
       if (!html) {
-        return res.status(400).json({ error: 'HTML content is required' });
+        res.status(400).json({ error: 'HTML content is required' });
+        return;
       }
 
       // Parse HTML
@@ -179,19 +187,19 @@ export function registerMergeRoutes(app: Express) {
 
       // Extract text content
       const headlines: string[] = [];
-      $('h1, h2, h3, h4, h5, h6').each((_, el) => {
+      $('h1, h2, h3, h4, h5, h6').each((_index, el) => {
         const text = $(el).text().trim();
         if (text) headlines.push(text);
       });
 
       const paragraphs: string[] = [];
-      $('p').each((_, el) => {
+      $('p').each((_index, el) => {
         const text = $(el).text().trim();
         if (text && text.length > 20) paragraphs.push(text);
       });
 
       const buttons: string[] = [];
-      $('button, .btn, a[class*="button"], a[class*="cta"]').each((_, el) => {
+      $('button, .btn, a[class*="button"], a[class*="cta"]').each((_index, el) => {
         const text = $(el).text().trim();
         if (text) buttons.push(text);
       });
@@ -228,8 +236,8 @@ export function registerMergeRoutes(app: Express) {
           
           const newHeadline = rewrittenContent.content?.trim().substring(0, 80) || headlines[0];
           $('h1, h2, h3, h4, h5, h6').first().text(newHeadline);
-        } catch (err) {
-          console.warn('[Merge API] Failed to rewrite headline, keeping original:', err);
+        } catch (_err: unknown) {
+          console.warn('[Merge API] Failed to rewrite headline, keeping original:', _err);
           // Keep original headline on error
         }
       }
@@ -251,8 +259,8 @@ export function registerMergeRoutes(app: Express) {
             
             const newParagraph = rewrittenContent.content?.trim().replace(/\n+/g, ' ') || paragraphs[i];
             $('p').eq(i).text(newParagraph);
-          } catch (err) {
-            console.warn(`[Merge API] Failed to rewrite paragraph ${i}, keeping original:`, err);
+          } catch (_err: unknown) {
+            console.warn(`[Merge API] Failed to rewrite paragraph ${i}, keeping original:`, _err);
             // Keep original paragraph on error
           }
         }
@@ -272,8 +280,8 @@ export function registerMergeRoutes(app: Express) {
           
           const newCTA = rewrittenContent.content?.trim().substring(0, 30) || buttons[0];
           $('button, .btn, a[class*="button"], a[class*="cta"]').first().text(newCTA);
-        } catch (err) {
-          console.warn('[Merge API] Failed to rewrite CTA, keeping original:', err);
+        } catch (_err: unknown) {
+          console.warn('[Merge API] Failed to rewrite CTA, keeping original:', _err);
           // Keep original CTA on error
         }
       }

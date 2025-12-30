@@ -12,10 +12,10 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
-  Play, Pause, RotateCcw, Zap, Move, Scale, RotateCw,
-  Eye, EyeOff, Clock, ArrowRight, ArrowDown, ArrowUp,
+  Play, Pause, Zap, Move, Scale, RotateCw,
+  Eye, Clock, ArrowRight, ArrowDown,
   Sparkles, Wand2, Copy, Trash2, Plus, ChevronDown
 } from 'lucide-react';
 
@@ -310,7 +310,7 @@ export function GSAPAnimationPanel({
       </div>
 
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="flex-1 flex flex-col">
+      <Tabs value={activeTab} onValueChange={(v: string) => setActiveTab(v as 'presets' | 'custom' | 'timeline')} className="flex-1 flex flex-col">
         <TabsList className="grid w-full grid-cols-3 m-2 mb-0">
           <TabsTrigger value="presets" className="text-xs">
             <Wand2 className="w-3 h-3 mr-1" />
@@ -330,8 +330,8 @@ export function GSAPAnimationPanel({
         <TabsContent value="presets" className="flex-1 overflow-auto m-0 p-2">
           <ScrollArea className="h-full">
             <div className="grid grid-cols-2 gap-2">
-              {Object.entries(ANIMATION_PRESETS).map(([type, preset]) => (
-                <Card 
+              {Object.entries(ANIMATION_PRESETS).map(([type, preset]: [string, Partial<GSAPAnimation>]) => (
+                <Card
                   key={type}
                   className="cursor-pointer hover:bg-muted/50 transition-colors"
                   onClick={() => addAnimation(type as AnimationType)}
@@ -779,7 +779,7 @@ export function GSAPAnimationPanel({
                   </Button>
                 </div>
               ) : (
-                animations.map((animation, index) => (
+                animations.map((animation: GSAPAnimation, _index: number) => (
                   <Card
                     key={animation.id}
                     className={`cursor-pointer transition-colors ${
@@ -793,7 +793,7 @@ export function GSAPAnimationPanel({
                     <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground w-4">{index + 1}</span>
+                          <span className="text-xs text-muted-foreground w-4">{_index + 1}</span>
                           <div>
                             <p className="text-sm font-medium">{animation.name}</p>
                             <p className="text-xs text-muted-foreground">

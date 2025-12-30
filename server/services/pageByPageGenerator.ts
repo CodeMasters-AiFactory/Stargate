@@ -10,11 +10,10 @@
  */
 
 import * as cheerio from 'cheerio';
-import { loadTemplate, type ScrapedTemplate } from './templateBasedGenerator';
 import { detectKeywords } from './keywordDetector';
 import { rewritePageContent } from './contentRewriter';
 import { generateContextualImages } from './leonardoContextual';
-import { runMandatoryQualityTests, type QualityCheck, type QualityTestResult } from './templateVerifier';
+import { runMandatoryQualityTests, type QualityCheck } from './templateVerifier';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 import { broadcastHTMLUpdate, broadcastProgress, broadcastPageComplete } from './realtimePreview';
 
@@ -49,7 +48,7 @@ export interface PageByPageProgress {
  * Parse template HTML into individual pages
  * Intelligently extracts different pages from multi-page templates
  */
-function parsePages(html: string, baseUrl?: string): Array<{ name: string; html: string; slug: string }> {
+function parsePages(html: string, _baseUrl?: string): Array<{ name: string; html: string; slug: string }> {
   const $ = cheerio.load(html);
   const pages: Array<{ name: string; html: string; slug: string }> = [];
 
@@ -57,7 +56,7 @@ function parsePages(html: string, baseUrl?: string): Array<{ name: string; html:
   const navLinks = $('nav a[href], header a[href], footer a[href]').toArray();
   const pageMap = new Map<string, { name: string; url: string }>();
 
-  navLinks.forEach(link => {
+  navLinks.forEach((link): void => {
     const href = $(link).attr('href') || '';
     const linkText = $(link).text().trim();
     
@@ -84,8 +83,8 @@ function parsePages(html: string, baseUrl?: string): Array<{ name: string; html:
   // Extract page-specific content from main HTML
   // Strategy: Look for sections with IDs or classes matching page slugs
   const mainContent = $('main, #main, .main-content, .content, body').first();
-  
-  pageMap.forEach((pageInfo, slug) => {
+
+  pageMap.forEach((pageInfo, slug): void => {
     let pageHtml = html; // Start with full HTML
     
     // Try to find page-specific content
@@ -158,7 +157,7 @@ export async function generatePageByPage(
     address: string;
   },
   onPageProgress?: (progress: PageByPageProgress) => void,
-  websiteId?: string // For real-time preview
+  websiteId?: string
 ): Promise<PageGenerationResult[]> {
   const results: PageGenerationResult[] = [];
 
@@ -286,7 +285,7 @@ export async function generatePageByPage(
       const qualityResult = await runMandatoryQualityTests(
         pageHtml,
         mergedTemplate.css,
-        (check, passed) => {
+        (_check: QualityCheck, _passed: boolean): void => {
           checkCount++;
           phases[3].progress = Math.floor((checkCount / 7) * 100); // 7 total checks
         }
@@ -336,14 +335,14 @@ export async function generatePageByPage(
 
       console.log(`[PageByPageGenerator] ✅ Page ${pageIndex + 1}/${pages.length} complete: ${page.name}`);
 
-    } catch (error) {
-      logError(error, `PageByPageGenerator - Page ${pageIndex + 1}`);
+    } catch (_error: unknown) {
+      logError(_error, `PageByPageGenerator - Page ${pageIndex + 1}`);
       
       // Mark failed phase
       const failedPhase = phases.find(p => p.status === 'in-progress');
       if (failedPhase) {
         failedPhase.status = 'error';
-        failedPhase.message = getErrorMessage(error);
+        failedPhase.message = getErrorMessage(_error);
       }
 
       // Still add result with error

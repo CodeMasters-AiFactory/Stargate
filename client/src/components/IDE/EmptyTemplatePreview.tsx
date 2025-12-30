@@ -18,13 +18,8 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   ArrowRight,
   ArrowLeft,
-  Eye,
-  FileText,
   Loader2,
   AlertCircle,
-  CheckCircle,
-  Eraser,
-  Sparkles,
 } from 'lucide-react';
 import { stripContent, createStrippedDocument } from '@/utils/contentStripper';
 import type { BrandTemplate } from '@/types/templates';
@@ -42,30 +37,30 @@ export function EmptyTemplatePreview({
 }: EmptyTemplatePreviewProps) {
   const [originalHtml, setOriginalHtml] = useState<string>('');
   const [strippedHtml, setStrippedHtml] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [_error, setError] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<'stripped' | 'original'>('stripped');
 
   // Load and strip template
   useEffect(() => {
-    const loadAndStrip = async () => {
+    const loadAndStrip = async (): Promise<void> => {
       setLoading(true);
       setError(null);
 
       try {
         // Get HTML from template contentData or fetch from API
-        let htmlContent = designTemplate.contentData?.html || '';
+        let htmlContent: string = designTemplate.contentData?.html || '';
 
         // If HTML not in template, fetch from API
         if (!htmlContent) {
           try {
-            const response = await fetch(`/api/templates/${designTemplate.id}/html`);
+            const response: Response = await fetch(`/api/templates/${designTemplate.id}/html`);
             if (response.ok) {
-              const data = await response.json();
-              htmlContent = data.html || '';
+              const data: Record<string, unknown> = await response.json();
+              htmlContent = (data.html as string) || '';
             }
-          } catch (err) {
-            console.warn('[EmptyTemplatePreview] Failed to fetch template HTML:', err);
+          } catch (_error: unknown) {
+            console.warn('[EmptyTemplatePreview] Failed to fetch template HTML:', _error);
           }
         }
 
@@ -74,29 +69,29 @@ export function EmptyTemplatePreview({
         }
 
         // Store original
-        const css = designTemplate.css || '';
-        const fullOriginal = createStrippedDocument(htmlContent, css);
+        const css: string = designTemplate.css || '';
+        const _fullOriginal: string = createStrippedDocument(htmlContent, css);
         setOriginalHtml(htmlContent + (css ? `<style>${css}</style>` : ''));
 
         // Strip content
         console.log('[EmptyTemplatePreview] Stripping content from template...');
-        const stripped = stripContent(htmlContent);
-        const fullStripped = createStrippedDocument(stripped, css);
+        const stripped: string = stripContent(htmlContent);
+        const fullStripped: string = createStrippedDocument(stripped, css);
         setStrippedHtml(fullStripped);
 
         console.log('[EmptyTemplatePreview] Content stripped successfully');
         setLoading(false);
-      } catch (err) {
-        console.error('[EmptyTemplatePreview] Error:', err);
-        setError(err instanceof Error ? err.message : 'Failed to process template');
+      } catch (_error: unknown) {
+        console.error('[EmptyTemplatePreview] Error:', _error);
+        setError(_error instanceof Error ? _error.message : 'Failed to process template');
         setLoading(false);
       }
     };
 
-    loadAndStrip();
+    void loadAndStrip();
   }, [designTemplate]);
 
-  const handleContinue = () => {
+  const handleContinue = (): void => {
     onContinue(strippedHtml);
   };
 
@@ -112,11 +107,11 @@ export function EmptyTemplatePreview({
     );
   }
 
-  if (error) {
+  if (_error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[600px] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
-        <p className="text-red-400 text-lg mb-4">{error}</p>
+        <p className="text-red-400 text-lg mb-4">{_error}</p>
         {onBack && (
           <Button onClick={onBack} variant="outline" className="border-slate-600 text-slate-300">
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -140,15 +135,15 @@ export function EmptyTemplatePreview({
         </div>
 
         {/* View Toggle */}
-        <Tabs value={activeView} onValueChange={(v) => setActiveView(v as 'stripped' | 'original')}>
+        <Tabs value={activeView} onValueChange={(v: string) => setActiveView(v as 'stripped' | 'original')}>
           <TabsList className="bg-slate-800/80 border border-slate-700/50 h-6">
-            <TabsTrigger 
-              value="stripped" 
+            <TabsTrigger
+              value="stripped"
               className="data-[state=active]:bg-cyan-600 data-[state=active]:text-white text-[10px] h-5 px-2"
             >
               Empty
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="original"
               className="data-[state=active]:bg-slate-600 data-[state=active]:text-white text-[10px] h-5 px-2"
             >

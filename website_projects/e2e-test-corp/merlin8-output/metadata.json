@@ -1,0 +1,19 @@
+{
+  "businessName": "E2E Test Corp",
+  "industry": "business",
+  "industryName": "General Business",
+  "generatedAt": "2025-12-29T14:17:29.089Z",
+  "version": "8.0",
+  "images": [],
+  "userPreferences": {
+    "businessType": "small",
+    "tagline": "Testing Excellence",
+    "features": [
+      "contact-form"
+    ],
+    "pages": [
+      "home",
+      "contact"
+    ]
+  }
+}

@@ -238,10 +238,10 @@ export async function deployToCDN(
     deployment.url = `https://${projectId.toLowerCase()}.${providerType}.app`;
     
     console.log(`[CDN] Deployed to ${deployment.url}`);
-  } catch (error) {
+  } catch (_error: unknown) {
     deployment.status = 'failed';
-    console.error('[CDN] Deployment failed:', error);
-    throw error;
+    console.error('[CDN] Deployment failed:', _error);
+    throw _error;
   }
 
   deployment.updatedAt = new Date();
@@ -340,11 +340,11 @@ function getCacheControl(path: string, config: CDNConfig): string {
 /**
  * Deploy to Vercel Edge Network
  */
-async function deployToVercel(deployment: CDNDeployment, assets: CDNAsset[]): Promise<void> {
+async function deployToVercel(_deployment: CDNDeployment, assets: CDNAsset[]): Promise<void> {
   // Simulate Vercel deployment
   console.log(`[CDN] Deploying ${assets.length} assets to Vercel Edge...`);
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   // In production, use Vercel SDK
   // const vercel = new Vercel({ token: process.env.VERCEL_TOKEN });
   // await vercel.deploy({ ... });
@@ -353,27 +353,27 @@ async function deployToVercel(deployment: CDNDeployment, assets: CDNAsset[]): Pr
 /**
  * Deploy to Netlify CDN
  */
-async function deployToNetlify(deployment: CDNDeployment, assets: CDNAsset[]): Promise<void> {
+async function deployToNetlify(_deployment: CDNDeployment, assets: CDNAsset[]): Promise<void> {
   console.log(`[CDN] Deploying ${assets.length} assets to Netlify CDN...`);
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   // In production, use Netlify SDK
 }
 
 /**
  * Deploy to Cloudflare Pages
  */
-async function deployToCloudflare(deployment: CDNDeployment, assets: CDNAsset[]): Promise<void> {
+async function deployToCloudflare(_deployment: CDNDeployment, assets: CDNAsset[]): Promise<void> {
   console.log(`[CDN] Deploying ${assets.length} assets to Cloudflare Pages...`);
   await new Promise(resolve => setTimeout(resolve, 1000));
-  
+
   // In production, use Cloudflare SDK
 }
 
 /**
  * Default deployment (generate static files)
  */
-async function deployToDefault(deployment: CDNDeployment, assets: CDNAsset[]): Promise<void> {
+async function deployToDefault(_deployment: CDNDeployment, assets: CDNAsset[]): Promise<void> {
   console.log(`[CDN] Preparing ${assets.length} assets for static deployment...`);
   await new Promise(resolve => setTimeout(resolve, 500));
 }

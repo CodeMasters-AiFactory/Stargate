@@ -5,7 +5,7 @@
 
 import { db } from '../db';
 import { analyticsEvents } from '@shared/schema';
-import { eq, and, gte, desc, sql } from 'drizzle-orm';
+import { eq, and, gte, desc } from 'drizzle-orm';
 
 export interface VisitorPrediction {
   visitorId: string;
@@ -64,7 +64,7 @@ class PredictiveAnalyticsService {
       // Calculate conversion probability based on patterns
       const conversionRate = this.calculateConversionRate(similarVisitors, visitorData);
       const predictedValue = this.predictValue(visitorData, conversionRate);
-      const recommendedActions = this.generateRecommendations(visitorData, conversionRate);
+      const recommendedActions = this.generateVisitorRecommendations(visitorData, conversionRate);
       const riskFactors = this.identifyRiskFactors(visitorData);
 
       return {
@@ -74,8 +74,8 @@ class PredictiveAnalyticsService {
         recommendedActions,
         riskFactors,
       };
-    } catch (error) {
-      console.error('[PredictiveAnalytics] Prediction error:', error);
+    } catch (_error: unknown) {
+      console.error('[PredictiveAnalytics] Prediction error:', _error);
       return this.getDefaultPrediction(visitorData.sessionId);
     }
   }
@@ -110,16 +110,16 @@ class PredictiveAnalyticsService {
         .orderBy(desc(analyticsEvents.timestamp));
 
       // Analyze session behavior
-      const pageViews = sessionEvents.filter(e => e.eventType === 'pageview').length;
+      const pageViews = sessionEvents.filter((e: { eventType?: string | null }) => e.eventType === 'pageview').length;
       const timeOnSite = this.calculateTimeOnSite(sessionEvents);
-      const hasEngagement = sessionEvents.some(e => e.eventType === 'click' || e.eventType === 'scroll');
+      const hasEngagement = sessionEvents.some((e: { eventType?: string | null }) => e.eventType === 'click' || e.eventType === 'scroll');
 
       // Calculate conversion probability
       let probability = 0.1; // Base probability
       if (pageViews > 3) probability += 0.2;
       if (timeOnSite > 120) probability += 0.2;
       if (hasEngagement) probability += 0.3;
-      if (sessionEvents.some(e => e.path?.includes('pricing') || e.path?.includes('contact'))) {
+      if (sessionEvents.some((e: { path?: string | null }) => e.path?.includes('pricing') || e.path?.includes('contact'))) {
         probability += 0.2;
       }
 
@@ -141,8 +141,8 @@ class PredictiveAnalyticsService {
         predictedTimeToConvert: predictedTime,
         factors,
       };
-    } catch (error) {
-      console.error('[PredictiveAnalytics] Conversion prediction error:', error);
+    } catch (_error: unknown) {
+      console.error('[PredictiveAnalytics] Conversion prediction error:', _error);
       return {
         sessionId,
         conversionProbability: 0.1,
@@ -200,8 +200,8 @@ class PredictiveAnalyticsService {
         forecast,
         confidence: 0.8, // Would calculate based on data quality
       };
-    } catch (error) {
-      console.error('[PredictiveAnalytics] Trend analysis error:', error);
+    } catch (_error: unknown) {
+      console.error('[PredictiveAnalytics] Trend analysis error:', _error);
       return {
         metric,
         trend: 'stable',
@@ -216,7 +216,7 @@ class PredictiveAnalyticsService {
    * Generate recommendations
    */
   async generateRecommendations(
-    websiteId: string,
+    _websiteId: string,
     analytics: {
       pageViews: number;
       conversions: number;
@@ -267,19 +267,19 @@ class PredictiveAnalyticsService {
     };
   }
 
-  private calculateConversionRate(events: any[], visitorData: any): number {
+  private calculateConversionRate(events: Array<{ eventType?: string | null }>, _visitorData: { pageViews: number; timeOnSite: number }): number {
     // Simplified calculation
-    const conversions = events.filter(e => e.eventType === 'conversion' || e.eventType === 'purchase').length;
+    const conversions = events.filter((e: { eventType?: string | null }) => e.eventType === 'conversion' || e.eventType === 'purchase').length;
     const total = events.length;
     return total > 0 ? conversions / total : 0.1;
   }
 
-  private predictValue(visitorData: any, conversionRate: number): number {
+  private predictValue(visitorData: { pageViews: number }, conversionRate: number): number {
     // Simplified value prediction
     return visitorData.pageViews * conversionRate * 100; // Mock value
   }
 
-  private generateRecommendations(visitorData: any, conversionRate: number): string[] {
+  private generateVisitorRecommendations(_visitorData: { pageViews: number; timeOnSite: number }, conversionRate: number): string[] {
     const recommendations = [];
     if (conversionRate < 0.1) {
       recommendations.push('Improve page content');
@@ -288,7 +288,7 @@ class PredictiveAnalyticsService {
     return recommendations;
   }
 
-  private identifyRiskFactors(visitorData: any): string[] {
+  private identifyRiskFactors(visitorData: { pageViews: number; timeOnSite: number }): string[] {
     const factors = [];
     if (visitorData.timeOnSite < 30) {
       factors.push('Low engagement');
@@ -299,19 +299,19 @@ class PredictiveAnalyticsService {
     return factors;
   }
 
-  private calculateTimeOnSite(events: any[]): number {
+  private calculateTimeOnSite(events: Array<{ timestamp: Date | string }>): number {
     if (events.length < 2) return 0;
     const first = events[events.length - 1].timestamp;
     const last = events[0].timestamp;
     return (new Date(last).getTime() - new Date(first).getTime()) / 1000;
   }
 
-  private predictTimeToConvert(events: any[], probability: number): number {
+  private predictTimeToConvert(_events: Array<{ timestamp: Date | string }>, probability: number): number {
     // Simplified prediction
     return probability > 0.5 ? 15 : 45;
   }
 
-  private calculateDailyMetric(events: any[], metric: string, days: number): Array<{ date: string; value: number }> {
+  private calculateDailyMetric(events: Array<{ timestamp: Date | string }>, _metric: string, _days: number): Array<{ date: string; value: number }> {
     // Group events by date and calculate metric
     const daily = new Map<string, number[]>();
 

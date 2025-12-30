@@ -1,0 +1,62 @@
+{
+  "businessName": "Test Company 0233",
+  "industry": "racing",
+  "industryName": "Racing & Motorsport",
+  "generatedAt": "2025-12-29T14:05:53.694Z",
+  "version": "8.0-template",
+  "templateId": "downloaded-s61DU7Qt-villa-agency-real-estate-html5-template",
+  "images": [],
+  "userPreferences": {
+    "businessType": "small",
+    "tagline": "Excellence in Testing",
+    "goals": [
+      "leads",
+      "brand"
+    ],
+    "targetAudience": {
+      "ageGroups": [
+        "26-35",
+        "36-45"
+      ],
+      "audienceType": "b2b",
+      "incomeLevel": "mid"
+    },
+    "designPreferences": {
+      "colorMood": "professional",
+      "primaryColor": "#3b82f6",
+      "secondaryColor": "#8b5cf6",
+      "designElements": [
+        "hero-image",
+        "testimonials",
+        "stats"
+      ]
+    },
+    "features": [
+      "contact-form",
+      "social-links",
+      "newsletter"
+    ],
+    "pages": [
+      "home",
+      "about",
+      "services",
+      "contact"
+    ],
+    "contactInfo": {
+      "phone": "0825000058",
+      "email": "test@test.com",
+      "address": "123 Test Street",
+      "hours": "Mon-Fri 9am-5pm",
+      "socialPlatforms": [
+        "facebook",
+        "linkedin"
+      ]
+    },
+    "tone": {
+      "brandVoice": "professional",
+      "ctaStyle": "direct",
+      "keyMessage": "We deliver quality results."
+    },
+    "templateId": "downloaded-s61DU7Qt-villa-agency-real-estate-html5-template"
+  }
+}

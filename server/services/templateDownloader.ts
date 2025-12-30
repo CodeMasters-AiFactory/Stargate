@@ -5,13 +5,9 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as https from 'https';
-import * as http from 'http';
-import { promisify } from 'util';
-import { pipeline } from 'stream/promises';
 import * as unzipper from 'unzipper';
-import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
+import { Element } from 'domhandler';
 import { db } from '../db';
 import { brandTemplates } from '@shared/schema';
 import { getErrorMessage, logError } from '../utils/errorHandler';
@@ -84,7 +80,7 @@ async function extractZip(zipPath: string, extractPath: string): Promise<string[
   return new Promise((resolve, reject) => {
     fs.createReadStream(zipPath)
       .pipe(unzipper.Extract({ path: extractPath }))
-      .on('entry', (entry) => {
+      .on('entry', (entry: unzipper.Entry) => {
         extractedFiles.push(entry.path);
         entry.autodrain();
       })
@@ -145,13 +141,13 @@ async function extractTemplateData(
   
   // Extract CSS
   let css = '';
-  $('style').each((_, el) => {
+  $('style').each((_index: number, el: Element) => {
     css += $(el).html() || '';
   });
   
   // Extract external CSS links
   const cssLinks: string[] = [];
-  $('link[rel="stylesheet"]').each((_, el) => {
+  $('link[rel="stylesheet"]').each((_index: number, el: Element) => {
     const href = $(el).attr('href');
     if (href) {
       cssLinks.push(href);
@@ -166,14 +162,14 @@ async function extractTemplateData(
       if (fs.existsSync(cssPath)) {
         css += '\n' + fs.readFileSync(cssPath, 'utf-8');
       }
-    } catch (error) {
+    } catch (_error: unknown) {
       // Skip if can't read
     }
   }
   
   // Extract images
   const images: string[] = [];
-  $('img').each((_, el) => {
+  $('img').each((_index: number, el: Element) => {
     const src = $(el).attr('src');
     if (src && !src.startsWith('http')) {
       images.push(src);
@@ -368,21 +364,20 @@ export async function fetchTemplateMoTemplates(): Promise<TemplateInfo[]> {
       let foundOnPage = 0;
       
       // Find all template links - they have format like "605 Xmas Countdown" with href="/tm-605-xmas-countdown"
-      $('a[href*="/tm-"]').each((_, el) => {
+      $('a[href*="/tm-"]').each((_index: number, el: Element) => {
         const href = $(el).attr('href');
         const heading = $(el).closest('div').find('h2, h3, h4').first();
         const name = heading.text().trim() || $(el).text().trim() || $(el).find('img').attr('alt') || '';
-        
+
         if (href && name) {
           // Extract template number from URL (e.g., /tm-605-xmas-countdown -> 605)
           const match = href.match(/tm-(\d+)-/);
           if (match) {
-            const templateNum = match[1];
             const fullUrl = href.startsWith('http') ? href : `https://templatemo.com${href}`;
-            
+
             // Clean name (remove number prefix)
             const cleanName = name.replace(/^\d+\s+/, '').trim();
-            
+
             // Check if we already have this template
             if (!templates.find(t => t.url === fullUrl) && cleanName) {
               templates.push({
@@ -398,7 +393,7 @@ export async function fetchTemplateMoTemplates(): Promise<TemplateInfo[]> {
       });
       
       // Check if there's a next page
-      const nextPage = $('a').filter((_, el) => {
+      const nextPage = $('a').filter((_index: number, el: Element) => {
         const text = $(el).text().toLowerCase().trim();
         return text === 'next' || text === String(page + 1);
       });
@@ -408,7 +403,7 @@ export async function fetchTemplateMoTemplates(): Promise<TemplateInfo[]> {
       } else {
         page++;
         // Rate limit between pages
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise<void>((resolve) => setTimeout(resolve, 2000));
       }
     }
     
@@ -447,9 +442,9 @@ export async function downloadTemplateMoTemplates(limit?: number): Promise<void>
     // Download with rate limiting
     for (const template of templatesToDownload) {
       await downloadTemplate(template);
-      
+
       // Rate limit: 2 seconds between downloads
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise<void>((resolve) => setTimeout(resolve, 2000));
     }
     
     downloadProgress.status = 'complete';

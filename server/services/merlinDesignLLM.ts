@@ -19,7 +19,6 @@ import { generateCopyForSections, type SectionCopy } from '../ai/copywriterLLM';
 import { generateSEOForSite, type SEOResult } from '../ai/seoEngineLLM';
 import { planPages, type PlannedPage } from '../generator/pagePlanner';
 import { generateGlobalTheme, type GlobalTheme } from '../ai/themeEngineLLM';
-import { generateWebsiteCode, saveGeneratedCode } from '../generator/codeGenerator';
 import { generateMultiPageWebsite, saveMultiPageWebsite } from '../generator/multiPageGenerator';
 import { assessGeneratedWebsite, generateQualityReport, type QualityAssessment } from './qualityAssessment';
 import type { ProjectConfig } from './projectConfig';
@@ -27,7 +26,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type express from 'express';
 import { getErrorMessage, logError } from '../utils/errorHandler';
-import { cacheDesignStrategy, cacheSectionPlan, cacheStyleSystem, cacheSEOMetadata, cacheWrapped, generateCacheKey } from './cacheService';
+import { cacheDesignStrategy, cacheSectionPlan } from './cacheService';
 
 export interface GeneratedWebsite {
   projectSlug: string;
@@ -225,7 +224,7 @@ export async function generateWebsiteWithLLM(
           })(),
           
           // PHASE 2.5: v6.1 AI Section Planner - WITH CACHING
-          cacheSectionPlan(projectConfig.industry, projectConfig.goals || [], async () => {
+          cacheSectionPlan(projectConfig.industry, (projectConfig as any).goals || [], async () => {
             console.log('[AI Farm] Generating AI section plan in parallel...');
             return await generateSectionPlan(projectConfig);
           })
@@ -731,7 +730,7 @@ export async function generateWebsiteWithLLM(
         logError(phaseError, `Merlin Design LLM - Generation phase (iteration ${iteration})`);
         // If this is the first iteration, throw the error
         if (iteration === 1) {
-          throw new Error(`Generation failed in phase: ${phaseError.message}`);
+          throw new Error(`Generation failed in phase: ${getErrorMessage(phaseError)}`);
         }
         // Otherwise, continue to next iteration
         continue;
@@ -744,7 +743,7 @@ export async function generateWebsiteWithLLM(
     }
     
     // Ensure we have valid data before returning
-    if (!layout || !styleSystem || !copy || !code) {
+    if (!layout! || !styleSystem! || !copy! || !code!) {
       throw new Error('Generation failed: Missing required data after iterations');
     }
     
@@ -794,7 +793,6 @@ export async function generateWebsiteWithLLM(
       imagePlannerVersion: '6.5',
       copywriterVersion: '6.6',
       seoEngineVersion: '6.7',
-      multiPageVersion: '6.8',
       plannedImages: plannedImages || [],
       generatedImages: (layout as any).generatedImages || [],
       sectionsWithCopy: sectionCopies.map(c => c.sectionKey) || [],
@@ -1034,7 +1032,8 @@ async function downloadAndSaveImage(
 /**
  * Generate images for sections using AI-planned images (v6.5) - ENHANCED with local download
  */
-async function _generateSectionImagesV65(
+/** @internal Reserved for v6.5 image generation */
+export async function _generateSectionImagesV65(
   projectConfig: ProjectConfig,
   designContext: DesignContext,
   styleSystem: StyleSystem,
@@ -1063,8 +1062,8 @@ async function _generateSectionImagesV65(
     styleSystem.colors.neutrals?.[0]
   ].filter(Boolean) as string[];
 
-  const styleKeywords = designContext.brandVoice?.visualIdentityKeywords?.length
-    ? designContext.brandVoice.visualIdentityKeywords
+  const styleKeywords = (designContext.brandVoice as any)?.visualIdentityKeywords?.length
+    ? (designContext.brandVoice as any).visualIdentityKeywords
     : [
         designContext.emotionalTone,
         designContext.brandVoice.modernity,
@@ -1112,9 +1111,9 @@ async function _generateSectionImagesV65(
             businessContext,
             prompt: heroPlan.prompt,
             quality: 'hd',
-            artisticStyle: 'cinematic'
+            artisticStyle: 'photorealistic'
           });
-          
+
           // Download and save image locally
           const localPath = await downloadAndSaveImage(
             heroImage.url,
@@ -1181,7 +1180,7 @@ async function _generateSectionImagesV65(
             businessContext,
             prompt: primaryPlan.prompt,
             quality: primaryPlan.purpose === 'icon' ? 'standard' : 'hd',
-            artisticStyle: primaryPlan.styleHint?.includes('modern') ? 'modern' : 'photorealistic'
+            artisticStyle: primaryPlan.styleHint?.includes('modern') ? 'minimalist' : 'photorealistic'
           });
           
           // Download and save image locally
@@ -1242,7 +1241,7 @@ async function _generateSectionImagesV65(
                 businessContext,
                 prompt: plan.prompt,
                 quality: plan.purpose === 'icon' ? 'standard' : 'hd',
-                artisticStyle: plan.styleHint?.includes('modern') ? 'modern' : 'photorealistic'
+                artisticStyle: plan.styleHint?.includes('modern') ? 'minimalist' : 'photorealistic'
               });
               
               // Download and save image locally
@@ -1294,7 +1293,8 @@ async function _generateSectionImagesV65(
 /**
  * Generate hero/supporting images using DALL·E (Advanced Image Service) - DEPRECATED, use generateSectionImagesV65
  */
-async function _generateSectionImages(
+/** @internal Deprecated - use _generateSectionImagesV65 */
+export async function _generateSectionImages(
   projectConfig: ProjectConfig,
   designContext: DesignContext,
   designStrategy: DesignStrategy,
@@ -1339,7 +1339,7 @@ async function _generateSectionImages(
         businessContext,
         prompt: heroPrompt,
         quality: 'hd',
-        artisticStyle: 'cinematic'
+        artisticStyle: 'photorealistic'
       });
       sections[heroIndex].imageUrl = heroImage.url;
       sections[heroIndex].imageAlt = heroImage.alt || `Hero image for ${projectConfig.projectName}`;
@@ -1369,7 +1369,7 @@ async function _generateSectionImages(
         businessContext,
         prompt,
         quality: 'standard',
-        artisticStyle: target === 'about' ? 'modern' : 'minimalist'
+        artisticStyle: target === 'about' ? 'illustration' : 'minimalist'
       });
 
       sections[sectionIndex].imageUrl = image.url;

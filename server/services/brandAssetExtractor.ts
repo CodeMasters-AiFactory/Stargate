@@ -10,10 +10,6 @@ import puppeteer, { Page } from 'puppeteer';
 import * as cheerio from 'cheerio';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 import { extractDesignTokens } from './designTokenExtractor';
-import { extractAllImages, type ExtractedImage } from './imageExtractor';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as archiver from 'archiver';
 
 export interface BrandAssets {
   companyName: string;
@@ -59,7 +55,7 @@ export async function extractBrandAssets(url: string): Promise<BrandAssets> {
     await page.setViewport({ width: 1920, height: 1080 });
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise<void>(resolve => setTimeout(resolve, 2000));
 
     const html = await page.content();
     const $ = cheerio.load(html);
@@ -101,7 +97,7 @@ export async function extractBrandAssets(url: string): Promise<BrandAssets> {
 /**
  * Extract company name
  */
-function extractCompanyName(page: Page, $: cheerio.CheerioAPI): string {
+function extractCompanyName(_page: Page, $: cheerio.CheerioAPI): string {
   // Try title first
   const title = $('title').text().split('|')[0].split('-')[0].trim();
   if (title && title.length > 3) {
@@ -130,7 +126,7 @@ function extractTaglines($: cheerio.CheerioAPI): string[] {
   const taglines: string[] = [];
 
   // Common tagline selectors
-  $('[class*="tagline"], [class*="slogan"], [class*="headline"]').each((_, el) => {
+  $('[class*="tagline"], [class*="slogan"], [class*="headline"]').each((_index, el) => {
     const text = $(el).text().trim();
     if (text && text.length < 200) {
       taglines.push(text);
@@ -163,7 +159,7 @@ async function extractLogos(page: Page, $: cheerio.CheerioAPI, baseUrl: string):
   }
 
   // Logo images
-  $('img[class*="logo"], img[alt*="logo"], img[alt*="Logo"], header img, nav img').each((_, el) => {
+  $('img[class*="logo"], img[alt*="logo"], img[alt*="Logo"], header img, nav img').each((_index, el) => {
     const src = $(el).attr('src');
     if (src) {
       const logoUrl = src.startsWith('http') ? src : new URL(src, baseUrl).href;
@@ -246,7 +242,7 @@ async function extractFonts($: cheerio.CheerioAPI, baseUrl: string): Promise<Bra
   }
 
   // Extract from link tags (Google Fonts, etc.)
-  $('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"]').each((_, el) => {
+  $('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"]').each((_index, el) => {
     const href = $(el).attr('href');
     if (href && href.includes('family=')) {
       const fontMatch = href.match(/family=([^&:]+)/);
@@ -279,7 +275,7 @@ function extractContactInfo($: cheerio.CheerioAPI, baseUrl: string): BrandAssets
 
   // Extract social media links
   const socialMedia: Record<string, string> = {};
-  $('a[href*="facebook.com"], a[href*="twitter.com"], a[href*="instagram.com"], a[href*="linkedin.com"]').each((_, el) => {
+  $('a[href*="facebook.com"], a[href*="twitter.com"], a[href*="instagram.com"], a[href*="linkedin.com"]').each((_index, el) => {
     const href = $(el).attr('href') || '';
     if (href.includes('facebook.com')) socialMedia.facebook = href;
     if (href.includes('twitter.com') || href.includes('x.com')) socialMedia.twitter = href;

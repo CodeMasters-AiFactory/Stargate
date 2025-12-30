@@ -4,20 +4,22 @@
  * Coordinates all engines in the correct order
  */
 
-import type { ProjectConfig } from '../services/projectConfig';
 import { processIntakeForm, type IntakeFormData } from './intakeEngine';
-import { analyzeIndustry, type IndustryProfile } from './industryEngine';
-import { generatePagePlan, type PagePlan } from './pagePlannerEngine';
-import { generateDesignSystem, type DesignTokens } from './designSystemEngine';
+import { analyzeIndustry } from './industryEngine';
+import { generatePagePlan } from './pagePlannerEngine';
+import { generateDesignSystem } from './designSystemEngine';
 import { generateLayout, type GeneratedLayout } from './layoutEngine';
 import { generateResponsiveRules, type ResponsiveRules } from './responsiveEngine';
-import { generateImages, type GeneratedImage } from './imageEngine';
+import { generateImages } from './imageEngine';
 import { generateSectionCopy, type SectionCopy } from './copyEngine';
-import { generatePageSEO, generateSitemap, generateRobotsTxt, saveSEOFiles, type PageSEOData } from './seoEngine';
-import { assessWebsiteQuality, type QAReport } from './qaEngine';
+import { generatePageSEO, generateSitemap, generateRobotsTxt, saveSEOFiles } from './seoEngine';
+import { assessWebsiteQuality } from './qaEngine';
 import { deployWebsite, generateDeploymentSummary, saveDeploymentSummary, type DeploymentConfig, type DeploymentResult } from './deployEngine';
 import type { PlannedPage } from '../types/plannedPage';
-import type { ImagePlan } from '../types/imagePlan';
+import type { ImagePlan, GeneratedImage } from '../types/imagePlan';
+import type { DesignTokens } from '../types/designTokens';
+import type { PageSEOData } from '../types/seoTypes';
+import type { QAReport } from '../types/qaReport';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 
 export interface GenerationProgress {
@@ -109,16 +111,16 @@ export async function generateMerlin7Website(
     emitProgress(15, 'AI Layout Variants', 'Selecting variants', 50, 'Optimizing layouts...', onProgress);
     const layouts = new Map<string, GeneratedLayout>();
     for (const page of pagePlan.pages) {
-      const layout = await generateLayout(page, projectConfig, industryProfile);
+      const layout: GeneratedLayout = await generateLayout(page, projectConfig, industryProfile);
       layouts.set(page.id, layout);
     }
-    
+
     // PHASE 16: Responsive Layouts
     emitProgress(16, 'Responsive Layouts', 'Generating responsive', 53, 'Making responsive...', onProgress);
-    const responsiveRules = new Map<string, ResponsiveRules>();
+    const _responsiveRules = new Map<string, ResponsiveRules>();
     for (const [pageId, layout] of layouts.entries()) {
-      const rules = generateResponsiveRules(layout, designTokens);
-      responsiveRules.set(pageId, rules);
+      const rules: ResponsiveRules = generateResponsiveRules(layout, designTokens);
+      _responsiveRules.set(pageId, rules);
     }
     
     // PHASE 17: Image Planning
@@ -153,7 +155,7 @@ export async function generateMerlin7Website(
             priority: section.type === 'hero' ? 'high' : 'medium',
             colorHarmony: [designTokens.colors.primary[500], designTokens.colors.accent[500]],
             industryContext: projectConfig.industry,
-          });
+          } as ImagePlan);
         }
       }
     }
@@ -167,7 +169,7 @@ export async function generateMerlin7Website(
     const copies = new Map<string, SectionCopy>();
     for (const [pageId, layout] of layouts.entries()) {
       for (const section of layout.sections) {
-        const copy = await generateSectionCopy(section, projectConfig, industryProfile, designTokens);
+        const copy: SectionCopy = await generateSectionCopy(section, projectConfig, industryProfile, designTokens);
         copies.set(`${pageId}-${section.id}`, copy);
       }
     }
@@ -176,7 +178,7 @@ export async function generateMerlin7Website(
     emitProgress(20, 'SEO Metadata', 'Generating SEO', 66, 'Optimizing SEO...', onProgress);
     const seo = new Map<string, PageSEOData>();
     for (const page of pagePlan.pages) {
-      const pageSEO = await generatePageSEO(page, projectConfig, industryProfile);
+      const pageSEO: PageSEOData = await generatePageSEO(page, projectConfig, industryProfile);
       seo.set(page.id, pageSEO);
     }
     
@@ -225,7 +227,7 @@ export async function generateMerlin7Website(
       // Would regenerate and reassess
       if (qaReport) {
         try {
-          qaReport = await assessWebsiteQuality(localUrl, pagePlan.pages, iteration);
+          qaReport = await assessWebsiteQuality(localUrl, pagePlan.pages, iteration, projectConfig.projectSlug);
         } catch (error: unknown) {
           logError(error, `Merlin7 Orchestrator - QA iteration ${iteration}`);
           const errorMessage = getErrorMessage(error);

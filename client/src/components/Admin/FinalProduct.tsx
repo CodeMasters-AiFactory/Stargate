@@ -83,7 +83,7 @@ export function FinalProduct() {
             });
           }
         }
-      } catch (error) {
+      } catch (_error: unknown) {
         // Silent fail - status endpoint might not be available
       }
     };
@@ -647,7 +647,7 @@ export function FinalProduct() {
 
       if (data.success && data.templates?.length > 0) {
         // Double-check: Only include templates that actually passed QA
-        const qaPassedTemplates = data.templates.filter((t: any) => {
+        const qaPassedTemplates = data.templates.filter((t: Record<string, unknown>) => {
           // Check if template has passed all QA checks
           return t.contentRewritten && t.imagesRegenerated && t.seoEvaluated && t.hasHtml !== false;
         });
@@ -672,10 +672,10 @@ export function FinalProduct() {
 
       setTemplates([]);
       // Warning already shown via toast
-    } catch (error) {
-      console.error('Failed to fetch templates:', error);
-      toast({ 
-        title: 'Error', 
+    } catch (_error: unknown) {
+      console.error('Failed to fetch templates:', _error);
+      toast({
+        title: 'Error',
         description: 'Failed to load templates. Check server connection.',
         variant: 'destructive'
       });
@@ -728,14 +728,14 @@ export function FinalProduct() {
                   await fetchTemplates();
                 }
               }
-            } catch (e) {
+            } catch (_e: unknown) {
               // Skip invalid JSON
             }
           }
         }
       }
-    } catch (error) {
-      console.error('QA Verification failed:', error);
+    } catch (_error: unknown) {
+      console.error('QA Verification failed:', _error);
       toast({
         title: 'Error',
         description: 'Failed to run QA verification',

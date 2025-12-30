@@ -5,18 +5,6 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import type { GeneratedWebsitePackage, MultiPageWebsite, LegacyWebsiteContent } from '@/types/websiteBuilder';
-import { normalizeGeneratedWebsite } from '@/types/websiteBuilder';
-
-interface GeneratedWebsite {
-  id?: string;
-  name?: string;
-  description?: string;
-  template?: string;
-  code: GeneratedWebsitePackage;
-  requirements?: Record<string, unknown>;
-  createdAt?: string;
-}
 
 interface BuildingProgress {
   currentBlock: number;
@@ -44,7 +32,7 @@ interface UseWebsiteGenerationReturn {
  * Custom hook for managing website generation state and operations
  */
 export function useWebsiteGeneration(): UseWebsiteGenerationReturn {
-  const { toast } = useToast();
+  const { toast: _toast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
   const [buildingProgress, setBuildingProgress] = useState<BuildingProgress>({
     currentBlock: 0,

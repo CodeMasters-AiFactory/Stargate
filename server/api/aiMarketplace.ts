@@ -20,7 +20,7 @@ export function registerAIMarketplaceRoutes(app: Express): void {
    * GET /api/marketplace/features
    * List all marketplace features
    */
-  app.get('/api/marketplace/features', standardRateLimit(), async (req: Request, res: Response) => {
+  app.get('/api/marketplace/features', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       const filters = {
         category: req.query.category as string | undefined,
@@ -36,10 +36,10 @@ export function registerAIMarketplaceRoutes(app: Express): void {
         features,
         count: features.length,
       });
-    } catch (error) {
-      logError(error, 'AIMarketplace API - ListFeatures');
+    } catch (_error: unknown) {
+      logError(_error, 'AIMarketplace API - ListFeatures');
       res.status(500).json({
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -48,14 +48,15 @@ export function registerAIMarketplaceRoutes(app: Express): void {
    * GET /api/marketplace/features/search
    * Search features
    */
-  app.get('/api/marketplace/features/search', standardRateLimit(), async (req: Request, res: Response) => {
+  app.get('/api/marketplace/features/search', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       const query = req.query.q as string;
 
       if (!query) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'Query parameter "q" is required',
         });
+        return;
       }
 
       const features = searchFeatures(query);
@@ -65,10 +66,10 @@ export function registerAIMarketplaceRoutes(app: Express): void {
         features,
         count: features.length,
       });
-    } catch (error) {
-      logError(error, 'AIMarketplace API - SearchFeatures');
+    } catch (_error: unknown) {
+      logError(_error, 'AIMarketplace API - SearchFeatures');
       res.status(500).json({
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -77,25 +78,26 @@ export function registerAIMarketplaceRoutes(app: Express): void {
    * GET /api/marketplace/features/:featureId
    * Get feature by ID
    */
-  app.get('/api/marketplace/features/:featureId', standardRateLimit(), async (req: Request, res: Response) => {
+  app.get('/api/marketplace/features/:featureId', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       const { featureId } = req.params;
       const feature = getFeature(featureId);
 
       if (!feature) {
-        return res.status(404).json({
+        res.status(404).json({
           error: 'Feature not found',
         });
+        return;
       }
 
       res.json({
         success: true,
         feature,
       });
-    } catch (error) {
-      logError(error, 'AIMarketplace API - GetFeature');
+    } catch (_error: unknown) {
+      logError(_error, 'AIMarketplace API - GetFeature');
       res.status(500).json({
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -104,14 +106,15 @@ export function registerAIMarketplaceRoutes(app: Express): void {
    * POST /api/marketplace/features/register
    * Register a third-party feature
    */
-  app.post('/api/marketplace/features/register', standardRateLimit(), async (req: Request, res: Response) => {
+  app.post('/api/marketplace/features/register', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
-      const feature = req.body;
+      const feature = req.body as Record<string, unknown>;
 
       if (!feature.name || !feature.description || !feature.category) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'name, description, and category are required',
         });
+        return;
       }
 
       const registeredFeature = await registerFeature(feature);
@@ -120,10 +123,10 @@ export function registerAIMarketplaceRoutes(app: Express): void {
         success: true,
         feature: registeredFeature,
       });
-    } catch (error) {
-      logError(error, 'AIMarketplace API - RegisterFeature');
+    } catch (_error: unknown) {
+      logError(_error, 'AIMarketplace API - RegisterFeature');
       res.status(500).json({
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -132,26 +135,27 @@ export function registerAIMarketplaceRoutes(app: Express): void {
    * POST /api/marketplace/integrate
    * Integrate a feature into a website
    */
-  app.post('/api/marketplace/integrate', standardRateLimit(), async (req: Request, res: Response) => {
+  app.post('/api/marketplace/integrate', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
-      const { featureId, websiteId, config } = req.body;
+      const { featureId, websiteId, config } = req.body as Record<string, unknown>;
 
       if (!featureId || !websiteId) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'featureId and websiteId are required',
         });
+        return;
       }
 
-      const integration = await integrateFeature(featureId, websiteId, config || {});
+      const integration = await integrateFeature(featureId as string, websiteId as string, (config as Record<string, unknown>) || {});
 
       res.json({
         success: true,
         integration,
       });
-    } catch (error) {
-      logError(error, 'AIMarketplace API - IntegrateFeature');
+    } catch (_error: unknown) {
+      logError(_error, 'AIMarketplace API - IntegrateFeature');
       res.status(500).json({
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -160,7 +164,7 @@ export function registerAIMarketplaceRoutes(app: Express): void {
    * GET /api/marketplace/integrations/:websiteId
    * Get integrations for a website
    */
-  app.get('/api/marketplace/integrations/:websiteId', standardRateLimit(), async (req: Request, res: Response) => {
+  app.get('/api/marketplace/integrations/:websiteId', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const integrations = getWebsiteIntegrations(websiteId);
@@ -170,10 +174,10 @@ export function registerAIMarketplaceRoutes(app: Express): void {
         integrations,
         count: integrations.length,
       });
-    } catch (error) {
-      logError(error, 'AIMarketplace API - GetIntegrations');
+    } catch (_error: unknown) {
+      logError(_error, 'AIMarketplace API - GetIntegrations');
       res.status(500).json({
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });
@@ -182,27 +186,28 @@ export function registerAIMarketplaceRoutes(app: Express): void {
    * PUT /api/marketplace/integrations/:websiteId/:featureId/status
    * Update integration status
    */
-  app.put('/api/marketplace/integrations/:websiteId/:featureId/status', standardRateLimit(), async (req: Request, res: Response) => {
+  app.put('/api/marketplace/integrations/:websiteId/:featureId/status', standardRateLimit(), async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, featureId } = req.params;
-      const { status } = req.body;
+      const { status } = req.body as Record<string, unknown>;
 
-      if (!status || !['active', 'paused', 'error'].includes(status)) {
-        return res.status(400).json({
+      if (!status || !['active', 'paused', 'error'].includes(status as string)) {
+        res.status(400).json({
           error: 'status must be one of: active, paused, error',
         });
+        return;
       }
 
-      updateIntegrationStatus(websiteId, featureId, status);
+      updateIntegrationStatus(websiteId, featureId, status as string);
 
       res.json({
         success: true,
         message: 'Integration status updated',
       });
-    } catch (error) {
-      logError(error, 'AIMarketplace API - UpdateIntegrationStatus');
+    } catch (_error: unknown) {
+      logError(_error, 'AIMarketplace API - UpdateIntegrationStatus');
       res.status(500).json({
-        error: getErrorMessage(error),
+        error: getErrorMessage(_error),
       });
     }
   });

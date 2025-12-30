@@ -5,9 +5,6 @@
 
 import { generate } from './multiModelAIOrchestrator';
 import { getErrorMessage, logError } from '../utils/errorHandler';
-import { db } from '../db';
-import { brandTemplates } from '@shared/schema';
-import { eq } from 'drizzle-orm';
 
 export interface UserPreference {
   userId: string;
@@ -42,7 +39,7 @@ export interface DesignPrediction {
   confidence: number; // 0-1
   reasoning: string;
   alternatives: Array<{
-    design: any;
+    design: Record<string, unknown>;
     confidence: number;
     reasoning: string;
   }>;
@@ -58,7 +55,7 @@ export interface LearningInsight {
 // In-memory stores (use database in production)
 const userPreferences = new Map<string, UserPreference[]>();
 const designPatterns = new Map<string, DesignPattern>();
-const userBehavior = new Map<string, Array<{ action: string; timestamp: Date; context: any }>>();
+const userBehavior = new Map<string, Array<{ action: string; timestamp: Date; context: Record<string, unknown> }>>();
 
 /**
  * Learn from user design choices
@@ -67,8 +64,8 @@ export async function learnFromUserChoice(
   userId: string,
   choice: {
     element: string;
-    selectedDesign: any;
-    rejectedDesigns?: any[];
+    selectedDesign: Record<string, unknown>;
+    rejectedDesigns?: Record<string, unknown>[];
     context: {
       industry?: string;
       businessType?: string;
@@ -88,7 +85,7 @@ export async function learnFromUserChoice(
     userPreferences.set(userId, existingPreferences);
 
     // Update design pattern success rates
-    if (choice.selectedDesign.patternId) {
+    if (choice.selectedDesign.patternId && typeof choice.selectedDesign.patternId === 'string') {
       updatePatternSuccess(choice.selectedDesign.patternId, true);
     }
 
@@ -102,9 +99,9 @@ export async function learnFromUserChoice(
     userBehavior.set(userId, behaviors);
 
     console.log(`[NeuralDesigner] ✅ Learned ${preferences.length} preferences from user choice`);
-  } catch (error) {
-    logError(error, 'NeuralDesigner - LearnFromChoice', { userId });
-    throw new Error(`Failed to learn from user choice: ${getErrorMessage(error)}`);
+  } catch (_error: unknown) {
+    logError(_error, 'NeuralDesigner - LearnFromChoice', { userId });
+    throw new Error(`Failed to learn from user choice: ${getErrorMessage(_error)}`);
   }
 }
 
@@ -118,7 +115,7 @@ export async function predictDesignChoices(
     industry?: string;
     businessType?: string;
     targetAudience?: string;
-    currentDesign?: any;
+    currentDesign?: Record<string, unknown>;
   }
 ): Promise<DesignPrediction> {
   try {
@@ -173,9 +170,9 @@ Return as JSON.`;
     
     console.log(`[NeuralDesigner] ✅ Predicted design with ${(prediction.confidence * 100).toFixed(1)}% confidence`);
     return prediction;
-  } catch (error) {
-    logError(error, 'NeuralDesigner - PredictDesign', { userId });
-    throw new Error(`Failed to predict design choices: ${getErrorMessage(error)}`);
+  } catch (_error: unknown) {
+    logError(_error, 'NeuralDesigner - PredictDesign', { userId });
+    throw new Error(`Failed to predict design choices: ${getErrorMessage(_error)}`);
   }
 }
 
@@ -184,9 +181,9 @@ Return as JSON.`;
  */
 export async function generatePersonalizedDesigns(
   userId: string,
-  baseDesign: any,
+  baseDesign: Record<string, unknown>,
   count: number = 3
-): Promise<Array<{ design: any; confidence: number; reasoning: string }>> {
+): Promise<Array<{ design: Record<string, unknown>; confidence: number; reasoning: string }>> {
   try {
     console.log(`[NeuralDesigner] ✨ Generating ${count} personalized designs for user ${userId}...`);
 
@@ -212,13 +209,13 @@ Return as JSON array with design, confidence, and reasoning.`;
       prompt,
     });
 
-    const variations: Array<{ design: any; confidence: number; reasoning: string }> = JSON.parse(response.content);
-    
+    const variations: Array<{ design: Record<string, unknown>; confidence: number; reasoning: string }> = JSON.parse(response.content);
+
     console.log(`[NeuralDesigner] ✅ Generated ${variations.length} personalized designs`);
     return variations;
-  } catch (error) {
-    logError(error, 'NeuralDesigner - GeneratePersonalized');
-    throw new Error(`Failed to generate personalized designs: ${getErrorMessage(error)}`);
+  } catch (_error: unknown) {
+    logError(_error, 'NeuralDesigner - GeneratePersonalized');
+    throw new Error(`Failed to generate personalized designs: ${getErrorMessage(_error)}`);
   }
 }
 
@@ -261,12 +258,12 @@ Return as JSON array.`;
     });
 
     const insights: LearningInsight[] = JSON.parse(response.content);
-    
+
     console.log(`[NeuralDesigner] ✅ Generated ${insights.length} insights`);
     return insights;
-  } catch (error) {
-    logError(error, 'NeuralDesigner - GetInsights');
-    throw new Error(`Failed to get learning insights: ${getErrorMessage(error)}`);
+  } catch (_error: unknown) {
+    logError(_error, 'NeuralDesigner - GetInsights');
+    throw new Error(`Failed to get learning insights: ${getErrorMessage(_error)}`);
   }
 }
 
@@ -283,22 +280,22 @@ export async function registerDesignPattern(pattern: Omit<DesignPattern, 'id' | 
     };
 
     designPatterns.set(newPattern.id, newPattern);
-    
+
     console.log(`[NeuralDesigner] ✅ Registered design pattern: ${newPattern.name}`);
     return newPattern;
-  } catch (error) {
-    logError(error, 'NeuralDesigner - RegisterPattern');
-    throw new Error(`Failed to register design pattern: ${getErrorMessage(error)}`);
+  } catch (_error: unknown) {
+    logError(_error, 'NeuralDesigner - RegisterPattern');
+    throw new Error(`Failed to register design pattern: ${getErrorMessage(_error)}`);
   }
 }
 
 // Helper functions
 
-function extractPreferences(design: any, context: any): UserPreference[] {
+function extractPreferences(design: Record<string, unknown>, context: Record<string, unknown>): UserPreference[] {
   const preferences: UserPreference[] = [];
   const userId = 'current-user'; // Would come from context
 
-  if (design.colors) {
+  if (design.colors && Array.isArray(design.colors)) {
     design.colors.forEach((color: string) => {
       preferences.push({
         userId,
@@ -311,7 +308,7 @@ function extractPreferences(design: any, context: any): UserPreference[] {
     });
   }
 
-  if (design.layout) {
+  if (design.layout && typeof design.layout === 'string') {
     preferences.push({
       userId,
       preferenceType: 'layout',
@@ -322,7 +319,7 @@ function extractPreferences(design: any, context: any): UserPreference[] {
     });
   }
 
-  if (design.typography) {
+  if (design.typography && typeof design.typography === 'string') {
     preferences.push({
       userId,
       preferenceType: 'typography',
@@ -336,18 +333,20 @@ function extractPreferences(design: any, context: any): UserPreference[] {
   return preferences;
 }
 
-function findSimilarUsers(userId: string, context: any): Array<{ userId: string; preferences: string[] }> {
+function findSimilarUsers(userId: string, context: Record<string, unknown>): Array<{ userId: string; preferences: string[] }> {
   // Simplified - would use ML clustering in production
   const similar: Array<{ userId: string; preferences: string[] }> = [];
   
   // Find users with similar industry/context
   userPreferences.forEach((prefs, uid) => {
     if (uid !== userId && prefs.length > 0) {
-      const contextMatch = prefs.some(p => 
-        p.context.includes(context.industry || '') ||
-        p.context.includes(context.businessType || '')
+      const industry = typeof context.industry === 'string' ? context.industry : '';
+      const businessType = typeof context.businessType === 'string' ? context.businessType : '';
+      const contextMatch = prefs.some(p =>
+        p.context.includes(industry) ||
+        p.context.includes(businessType)
       );
-      
+
       if (contextMatch) {
         similar.push({
           userId: uid,
@@ -360,7 +359,7 @@ function findSimilarUsers(userId: string, context: any): Array<{ userId: string;
   return similar.slice(0, 5); // Top 5 similar users
 }
 
-function getSuccessfulPatterns(context: any): DesignPattern[] {
+function getSuccessfulPatterns(_context: Record<string, unknown>): DesignPattern[] {
   const patterns = Array.from(designPatterns.values());
   
   // Filter by success rate and relevance

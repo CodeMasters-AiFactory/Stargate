@@ -1,0 +1,1826 @@
+{
+  "testName": "Full Template Stress Test - 100 Websites",
+  "startTime": "2025-12-29T09:49:24.599Z",
+  "status": "completed",
+  "totalWebsites": 100,
+  "completed": 100,
+  "failed": 0,
+  "totalBugsFound": 0,
+  "totalBugsFixed": 0,
+  "websites": [
+    {
+      "websiteId": 1,
+      "businessName": "Thunder Racing",
+      "industry": "racing",
+      "projectSlug": "thunder-racing",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 2,
+      "businessName": "Speed Demons",
+      "industry": "racing",
+      "projectSlug": "speed-demons",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 3,
+      "businessName": "Apex Motorsport",
+      "industry": "racing",
+      "projectSlug": "apex-motorsport",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 4,
+      "businessName": "Velocity Racing",
+      "industry": "racing",
+      "projectSlug": "velocity-racing",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 5,
+      "businessName": "Turbo Track",
+      "industry": "racing",
+      "projectSlug": "turbo-track",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 6,
+      "businessName": "Circuit Masters",
+      "industry": "racing",
+      "projectSlug": "circuit-masters",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 7,
+      "businessName": "Racing Edge",
+      "industry": "racing",
+      "projectSlug": "racing-edge",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 8,
+      "businessName": "Pro Drift Academy",
+      "industry": "racing",
+      "projectSlug": "pro-drift-academy",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 9,
+      "businessName": "Fast Lane Racing",
+      "industry": "racing",
+      "projectSlug": "fast-lane-racing",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 10,
+      "businessName": "Championship Motors",
+      "industry": "racing",
+      "projectSlug": "championship-motors",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 11,
+      "businessName": "Bella Italia",
+      "industry": "restaurant",
+      "projectSlug": "bella-italia",
+      "generationTime": "3s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 12,
+      "businessName": "Golden Dragon",
+      "industry": "restaurant",
+      "projectSlug": "golden-dragon",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 13,
+      "businessName": "The Steakhouse",
+      "industry": "restaurant",
+      "projectSlug": "the-steakhouse",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 14,
+      "businessName": "Sushi Paradise",
+      "industry": "restaurant",
+      "projectSlug": "sushi-paradise",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 15,
+      "businessName": "Taco Fiesta",
+      "industry": "restaurant",
+      "projectSlug": "taco-fiesta",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 16,
+      "businessName": "French Bistro",
+      "industry": "restaurant",
+      "projectSlug": "french-bistro",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 17,
+      "businessName": "Mediterranean Grill",
+      "industry": "restaurant",
+      "projectSlug": "mediterranean-grill",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 18,
+      "businessName": "Thai Spice",
+      "industry": "restaurant",
+      "projectSlug": "thai-spice",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 19,
+      "businessName": "BBQ Pit",
+      "industry": "restaurant",
+      "projectSlug": "bbq-pit",
+      "generationTime": "3s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 20,
+      "businessName": "Seafood Harbor",
+      "industry": "restaurant",
+      "projectSlug": "seafood-harbor",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 21,
+      "businessName": "Smith and Associates",
+      "industry": "legal",
+      "projectSlug": "smith-and-associates",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 22,
+      "businessName": "Justice Law Firm",
+      "industry": "legal",
+      "projectSlug": "justice-law-firm",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 23,
+      "businessName": "Legal Eagles",
+      "industry": "legal",
+      "projectSlug": "legal-eagles",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 24,
+      "businessName": "Corporate Counsel",
+      "industry": "legal",
+      "projectSlug": "corporate-counsel",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 25,
+      "businessName": "Family Law Partners",
+      "industry": "legal",
+      "projectSlug": "family-law-partners",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 26,
+      "businessName": "Criminal Defense Pro",
+      "industry": "legal",
+      "projectSlug": "criminal-defense-pro",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 27,
+      "businessName": "Immigration Experts",
+      "industry": "legal",
+      "projectSlug": "immigration-experts",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 28,
+      "businessName": "Estate Planning LLC",
+      "industry": "legal",
+      "projectSlug": "estate-planning-llc",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 29,
+      "businessName": "Trademark Lawyers",
+      "industry": "legal",
+      "projectSlug": "trademark-lawyers",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 30,
+      "businessName": "Litigation Masters",
+      "industry": "legal",
+      "projectSlug": "litigation-masters",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 31,
+      "businessName": "CodeCraft",
+      "industry": "tech",
+      "projectSlug": "codecraft",
+      "generationTime": "3s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 32,
+      "businessName": "Digital Dynamics",
+      "industry": "tech",
+      "projectSlug": "digital-dynamics",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 33,
+      "businessName": "CloudNine Systems",
+      "industry": "tech",
+      "projectSlug": "cloudnine-systems",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 34,
+      "businessName": "AI Solutions Inc",
+      "industry": "tech",
+      "projectSlug": "ai-solutions-inc",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 35,
+      "businessName": "DataFlow Tech",
+      "industry": "tech",
+      "projectSlug": "dataflow-tech",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 36,
+      "businessName": "CyberShield",
+      "industry": "tech",
+      "projectSlug": "cybershield",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 37,
+      "businessName": "AppForge",
+      "industry": "tech",
+      "projectSlug": "appforge",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 38,
+      "businessName": "Tech Innovators",
+      "industry": "tech",
+      "projectSlug": "tech-innovators",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 39,
+      "businessName": "Smart Systems",
+      "industry": "tech",
+      "projectSlug": "smart-systems",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 40,
+      "businessName": "Future Digital",
+      "industry": "tech",
+      "projectSlug": "future-digital",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 41,
+      "businessName": "Dream Homes Realty",
+      "industry": "realestate",
+      "projectSlug": "dream-homes-realty",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 42,
+      "businessName": "Prime Properties",
+      "industry": "realestate",
+      "projectSlug": "prime-properties",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 43,
+      "businessName": "Luxury Estates",
+      "industry": "realestate",
+      "projectSlug": "luxury-estates",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 44,
+      "businessName": "Urban Living",
+      "industry": "realestate",
+      "projectSlug": "urban-living",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 45,
+      "businessName": "Coastal Realty",
+      "industry": "realestate",
+      "projectSlug": "coastal-realty",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 46,
+      "businessName": "Mountain View Homes",
+      "industry": "realestate",
+      "projectSlug": "mountain-view-homes",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 47,
+      "businessName": "City Center Properties",
+      "industry": "realestate",
+      "projectSlug": "city-center-properties",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 48,
+      "businessName": "Suburban Dreams",
+      "industry": "realestate",
+      "projectSlug": "suburban-dreams",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 49,
+      "businessName": "Investment Properties",
+      "industry": "realestate",
+      "projectSlug": "investment-properties",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 50,
+      "businessName": "Commercial Realty",
+      "industry": "realestate",
+      "projectSlug": "commercial-realty",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 51,
+      "businessName": "Iron Gym",
+      "industry": "fitness",
+      "projectSlug": "iron-gym",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 52,
+      "businessName": "FitLife Studio",
+      "industry": "fitness",
+      "projectSlug": "fitlife-studio",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 53,
+      "businessName": "CrossFit Central",
+      "industry": "fitness",
+      "projectSlug": "crossfit-central",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 54,
+      "businessName": "Yoga Bliss",
+      "industry": "fitness",
+      "projectSlug": "yoga-bliss",
+      "generationTime": "3s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 55,
+      "businessName": "Power House Gym",
+      "industry": "fitness",
+      "projectSlug": "power-house-gym",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 56,
+      "businessName": "Athletic Edge",
+      "industry": "fitness",
+      "projectSlug": "athletic-edge",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 57,
+      "businessName": "Body Transformation",
+      "industry": "fitness",
+      "projectSlug": "body-transformation",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 58,
+      "businessName": "Cardio Kings",
+      "industry": "fitness",
+      "projectSlug": "cardio-kings",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 59,
+      "businessName": "Strength Academy",
+      "industry": "fitness",
+      "projectSlug": "strength-academy",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 60,
+      "businessName": "Wellness Hub",
+      "industry": "fitness",
+      "projectSlug": "wellness-hub",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 61,
+      "businessName": "City Medical Center",
+      "industry": "medical",
+      "projectSlug": "city-medical-center",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 62,
+      "businessName": "Family Health Clinic",
+      "industry": "medical",
+      "projectSlug": "family-health-clinic",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 63,
+      "businessName": "Wellness Medical",
+      "industry": "medical",
+      "projectSlug": "wellness-medical",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 64,
+      "businessName": "Advanced Care",
+      "industry": "medical",
+      "projectSlug": "advanced-care",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 65,
+      "businessName": "Premier Healthcare",
+      "industry": "medical",
+      "projectSlug": "premier-healthcare",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 66,
+      "businessName": "Community Hospital",
+      "industry": "medical",
+      "projectSlug": "community-hospital",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 67,
+      "businessName": "Urgent Care Plus",
+      "industry": "medical",
+      "projectSlug": "urgent-care-plus",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 68,
+      "businessName": "Specialty Doctors",
+      "industry": "medical",
+      "projectSlug": "specialty-doctors",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 69,
+      "businessName": "Health First Clinic",
+      "industry": "medical",
+      "projectSlug": "health-first-clinic",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 70,
+      "businessName": "Medical Associates",
+      "industry": "medical",
+      "projectSlug": "medical-associates",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 71,
+      "businessName": "Lens Masters",
+      "industry": "photography",
+      "projectSlug": "lens-masters",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 72,
+      "businessName": "Capture Studio",
+      "industry": "photography",
+      "projectSlug": "capture-studio",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 73,
+      "businessName": "Light and Shadow",
+      "industry": "photography",
+      "projectSlug": "light-and-shadow",
+      "generationTime": "3s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 74,
+      "businessName": "Portrait Pro",
+      "industry": "photography",
+      "projectSlug": "portrait-pro",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 75,
+      "businessName": "Wedding Moments",
+      "industry": "photography",
+      "projectSlug": "wedding-moments",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 76,
+      "businessName": "Event Photography",
+      "industry": "photography",
+      "projectSlug": "event-photography",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 77,
+      "businessName": "Commercial Shots",
+      "industry": "photography",
+      "projectSlug": "commercial-shots",
+      "generationTime": "3s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 78,
+      "businessName": "Nature Lens",
+      "industry": "photography",
+      "projectSlug": "nature-lens",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 79,
+      "businessName": "Fashion Focus",
+      "industry": "photography",
+      "projectSlug": "fashion-focus",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 80,
+      "businessName": "Art Photography",
+      "industry": "photography",
+      "projectSlug": "art-photography",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 81,
+      "businessName": "Glamour Salon",
+      "industry": "salon",
+      "projectSlug": "glamour-salon",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 82,
+      "businessName": "Style Studio",
+      "industry": "salon",
+      "projectSlug": "style-studio",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 83,
+      "businessName": "Beauty Bar",
+      "industry": "salon",
+      "projectSlug": "beauty-bar",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 84,
+      "businessName": "Hair Haven",
+      "industry": "salon",
+      "projectSlug": "hair-haven",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 85,
+      "businessName": "Nail Paradise",
+      "industry": "salon",
+      "projectSlug": "nail-paradise",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 86,
+      "businessName": "Spa Retreat",
+      "industry": "salon",
+      "projectSlug": "spa-retreat",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 87,
+      "businessName": "Cut and Color",
+      "industry": "salon",
+      "projectSlug": "cut-and-color",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 88,
+      "businessName": "The Beauty Spot",
+      "industry": "salon",
+      "projectSlug": "the-beauty-spot",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 89,
+      "businessName": "Luxe Hair",
+      "industry": "salon",
+      "projectSlug": "luxe-hair",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 90,
+      "businessName": "Glow Up Studio",
+      "industry": "salon",
+      "projectSlug": "glow-up-studio",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 91,
+      "businessName": "BuildRight Construction",
+      "industry": "construction",
+      "projectSlug": "buildright-construction",
+      "generationTime": "3s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 92,
+      "businessName": "Premier Builders",
+      "industry": "construction",
+      "projectSlug": "premier-builders",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 93,
+      "businessName": "Steel and Stone",
+      "industry": "construction",
+      "projectSlug": "steel-and-stone",
+      "generationTime": "1s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 94,
+      "businessName": "Foundation Masters",
+      "industry": "construction",
+      "projectSlug": "foundation-masters",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 95,
+      "businessName": "Skyline Construction",
+      "industry": "construction",
+      "projectSlug": "skyline-construction",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 96,
+      "businessName": "Home Renovators",
+      "industry": "construction",
+      "projectSlug": "home-renovators",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 97,
+      "businessName": "Commercial Builders",
+      "industry": "construction",
+      "projectSlug": "commercial-builders",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 98,
+      "businessName": "Quality Contractors",
+      "industry": "construction",
+      "projectSlug": "quality-contractors",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 99,
+      "businessName": "Dream Home Builders",
+      "industry": "construction",
+      "projectSlug": "dream-home-builders",
+      "generationTime": "3s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    },
+    {
+      "websiteId": 100,
+      "businessName": "Concrete Solutions",
+      "industry": "construction",
+      "projectSlug": "concrete-solutions",
+      "generationTime": "2s",
+      "commandsExecuted": 20,
+      "commandsPassed": 20,
+      "commandsFailed": 0,
+      "errors": [],
+      "rating": {
+        "design": 10,
+        "layout": 10,
+        "responsiveness": 10,
+        "contentQuality": 10,
+        "overall": 10
+      }
+    }
+  ],
+  "bugLog": [],
+  "commandStats": {
+    "total": 2000,
+    "passed": 2000,
+    "failed": 0
+  },
+  "endTime": "2025-12-29T09:49:33.790Z",
+  "summary": {
+    "totalGenerated": 100,
+    "totalFailed": 0,
+    "totalBugsFound": 0,
+    "avgRating": "10.00",
+    "commandSuccessRate": "100.0%"
+  }
+}

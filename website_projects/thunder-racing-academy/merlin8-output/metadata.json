@@ -1,0 +1,29 @@
+{
+  "businessName": "Thunder Racing Academy",
+  "industry": "racing",
+  "industryName": "Racing & Motorsport",
+  "generatedAt": "2025-12-29T09:46:10.757Z",
+  "version": "8.0",
+  "images": [],
+  "userPreferences": {
+    "businessType": "small",
+    "targetAudience": {
+      "audienceType": "b2c",
+      "incomeLevel": "premium"
+    },
+    "designPreferences": {
+      "colorMood": "bold"
+    },
+    "features": [
+      "booking",
+      "gallery",
+      "testimonials"
+    ],
+    "pages": [
+      "home",
+      "services",
+      "about",
+      "contact"
+    ]
+  }
+}

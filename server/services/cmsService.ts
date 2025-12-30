@@ -11,10 +11,8 @@ import {
   contentRevisions,
   type InsertContentType,
   type InsertContentEntry,
-  type InsertContentRelation,
-  type InsertContentRevision,
 } from '@shared/schema';
-import { eq, and, desc, asc, inArray, gte, lte, or, like } from 'drizzle-orm';
+import { eq, desc, asc, like } from 'drizzle-orm';
 
 /**
  * Content Type Management
@@ -25,9 +23,9 @@ export interface ContentTypeField {
   name: string;
   type: 'text' | 'number' | 'date' | 'boolean' | 'richtext' | 'image' | 'file' | 'relation' | 'repeater';
   required?: boolean;
-  defaultValue?: any;
-  options?: any; // Field-specific options
-  validation?: any; // Validation rules
+  defaultValue?: unknown;
+  options?: unknown; // Field-specific options
+  validation?: unknown; // Validation rules
 }
 
 export async function createContentType(
@@ -102,8 +100,8 @@ export async function updateContentType(
       })
       .where(eq(contentTypes.id, contentTypeId));
     return true;
-  } catch (error) {
-    console.error('[CMSService] Update contentType error:', error);
+  } catch (_error) {
+    console.error('[CMSService] Update contentType error:', _error);
     return false;
   }
 }
@@ -116,8 +114,8 @@ export async function deleteContentType(contentTypeId: string): Promise<boolean>
   try {
     await db.delete(contentTypes).where(eq(contentTypes.id, contentTypeId));
     return true;
-  } catch (error) {
-    console.error('[CMSService] Delete contentType error:', error);
+  } catch (_error) {
+    console.error('[CMSService] Delete contentType error:', _error);
     return false;
   }
 }
@@ -129,7 +127,7 @@ export async function deleteContentType(contentTypeId: string): Promise<boolean>
 export async function createContentEntry(
   contentTypeId: string,
   websiteId: string,
-  data: Record<string, any>,
+  data: Record<string, unknown>,
   status: 'draft' | 'published' | 'archived' = 'draft',
   publishedAt?: Date
 ): Promise<string> {
@@ -188,7 +186,7 @@ export async function getContentEntries(
     // In production, use proper JSONB search
     query = query.where(
       // This is a placeholder - actual JSONB search would be more complex
-      like(contentEntries.data as any, `%${filters.search}%`)
+      like(contentEntries.data as unknown as string, `%${filters.search}%`)
     );
   }
 
@@ -231,7 +229,7 @@ export async function updateContentEntry(
     // Get current entry to create revision
     const currentEntry = await getContentEntry(entryId);
     if (currentEntry) {
-      await createContentRevision(entryId, currentEntry.data as Record<string, any>);
+      await createContentRevision(entryId, currentEntry.data as Record<string, unknown>);
     }
 
     await db
@@ -242,8 +240,8 @@ export async function updateContentEntry(
       })
       .where(eq(contentEntries.id, entryId));
     return true;
-  } catch (error) {
-    console.error('[CMSService] Update entry error:', error);
+  } catch (_error) {
+    console.error('[CMSService] Update entry error:', _error);
     return false;
   }
 }
@@ -256,8 +254,8 @@ export async function deleteContentEntry(entryId: string): Promise<boolean> {
   try {
     await db.delete(contentEntries).where(eq(contentEntries.id, entryId));
     return true;
-  } catch (error) {
-    console.error('[CMSService] Delete entry error:', error);
+  } catch (_error) {
+    console.error('[CMSService] Delete entry error:', _error);
     return false;
   }
 }
@@ -307,8 +305,8 @@ export async function deleteContentRelation(relationId: string): Promise<boolean
   try {
     await db.delete(contentRelations).where(eq(contentRelations.id, relationId));
     return true;
-  } catch (error) {
-    console.error('[CMSService] Delete relation error:', error);
+  } catch (_error) {
+    console.error('[CMSService] Delete relation error:', _error);
     return false;
   }
 }
@@ -319,7 +317,7 @@ export async function deleteContentRelation(relationId: string): Promise<boolean
 
 export async function createContentRevision(
   entryId: string,
-  data: Record<string, any>,
+  data: Record<string, unknown>,
   createdBy?: string
 ): Promise<string> {
   if (!db) {
@@ -377,12 +375,12 @@ export async function restoreContentRevision(entryId: string, revisionId: string
     }
 
     await updateContentEntry(entryId, {
-      data: revision.data as Record<string, any>,
+      data: revision.data as Record<string, unknown>,
     });
 
     return true;
-  } catch (error) {
-    console.error('[CMSService] Restore revision error:', error);
+  } catch (_error) {
+    console.error('[CMSService] Restore revision error:', _error);
     return false;
   }
 }

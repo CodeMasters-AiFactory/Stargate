@@ -15,8 +15,13 @@ import {
   type InsertBlogTag,
   type InsertBlogComment,
   type InsertBlogAuthor,
+  type BlogPost,
+  type BlogCategory,
+  type BlogTag,
+  type BlogComment,
+  type BlogAuthor,
 } from '@shared/schema';
-import { eq, and, desc, asc, inArray, gte, lte, or, like } from 'drizzle-orm';
+import { eq, and, desc, asc, lte, or, like } from 'drizzle-orm';
 
 /**
  * Blog Post Management
@@ -35,7 +40,7 @@ export async function createBlogPost(
     publishedAt?: Date;
     tags?: string[];
     categories?: string[];
-    seoMetadata?: Record<string, any>;
+    seoMetadata?: Record<string, unknown>;
   } = {}
 ): Promise<string> {
   if (!db) {
@@ -85,7 +90,7 @@ export async function getBlogPosts(
     limit?: number;
     offset?: number;
   } = {}
-): Promise<typeof blogPosts.$inferSelect[]> {
+): Promise<BlogPost[]> {
   if (!db) {
     return [];
   }
@@ -99,18 +104,18 @@ export async function getBlogPosts(
     query = query.where(eq(blogPosts.status, filters.status));
   }
 
-  if (filters.categoryId) {
-    query = query.where(
-      // Check if categoryId is in categories array
-      // This is a simplified check - in production, use proper JSONB query
-    );
-  }
+  // if (filters.categoryId) {
+  //   query = query.where(
+  //     // Check if categoryId is in categories array
+  //     // This is a simplified check - in production, use proper JSONB query
+  //   );
+  // }
 
-  if (filters.tagId) {
-    query = query.where(
-      // Check if tagId is in tags array
-    );
-  }
+  // if (filters.tagId) {
+  //   query = query.where(
+  //     // Check if tagId is in tags array
+  //   );
+  // }
 
   if (filters.authorId) {
     query = query.where(eq(blogPosts.authorId, filters.authorId));
@@ -139,7 +144,7 @@ export async function getBlogPosts(
   return await query;
 }
 
-export async function getBlogPost(postId: string): Promise<typeof blogPosts.$inferSelect | null> {
+export async function getBlogPost(postId: string): Promise<BlogPost | null> {
   if (!db) {
     return null;
   }
@@ -156,7 +161,7 @@ export async function getBlogPost(postId: string): Promise<typeof blogPosts.$inf
 export async function getBlogPostBySlug(
   websiteId: string,
   slug: string
-): Promise<typeof blogPosts.$inferSelect | null> {
+): Promise<BlogPost | null> {
   if (!db) {
     return null;
   }
@@ -192,8 +197,8 @@ export async function updateBlogPost(
       })
       .where(eq(blogPosts.id, postId));
     return true;
-  } catch (error) {
-    console.error('[BlogService] Update error:', error);
+  } catch (_error: unknown) {
+    console.error('[BlogService] Update error:', _error);
     return false;
   }
 }
@@ -206,8 +211,8 @@ export async function deleteBlogPost(postId: string): Promise<boolean> {
   try {
     await db.delete(blogPosts).where(eq(blogPosts.id, postId));
     return true;
-  } catch (error) {
-    console.error('[BlogService] Delete error:', error);
+  } catch (_error: unknown) {
+    console.error('[BlogService] Delete error:', _error);
     return false;
   }
 }
@@ -225,8 +230,8 @@ export async function incrementPostViewCount(postId: string): Promise<void> {
         .set({ viewCount: (post.viewCount || 0) + 1 })
         .where(eq(blogPosts.id, postId));
     }
-  } catch (error) {
-    console.error('[BlogService] View count error:', error);
+  } catch (_error: unknown) {
+    console.error('[BlogService] View count error:', _error);
   }
 }
 
@@ -261,7 +266,7 @@ export async function createBlogCategory(
   return category.id;
 }
 
-export async function getBlogCategories(websiteId: string): Promise<typeof blogCategories.$inferSelect[]> {
+export async function getBlogCategories(websiteId: string): Promise<BlogCategory[]> {
   if (!db) {
     return [];
   }
@@ -315,7 +320,7 @@ export async function createBlogTag(websiteId: string, name: string): Promise<st
   return tag.id;
 }
 
-export async function getBlogTags(websiteId: string): Promise<typeof blogTags.$inferSelect[]> {
+export async function getBlogTags(websiteId: string): Promise<BlogTag[]> {
   if (!db) {
     return [];
   }
@@ -360,7 +365,7 @@ export async function createBlogComment(
 export async function getBlogComments(
   postId: string,
   status?: 'pending' | 'approved' | 'spam' | 'rejected'
-): Promise<typeof blogComments.$inferSelect[]> {
+): Promise<BlogComment[]> {
   if (!db) {
     return [];
   }
@@ -394,8 +399,8 @@ export async function updateCommentStatus(
       })
       .where(eq(blogComments.id, commentId));
     return true;
-  } catch (error) {
-    console.error('[BlogService] Comment status update error:', error);
+  } catch (_error: unknown) {
+    console.error('[BlogService] Comment status update error:', _error);
     return false;
   }
 }
@@ -431,7 +436,7 @@ export async function createBlogAuthor(
   return author.id;
 }
 
-export async function getBlogAuthors(websiteId: string): Promise<typeof blogAuthors.$inferSelect[]> {
+export async function getBlogAuthors(websiteId: string): Promise<BlogAuthor[]> {
   if (!db) {
     return [];
   }
@@ -447,7 +452,7 @@ export async function getBlogAuthors(websiteId: string): Promise<typeof blogAuth
  * Content Scheduling
  */
 
-export async function getScheduledPosts(websiteId: string): Promise<typeof blogPosts.$inferSelect[]> {
+export async function getScheduledPosts(websiteId: string): Promise<BlogPost[]> {
   if (!db) {
     return [];
   }

@@ -373,7 +373,7 @@ export function ImageGenerationStage({
               <div>
                 <h2 className="text-xl font-bold text-white">AI Image Generation</h2>
                 <p className="text-sm text-slate-400">
-                  Leonardo AI is creating custom images for {businessContext.businessName}
+                  AI is creating custom images for {businessContext.businessName}
                 </p>
               </div>
             </div>
@@ -462,7 +462,7 @@ export function ImageGenerationStage({
                       <CardContent className="pt-4 space-y-3">
                         <div className="flex items-center gap-2 text-sm text-orange-400">
                           <Wand2 className="w-4 h-4" />
-                          <span className="font-medium">Leonardo AI will generate:</span>
+                          <span className="font-medium">AI will generate:</span>
                         </div>
                         <div className="space-y-2">
                           {images.slice(0, 5).map((img) => (
@@ -555,7 +555,7 @@ export function ImageGenerationStage({
                       {isGenerating && (
                         <div className="flex items-center gap-2 text-sm text-orange-400">
                           <Loader2 className="w-4 h-4 animate-spin" />
-                          Leonardo is creating...
+                          AI is creating...
                         </div>
                       )}
                     </CardContent>

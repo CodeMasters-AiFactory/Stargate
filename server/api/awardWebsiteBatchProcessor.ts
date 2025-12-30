@@ -3,18 +3,19 @@
  * Scrapes, rewrites, reimages, SEO evaluates, and verifies all award-winning websites
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import { requireAdmin } from '../middleware/permissions';
 import { scrapeWebsiteFull } from '../services/websiteScraper';
 import { rewritePageContent } from '../services/contentRewriter';
 import { generateAIImage } from '../services/aiImageGenerator';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { getErrorMessage } from '../utils/errorHandler';
 import { createTemplateFromScrape } from '../services/websiteScraper';
 import { db } from '../db';
 import { brandTemplates, templateSources, scrapedContent } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 import * as cheerio from 'cheerio';
-import * as fs from 'fs';
+import type { Element } from 'domhandler';
+import * as fs from 'fs/promises';
 import * as path from 'path';
 
 const TEMPLATES_DIR = path.join(process.cwd(), 'scraped_templates');
@@ -52,30 +53,44 @@ async function processWebsite(
       message: 'Scraping website...',
     });
 
-    const scrapedData = await scrapeWebsiteFull(url, {
-      onProgress: (phase, progressPercent, message) => {
+    const scrapedData = await scrapeWebsiteFull(
+      url,
+      name,
+      3,
+      2000,
+      (_phase: string, _current: number, _total: number, message?: string): void => {
         onProgress({
           url,
           name,
           year,
           industry,
           stage: 'scraping',
-          progress: 10 + Math.floor(progressPercent * 0.2),
+          progress: 10 + Math.floor((_current / _total) * 20),
           message: message || 'Scraping...',
         });
-      },
-    });
+      }
+    );
 
     if (scrapedData.error) {
       throw new Error(scrapedData.error);
     }
 
     // Create template from scraped data
-    const template = createTemplateFromScrape(scrapedData);
+    const template = createTemplateFromScrape(
+      scrapedData,
+      '', // sourceId - will be populated later
+      industry,
+      'Global', // country
+      undefined, // state
+      undefined, // city
+      undefined, // ranking
+      'Award-Winning', // designCategory
+      true, // isDesignQuality
+      100, // designScore
+      `Award-Winning ${year}` // designAwardSource
+    );
     template.name = `${name} (${year})`;
     template.industry = industry;
-    template.year = year;
-    template.awardWinning = true;
 
     // Stage 2: Rewrite Content
     onProgress({
@@ -88,17 +103,33 @@ async function processWebsite(
       message: 'Rewriting content...',
     });
 
-    const rewrittenHtml = await rewritePageContent(scrapedData.htmlContent, {
-      companyName: name,
-      industry,
-      location: 'Global',
-    });
+    const rewrittenResult = await rewritePageContent(
+      scrapedData.htmlContent,
+      {
+        businessName: name,
+        industry,
+        location: { city: 'Global', state: '', country: 'Global' },
+        services: [],
+        phone: '',
+        email: '',
+        address: '',
+      },
+      [industry, name, `${year}`]
+    );
 
-    template.htmlContent = rewrittenHtml;
-    template.qaMetadata = {
-      ...template.qaMetadata,
-      contentRewritten: true,
-      rewrittenAt: new Date().toISOString(),
+    const rewrittenHtml = rewrittenResult.html;
+
+    // Update contentData with rewritten HTML
+    template.contentData = {
+      ...template.contentData,
+      html: rewrittenHtml,
+      metadata: {
+        ...(template.contentData.metadata as Record<string, unknown>),
+        contentRewritten: true,
+        rewrittenAt: new Date().toISOString(),
+        changesCount: rewrittenResult.changesCount,
+        rewrittenSections: rewrittenResult.rewrittenSections,
+      } as unknown as typeof template.contentData.metadata & Record<string, unknown>,
     };
 
     // Stage 3: Regenerate Images
@@ -124,18 +155,26 @@ async function processWebsite(
 
       if (src && !src.startsWith('data:')) {
         try {
-          const newImageUrl = await generateAIImage({
+          const generatedImage = await generateAIImage({
             prompt: `${alt || name} ${industry} professional website image`,
-            style: 'professional',
+            style: 'hero',
             size: '1024x1024',
+            businessContext: {
+              name,
+              industry,
+              colorScheme: ['#000000', '#FFFFFF'],
+            },
           });
 
-          if (newImageUrl) {
-            img.attr('src', newImageUrl);
+          if (generatedImage && generatedImage.url) {
+            img.attr('src', generatedImage.url);
+            if (generatedImage.alt) {
+              img.attr('alt', generatedImage.alt);
+            }
             imageCount++;
           }
-        } catch (error) {
-          console.warn(`[BatchProcessor] Failed to regenerate image ${i + 1}:`, getErrorMessage(error));
+        } catch (_error: unknown) {
+          console.warn(`[BatchProcessor] Failed to regenerate image ${i + 1}:`, getErrorMessage(_error));
         }
       }
 
@@ -150,12 +189,18 @@ async function processWebsite(
       });
     }
 
-    template.htmlContent = $.html();
-    template.qaMetadata = {
-      ...template.qaMetadata,
-      imagesRegenerated: true,
-      imagesRegeneratedAt: new Date().toISOString(),
-      imagesCount: imageCount,
+    const htmlWithImages = $.html();
+
+    // Update contentData with regenerated images
+    template.contentData = {
+      ...template.contentData,
+      html: htmlWithImages,
+      metadata: {
+        ...(template.contentData.metadata as Record<string, unknown>),
+        imagesRegenerated: true,
+        imagesRegeneratedAt: new Date().toISOString(),
+        imagesCount: imageCount,
+      } as unknown as typeof template.contentData.metadata & Record<string, unknown>,
     };
 
     // Stage 4: SEO Evaluation
@@ -169,7 +214,7 @@ async function processWebsite(
       message: 'Evaluating SEO...',
     });
 
-    const seoHtml = template.htmlContent;
+    const seoHtml = template.contentData.html;
     const $seo = cheerio.load(seoHtml);
 
     // Add meta tags if missing
@@ -203,17 +248,23 @@ async function processWebsite(
     }
 
     // Ensure all images have alt text
-    $seo('img').each((_, el) => {
+    $seo('img').each((_index: number, el: Element): void => {
       if (!$seo(el).attr('alt')) {
         $seo(el).attr('alt', `${name} - ${industry}`);
       }
     });
 
-    template.htmlContent = $seo.html();
-    template.qaMetadata = {
-      ...template.qaMetadata,
-      seoEvaluated: true,
-      seoEvaluatedAt: new Date().toISOString(),
+    const htmlWithSEO = $seo.html();
+
+    // Update contentData with SEO improvements
+    template.contentData = {
+      ...template.contentData,
+      html: htmlWithSEO,
+      metadata: {
+        ...(template.contentData.metadata as Record<string, unknown>),
+        seoEvaluated: true,
+        seoEvaluatedAt: new Date().toISOString(),
+      } as unknown as typeof template.contentData.metadata & Record<string, unknown>,
     };
 
     // Stage 5: Verification
@@ -228,23 +279,27 @@ async function processWebsite(
     });
 
     // Basic verification checks
-    const hasContent = template.htmlContent.length > 1000;
+    const hasContent = template.contentData.html.length > 1000;
     const hasTitle = $seo('head title').length > 0;
     const hasMetaDescription = $seo('head meta[name="description"]').length > 0;
     const hasImages = $seo('img').length > 0;
 
     const verified = hasContent && hasTitle && hasMetaDescription && hasImages;
 
-    template.qaMetadata = {
-      ...template.qaMetadata,
-      verified,
-      verifiedAt: new Date().toISOString(),
-      verificationChecks: {
-        hasContent,
-        hasTitle,
-        hasMetaDescription,
-        hasImages,
-      },
+    // Update contentData with verification results
+    template.contentData = {
+      ...template.contentData,
+      metadata: {
+        ...(template.contentData.metadata as Record<string, unknown>),
+        verified,
+        verifiedAt: new Date().toISOString(),
+        verificationChecks: {
+          hasContent,
+          hasTitle,
+          hasMetaDescription,
+          hasImages,
+        },
+      } as unknown as typeof template.contentData.metadata & Record<string, unknown>,
     };
 
     // Save template
@@ -284,46 +339,45 @@ async function processWebsite(
           sourceId,
           htmlContent: scrapedData.htmlContent,
           cssContent: scrapedData.cssContent,
-          images: scrapedData.images as any,
-          textContent: scrapedData.textContent as any,
-          designTokens: scrapedData.designTokens as any,
+          images: scrapedData.images as unknown as Record<string, unknown>,
+          textContent: scrapedData.textContent as Record<string, unknown>,
+          designTokens: scrapedData.designTokens as Record<string, unknown>,
         });
 
         // Save template
-        const contentData = {
-          html: template.htmlContent,
-          qaMetadata: template.qaMetadata,
-        };
-
         await db.insert(brandTemplates).values({
           id: template.id,
           name: template.name,
           sourceId,
           industry: industry,
-          contentData: contentData as any,
+          contentData: template.contentData as Record<string, unknown>,
           css: scrapedData.cssContent,
           metadata: {
             year,
             awardWinning: true,
             category: template.category,
-          } as any,
+          } as Record<string, unknown>,
         });
-      } catch (dbError) {
-        console.warn('[BatchProcessor] Database save failed, saving to file:', getErrorMessage(dbError));
+      } catch (_dbError: unknown) {
+        console.warn('[BatchProcessor] Database save failed, saving to file:', getErrorMessage(_dbError));
         // Fallback to file save
-        if (!fs.existsSync(TEMPLATES_DIR)) {
-          fs.mkdirSync(TEMPLATES_DIR, { recursive: true });
+        try {
+          await fs.access(TEMPLATES_DIR);
+        } catch {
+          await fs.mkdir(TEMPLATES_DIR, { recursive: true });
         }
         const templatePath = path.join(TEMPLATES_DIR, `${template.id}.json`);
-        fs.writeFileSync(templatePath, JSON.stringify(template, null, 2));
+        await fs.writeFile(templatePath, JSON.stringify(template, null, 2));
       }
     } else {
       // Save to file
-      if (!fs.existsSync(TEMPLATES_DIR)) {
-        fs.mkdirSync(TEMPLATES_DIR, { recursive: true });
+      try {
+        await fs.access(TEMPLATES_DIR);
+      } catch {
+        await fs.mkdir(TEMPLATES_DIR, { recursive: true });
       }
       const templatePath = path.join(TEMPLATES_DIR, `${template.id}.json`);
-      fs.writeFileSync(templatePath, JSON.stringify(template, null, 2));
+      await fs.writeFile(templatePath, JSON.stringify(template, null, 2));
     }
 
     onProgress({
@@ -337,8 +391,8 @@ async function processWebsite(
     });
 
     return { success: true, templateId: template.id };
-  } catch (error) {
-    const errorMsg = getErrorMessage(error);
+  } catch (_error: unknown) {
+    const errorMsg = getErrorMessage(_error);
     onProgress({
       url,
       name,
@@ -360,15 +414,16 @@ export function registerAwardWebsiteBatchProcessorRoutes(app: Express) {
    * Process all award-winning websites through the full QA pipeline
    * POST /api/award-websites/batch-process
    */
-  app.post('/api/award-websites/batch-process', requireAdmin, async (req, res) => {
+  app.post('/api/award-websites/batch-process', requireAdmin, async (req: Request, res: Response): Promise<void> => {
     try {
       const { websites } = req.body;
 
       if (!Array.isArray(websites) || websites.length === 0) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Websites array is required',
         });
+        return;
       }
 
       // Set up Server-Sent Events for progress updates
@@ -376,7 +431,7 @@ export function registerAwardWebsiteBatchProcessorRoutes(app: Express) {
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
 
-      const sendProgress = (status: ProcessingStatus) => {
+      const sendProgress = (status: ProcessingStatus): void => {
         res.write(`data: ${JSON.stringify(status)}\n\n`);
       };
 
@@ -384,8 +439,8 @@ export function registerAwardWebsiteBatchProcessorRoutes(app: Express) {
       const results: Array<{ url: string; success: boolean; templateId?: string; error?: string }> = [];
 
       for (let i = 0; i < websites.length; i++) {
-        const website = websites[i];
-        const { url, name, year, industry } = website;
+        const website = websites[i] as Record<string, unknown>;
+        const { url, name, year, industry } = website as { url: string; name: string; year: number; industry: string };
 
         sendProgress({
           url,
@@ -402,7 +457,9 @@ export function registerAwardWebsiteBatchProcessorRoutes(app: Express) {
 
         // Small delay between websites
         if (i < websites.length - 1) {
-          await new Promise((resolve) => setTimeout(resolve, 2000));
+          await new Promise<void>((resolve): void => {
+            setTimeout(resolve, 2000);
+          });
         }
       }
 
@@ -418,8 +475,8 @@ export function registerAwardWebsiteBatchProcessorRoutes(app: Express) {
       });
 
       res.end();
-    } catch (error) {
-      const errorMsg = getErrorMessage(error);
+    } catch (_error: unknown) {
+      const errorMsg = getErrorMessage(_error);
       console.error('[AwardWebsiteBatchProcessor] Batch processing error:', errorMsg);
       res.write(`data: ${JSON.stringify({ error: errorMsg })}\n\n`);
       res.end();

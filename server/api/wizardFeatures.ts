@@ -21,12 +21,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/generate-page-by-page
    * Generate website page by page with progress
    */
-  app.post('/api/wizard/generate-page-by-page', async (req: Request, res: Response) => {
+  app.post('/api/wizard/generate-page-by-page', async (req: Request, res: Response): Promise<void> => {
     try {
       const { mergedTemplate, clientInfo } = req.body;
 
       if (!mergedTemplate || !clientInfo) {
-        return res.status(400).json({ error: 'mergedTemplate and clientInfo are required' });
+        res.status(400).json({ error: 'mergedTemplate and clientInfo are required' });
+        return;
       }
 
       // Set up SSE
@@ -69,12 +70,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/detect-keywords
    * Detect keywords from page content
    */
-  app.post('/api/wizard/detect-keywords', async (req: Request, res: Response) => {
+  app.post('/api/wizard/detect-keywords', async (req: Request, res: Response): Promise<void> => {
     try {
       const { pageHtml, pageName, industry } = req.body;
 
       if (!pageHtml || !industry) {
-        return res.status(400).json({ error: 'pageHtml and industry are required' });
+        res.status(400).json({ error: 'pageHtml and industry are required' });
+        return;
       }
 
       const keywords = await detectKeywords(pageHtml, pageName || 'Page', industry);
@@ -90,12 +92,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/add-custom-keywords
    * Add custom keywords to detected keywords
    */
-  app.post('/api/wizard/add-custom-keywords', async (req: Request, res: Response) => {
+  app.post('/api/wizard/add-custom-keywords', async (req: Request, res: Response): Promise<void> => {
     try {
       const { detectedKeywords, customKeywords } = req.body;
 
       if (!detectedKeywords || !customKeywords) {
-        return res.status(400).json({ error: 'detectedKeywords and customKeywords are required' });
+        res.status(400).json({ error: 'detectedKeywords and customKeywords are required' });
+        return;
       }
 
       const updated = addCustomKeywords(detectedKeywords, customKeywords);
@@ -111,12 +114,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/seo-preview
    * Calculate SEO score
    */
-  app.post('/api/wizard/seo-preview', async (req: Request, res: Response) => {
+  app.post('/api/wizard/seo-preview', async (req: Request, res: Response): Promise<void> => {
     try {
       const { html, keywords } = req.body;
 
       if (!html) {
-        return res.status(400).json({ error: 'html is required' });
+        res.status(400).json({ error: 'html is required' });
+        return;
       }
 
       const seoScore = await calculateSEOScore(html, keywords || []);
@@ -132,12 +136,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/generate-variations
    * Generate A/B test variations
    */
-  app.post('/api/wizard/generate-variations', async (req: Request, res: Response) => {
+  app.post('/api/wizard/generate-variations', async (req: Request, res: Response): Promise<void> => {
     try {
       const { pageHtml, clientInfo, options } = req.body;
 
       if (!pageHtml || !clientInfo) {
-        return res.status(400).json({ error: 'pageHtml and clientInfo are required' });
+        res.status(400).json({ error: 'pageHtml and clientInfo are required' });
+        return;
       }
 
       const variations = await generatePageVariations(pageHtml, clientInfo, options);
@@ -153,12 +158,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/versions/save
    * Save version snapshot
    */
-  app.post('/api/wizard/versions/save', async (req: Request, res: Response) => {
+  app.post('/api/wizard/versions/save', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, stage, snapshot, metadata } = req.body;
 
       if (!websiteId || !stage || !snapshot) {
-        return res.status(400).json({ error: 'websiteId, stage, and snapshot are required' });
+        res.status(400).json({ error: 'websiteId, stage, and snapshot are required' });
+        return;
       }
 
       const versionId = await saveVersionSnapshot(websiteId, stage, snapshot, metadata);
@@ -174,7 +180,7 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * GET /api/wizard/versions/:websiteId
    * List all versions for a website
    */
-  app.get('/api/wizard/versions/:websiteId', async (req: Request, res: Response) => {
+  app.get('/api/wizard/versions/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
 
@@ -191,12 +197,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/versions/restore
    * Restore a version
    */
-  app.post('/api/wizard/versions/restore', async (req: Request, res: Response) => {
+  app.post('/api/wizard/versions/restore', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, versionId } = req.body;
 
       if (!websiteId || !versionId) {
-        return res.status(400).json({ error: 'websiteId and versionId are required' });
+        res.status(400).json({ error: 'websiteId and versionId are required' });
+        return;
       }
 
       const snapshot = await restoreVersion(websiteId, versionId);
@@ -212,12 +219,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/approval/submit
    * Submit for approval
    */
-  app.post('/api/wizard/approval/submit', async (req: Request, res: Response) => {
+  app.post('/api/wizard/approval/submit', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId, stage, requestedBy, comments } = req.body;
 
       if (!websiteId || !stage || !requestedBy) {
-        return res.status(400).json({ error: 'websiteId, stage, and requestedBy are required' });
+        res.status(400).json({ error: 'websiteId, stage, and requestedBy are required' });
+        return;
       }
 
       const approvalId = await submitForApproval(websiteId, stage, requestedBy, comments);
@@ -233,12 +241,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/approval/process
    * Process approval
    */
-  app.post('/api/wizard/approval/process', async (req: Request, res: Response) => {
+  app.post('/api/wizard/approval/process', async (req: Request, res: Response): Promise<void> => {
     try {
       const { approvalId, approved, reviewedBy, comments, changeRequests } = req.body;
 
       if (!approvalId || approved === undefined || !reviewedBy) {
-        return res.status(400).json({ error: 'approvalId, approved, and reviewedBy are required' });
+        res.status(400).json({ error: 'approvalId, approved, and reviewedBy are required' });
+        return;
       }
 
       const approval = await processApproval(approvalId, approved, reviewedBy, comments, changeRequests);
@@ -254,12 +263,12 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * GET /api/wizard/approval/:websiteId
    * Get approval status
    */
-  app.get('/api/wizard/approval/:websiteId', async (req: Request, res: Response) => {
+  app.get('/api/wizard/approval/:websiteId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { websiteId } = req.params;
       const { stage } = req.query;
 
-      const approvals = await getApprovalStatus(websiteId, stage as any);
+      const approvals = await getApprovalStatus(websiteId, stage as string | undefined);
 
       res.json({ approvals });
     } catch (error) {
@@ -272,12 +281,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/templates/mix
    * Mix template elements
    */
-  app.post('/api/wizard/templates/mix', async (req: Request, res: Response) => {
+  app.post('/api/wizard/templates/mix', async (req: Request, res: Response): Promise<void> => {
     try {
       const { templates } = req.body;
 
       if (!templates || !Array.isArray(templates) || templates.length === 0) {
-        return res.status(400).json({ error: 'templates array is required' });
+        res.status(400).json({ error: 'templates array is required' });
+        return;
       }
 
       const mixed = await mixTemplateElements(templates);
@@ -293,12 +303,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/batch/replace-images
    * Batch replace images
    */
-  app.post('/api/wizard/batch/replace-images', async (req: Request, res: Response) => {
+  app.post('/api/wizard/batch/replace-images', async (req: Request, res: Response): Promise<void> => {
     try {
       const { pages, replacements } = req.body;
 
       if (!pages || !replacements) {
-        return res.status(400).json({ error: 'pages and replacements are required' });
+        res.status(400).json({ error: 'pages and replacements are required' });
+        return;
       }
 
       const result = await batchReplaceImages(pages, replacements);
@@ -314,12 +325,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/batch/update-content
    * Batch update content
    */
-  app.post('/api/wizard/batch/update-content', async (req: Request, res: Response) => {
+  app.post('/api/wizard/batch/update-content', async (req: Request, res: Response): Promise<void> => {
     try {
       const { pages, updates } = req.body;
 
       if (!pages || !updates) {
-        return res.status(400).json({ error: 'pages and updates are required' });
+        res.status(400).json({ error: 'pages and updates are required' });
+        return;
       }
 
       const result = await batchUpdateContent(pages, updates);
@@ -335,12 +347,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/batch/update-contact
    * Batch update contact information
    */
-  app.post('/api/wizard/batch/update-contact', async (req: Request, res: Response) => {
+  app.post('/api/wizard/batch/update-contact', async (req: Request, res: Response): Promise<void> => {
     try {
       const { pages, contactInfo } = req.body;
 
       if (!pages || !contactInfo) {
-        return res.status(400).json({ error: 'pages and contactInfo are required' });
+        res.status(400).json({ error: 'pages and contactInfo are required' });
+        return;
       }
 
       const result = await batchUpdateContactInfo(pages, contactInfo);
@@ -356,7 +369,7 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * GET /api/wizard/monitor/template-health/:templateId
    * Check template health
    */
-  app.get('/api/wizard/monitor/template-health/:templateId', async (req: Request, res: Response) => {
+  app.get('/api/wizard/monitor/template-health/:templateId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { templateId } = req.params;
 
@@ -373,12 +386,13 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * POST /api/wizard/monitor/schedule
    * Schedule template check
    */
-  app.post('/api/wizard/monitor/schedule', async (req: Request, res: Response) => {
+  app.post('/api/wizard/monitor/schedule', async (req: Request, res: Response): Promise<void> => {
     try {
       const { templateId, frequency } = req.body;
 
       if (!templateId || !frequency) {
-        return res.status(400).json({ error: 'templateId and frequency are required' });
+        res.status(400).json({ error: 'templateId and frequency are required' });
+        return;
       }
 
       const job = await scheduleTemplateCheck(templateId, frequency);
@@ -394,7 +408,7 @@ export function registerWizardFeaturesRoutes(app: Express) {
    * GET /api/wizard/insights/industry/:industry
    * Get industry insights
    */
-  app.get('/api/wizard/insights/industry/:industry', async (req: Request, res: Response) => {
+  app.get('/api/wizard/insights/industry/:industry', async (req: Request, res: Response): Promise<void> => {
     try {
       const { industry } = req.params;
 

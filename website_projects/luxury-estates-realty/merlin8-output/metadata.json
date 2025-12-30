@@ -1,0 +1,30 @@
+{
+  "businessName": "Luxury Estates Realty",
+  "industry": "realestate",
+  "industryName": "Real Estate & Property",
+  "generatedAt": "2025-12-29T10:10:02.500Z",
+  "version": "8.0-template",
+  "templateId": "downloaded-s61DU7Qt-villa-agency-real-estate-html5-template",
+  "images": [],
+  "userPreferences": {
+    "businessType": "small",
+    "targetAudience": {
+      "audienceType": "b2c",
+      "incomeLevel": "premium"
+    },
+    "designPreferences": {
+      "colorMood": "luxury"
+    },
+    "features": [
+      "contact-form",
+      "testimonials"
+    ],
+    "pages": [
+      "home",
+      "services",
+      "about",
+      "contact"
+    ],
+    "templateId": "downloaded-s61DU7Qt-villa-agency-real-estate-html5-template"
+  }
+}

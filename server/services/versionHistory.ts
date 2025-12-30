@@ -3,10 +3,7 @@
  * Saves snapshots at each stage and allows restoration
  */
 
-import { db } from '../db';
-import { websiteVersions } from '@shared/schema';
-import { eq, desc } from 'drizzle-orm';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
 import { saveVersionSnapshot as hybridSaveVersion, restoreVersion as hybridRestoreVersion, listVersions as hybridListVersions } from './hybridStorage';
 
 export type GenerationStage = 'design' | 'content' | 'images' | 'final';
@@ -16,7 +13,7 @@ export interface WebsiteSnapshot {
   css: string;
   js?: string;
   pages?: Array<{ slug: string; html: string }>;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -26,16 +23,16 @@ export async function saveVersionSnapshot(
   websiteId: string,
   stage: GenerationStage,
   snapshot: WebsiteSnapshot,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): Promise<string> {
   try {
     // Use hybrid storage (PostgreSQL → SQLite → Memory)
     const versionId = await hybridSaveVersion(websiteId, stage, snapshot, metadata);
     console.log(`[VersionHistory] ✅ Saved version for website ${websiteId} at stage ${stage}`);
     return versionId;
-  } catch (error) {
-    logError(error, 'VersionHistory - SaveSnapshot');
-    throw error;
+  } catch (_error: unknown) {
+    logError(_error, 'VersionHistory - SaveSnapshot');
+    throw _error;
   }
 }
 
@@ -51,9 +48,9 @@ export async function restoreVersion(
     const snapshot = await hybridRestoreVersion(websiteId, versionId);
     console.log(`[VersionHistory] ✅ Restored version ${versionId} for website ${websiteId}`);
     return snapshot as WebsiteSnapshot;
-  } catch (error) {
-    logError(error, 'VersionHistory - RestoreVersion');
-    throw error;
+  } catch (_error: unknown) {
+    logError(_error, 'VersionHistory - RestoreVersion');
+    throw _error;
   }
 }
 
@@ -69,8 +66,8 @@ export async function listVersions(websiteId: string): Promise<Array<{
   try {
     // Use hybrid storage (PostgreSQL → SQLite → Memory)
     return await hybridListVersions(websiteId);
-  } catch (error) {
-    logError(error, 'VersionHistory - ListVersions');
+  } catch (_error: unknown) {
+    logError(_error, 'VersionHistory - ListVersions');
     return [];
   }
 }

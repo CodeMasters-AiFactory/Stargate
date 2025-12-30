@@ -1,0 +1,35 @@
+{
+  "success": true,
+  "projectSlug": "elite-performance-gym",
+  "previewUrl": "/website_projects/elite-performance-gym/merlin8-output/index.html",
+  "outputPath": "C:\\CURSOR PROJECTS\\StargatePortal\\website_projects\\elite-performance-gym\\merlin8-output",
+  "industry": {
+    "id": "fitness",
+    "name": "Fitness & Gym"
+  },
+  "imagesGenerated": 5,
+  "images": [
+    {
+      "section": "hero",
+      "url": "images/hero.jpg"
+    },
+    {
+      "section": "services",
+      "url": "images/services.jpg"
+    },
+    {
+      "section": "about",
+      "url": "images/about.jpg"
+    },
+    {
+      "section": "team",
+      "url": "images/team.jpg"
+    },
+    {
+      "section": "background",
+      "url": "images/background.jpg"
+    }
+  ],
+  "duration": 27216,
+  "errors": []
+}

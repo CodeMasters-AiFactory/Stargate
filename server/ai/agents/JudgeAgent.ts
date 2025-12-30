@@ -3,6 +3,15 @@ import { PlanningResult } from './PlanningAgent';
 import { ResearchResult } from './ResearchAgent';
 import { RecommendationResult } from './RecommendationAgent';
 
+interface PlanVariant {
+  planId: string;
+  planTitle: string;
+  approach: string;
+  timeline: string;
+  investment: string;
+  features: any[];
+}
+
 export interface JudgmentCriteria {
   category: string;
   weight: number;
@@ -155,8 +164,8 @@ export class JudgeAgent {
   private createPlanVariants(
     _planning: PlanningResult,
     _research: ResearchResult,
-    _recommendation: RecommendationResult
-  ): any[] {
+    recommendation: RecommendationResult
+  ): PlanVariant[] {
     return [
       {
         planId: 'aggressive-ai-first',
@@ -193,7 +202,7 @@ export class JudgeAgent {
     ];
   }
 
-  private async evaluatePlan(plan: any, research: ResearchResult, recommendation: RecommendationResult): Promise<PlanEvaluation> {
+  private async evaluatePlan(plan: PlanVariant, research: ResearchResult, recommendation: RecommendationResult): Promise<PlanEvaluation> {
     const categoryScores: CategoryScore[] = [];
     let totalScore = 0;
 
@@ -228,7 +237,7 @@ export class JudgeAgent {
     };
   }
 
-  private scorePlanCategory(plan: any, criteria: JudgmentCriteria, _research: ResearchResult, _recommendation: RecommendationResult): number {
+  private scorePlanCategory(plan: PlanVariant, criteria: JudgmentCriteria, _research: ResearchResult, _recommendation: RecommendationResult): number {
     switch (criteria.category) {
       case 'Market Viability':
         if (plan.planId === 'aggressive-ai-first') return 0.95; // Huge market gap for AI-first platform
@@ -275,7 +284,7 @@ export class JudgeAgent {
     return 0.50; // Default moderate score
   }
 
-  private generateScoreRationale(_plan: any, criteria: JudgmentCriteria, score: number): string {
+  private generateScoreRationale(_plan: PlanVariant, criteria: JudgmentCriteria, score: number): string {
     const scoreMap: Record<string, string> = {
       'Market Viability': score > 0.8 ? 'Strong market demand with significant gaps' : 'Moderate market potential',
       'Technical Feasibility': score > 0.8 ? 'Highly achievable with current technology' : 'Some technical challenges expected',
@@ -287,7 +296,7 @@ export class JudgeAgent {
     return scoreMap[criteria.category] || 'Standard evaluation criteria applied';
   }
 
-  private assessRisks(plan: any, _research: ResearchResult): RiskAssessment {
+  private assessRisks(plan: PlanVariant, _research: ResearchResult): RiskAssessment {
     const riskFactors: RiskFactor[] = [
       {
         factor: 'AI Model Integration Complexity',
@@ -325,7 +334,7 @@ export class JudgeAgent {
     };
   }
 
-  private identifyStrengths(_plan: any, scores: CategoryScore[]): string[] {
+  private identifyStrengths(_plan: PlanVariant, scores: CategoryScore[]): string[] {
     const strengths: string[] = [];
     scores.forEach(score => {
       if (score.score >= score.maxScore * 0.8) {
@@ -335,7 +344,7 @@ export class JudgeAgent {
     return strengths.length > 0 ? strengths : ['Balanced approach across all criteria'];
   }
 
-  private identifyWeaknesses(_plan: any, scores: CategoryScore[]): string[] {
+  private identifyWeaknesses(_plan: PlanVariant, scores: CategoryScore[]): string[] {
     const weaknesses: string[] = [];
     scores.forEach(score => {
       if (score.score < score.maxScore * 0.6) {
@@ -345,7 +354,7 @@ export class JudgeAgent {
     return weaknesses;
   }
 
-  private generateEvaluation(_plan: any, totalScore: number, _scores: CategoryScore[], risks: RiskAssessment): { recommendation: PlanEvaluation['recommendation'], reasoning: string } {
+  private generateEvaluation(_plan: PlanVariant, totalScore: number, _scores: CategoryScore[], risks: RiskAssessment): { recommendation: PlanEvaluation['recommendation'], reasoning: string } {
     if (totalScore >= 85) {
       return {
         recommendation: 'strongly-recommend',

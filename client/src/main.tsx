@@ -3,6 +3,27 @@ import App from './App';
 import './index.css';
 import { errorLogger } from './services/errorLogger';
 
+// DEBUG: Global fetch interceptor to trace POST /api/projects calls
+const originalFetch = window.fetch;
+window.fetch = function(input: RequestInfo | URL, init?: RequestInit) {
+  const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+  const method = init?.method?.toUpperCase() || 'GET';
+
+  // Log any POST to /api/projects (but not to sub-routes like /api/projects/:id or /api/projects/create)
+  if (method === 'POST' && url === '/api/projects') {
+    console.log('[FETCH INTERCEPT] =================================');
+    console.log('[FETCH INTERCEPT] POST /api/projects detected');
+    console.log('[FETCH INTERCEPT] URL:', url);
+    console.log('[FETCH INTERCEPT] Method:', method);
+    console.log('[FETCH INTERCEPT] Body:', init?.body);
+    console.log('[FETCH INTERCEPT] Stack trace:');
+    console.trace('[FETCH INTERCEPT] Called from:');
+    console.log('[FETCH INTERCEPT] =================================');
+  }
+
+  return originalFetch.apply(this, [input, init] as const);
+};
+
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {

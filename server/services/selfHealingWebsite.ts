@@ -6,8 +6,6 @@
 import * as cheerio from 'cheerio';
 import { scrapeWebsiteFull } from './websiteScraper';
 import { getErrorMessage, logError } from '../utils/errorHandler';
-import { optimizeWebsitePerformance } from './performanceOptimizer';
-import { autoFixTechnicalSEO } from './seoAutomation';
 
 export interface HealthIssue {
   type: 'broken-link' | 'broken-image' | 'outdated-content' | 'performance' | 'accessibility' | 'seo';
@@ -72,7 +70,7 @@ export async function checkWebsiteHealth(
     const overallHealth = calculateHealthScore(issues);
 
     // Auto-fix issues
-    const fixedHtml = await autoFixIssues($, issues, fixesApplied);
+    void await autoFixIssues($, issues, fixesApplied);
 
     const report: HealthReport = {
       websiteId,
@@ -86,9 +84,9 @@ export async function checkWebsiteHealth(
 
     console.log(`[SelfHealing] ✅ Health check complete: ${overallHealth}% healthy, ${fixesApplied.length} fixes applied`);
     return report;
-  } catch (error) {
-    logError(error, 'SelfHealing - CheckHealth', { websiteId });
-    throw new Error(`Failed to check website health: ${getErrorMessage(error)}`);
+  } catch (_error: unknown) {
+    logError(_error, 'SelfHealing - CheckHealth', { websiteId });
+    throw new Error(`Failed to check website health: ${getErrorMessage(_error)}`);
   }
 }
 
@@ -114,9 +112,9 @@ export async function autoFixWebsite(
       html: fixedHtml,
       fixesApplied: healthReport.fixesApplied,
     };
-  } catch (error) {
-    logError(error, 'SelfHealing - AutoFix');
-    throw new Error(`Failed to auto-fix website: ${getErrorMessage(error)}`);
+  } catch (_error: unknown) {
+    logError(_error, 'SelfHealing - AutoFix');
+    throw new Error(`Failed to auto-fix website: ${getErrorMessage(_error)}`);
   }
 }
 
@@ -143,8 +141,8 @@ export async function monitorWebsiteHealth(
             await autoFixWebsite(websiteId, scraped.htmlContent, url);
           }
         }
-      } catch (error) {
-        logError(error, 'SelfHealing - MonitorHealth');
+      } catch (_error: unknown) {
+        logError(_error, 'SelfHealing - MonitorHealth');
       }
     };
 
@@ -153,9 +151,9 @@ export async function monitorWebsiteHealth(
 
     // Schedule periodic checks
     setInterval(checkHealth, intervalMinutes * 60 * 1000);
-  } catch (error) {
-    logError(error, 'SelfHealing - MonitorHealth');
-    throw new Error(`Failed to start health monitoring: ${getErrorMessage(error)}`);
+  } catch (_error: unknown) {
+    logError(_error, 'SelfHealing - MonitorHealth');
+    throw new Error(`Failed to start health monitoring: ${getErrorMessage(_error)}`);
   }
 }
 
@@ -165,7 +163,7 @@ async function checkBrokenLinks($: cheerio.CheerioAPI, baseUrl: string): Promise
   const issues: HealthIssue[] = [];
   const links = $('a[href]');
 
-  links.each((_, el) => {
+  links.each((_index, el) => {
     const href = $(el).attr('href');
     if (!href) return;
 
@@ -190,11 +188,11 @@ async function checkBrokenLinks($: cheerio.CheerioAPI, baseUrl: string): Promise
   return issues;
 }
 
-async function checkBrokenImages($: cheerio.CheerioAPI, baseUrl: string): Promise<HealthIssue[]> {
+async function checkBrokenImages($: cheerio.CheerioAPI, _baseUrl: string): Promise<HealthIssue[]> {
   const issues: HealthIssue[] = [];
   const images = $('img[src]');
 
-  images.each((_, el) => {
+  images.each((_index, el) => {
     const src = $(el).attr('src');
     if (!src) {
       issues.push({
@@ -301,7 +299,7 @@ function checkAccessibilityIssues($: cheerio.CheerioAPI): HealthIssue[] {
   // Check for missing alt text (already checked in images)
   // Check for missing aria labels on interactive elements
   const buttons = $('button, [role="button"]');
-  buttons.each((_, el) => {
+  buttons.each((_index, el) => {
     const ariaLabel = $(el).attr('aria-label');
     const text = $(el).text().trim();
     
@@ -388,8 +386,8 @@ function calculateHealthScore(issues: HealthIssue[]): number {
   if (issues.length === 0) return 100;
 
   let score = 100;
-  issues.forEach(issue => {
-    switch (issue.severity) {
+  issues.forEach(_issue => {
+    switch (_issue.severity) {
       case 'critical':
         score -= 20;
         break;
@@ -416,9 +414,9 @@ async function autoFixIssues(
   // Fix broken images (add alt text)
   issues
     .filter(i => i.type === 'broken-image' && i.autoFixable && i.fix.includes('alt'))
-    .forEach(issue => {
-      const images = $('img').filter((_, el) => !$(el).attr('alt'));
-      images.each((_, el) => {
+    .forEach(_issue => {
+      const images = $('img').filter((_index, el) => !$(el).attr('alt'));
+      images.each((_index, el) => {
         const src = $(el).attr('src') || '';
         const altText = src.split('/').pop()?.replace(/\.[^/.]+$/, '') || 'Image';
         $(el).attr('alt', altText);
@@ -429,13 +427,13 @@ async function autoFixIssues(
   // Fix accessibility issues (add aria-labels)
   issues
     .filter(i => i.type === 'accessibility' && i.autoFixable && i.fix.includes('aria-label'))
-    .forEach(() => {
-      const buttons = $('button, [role="button"]').filter((_, el) => {
+    .forEach(_issue => {
+      const buttons = $('button, [role="button"]').filter((_index, el) => {
         const ariaLabel = $(el).attr('aria-label');
         const text = $(el).text().trim();
         return !ariaLabel && !text;
       });
-      buttons.each((_, el) => {
+      buttons.each((_index, el) => {
         $(el).attr('aria-label', 'Button');
         fixesApplied.push('Added aria-label to button');
       });
@@ -444,8 +442,8 @@ async function autoFixIssues(
   // Fix SEO issues (add meta tags)
   issues
     .filter(i => i.type === 'seo' && i.autoFixable)
-    .forEach(issue => {
-      if (issue.fix.includes('meta description')) {
+    .forEach(_issue => {
+      if (_issue.fix.includes('meta description')) {
         if (!$('meta[name="description"]').length) {
           $('head').append('<meta name="description" content="Website description">');
           fixesApplied.push('Added meta description');

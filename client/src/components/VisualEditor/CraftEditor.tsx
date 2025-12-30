@@ -4,7 +4,7 @@
  * Property panels, responsive controls, undo/redo
  */
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Editor, Frame, Element, useNode, useEditor } from '@craftjs/core';
 import { Layers } from '@craftjs/layers';
 import { Button } from '@/components/ui/button';
@@ -15,11 +15,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import {
-  Undo2, Redo2, Save, Eye, Code, Monitor, Tablet, Smartphone,
-  Layers as LayersIcon, Settings, Trash2, Copy, Move,
+  Undo2, Redo2, Save, Monitor, Tablet, Smartphone,
+  Layers as LayersIcon, Settings, Trash2,
   Type, Image, Layout, Grid3X3, Square, Minus, Box,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
-  ChevronDown, ChevronRight, Palette, Maximize2
 } from 'lucide-react';
 
 // ==============================================
@@ -37,15 +36,15 @@ interface TextProps {
   letterSpacing: number;
 }
 
-export const CraftText = ({ 
-  text = 'Edit this text', 
-  fontSize = 16, 
+export const CraftText = ({
+  text = 'Edit this text',
+  fontSize = 16,
   fontWeight = '400',
   color = '#1F2937',
   textAlign = 'left',
   lineHeight = 1.5,
   letterSpacing = 0
-}: TextProps) => {
+}: Partial<TextProps>) => {
   const { connectors: { connect, drag }, selected, actions: { setProp } } = useNode((state) => ({
     selected: state.events.selected,
   }));
@@ -376,7 +375,7 @@ interface ButtonComponentProps {
 
 export const CraftButton = ({
   text = 'Click Me',
-  variant = 'primary',
+  variant: _variant = 'primary',
   size = 'md',
   backgroundColor = '#3B82F6',
   textColor = '#FFFFFF',
@@ -949,7 +948,7 @@ function EditorToolbar({
   viewport: 'desktop' | 'tablet' | 'mobile';
   onViewportChange: (v: 'desktop' | 'tablet' | 'mobile') => void;
 }) {
-  const { canUndo, canRedo, actions, query } = useEditor((state, query) => ({
+  const { canUndo, canRedo, actions, query } = useEditor((_state, query) => ({
     canUndo: query.history.canUndo(),
     canRedo: query.history.canRedo(),
   }));
@@ -1029,7 +1028,7 @@ interface CraftEditorProps {
   onSave?: (content: any) => void;
 }
 
-export function CraftEditor({ initialContent, onSave }: CraftEditorProps) {
+export function CraftEditor({ initialContent: _initialContent, onSave: _onSave }: CraftEditorProps) {
   const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [activeTab, setActiveTab] = useState<'components' | 'layers'>('components');
 

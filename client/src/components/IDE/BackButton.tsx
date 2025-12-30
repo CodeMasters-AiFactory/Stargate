@@ -31,15 +31,13 @@ const urlMap: Record<string, string> = {
   'projects': '/projects',
 };
 
-// Shared navigation function
+// Shared navigation function - use window.location for reliable navigation
 function navigateToView(setState: ReturnType<typeof useIDE>['setState'], targetView: string) {
   const targetUrl = urlMap[targetView] || '/';
 
-  setState(prev => {
-    return { ...prev, currentView: targetView as any };
-  });
-
-  window.history.pushState({}, '', targetUrl);
+  // Use direct navigation for reliable page transitions
+  // pushState alone doesn't trigger React Router to update
+  window.location.href = targetUrl;
 }
 
 export function BackButton({

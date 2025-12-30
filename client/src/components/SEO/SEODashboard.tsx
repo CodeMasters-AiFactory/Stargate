@@ -10,14 +10,14 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
-import { Sparkles, CheckCircle2, AlertCircle, Download, FileText, Code } from 'lucide-react';
+import { Sparkles, Download } from 'lucide-react';
 import { toast } from 'sonner';
 
 export interface SEOOptimization {
   html: string;
   sitemap: string;
   robotsTxt: string;
-  schema: any;
+  schema: Record<string, unknown>;
   metaTags: {
     title: string;
     description: string;
@@ -58,7 +58,7 @@ export function SEODashboard({
   const [optimization, setOptimization] = useState<SEOOptimization | null>(null);
   const [isOptimizing, setIsOptimizing] = useState(false);
 
-  const handleOptimize = async () => {
+  const handleOptimize = async (): Promise<void> => {
     if (!currentHtml || !clientInfo) {
       toast.error('Website content and client information are required');
       return;
@@ -86,15 +86,15 @@ export function SEODashboard({
       } else {
         toast.error(data.error || 'Failed to optimize SEO');
       }
-    } catch (error) {
-      console.error('Failed to optimize SEO:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to optimize SEO:', _error);
       toast.error('Failed to optimize SEO');
     } finally {
       setIsOptimizing(false);
     }
   };
 
-  const handleDownloadSitemap = () => {
+  const handleDownloadSitemap = (): void => {
     if (!optimization) return;
     const blob = new Blob([optimization.sitemap], { type: 'application/xml' });
     const url = URL.createObjectURL(blob);
@@ -105,7 +105,7 @@ export function SEODashboard({
     URL.revokeObjectURL(url);
   };
 
-  const handleDownloadRobots = () => {
+  const handleDownloadRobots = (): void => {
     if (!optimization) return;
     const blob = new Blob([optimization.robotsTxt], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -116,7 +116,7 @@ export function SEODashboard({
     URL.revokeObjectURL(url);
   };
 
-  const getImpactColor = (impact: 'high' | 'medium' | 'low') => {
+  const getImpactColor = (impact: 'high' | 'medium' | 'low'): string => {
     switch (impact) {
       case 'high':
         return 'bg-green-500';
@@ -197,8 +197,8 @@ export function SEODashboard({
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {optimization.improvements.map((improvement, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                  {optimization.improvements.map((improvement, _index) => (
+                    <div key={_index} className="flex items-center justify-between p-3 border rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className={`w-3 h-3 rounded-full ${getImpactColor(improvement.impact)}`} />
                         <div>

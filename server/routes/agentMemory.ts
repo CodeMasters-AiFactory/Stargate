@@ -4,14 +4,15 @@ import { persistentMemory } from '../memory/PersistentMemorySystem';
 const router = express.Router();
 
 // Initialize agent memory session
-router.post('/initialize', async (req, res) => {
+router.post('/initialize', async (req, res): Promise<void> => {
   try {
     const { sessionId, userId, agentId, projectId } = req.body;
 
     if (!sessionId || !userId || !agentId) {
-      return res.status(400).json({ 
-        error: 'Missing required parameters: sessionId, userId, agentId' 
+      res.status(400).json({
+        error: 'Missing required parameters: sessionId, userId, agentId'
       });
+      return;
     }
 
     // Initialize or recover session memory
@@ -46,20 +47,21 @@ router.post('/initialize', async (req, res) => {
     console.error('Memory initialization error:', error);
     res.status(500).json({
       error: 'Failed to initialize memory session',
-      details: error.message
+      details: error instanceof Error ? error.message : String(error)
     });
   }
 });
 
 // Save conversation message
-router.post('/message', async (req, res) => {
+router.post('/message', async (req, res): Promise<void> => {
   try {
     const { sessionId, message } = req.body;
 
     if (!sessionId || !message) {
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Missing required parameters: sessionId, message'
       });
+      return;
     }
 
     await persistentMemory.addConversationMessage(sessionId, message);
@@ -73,20 +75,21 @@ router.post('/message', async (req, res) => {
     console.error('Message save error:', error);
     res.status(500).json({
       error: 'Failed to save message',
-      details: error.message
+      details: error instanceof Error ? error.message : String(error)
     });
   }
 });
 
 // Update conversation context
-router.post('/context', async (req, res) => {
+router.post('/context', async (req, res): Promise<void> => {
   try {
     const { sessionId, updates } = req.body;
 
     if (!sessionId || !updates) {
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Missing required parameters: sessionId, updates'
       });
+      return;
     }
 
     await persistentMemory.updateConversationContext(sessionId, updates);
@@ -100,20 +103,21 @@ router.post('/context', async (req, res) => {
     console.error('Context update error:', error);
     res.status(500).json({
       error: 'Failed to update context',
-      details: error.message
+      details: error instanceof Error ? error.message : String(error)
     });
   }
 });
 
 // Save project memory
-router.post('/project', async (req, res) => {
+router.post('/project', async (req, res): Promise<void> => {
   try {
     const { projectContext, userId } = req.body;
 
     if (!projectContext || !userId) {
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Missing required parameters: projectContext, userId'
       });
+      return;
     }
 
     await persistentMemory.saveProjectMemory(projectContext, userId);
@@ -127,7 +131,7 @@ router.post('/project', async (req, res) => {
     console.error('Project memory save error:', error);
     res.status(500).json({
       error: 'Failed to save project memory',
-      details: error.message
+      details: error instanceof Error ? error.message : String(error)
     });
   }
 });
@@ -153,20 +157,21 @@ router.get('/history/:sessionId', async (req, res) => {
     console.error('History retrieval error:', error);
     res.status(500).json({
       error: 'Failed to retrieve conversation history',
-      details: error.message
+      details: error instanceof Error ? error.message : String(error)
     });
   }
 });
 
 // Save user profile
-router.post('/profile', async (req, res) => {
+router.post('/profile', async (req, res): Promise<void> => {
   try {
     const { userId, profile } = req.body;
 
     if (!userId || !profile) {
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Missing required parameters: userId, profile'
       });
+      return;
     }
 
     await persistentMemory.saveUserProfile(userId, profile);
@@ -180,13 +185,13 @@ router.post('/profile', async (req, res) => {
     console.error('Profile save error:', error);
     res.status(500).json({
       error: 'Failed to save user profile',
-      details: error.message
+      details: error instanceof Error ? error.message : String(error)
     });
   }
 });
 
 // Get user profile
-router.get('/profile/:userId', async (req, res) => {
+router.get('/profile/:userId', async (req, res): Promise<void> => {
   try {
     const { userId } = req.params;
 
@@ -201,29 +206,31 @@ router.get('/profile/:userId', async (req, res) => {
     console.error('Profile retrieval error:', error);
     res.status(500).json({
       error: 'Failed to retrieve user profile',
-      details: error.message
+      details: error instanceof Error ? error.message : String(error)
     });
   }
 });
 
 // Agent chat endpoint with memory integration
-router.post('/chat', async (req, res) => {
+router.post('/chat', async (req, res): Promise<void> => {
   try {
     const { sessionId, message, memoryContext, projectId } = req.body;
 
     if (!sessionId || !message) {
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Missing required parameters: sessionId, message'
       });
+      return;
     }
 
     // Get memory context
     const context = memoryContext || await persistentMemory.getMemoryContext(sessionId);
-    
+
     if (!context) {
-      return res.status(400).json({
+      res.status(400).json({
         error: 'No memory context found. Please initialize session first.'
       });
+      return;
     }
 
     // Process message with AI (integrate with your existing AI system)
@@ -246,11 +253,11 @@ router.post('/chat', async (req, res) => {
     }
 
     // Save project updates if any
-    if (aiResponse.projectUpdates && projectId) {
+    if (aiResponse.projectData && projectId) {
       await persistentMemory.saveProjectMemory({
         projectId,
-        projectName: aiResponse.projectUpdates.name || 'Untitled Project',
-        ...aiResponse.projectUpdates
+        projectName: aiResponse.projectData.name || 'Untitled Project',
+        ...aiResponse.projectData
       }, context.userId);
     }
 
@@ -272,7 +279,7 @@ router.post('/chat', async (req, res) => {
     console.error('Agent chat error:', error);
     res.status(500).json({
       error: 'Failed to process agent chat',
-      details: error.message
+      details: error instanceof Error ? error.message : String(error)
     });
   }
 });
@@ -335,7 +342,7 @@ Once my AI processing is restored, I'll be able to continue with full memory of 
 }
 
 // Helper to extract project name from conversation
-function extractProjectName(userMessage: string, aiResponse: string): string | null {
+function extractProjectName(userMessage: string, _aiResponse: string): string | null {
   const lowerMessage = userMessage.toLowerCase();
   
   // Look for explicit project names

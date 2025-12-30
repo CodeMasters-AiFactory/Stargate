@@ -4,13 +4,11 @@
  * Part of Focus 1: Template System Enhancement
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import {
   generateBlueprintScreenshot,
-  generateAllBlueprintScreenshots,
-  saveBlueprintScreenshot,
 } from '../services/blueprintScreenshotService';
 
 // Load blueprints from JSON file
@@ -30,10 +28,10 @@ function loadBlueprints(): any[] {
 
 export function registerBlueprintRoutes(app: Express) {
   // Get all blueprints
-  app.get('/api/blueprints', async (req, res) => {
+  app.get('/api/blueprints', async (_req: Request, res: Response): Promise<void> => {
     try {
       const blueprints = loadBlueprints();
-      
+
       // Add preview URLs
       const blueprintsWithPreviews = blueprints.map((bp: any) => ({
         ...bp,
@@ -55,17 +53,18 @@ export function registerBlueprintRoutes(app: Express) {
   });
 
   // Get blueprint by ID
-  app.get('/api/blueprints/:id', async (req, res) => {
+  app.get('/api/blueprints/:id', async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
       const blueprints = loadBlueprints();
       const blueprint = blueprints.find((bp: any) => bp.id === id);
 
       if (!blueprint) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Blueprint not found',
         });
+        return;
       }
 
       res.json({
@@ -85,7 +84,7 @@ export function registerBlueprintRoutes(app: Express) {
   });
 
   // Get blueprint preview screenshot
-  app.get('/api/blueprints/:id/preview', async (req, res) => {
+  app.get('/api/blueprints/:id/preview', async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
       const { size } = req.query;
@@ -93,10 +92,11 @@ export function registerBlueprintRoutes(app: Express) {
       const blueprint = blueprints.find((bp: any) => bp.id === id);
 
       if (!blueprint) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Blueprint not found',
         });
+        return;
       }
 
       // Default color scheme
@@ -162,16 +162,16 @@ export function registerBlueprintRoutes(app: Express) {
   });
 
   // Get blueprints by industry
-  app.get('/api/blueprints/industry/:industry', async (req, res) => {
+  app.get('/api/blueprints/industry/:industry', async (req: Request, res: Response): Promise<void> => {
     try {
       const { industry } = req.params;
       const blueprints = loadBlueprints();
-      
+
       const filtered = blueprints.filter((bp: any) => {
         const industryMatch = bp.industryMatch || [];
         const bestFor = bp.bestFor || [];
         const industries = bp.industry || [];
-        
+
         const searchTerm = industry.toLowerCase();
         return (
           industryMatch.some((i: string) => i.toLowerCase().includes(searchTerm)) ||
@@ -194,19 +194,20 @@ export function registerBlueprintRoutes(app: Express) {
   });
 
   // Search blueprints
-  app.get('/api/blueprints/search', async (req, res) => {
+  app.get('/api/blueprints/search', async (req: Request, res: Response): Promise<void> => {
     try {
       const { q } = req.query;
       if (!q || typeof q !== 'string') {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Search query is required',
         });
+        return;
       }
 
       const blueprints = loadBlueprints();
       const searchTerm = q.toLowerCase();
-      
+
       const filtered = blueprints.filter((bp: any) => {
         return (
           bp.name.toLowerCase().includes(searchTerm) ||
@@ -232,10 +233,10 @@ export function registerBlueprintRoutes(app: Express) {
   });
 
   // Get blueprint categories
-  app.get('/api/blueprints/categories', async (req, res) => {
+  app.get('/api/blueprints/categories', async (_req: Request, res: Response): Promise<void> => {
     try {
       const blueprints = loadBlueprints();
-      
+
       // Extract unique industries
       const industries = new Set<string>();
       blueprints.forEach((bp: any) => {

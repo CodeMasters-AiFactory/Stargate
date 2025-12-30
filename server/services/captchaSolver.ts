@@ -5,7 +5,7 @@
  * Auto-detect, solve, continue. Track solve rate and costs.
  */
 
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { getErrorMessage } from '../utils/errorHandler';
 import fetch from 'node-fetch';
 
 export interface CaptchaProvider {
@@ -57,7 +57,7 @@ async function solveWith2Captcha(
       body: submitParams,
     });
 
-    const submitData = await submitResponse.json();
+    const submitData = await submitResponse.json() as { status: number; request: string };
     if (submitData.status !== 1) {
       return {
         success: false,
@@ -73,7 +73,7 @@ async function solveWith2Captcha(
     const pollInterval = 5000; // 5 seconds
 
     for (let i = 0; i < maxAttempts; i++) {
-      await new Promise(resolve => setTimeout(resolve, pollInterval));
+      await new Promise<void>(resolve => setTimeout(resolve, pollInterval));
 
       const getParams = new URLSearchParams({
         key: apiKey,
@@ -83,7 +83,7 @@ async function solveWith2Captcha(
       });
 
       const getResponse = await fetch(`${getUrl}?${getParams.toString()}`);
-      const getData = await getResponse.json();
+      const getData = await getResponse.json() as { status: number; request: string };
 
       if (getData.status === 1) {
         return {

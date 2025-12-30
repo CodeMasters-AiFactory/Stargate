@@ -4,13 +4,13 @@
  * Comprehensive quality assessment: Puppeteer checks, accessibility, SEO, performance
  */
 
-import puppeteer from 'puppeteer';
+import puppeteer, { type Page } from 'puppeteer';
 import * as cheerio from 'cheerio';
 import * as fs from 'fs';
 import * as path from 'path';
-import type { QAReport, QACategory, QAIssue, PerformanceMetrics, AccessibilityMetrics, SEOMetrics, VisualMetrics, NavigationMetrics, NavigationIssue } from '../types/qaReport';
+import type { QAReport, QACategory, QAIssue, QARecommendation, PerformanceMetrics, AccessibilityMetrics, SEOMetrics, VisualMetrics, NavigationMetrics, NavigationIssue } from '../types/qaReport';
 import type { PlannedPage } from '../types/plannedPage';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
 
 /**
  * Assess website quality
@@ -107,14 +107,14 @@ export async function assessWebsiteQuality(
     };
   } catch (error: unknown) {
     logError(error, 'QA Engine');
-    const errorMessage = getErrorMessage(error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`QA assessment failed: ${errorMessage}`);
   } finally {
     // Ensure browser always closes, even on error
     try {
       await browser.close();
-    } catch (closeError) {
-      console.error('[QA Engine] Error closing browser:', closeError);
+    } catch (_closeError: unknown) {
+      console.error('[QA Engine] Error closing browser:', _closeError);
     }
   }
 }
@@ -122,9 +122,9 @@ export async function assessWebsiteQuality(
 /**
  * Assess performance
  */
-async function assessPerformance(page: puppeteer.Page): Promise<PerformanceMetrics> {
+async function assessPerformance(page: Page): Promise<PerformanceMetrics> {
   const metrics = await page.metrics();
-  const loadTime = metrics?.LoadTime || 0;
+  const loadTime = (metrics as Record<string, unknown>)?.LoadTime as number || 0;
   
   // Estimate Core Web Vitals (simplified)
   const lcp = loadTime * 0.6; // Estimated
@@ -165,12 +165,12 @@ async function assessPerformance(page: puppeteer.Page): Promise<PerformanceMetri
 /**
  * Assess accessibility
  */
-async function assessAccessibility(page: puppeteer.Page): Promise<AccessibilityMetrics> {
+async function assessAccessibility(page: Page): Promise<AccessibilityMetrics> {
   // Check for common accessibility issues
   const hasAltText = await page.evaluate(() => {
     const images = document.querySelectorAll('img');
     let withAlt = 0;
-    images.forEach(img => {
+    images.forEach((img: HTMLImageElement) => {
       if (img.alt !== undefined && img.alt !== '') withAlt++;
     });
     return { total: images.length, withAlt };
@@ -183,7 +183,7 @@ async function assessAccessibility(page: puppeteer.Page): Promise<AccessibilityM
   const hasLabels = await page.evaluate(() => {
     const inputs = document.querySelectorAll('input, textarea, select');
     let labeled = 0;
-    inputs.forEach(input => {
+    inputs.forEach((input: Element) => {
       if (input.getAttribute('aria-label') || input.closest('label')) labeled++;
     });
     return { total: inputs.length, labeled };
@@ -213,7 +213,7 @@ async function assessAccessibility(page: puppeteer.Page): Promise<AccessibilityM
     },
     colorContrast: {
       passed: true,
-      ratios: {},
+      ratios: {} as Record<string, number>,
     },
   };
 }
@@ -221,7 +221,7 @@ async function assessAccessibility(page: puppeteer.Page): Promise<AccessibilityM
 /**
  * Assess SEO
  */
-async function assessSEO(page: puppeteer.Page): Promise<SEOMetrics> {
+async function assessSEO(page: Page): Promise<SEOMetrics> {
   const metaTags = await page.evaluate(() => {
     const title = document.querySelector('title')?.textContent || '';
     const metaDesc = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
@@ -276,7 +276,7 @@ async function assessSEO(page: puppeteer.Page): Promise<SEOMetrics> {
 /**
  * Assess visual design
  */
-async function assessVisual(page: puppeteer.Page): Promise<VisualMetrics> {
+async function assessVisual(page: Page): Promise<VisualMetrics> {
   // Simplified visual assessment
   const hasHero = await page.evaluate(() => {
     return document.querySelector('.hero, [class*="hero"], section:first-of-type') !== null;
@@ -485,7 +485,7 @@ function identifyIssues(
     });
     
     // Add individual broken link issues
-    navigation.issues.forEach((navIssue, index) => {
+    navigation.issues.forEach((navIssue: NavigationIssue, index: number) => {
       issues.push({
         id: `nav-${index + 2}`,
         category: 'navigation',
@@ -516,13 +516,13 @@ function identifyIssues(
 /**
  * Generate recommendations
  */
-function generateRecommendations(categories: QACategory[], issues: QAIssue[]): any[] {
-  return issues.map(issue => ({
+function generateRecommendations(_categories: QACategory[], issues: QAIssue[]): QARecommendation[] {
+  return issues.map((issue: QAIssue): QARecommendation => ({
     priority: issue.severity === 'critical' || issue.severity === 'high' ? 'high' : 'medium',
     category: issue.category,
     action: issue.suggestion,
     impact: `Improves ${issue.category} score`,
-    effort: 'medium',
+    effort: 'medium' as const,
   }));
 }
 

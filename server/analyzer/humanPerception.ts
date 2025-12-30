@@ -24,32 +24,32 @@ export interface PerceptionScore {
  */
 export async function calculatePerceptionScore(
   page: Page,
-  html: string,
+  _html: string,
   bodyText: string,
   screenshots: ScreenshotAnalysis
 ): Promise<PerceptionScore> {
-  
+
   // 1. First 5-Second Impression (0-25)
   const firstImpression = await assessFirstImpression(page, screenshots);
-  
+
   // 2. Emotional Resonance (0-25)
   const emotionalResonance = await assessEmotionalResonance(page, bodyText, screenshots);
-  
+
   // 3. Cohesion (0-25)
   const cohesion = await assessCohesion(page, screenshots);
-  
+
   // 4. Identity Recognition (0-25)
   const identityRecognition = await assessIdentityRecognition(page, bodyText, screenshots);
-  
+
   const totalScore = firstImpression + emotionalResonance + cohesion + identityRecognition;
-  
+
   // Generate breakdown
-  const breakdown = {
-    trust: totalScore >= 80 ? 'high' : totalScore >= 60 ? 'medium' : 'low',
-    premium: emotionalResonance >= 20 ? 'high' : emotionalResonance >= 15 ? 'medium' : 'low',
-    memorable: identityRecognition >= 20 ? 'high' : identityRecognition >= 15 ? 'medium' : 'low'
+  const breakdown: { trust: 'high' | 'medium' | 'low'; premium: 'high' | 'medium' | 'low'; memorable: 'high' | 'medium' | 'low' } = {
+    trust: (totalScore >= 80 ? 'high' : totalScore >= 60 ? 'medium' : 'low') as 'high' | 'medium' | 'low',
+    premium: (emotionalResonance >= 20 ? 'high' : emotionalResonance >= 15 ? 'medium' : 'low') as 'high' | 'medium' | 'low',
+    memorable: (identityRecognition >= 20 ? 'high' : identityRecognition >= 15 ? 'medium' : 'low') as 'high' | 'medium' | 'low'
   };
-  
+
   return {
     firstImpression,
     emotionalResonance,
@@ -66,7 +66,7 @@ export async function calculatePerceptionScore(
  */
 async function assessFirstImpression(
   page: Page,
-  screenshots: ScreenshotAnalysis
+  _screenshots: ScreenshotAnalysis
 ): Promise<number> {
   let score = 12.5; // Start at medium
   
@@ -143,7 +143,7 @@ async function assessFirstImpression(
 async function assessEmotionalResonance(
   page: Page,
   bodyText: string,
-  screenshots: ScreenshotAnalysis
+  _screenshots: ScreenshotAnalysis
 ): Promise<number> {
   let score = 12.5; // Start at medium
   
@@ -279,7 +279,7 @@ async function assessCohesion(
 async function assessIdentityRecognition(
   page: Page,
   bodyText: string,
-  screenshots: ScreenshotAnalysis
+  _screenshots: ScreenshotAnalysis
 ): Promise<number> {
   let score = 12.5; // Start at medium
   

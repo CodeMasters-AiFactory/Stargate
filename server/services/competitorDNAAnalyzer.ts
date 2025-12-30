@@ -6,10 +6,10 @@
  */
 
 import { detectTechStack, type TechStack } from './techStackDetector';
-import { extractDesignTokens, type DesignTokens } from './designTokenExtractor';
-import { extractMetadata, type Metadata } from './metadataExtractor';
+import { extractDesignTokens } from './designTokenExtractor';
 import puppeteer, { Page } from 'puppeteer';
 import * as cheerio from 'cheerio';
+import { Element } from 'domhandler';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 import { extractCommonData } from './aiVisionScraper';
 
@@ -60,7 +60,7 @@ export interface CompetitorDNA {
     title: string;
     metaDescription: string;
     h1: string;
-    schemaMarkup: any[];
+    schemaMarkup: Record<string, unknown>[];
     openGraph: Record<string, string>;
     internalLinks: number;
     externalLinks: number;
@@ -101,7 +101,7 @@ export async function analyzeCompetitorDNA(url: string): Promise<CompetitorDNA> 
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
 
     // Wait for dynamic content
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise<void>(resolve => setTimeout(resolve, 2000));
 
     // Get HTML
     const html = await page.content();
@@ -180,7 +180,7 @@ async function analyzeContent(page: Page, $: cheerio.CheerioAPI): Promise<Compet
 
   // Extract headings
   const headings: Array<{ level: number; text: string }> = [];
-  $('h1, h2, h3, h4, h5, h6').each((_, el) => {
+  $('h1, h2, h3, h4, h5, h6').each((_index: number, el: Element) => {
     const level = parseInt(el.tagName[1]);
     const text = $(el).text().trim();
     if (text) {
@@ -190,7 +190,7 @@ async function analyzeContent(page: Page, $: cheerio.CheerioAPI): Promise<Compet
 
   // Extract CTAs
   const ctas: string[] = [];
-  $('button, a[class*="button"], a[class*="cta"], [class*="call-to-action"]').each((_, el) => {
+  $('button, a[class*="button"], a[class*="cta"], [class*="call-to-action"]').each((_index: number, el: Element) => {
     const text = $(el).text().trim();
     if (text && text.length < 100) {
       ctas.push(text);
@@ -199,7 +199,7 @@ async function analyzeContent(page: Page, $: cheerio.CheerioAPI): Promise<Compet
 
   // Extract trust signals
   const trustSignals: string[] = [];
-  $('[class*="trust"], [class*="badge"], [class*="certificate"], [class*="award"]').each((_, el) => {
+  $('[class*="trust"], [class*="badge"], [class*="certificate"], [class*="award"]').each((_index: number, el: Element) => {
     const text = $(el).text().trim();
     if (text) {
       trustSignals.push(text);
@@ -234,8 +234,8 @@ async function analyzeContent(page: Page, $: cheerio.CheerioAPI): Promise<Compet
     readingLevel: gradeLevel,
     keywordDensity,
     headings,
-    ctas: [...new Set(ctas)].slice(0, 10),
-    trustSignals: [...new Set(trustSignals)].slice(0, 10),
+    ctas: Array.from(new Set(ctas)).slice(0, 10),
+    trustSignals: Array.from(new Set(trustSignals)).slice(0, 10),
   };
 }
 
@@ -248,19 +248,19 @@ async function analyzeSEO(page: Page, $: cheerio.CheerioAPI, html: string): Prom
   const h1 = $('h1').first().text().trim() || '';
 
   // Schema markup
-  const schemaMarkup: any[] = [];
-  $('script[type="application/ld+json"]').each((_, el) => {
+  const schemaMarkup: Record<string, unknown>[] = [];
+  $('script[type="application/ld+json"]').each((_index: number, el: Element) => {
     try {
       const json = JSON.parse($(el).text());
       schemaMarkup.push(json);
-    } catch (e) {
+    } catch (_error: unknown) {
       // Invalid JSON, skip
     }
   });
 
   // Open Graph tags
   const openGraph: Record<string, string> = {};
-  $('meta[property^="og:"]').each((_, el) => {
+  $('meta[property^="og:"]').each((_index: number, el: Element) => {
     const property = $(el).attr('property')?.replace('og:', '') || '';
     const content = $(el).attr('content') || '';
     if (property && content) {
@@ -274,7 +274,7 @@ async function analyzeSEO(page: Page, $: cheerio.CheerioAPI, html: string): Prom
 
   // Page speed (simplified - measure load time)
   const loadTime = await page.evaluate(() => {
-    const perfData = (window as any).performance?.timing;
+    const perfData = (window as unknown as { performance?: { timing?: { loadEventEnd: number; navigationStart: number } } }).performance?.timing;
     if (perfData) {
       return perfData.loadEventEnd - perfData.navigationStart;
     }
@@ -304,11 +304,11 @@ async function analyzeSEO(page: Page, $: cheerio.CheerioAPI, html: string): Prom
  */
 async function extractBusinessInfo(page: Page, $: cheerio.CheerioAPI, url: string): Promise<CompetitorDNA['business']> {
   // Extract contact info using AI Vision
-  let contactData: any = {};
+  let contactData: Record<string, unknown> = {};
   try {
     const visionResult = await extractCommonData(url);
     contactData = visionResult.fields || {};
-  } catch (e) {
+  } catch (_error) {
     // Fallback to text extraction
   }
 
@@ -327,7 +327,7 @@ async function extractBusinessInfo(page: Page, $: cheerio.CheerioAPI, url: strin
 
   // Extract social media links
   const socialMedia: Record<string, string> = {};
-  $('a[href*="facebook.com"], a[href*="twitter.com"], a[href*="instagram.com"], a[href*="linkedin.com"]').each((_, el) => {
+  $('a[href*="facebook.com"], a[href*="twitter.com"], a[href*="instagram.com"], a[href*="linkedin.com"]').each((_index: number, el: Element) => {
     const href = $(el).attr('href') || '';
     if (href.includes('facebook.com')) socialMedia.facebook = href;
     if (href.includes('twitter.com') || href.includes('x.com')) socialMedia.twitter = href;
@@ -341,8 +341,8 @@ async function extractBusinessInfo(page: Page, $: cheerio.CheerioAPI, url: strin
   return {
     companyName,
     contactInfo: {
-      emails: [...new Set(emails)].slice(0, 5),
-      phones: [...new Set(phones)].slice(0, 5),
+      emails: Array.from(new Set(emails)).slice(0, 5),
+      phones: Array.from(new Set(phones)).slice(0, 5),
       addresses: [],
     },
     socialMedia,
@@ -354,7 +354,7 @@ async function extractBusinessInfo(page: Page, $: cheerio.CheerioAPI, url: strin
  */
 function extractFontSizes($: cheerio.CheerioAPI): string[] {
   const fontSizes = new Set<string>();
-  $('*').each((_, el) => {
+  $('*').each((_index: number, el: Element) => {
     const fontSize = $(el).css('font-size');
     if (fontSize) {
       fontSizes.add(fontSize);

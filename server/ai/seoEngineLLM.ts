@@ -9,7 +9,13 @@ import type { DesignContext } from '../generator/designThinking';
 import type { LayoutPlan } from './layoutPlannerLLM';
 import type { SectionCopy } from './copywriterLLM';
 import type { PlannedImage } from './imagePlannerLLM';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
+
+// Extended DesignContext with optional properties used in this module
+interface ExtendedDesignContext extends DesignContext {
+  industry?: string;
+  primaryGoals?: string[];
+}
 
 export interface SEOResult {
   title: string;              // 60-65 characters
@@ -18,7 +24,7 @@ export interface SEOResult {
   ogTitle: string;           // Open Graph title
   ogDescription: string;     // Open Graph description
   ogImage?: string;          // Hero image URL from v6.5
-  schemaLD?: any;            // Schema.org JSON-LD
+  schemaLD?: Record<string, unknown>;            // Schema.org JSON-LD
   slug: string;              // Clean, lowercase, hyphen-separated
   seoScore?: number;         // Estimated SEO score (0-100)
   readabilityHints?: string[]; // Readability optimization hints
@@ -40,7 +46,7 @@ function createOpenAIClient(): OpenAI | null {
 /**
  * Determine Schema.org type based on industry
  */
-function determineSchemaType(industry: string, primaryGoal?: string): string {
+function determineSchemaType(industry: string, _primaryGoal?: string): string {
   const industryLower = industry.toLowerCase();
   
   if (industryLower.includes('saas') || industryLower.includes('software') || industryLower.includes('app') || industryLower.includes('platform')) {
@@ -73,8 +79,8 @@ function determineSchemaType(industry: string, primaryGoal?: string): string {
  * Build SEO generation prompt
  */
 function buildSEOPrompt(
-  designContext: DesignContext,
-  sectionPlan: LayoutPlan,
+  designContext: ExtendedDesignContext,
+  _sectionPlan: LayoutPlan,
   sectionCopies: SectionCopy[],
   imagePlans: PlannedImage[],
   projectName: string
@@ -204,12 +210,12 @@ Return ONLY the JSON object, no markdown, no explanation.`;
  * Generate SEO metadata for a website
  */
 export async function generateSEOForSite(
-  designContext: DesignContext,
-  sectionPlan: LayoutPlan,
+  designContext: ExtendedDesignContext,
+  _sectionPlan: LayoutPlan,
   sectionCopies: SectionCopy[],
   imagePlans: PlannedImage[],
   projectName: string,
-  layout?: any // v6.7: Layout structure to get actual image URLs
+  layout?: { sections?: Array<{ type: string; imageUrl?: string }> } // v6.7: Layout structure to get actual image URLs
 ): Promise<SEOResult> {
   const openai = createOpenAIClient();
 
@@ -221,7 +227,7 @@ export async function generateSEOForSite(
   try {
     console.log('[Merlin 6.7] Generating SEO metadata using GPT-4o...');
     
-    const prompt = buildSEOPrompt(designContext, sectionPlan, sectionCopies, imagePlans, projectName);
+    const prompt = buildSEOPrompt(designContext, _sectionPlan, sectionCopies, imagePlans, projectName);
 
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
@@ -248,31 +254,31 @@ Ensure Schema.org JSON-LD is valid and complete.`
     }
 
     // Parse JSON response
-    let parsed: any;
+    let parsed: Record<string, unknown>;
     try {
       parsed = JSON.parse(content);
-    } catch (parseError) {
+    } catch (_parseError) {
       // Try to extract JSON from markdown code blocks
       const jsonMatch = content.match(/```(?:json)?\s*(\{.*?\})\s*```/s);
       if (jsonMatch) {
         parsed = JSON.parse(jsonMatch[1]);
       } else {
-        throw parseError;
+        throw _parseError;
       }
     }
 
     // Validate and normalize
     const seoResult: SEOResult = {
-      title: parsed.title || `${projectName} - ${designContext.industry || 'Business'}`,
-      description: parsed.description || `Professional ${designContext.industry || 'business'} services.`,
-      keywords: Array.isArray(parsed.keywords) ? parsed.keywords : [designContext.industry || 'business'],
-      ogTitle: parsed.ogTitle || parsed.title || projectName,
-      ogDescription: parsed.ogDescription || parsed.description || '',
-      ogImage: parsed.ogImage || (layout?.sections?.find((s: any) => s.type === 'hero')?.imageUrl) || imagePlans.find(img => img.purpose === 'hero')?.alt || '',
-      schemaLD: parsed.schemaLD || null,
-      slug: parsed.slug || generateSlug(projectName),
-      seoScore: parsed.seoScore || 75,
-      readabilityHints: Array.isArray(parsed.readabilityHints) ? parsed.readabilityHints : []
+      title: (parsed.title as string) || `${projectName} - ${designContext.industry || 'Business'}`,
+      description: (parsed.description as string) || `Professional ${designContext.industry || 'business'} services.`,
+      keywords: Array.isArray(parsed.keywords) ? parsed.keywords as string[] : [designContext.industry || 'business'],
+      ogTitle: (parsed.ogTitle as string) || (parsed.title as string) || projectName,
+      ogDescription: (parsed.ogDescription as string) || (parsed.description as string) || '',
+      ogImage: (parsed.ogImage as string) || (layout?.sections?.find((s: { type: string; imageUrl?: string }) => s.type === 'hero')?.imageUrl) || imagePlans.find(img => img.purpose === 'hero')?.alt || '',
+      schemaLD: (parsed.schemaLD as Record<string, unknown>) || undefined,
+      slug: (parsed.slug as string) || generateSlug(projectName),
+      seoScore: (parsed.seoScore as number) || 75,
+      readabilityHints: Array.isArray(parsed.readabilityHints) ? parsed.readabilityHints as string[] : []
     };
 
     // Validate title length
@@ -304,7 +310,6 @@ Ensure Schema.org JSON-LD is valid and complete.`
     return seoResult;
   } catch (error: unknown) {
     logError(error, 'SEO Engine LLM v6.7');
-    const errorMessage = getErrorMessage(error);
     console.warn('[SEO Engine LLM v6.7] Falling back to rule-based SEO - generation will continue');
     return generateFallbackSEO(designContext, projectName, imagePlans, layout);
   }
@@ -314,10 +319,10 @@ Ensure Schema.org JSON-LD is valid and complete.`
  * Generate fallback SEO when AI is unavailable
  */
 function generateFallbackSEO(
-  designContext: DesignContext,
+  designContext: ExtendedDesignContext,
   projectName: string,
   imagePlans: PlannedImage[],
-  layout?: any
+  layout?: { sections?: Array<{ type: string; imageUrl?: string }> }
 ): SEOResult {
   const industry = designContext.industry || 'business';
   const schemaType = determineSchemaType(industry);
@@ -325,7 +330,7 @@ function generateFallbackSEO(
   // Get hero image URL from layout if available
   let heroImageUrl = '';
   if (layout?.sections) {
-    const heroSection = layout.sections.find((s: any) => s.type === 'hero');
+    const heroSection = layout.sections.find((s: { type: string; imageUrl?: string }) => s.type === 'hero');
     if (heroSection?.imageUrl) {
       heroImageUrl = heroSection.imageUrl;
     }

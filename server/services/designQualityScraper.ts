@@ -18,7 +18,6 @@
  */
 
 import fetch from 'node-fetch';
-import * as cheerio from 'cheerio';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 
 // URL patterns that indicate gallery/listing pages (should be skipped)
@@ -111,12 +110,16 @@ export async function extractActualWebsiteUrl(awardPageUrl: string): Promise<str
       return null;
     }
     
-    const data = await response.json() as any;
-    
+    interface GoogleSearchResponse {
+      items?: Array<{ link: string }>;
+    }
+
+    const data = await response.json() as GoogleSearchResponse;
+
     if (data.items && data.items.length > 0) {
       // Filter out award sites and social media
       const validUrls = data.items
-        .map((item: any) => item.link)
+        .map((item) => item.link)
         .filter((url: string) => 
           url &&
           !url.includes('awwwards') &&
@@ -143,9 +146,9 @@ export async function extractActualWebsiteUrl(awardPageUrl: string): Promise<str
     
     console.log(`[Design Scraper] ⚠️ Could not find actual website for: ${searchName}`);
     return null;
-    
-  } catch (error) {
-    console.error(`[Design Scraper] ❌ Error extracting URL from ${awardPageUrl}:`, getErrorMessage(error));
+
+  } catch (_error) {
+    console.error(`[Design Scraper] ❌ Error extracting URL from ${awardPageUrl}:`, getErrorMessage(_error));
     return null;
   }
 }
@@ -302,9 +305,9 @@ export async function scrapeAwwwards(category: DesignCategory, limit: number = 1
     // - Puppeteer to handle JavaScript-rendered content
     // - Proper rate limiting
     // - Respecting robots.txt
-    
-  } catch (error) {
-    logError(error, `Design Scraper - Awwwards (${category})`);
+
+  } catch (_error) {
+    logError(_error, `Design Scraper - Awwwards (${category})`);
   }
   
   return results;
@@ -318,12 +321,12 @@ export async function scrapeCSSDesignAwards(category: DesignCategory, limit: num
   
   try {
     console.log(`[Design Scraper] Scraping CSS Design Awards for ${category} (limit: ${limit})`);
-    
+
     // Similar approach to Awwwards
     // Would need actual scraping implementation
-    
-  } catch (error) {
-    logError(error, `Design Scraper - CSS Design Awards (${category})`);
+
+  } catch (_error) {
+    logError(_error, `Design Scraper - CSS Design Awards (${category})`);
   }
   
   return results;
@@ -346,11 +349,8 @@ export async function searchDesignAwardWinners(
   const results: DesignQualityWebsite[] = [];
   
   try {
-    // Import Google search function
-    const { searchGoogleRankings } = await import('./websiteScraper');
-    
     // Handle special "Top X" categories
-    let searchCategory = category;
+    let searchCategory: string = category;
     if (category === 'Top 100') {
       searchCategory = 'site of the day winner';
     } else if (category === 'Top 1000') {
@@ -404,24 +404,42 @@ export async function searchDesignAwardWinners(
           // Use Google Custom Search API directly if available
           const apiKey = process.env.GOOGLE_SEARCH_API_KEY;
           const searchEngineId = process.env.GOOGLE_SEARCH_ENGINE_ID;
-          
-          let searchResults: any[] = [];
-          
+
+          interface SearchResult {
+            companyName: string;
+            websiteUrl: string;
+            ranking: number;
+            snippet: string;
+            originalTitle: string;
+          }
+
+          interface GoogleApiItem {
+            title?: string;
+            link: string;
+            snippet?: string;
+          }
+
+          interface GoogleApiResponse {
+            items?: GoogleApiItem[];
+          }
+
+          let searchResults: SearchResult[] = [];
+
           if (apiKey && searchEngineId) {
             console.log(`[Design Scraper] ✅ Using Google Custom Search API`);
             const searchUrl = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${searchEngineId}&q=${encodeURIComponent(query)}&num=10`;
-            
+
             try {
               const response = await fetch(searchUrl);
               if (response.ok) {
-                const data = await response.json() as any;
+                const data = await response.json() as GoogleApiResponse;
                 if (data.items && data.items.length > 0) {
-                  searchResults = data.items.map((item: any, index: number) => ({
+                  searchResults = data.items.map((item, index) => ({
                     companyName: item.title || 'Unknown',
                     websiteUrl: item.link,
                     ranking: index + 1,
                     snippet: item.snippet || '',
-                    originalTitle: item.title,
+                    originalTitle: item.title || '',
                   }));
                   console.log(`[Design Scraper] ✅ Google API returned ${searchResults.length} results`);
                 } else {
@@ -430,8 +448,8 @@ export async function searchDesignAwardWinners(
               } else {
                 throw new Error(`Google API error: ${response.status}`);
               }
-            } catch (apiError) {
-              console.error(`[Design Scraper] ❌ Google API error:`, apiError);
+            } catch (_apiError) {
+              console.error(`[Design Scraper] ❌ Google API error:`, _apiError);
               // Continue to next query instead of failing completely
               continue;
             }
@@ -442,12 +460,12 @@ export async function searchDesignAwardWinners(
           
           // Extract website URLs from award site results
           for (const result of searchResults) {
-            const awardSourceName = awardSite.site.includes('awwwards') ? 'Awwwards' :
+            const awardSourceName: DesignQualityWebsite['awardSource'] = awardSite.site.includes('awwwards') ? 'Awwwards' :
                                awardSite.site.includes('cssdesignawards') ? 'CSS Design Awards' :
                                awardSite.site.includes('fwa') ? 'FWA' :
                                awardSite.site.includes('siteinspire') ? 'SiteInspire' :
                                awardSite.site.includes('dribbble') ? 'Dribbble' : 'Manual';
-            
+
             let actualUrl = result.websiteUrl;
             
             // IMPROVED: Skip gallery pages immediately
@@ -479,7 +497,7 @@ export async function searchDesignAwardWinners(
               title: result.companyName,
               description: result.snippet,
               category: category,
-              awardSource: awardSourceName as any,
+              awardSource: awardSourceName,
               designScore: undefined,
             });
           }
@@ -490,8 +508,8 @@ export async function searchDesignAwardWinners(
         
         // Rate limiting between sites
         await new Promise(resolve => setTimeout(resolve, 1000));
-      } catch (error) {
-        console.warn(`[Design Scraper] Failed to search ${awardSite.site}:`, error);
+      } catch (_error) {
+        console.warn(`[Design Scraper] Failed to search ${awardSite.site}:`, _error);
       }
     }
     
@@ -517,9 +535,9 @@ export async function searchDesignAwardWinners(
     } else {
       console.log(`[Design Scraper] ⚠️ NO RESULTS FOUND - Check Google API configuration and quota`);
     }
-    
-  } catch (error) {
-    logError(error, `Design Scraper - Search Award Winners (${category})`);
+
+  } catch (_error) {
+    logError(_error, `Design Scraper - Search Award Winners (${category})`);
   }
   
   return results;
@@ -588,9 +606,9 @@ export async function scrapeTopDesignWebsites(
     
     // Limit results
     return resolvedResults.slice(0, limit);
-    
-  } catch (error) {
-    logError(error, `Design Scraper - Top Design Websites (${category})`);
+
+  } catch (_error) {
+    logError(_error, `Design Scraper - Top Design Websites (${category})`);
     return [];
   }
 }
@@ -661,8 +679,8 @@ export async function scrapeAllDesignCategories(limitPerCategory: number = 100):
       
       // Rate limiting between categories
       await new Promise(resolve => setTimeout(resolve, 2000));
-    } catch (error) {
-      logError(error, `Design Scraper - Category ${category}`);
+    } catch (_error) {
+      logError(_error, `Design Scraper - Category ${category}`);
       results[category] = [];
     }
   }

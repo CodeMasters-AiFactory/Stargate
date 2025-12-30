@@ -10,7 +10,7 @@ import { db } from '../db';
 import { templateSources, rankingHistory, brandTemplates } from '@shared/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { searchGoogleRankings, scrapeWebsiteFull, createTemplateFromScrape } from './websiteScraper';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
 
 export interface MonitoringConfig {
   industries: string[];
@@ -105,16 +105,16 @@ export async function checkRankingsForIndustry(
 
           console.log(`[RankingMonitor] Created new source: ${result.companyName} (Rank #${result.ranking})`);
         }
-      } catch (error) {
-        logError(error, `RankingMonitor - Update source ${result.websiteUrl}`);
+      } catch (_error: unknown) {
+        logError(_error, `RankingMonitor - Update source ${result.websiteUrl}`);
         // Continue with next result
       }
     }
 
     console.log(`[RankingMonitor] ✅ Completed ranking check for ${industry} in ${city || state || country}`);
-  } catch (error) {
-    logError(error, `RankingMonitor - Check rankings ${industry}`);
-    throw error;
+  } catch (_error: unknown) {
+    logError(_error, `RankingMonitor - Check rankings ${industry}`);
+    throw _error;
   }
 }
 
@@ -198,7 +198,7 @@ export async function updateTemplatesForTopRanked(
             .set({
               name: template.name,
               css: template.css,
-              contentData: template.contentData as any,
+              contentData: template.contentData as unknown,
               rankingPosition: template.rankingPosition,
               updatedAt: sql`now()`,
             })
@@ -214,18 +214,18 @@ export async function updateTemplatesForTopRanked(
             category: template.category,
             industry: template.industry,
             thumbnail: template.thumbnail,
-            colors: template.colors as any,
-            typography: template.typography as any,
-            layout: template.layout as any,
+            colors: template.colors as unknown,
+            typography: template.typography as unknown,
+            layout: template.layout as unknown,
             css: template.css,
             darkMode: template.darkMode || false,
-            tags: template.tags as any,
+            tags: template.tags as unknown,
             sourceId: template.sourceId,
             locationCountry: template.locationCountry,
             locationState: template.locationState,
             locationCity: template.locationCity,
             rankingPosition: template.rankingPosition,
-            contentData: template.contentData as any,
+            contentData: template.contentData as unknown,
             isActive: true,
           });
 
@@ -233,17 +233,17 @@ export async function updateTemplatesForTopRanked(
         }
 
         // Add delay between scrapes to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } catch (error) {
-        logError(error, `RankingMonitor - Update template ${source.websiteUrl}`);
+        await new Promise<void>(resolve => setTimeout(resolve, 2000));
+      } catch (_error: unknown) {
+        logError(_error, `RankingMonitor - Update template ${source.websiteUrl}`);
         // Continue with next source
       }
     }
 
     console.log(`[RankingMonitor] ✅ Completed template updates for ${industry} (${city || state || country})`);
-  } catch (error) {
-    logError(error, `RankingMonitor - Update templates ${industry}`);
-    throw error;
+  } catch (_error: unknown) {
+    logError(_error, `RankingMonitor - Update templates ${industry}`);
+    throw _error;
   }
 }
 
@@ -279,9 +279,9 @@ export async function scheduleWeeklyChecks(config: MonitoringConfig): Promise<vo
           );
 
           // Add delay between industries/locations
-          await new Promise(resolve => setTimeout(resolve, 5000));
-        } catch (error) {
-          logError(error, `RankingMonitor - Weekly check ${industry} ${location.country}`);
+          await new Promise<void>(resolve => setTimeout(resolve, 5000));
+        } catch (_error: unknown) {
+          logError(_error, `RankingMonitor - Weekly check ${industry} ${location.country}`);
           // Continue with next industry/location
         }
       }
@@ -289,9 +289,9 @@ export async function scheduleWeeklyChecks(config: MonitoringConfig): Promise<vo
 
     const duration = Date.now() - startTime;
     console.log(`[RankingMonitor] ✅ Weekly ranking checks completed in ${(duration / 1000).toFixed(2)}s`);
-  } catch (error) {
-    logError(error, 'RankingMonitor - Weekly checks');
-    throw error;
+  } catch (_error: unknown) {
+    logError(_error, 'RankingMonitor - Weekly checks');
+    throw _error;
   }
 }
 
@@ -337,8 +337,8 @@ export async function getMonitoringStats(): Promise<{
       locations: [...new Map(locations.map(l => [JSON.stringify(l), l])).values()], // Deduplicate
       lastChecked,
     };
-  } catch (error) {
-    logError(error, 'RankingMonitor - Get stats');
+  } catch (_error: unknown) {
+    logError(_error, 'RankingMonitor - Get stats');
     return {
       totalSources: 0,
       activeSources: 0,

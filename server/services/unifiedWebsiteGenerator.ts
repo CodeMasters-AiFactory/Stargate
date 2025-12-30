@@ -24,7 +24,6 @@ import { generatePageSEO, savePageSEO, loadPageSEO } from './seoEngine';
 import { determineImageRequirements, generateProjectImages, saveImagePrompts } from './imageEngine';
 import { generateDesignSystemCSS } from './designSystem';
 import { minifyCSS, minifyJS, optimizeHTML } from './performanceOptimizer';
-import { autoAnalyzeProject } from './learningSystem';
 import fs from 'fs';
 import path from 'path';
 import { getProjectDir, ensureProjectDir } from './projectConfig';
@@ -133,7 +132,7 @@ export async function generateUnifiedWebsite(
   for (const [pageType, content] of pageContents.entries()) {
     let seo = loadPageSEO(projectSlug, pageType);
     if (!seo) {
-      seo = generatePageSEO(config, pageType as any, content);
+      seo = generatePageSEO(config, pageType as 'home' | 'services' | 'about' | 'contact', content);
       savePageSEO(projectSlug, pageType, seo);
     }
     pageSEO.set(pageType, seo);
@@ -165,22 +164,8 @@ export async function generateUnifiedWebsite(
     brandKit.colorPalette.accent,
     brandKit.typography.headingFont
   );
-  
-  const css = generateDesignSystemCSS(designTokens, {
-    siteName: config.projectName,
-    description: `${config.industry} services`,
-    pages: [],
-    navigation: { type: 'header', sticky: true, pages: [] },
-    sharedComponents: { header: '', footer: '', navigation: '' },
-    seoStrategy: { primaryKeywords: [], secondaryKeywords: [], contentGaps: [] },
-    designSystem: {
-      colors: brandKit.colorPalette,
-      typography: brandKit.typography,
-      spacing: brandKit.spacing,
-      borderRadius: brandKit.borderRadius
-    },
-    version: '1.0'
-  });
+
+  const css = generateDesignSystemCSS(designTokens);
   const minifiedCSS = minifyCSS(css);
 
   // Step 7: Generate JavaScript
@@ -229,7 +214,7 @@ console.log('${config.projectName} website loaded');
   const stylesDir = path.join(assetsDir, 'styles');
   const scriptsDir = path.join(assetsDir, 'scripts');
   
-  [assetsDir, stylesDir, scriptsDir].forEach(dir => {
+  [assetsDir, stylesDir, scriptsDir].forEach((dir: string) => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
@@ -351,13 +336,13 @@ Generate complete HTML with:
       const schemaScript = `<script type="application/ld+json">${JSON.stringify(seo.schema)}</script>`;
       html = html.replace('</head>', `${schemaScript}\n</head>`);
     }
-    
+
     // Optimize HTML
-    html = optimizeHTML(html);
-    
+    html = optimizeHTML(html).html;
+
     return html;
-  } catch (error) {
-    console.error(`[Unified Generator] Error generating ${pageType} HTML:`, error);
+  } catch (_error: unknown) {
+    console.error(`[Unified Generator] Error generating ${pageType} HTML:`, _error);
     return generatePageHTMLFallback(config, brandKit, content, seo, pageType, heroImage);
   }
 }

@@ -4,7 +4,7 @@
  */
 
 import { brandTemplates, scrapedContent, templateSources } from '@shared/schema';
-import { and, eq, sql, count } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import type { Express } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -17,6 +17,7 @@ import {
     type ScrapedWebsiteData
 } from '../services/websiteScraper';
 import { getErrorMessage, logError } from '../utils/errorHandler';
+import { processNewTemplate } from '../services/templateManager';
 
 // Global pause resolvers map for batch confirmation
 const globalPauseResolvers = new Map<string, () => void>();
@@ -139,13 +140,13 @@ export function registerWebsiteScraperRoutes(app: Express) {
       const { checkIfSafeToScrape } = await import('../services/safeScrapingChecker');
       const result = await checkIfSafeToScrape(url);
 
-      res.json({
+      return res.json({
         success: true,
         ...result,
       });
     } catch (error) {
       logError(error, 'Scraper API - Check Safe');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -166,9 +167,9 @@ export function registerWebsiteScraperRoutes(app: Express) {
         errors: [],
       };
       
-      res.json({ success: true, status });
+      return res.json({ success: true, status });
     } catch (error) {
-      res.status(500).json({ success: false, error: getErrorMessage(error) });
+      return res.status(500).json({ success: false, error: getErrorMessage(error) });
     }
   });
   
@@ -299,7 +300,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
    * Crawl Template 1 (first verified template) - Multi-page
    * POST /api/admin/scraper/crawl-template1
    */
-  app.post('/api/admin/scraper/crawl-template1', requireAdmin, async (req, res) => {
+  app.post('/api/admin/scraper/crawl-template1', requireAdmin, async (_req, res) => {
     try {
       if (!db) {
         return res.status(500).json({ error: 'Database not available' });
@@ -395,7 +396,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
         console.error(`[CrawlTemplate1] ❌ Error:`, getErrorMessage(error));
       });
       
-      res.json({
+      return res.json({
         success: true,
         message: `Multi-page crawl started for Template 1 (${template1.name})`,
         templateId: template1.id,
@@ -404,7 +405,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'Crawl Template 1');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -473,7 +474,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
         console.error(`[MultiPageCrawl] ❌ Error:`, getErrorMessage(error));
       });
       
-      res.json({
+      return res.json({
         success: true,
         message: `Multi-page crawl started for template ${templateId}`,
         sourceUrl,
@@ -482,12 +483,12 @@ export function registerWebsiteScraperRoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'Multi-Page Crawl');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
     }
-  });;
+  });
 
   /**
    * Search Google for top companies in industry + location
@@ -507,10 +508,10 @@ export function registerWebsiteScraperRoutes(app: Express) {
       console.log(`[Scraper API] Searching: ${industry}`);
 
       const results = await searchGoogleRankings(
-        industry,
-        undefined, // country - no longer required
-        undefined, // state - no longer required
-        undefined, // city - no longer required
+        industry as string,
+        '', // country - no longer required
+        '', // state - no longer required
+        '', // city - no longer required
         limit || 50
       );
 
@@ -523,7 +524,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
         console.warn(`[Scraper API] 💡 Solution: Set GOOGLE_SEARCH_API_KEY and GOOGLE_SEARCH_ENGINE_ID in .env`);
       }
 
-      res.json({
+      return res.json({
         success: true,
         results,
         count: results.length,
@@ -531,7 +532,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'Scraper API - Search');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -544,7 +545,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
    */
   app.post('/api/admin/scraper/scrape', requireAdmin, async (req, res) => {
     try {
-      const { urls, industry, options, isDesignQuality, designCategory } = req.body;
+      const { urls, industry, options, isDesignQuality, designCategory, country, state, city } = req.body;
 
       if (!urls || !Array.isArray(urls) || urls.length === 0) {
         return res.status(400).json({
@@ -791,7 +792,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
         }
       }
 
-      res.json({
+      return res.json({
         success: true,
         results,
         total: results.length,
@@ -800,7 +801,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'Scraper API - Scrape');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -841,14 +842,14 @@ export function registerWebsiteScraperRoutes(app: Express) {
 
       const sources = await query;
 
-      res.json({
+      return res.json({
         success: true,
         sources,
         count: sources.length,
       });
     } catch (error) {
       logError(error, 'Scraper API - Get Sources');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -888,13 +889,13 @@ export function registerWebsiteScraperRoutes(app: Express) {
         })
         .returning();
 
-      res.json({
+      return res.json({
         success: true,
         source,
       });
     } catch (error) {
       logError(error, 'Scraper API - Create Source');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -930,13 +931,13 @@ export function registerWebsiteScraperRoutes(app: Express) {
         });
       }
 
-      res.json({
+      return res.json({
         success: true,
         source,
       });
     } catch (error) {
       logError(error, 'Scraper API - Update Source');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -959,13 +960,13 @@ export function registerWebsiteScraperRoutes(app: Express) {
         .delete(templateSources)
         .where(eq(templateSources.id, id));
 
-      res.json({
+      return res.json({
         success: true,
         message: 'Source deleted',
       });
     } catch (error) {
       logError(error, 'Scraper API - Delete Source');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1133,7 +1134,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
         }
       }
 
-      res.json({
+      return res.json({
         success: true,
         data: {
           url: scrapedData.url,
@@ -1161,7 +1162,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'Scraper Test');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1208,13 +1209,13 @@ export function registerWebsiteScraperRoutes(app: Express) {
         }
       }
 
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         error: 'Template not found',
       });
     } catch (error) {
       logError(error, 'Get Scraped Template');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1225,7 +1226,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
    * List all scraped templates
    * GET /api/admin/scraper/templates
    */
-  app.get('/api/admin/scraper/templates', requireAdmin, async (req, res) => {
+  app.get('/api/admin/scraper/templates', requireAdmin, async (_req, res) => {
     try {
       const templates: any[] = [];
 
@@ -1268,14 +1269,14 @@ export function registerWebsiteScraperRoutes(app: Express) {
         }
       }
 
-      res.json({
+      return res.json({
         success: true,
         templates,
         count: templates.length,
       });
     } catch (error) {
       logError(error, 'List Scraped Templates');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1288,7 +1289,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
    */
   app.post('/api/admin/scraper/generate-from-template', requireAdmin, async (req, res) => {
     try {
-      const { templateId, businessName, businessDescription, customizations } = req.body;
+      const { templateId, businessName, businessDescription, customizations: _customizations } = req.body;
 
       if (!templateId) {
         return res.status(400).json({
@@ -1356,7 +1357,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
       };
 
       // Return the project config for the wizard to use
-      res.json({
+      return res.json({
         success: true,
         projectConfig,
         template: {
@@ -1372,7 +1373,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'Generate From Template');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1436,14 +1437,14 @@ export function registerWebsiteScraperRoutes(app: Express) {
 
           for (let j = 0; j < searchResults.length; j++) {
             const result = searchResults[j];
-            console.log(`[Bulk Scraper]   [${j + 1}/${searchResults.length}] Scraping: ${result.url}`);
+            console.log(`[Bulk Scraper]   [${j + 1}/${searchResults.length}] Scraping: ${result.websiteUrl}`);
 
             try {
-              const scrapedData = await scrapeWebsiteFull(result.url);
+              const scrapedData = await scrapeWebsiteFull(result.websiteUrl);
 
               if (scrapedData.error) {
                 failed++;
-                errors.push(`${result.url}: ${scrapedData.error}`);
+                errors.push(`${result.websiteUrl}: ${scrapedData.error}`);
                 continue;
               }
 
@@ -1453,7 +1454,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
                 const existingSource = await db
                   .select()
                   .from(templateSources)
-                  .where(eq(templateSources.websiteUrl, result.url))
+                  .where(eq(templateSources.websiteUrl, result.websiteUrl))
                   .limit(1);
 
                 let sourceId: string | undefined;
@@ -1466,7 +1467,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
                     .insert(templateSources)
                     .values({
                       companyName: scrapedData.companyName,
-                      websiteUrl: result.url,
+                      websiteUrl: result.websiteUrl,
                       industry: industry,
                       country: country,
                       state: state || null,
@@ -1567,8 +1568,8 @@ export function registerWebsiteScraperRoutes(app: Express) {
             } catch (error) {
               failed++;
               const errorMsg = getErrorMessage(error);
-              errors.push(`${result.url}: ${errorMsg}`);
-              console.error(`[Bulk Scraper] Error scraping ${result.url}:`, errorMsg);
+              errors.push(`${result.websiteUrl}: ${errorMsg}`);
+              console.error(`[Bulk Scraper] Error scraping ${result.websiteUrl}:`, errorMsg);
             }
 
             // Rate limiting - wait between requests
@@ -1602,7 +1603,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
 
       console.log(`[Bulk Scraper] ✅ Complete: ${totalScraped} templates scraped, ${totalFailed} failed`);
 
-      res.json({
+      return res.json({
         success: true,
         results,
         summary: {
@@ -1614,7 +1615,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'Bulk Scraper - Scrape All Industries');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1676,7 +1677,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
 
       console.log(`[Design Scraper API] ✅ Found ${results.length} design websites for ${designCategory}`);
 
-      res.json({
+      return res.json({
         success: true,
         websites: results,
         count: results.length,
@@ -1686,7 +1687,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
     } catch (error) {
       console.error(`[Design Scraper API] ❌ Error in search-design-quality route:`, error);
       logError(error, 'Design Quality Search');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -1824,7 +1825,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
 
       // Helper function to wait for user confirmation
       const waitForConfirmation = (batchNum: number, processed: number, remaining: number): Promise<void> => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, _reject) => {
           // Store resolver in global map
           globalPauseResolvers.set(pauseKey, resolve);
 
@@ -2108,9 +2109,9 @@ export function registerWebsiteScraperRoutes(app: Express) {
             category: designCategory,
           },
         })}\n\n`);
-        res.end();
+        return res.end();
       } else {
-        res.json({
+        return res.json({
           success: true,
           results,
           summary: {
@@ -2124,7 +2125,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
     } catch (error) {
       console.error(`[Design Scraper API] ❌ Error in scrape-design-quality route:`, error);
       logError(error, 'Design Quality Scraper');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -2135,8 +2136,8 @@ export function registerWebsiteScraperRoutes(app: Express) {
    * Test endpoint to verify route registration
    * GET /api/admin/scraper/test-design-route
    */
-  app.get('/api/admin/scraper/test-design-route', requireAdmin, async (req, res) => {
-    res.json({
+  app.get('/api/admin/scraper/test-design-route', requireAdmin, async (_req, res) => {
+    return res.json({
       success: true,
       message: 'Design quality scraper route is registered and accessible',
       timestamp: new Date().toISOString(),
@@ -2159,19 +2160,19 @@ export function registerWebsiteScraperRoutes(app: Express) {
       if (resolver) {
         resolver();
         globalPauseResolvers.delete(pauseKey);
-        res.json({
+        return res.json({
           success: true,
           message: 'Scraping continued',
         });
       } else {
-        res.status(404).json({
+        return res.status(404).json({
           success: false,
           error: 'Pause key not found or already resolved',
         });
       }
     } catch (error) {
       logError(error, 'Continue Scraping');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });
@@ -2242,14 +2243,20 @@ export function registerWebsiteScraperRoutes(app: Express) {
               }
 
               // Create template from scraped data
-              const template = await createTemplateFromScrape(scrapedData, {
-                category: category,
-                industry: category,
-                isDesignQuality: true,
-                designCategory: category,
-                designScore: website.designScore || null,
-                designAwardSource: website.awardSource || null,
-              });
+              const sourceId = `design-bulk-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+              const template = createTemplateFromScrape(
+                scrapedData,
+                sourceId,
+                category, // industry
+                country, // country
+                undefined, // state
+                undefined, // city
+                undefined, // ranking
+                category, // designCategory
+                true, // isDesignQuality
+                website.designScore || undefined, // designScore
+                website.awardSource || undefined // designAwardSource
+              );
 
               if (template && db) {
                 // Save to database
@@ -2347,7 +2354,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
 
       console.log(`[Design Bulk Scraper] ✅ Complete: ${totalScraped} templates scraped, ${totalFailed} failed`);
 
-      res.json({
+      return res.json({
         success: true,
         results,
         summary: {
@@ -2359,7 +2366,7 @@ export function registerWebsiteScraperRoutes(app: Express) {
       });
     } catch (error) {
       logError(error, 'Design Bulk Scraper - All Categories');
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: getErrorMessage(error),
       });

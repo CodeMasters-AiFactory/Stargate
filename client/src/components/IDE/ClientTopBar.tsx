@@ -3,7 +3,7 @@
  * Top navigation bar for website preview with controls and user menu
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -24,9 +24,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {
-  Save,
-  Rocket,
-  Globe,
   Monitor,
   Tablet,
   Smartphone,
@@ -41,10 +38,6 @@ import {
   Archive,
   CreditCard,
   LogOut,
-  User,
-  CheckCircle2,
-  Loader2,
-  FileText,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
@@ -68,14 +61,14 @@ interface ClientTopBarProps {
 }
 
 export function ClientTopBar({
-  websiteId,
-  websiteName = 'My Website',
-  onSave,
-  onPublish,
+  websiteId: _websiteId,
+  websiteName: _websiteName = 'My Website',
+  onSave: _onSave,
+  onPublish: _onPublish,
   onPreviewModeChange,
-  isDirty = false,
-  publishStatus = 'draft',
-  saveStatus = null,
+  isDirty: _isDirty = false,
+  publishStatus: _publishStatus = 'draft',
+  saveStatus: _saveStatus = null,
   canUndo = false,
   canRedo = false,
   onUndo,
@@ -83,54 +76,7 @@ export function ClientTopBar({
   previewMode = 'desktop',
 }: ClientTopBarProps) {
   const { user, logout } = useAuth();
-  const [, setLocation] = useLocation();
-  const [isSaving, setIsSaving] = useState(false);
-  const [isPublishing, setIsPublishing] = useState(false);
-
-  const handleSave = async () => {
-    if (!onSave || isSaving) return;
-    setIsSaving(true);
-    try {
-      await onSave();
-    } catch (error) {
-      console.error('Save failed:', error);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handlePublish = async () => {
-    if (!onPublish || isPublishing) return;
-    setIsPublishing(true);
-    try {
-      await onPublish();
-    } catch (error) {
-      console.error('Publish failed:', error);
-    } finally {
-      setIsPublishing(false);
-    }
-  };
-
-  const getSaveStatusIcon = () => {
-    if (isSaving || saveStatus === 'saving') {
-      return <Loader2 className="w-3 h-3 animate-spin text-blue-400" />;
-    }
-    if (saveStatus === 'saved') {
-      return <CheckCircle2 className="w-3 h-3 text-green-400" />;
-    }
-    if (saveStatus === 'error') {
-      return <span className="w-3 h-3 text-red-400">!</span>;
-    }
-    return null;
-  };
-
-  const getSaveStatusText = () => {
-    if (isSaving || saveStatus === 'saving') return 'Saving...';
-    if (saveStatus === 'saved') return 'Saved';
-    if (saveStatus === 'error') return 'Error';
-    if (isDirty) return 'Unsaved changes';
-    return null;
-  };
+  const [, _setLocation] = useLocation();
 
   return (
     <div className="h-10 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 border-b border-blue-900/50 flex items-center justify-between px-4 flex-shrink-0 z-50">

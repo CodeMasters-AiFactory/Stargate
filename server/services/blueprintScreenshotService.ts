@@ -31,7 +31,6 @@ export interface BlueprintScreenshotOptions {
  */
 export function generateBlueprintScreenshot(options: BlueprintScreenshotOptions): string {
   const { blueprintName, colorScheme, layout, sections } = options;
-  const { primary, secondary, accent, background, text } = colorScheme;
 
   // Generate layout-specific preview
   const layouts = {
@@ -56,18 +55,18 @@ function generateModernBlueprintPreview(
   const { primary, secondary, accent, background, text } = colors;
   
   // Build section previews
-  const sectionPreviews = sections.slice(0, 6).map((section, idx) => {
-    const y = 70 + (idx * 120);
+  const sectionPreviews = sections.slice(0, 6).map((section, _idx) => {
+    const y = 70 + (_idx * 120);
     const height = 100;
-    
+
     return `
       <!-- ${section.name} -->
-      <rect x="20" y="${y}" width="360" height="${height}" fill="${idx % 2 === 0 ? primary : secondary}" opacity="0.1" rx="8"/>
+      <rect x="20" y="${y}" width="360" height="${height}" fill="${_idx % 2 === 0 ? primary : secondary}" opacity="0.1" rx="8"/>
       <rect x="20" y="${y}" width="360" height="4" fill="${primary}"/>
       <text x="30" y="${y + 25}" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="${text}">${section.name}</text>
       <rect x="30" y="${y + 35}" width="340" height="2" fill="${accent}" opacity="0.3"/>
       <rect x="30" y="${y + 45}" width="200" height="2" fill="${accent}" opacity="0.2"/>
-      ${idx === 0 ? `<circle cx="350" cy="${y + 20}" r="8" fill="${primary}"/>` : ''}
+      ${_idx === 0 ? `<circle cx="350" cy="${y + 20}" r="8" fill="${primary}"/>` : ''}
     `;
   }).join('');
 
@@ -88,7 +87,7 @@ function generateModernBlueprintPreview(
     <circle cx="760" cy="30" r="4" fill="white" opacity="0.8"/>
     
     ${sectionPreviews}
-    
+
     <!-- Footer -->
     <rect x="0" y="550" width="800" height="50" fill="${secondary}" opacity="0.1"/>
     <rect x="40" y="565" width="720" height="2" fill="${text}" opacity="0.2"/>
@@ -119,8 +118,8 @@ function generateClassicBlueprintPreview(
     <rect x="170" y="70" width="600" height="480" fill="${background}"/>
     <rect x="170" y="70" width="600" height="3" fill="${primary}"/>
     
-    ${sections.slice(0, 4).map((section, idx) => {
-      const y = 90 + (idx * 100);
+    ${sections.slice(0, 4).map((section, _idx) => {
+      const y = 90 + (_idx * 100);
       return `
         <text x="180" y="${y}" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="${text}">${section.name}</text>
         <rect x="180" y="${y + 15}" width="580" height="2" fill="${text}" opacity="0.3"/>
@@ -148,8 +147,8 @@ function generateMinimalBlueprintPreview(
     <text x="40" y="30" font-family="system-ui, sans-serif" font-size="14" fill="${text}">${name}</text>
     
     <!-- Clean Sections -->
-    ${sections.slice(0, 5).map((section, idx) => {
-      const y = 80 + (idx * 90);
+    ${sections.slice(0, 5).map((section, _idx) => {
+      const y = 80 + (_idx * 90);
       return `
         <text x="40" y="${y}" font-family="system-ui, sans-serif" font-size="13" fill="${text}" opacity="0.9">${section.name}</text>
         <line x1="40" y1="${y + 40}" x2="760" y2="${y + 40}" stroke="${accent}" stroke-width="1" opacity="0.2"/>
@@ -182,9 +181,9 @@ function generateBoldBlueprintPreview(
     <text x="40" y="50" font-family="system-ui, sans-serif" font-size="24" font-weight="900" fill="white">${name}</text>
     
     <!-- Bold Sections -->
-    ${sections.slice(0, 4).map((section, idx) => {
-      const y = 100 + (idx * 120);
-      const isFullWidth = idx === 0;
+    ${sections.slice(0, 4).map((section, _idx) => {
+      const y = 100 + (_idx * 120);
+      const isFullWidth = _idx === 0;
       if (isFullWidth) {
         return `
           <rect x="20" y="${y}" width="760" height="100" fill="${accent}"/>
@@ -192,8 +191,8 @@ function generateBoldBlueprintPreview(
         `;
       }
       return `
-        <rect x="${20 + (idx % 2) * 390}" y="${y}" width="370" height="100" fill="${idx % 2 === 0 ? primary : secondary}"/>
-        <text x="${30 + (idx % 2) * 390}" y="${y + 35}" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="white">${section.name}</text>
+        <rect x="${20 + (_idx % 2) * 390}" y="${y}" width="370" height="100" fill="${_idx % 2 === 0 ? primary : secondary}"/>
+        <text x="${30 + (_idx % 2) * 390}" y="${y + 35}" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="white">${section.name}</text>
       `;
     }).join('')}
   </svg>`;
@@ -217,8 +216,8 @@ function generateElegantBlueprintPreview(
     <text x="40" y="45" font-family="serif" font-size="20" font-weight="600" fill="white" font-style="italic">${name}</text>
     
     <!-- Elegant Sections -->
-    ${sections.slice(0, 5).map((section, idx) => {
-      const y = 90 + (idx * 95);
+    ${sections.slice(0, 5).map((section, _idx) => {
+      const y = 90 + (_idx * 95);
       return `
         <rect x="40" y="${y}" width="720" height="75" fill="${background}" stroke="${accent}" stroke-width="1" opacity="0.3" rx="4"/>
         <text x="50" y="${y + 28}" font-family="serif" font-size="14" fill="${text}">${section.name}</text>

@@ -5,7 +5,7 @@
  */
 
 export interface EffectOptions {
-  type: 'glassmorphism' | 'neumorphism' | 'gradient-mesh' | 'particles' | 'parallax' | 'glow' | 'shimmer' | 'morphing';
+  type?: 'glassmorphism' | 'neumorphism' | 'gradient-mesh' | 'particles' | 'parallax' | 'glow' | 'shimmer' | 'morphing';
   intensity?: 'subtle' | 'moderate' | 'strong';
   colors?: string[];
   animated?: boolean;
@@ -159,7 +159,7 @@ export function generateGradientMeshEffect(colors: string[] = ['#3B82F6', '#10B9
 export function generateParticleEffect(colors: string[] = ['#3B82F6', '#10B981', '#8B5CF6']): { css: string; html: string; className: string } {
   const html = `
 <div class="particles-container">
-  ${Array.from({ length: 50 }, (_, i) => `
+  ${Array.from({ length: 50 }, (_unused, _index) => `
     <div class="particle" style="
       position: absolute;
       width: ${Math.random() * 4 + 2}px;

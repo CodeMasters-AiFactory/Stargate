@@ -4,9 +4,9 @@
  */
 
 import type { ProjectConfig } from './projectConfig';
-import type { PageContent } from './contentEngine';
-import fs from 'fs';
-import path from 'path';
+import type { PageContent, HomePageContent, ServicesPageContent, AboutPageContent, ContactPageContent } from './contentEngine';
+import * as fs from 'fs';
+import * as path from 'path';
 import { getProjectDir } from './projectConfig';
 import { generateSchemaMarkup } from './seoOptimization';
 
@@ -21,7 +21,7 @@ export interface PageSEO {
     keywords: string[];
   }>;
   keywords: string[];
-  schema: object; // JSON-LD schema markup
+  schema: string; // JSON-LD schema markup
 }
 
 /**
@@ -46,16 +46,16 @@ export function generatePageSEO(
   
   switch (pageType) {
     case 'home':
-      seo = generateHomePageSEO(config, content as any, location, baseUrl, primaryKeywords);
+      seo = generateHomePageSEO(config, content as HomePageContent, location, baseUrl, primaryKeywords);
       break;
     case 'services':
-      seo = generateServicesPageSEO(config, content as any, location, baseUrl, primaryKeywords);
+      seo = generateServicesPageSEO(config, content as ServicesPageContent, location, baseUrl, primaryKeywords);
       break;
     case 'about':
-      seo = generateAboutPageSEO(config, content as any, location, baseUrl, primaryKeywords);
+      seo = generateAboutPageSEO(config, content as AboutPageContent, location, baseUrl, primaryKeywords);
       break;
     case 'contact':
-      seo = generateContactPageSEO(config, content as any, location, baseUrl, primaryKeywords);
+      seo = generateContactPageSEO(config, content as ContactPageContent, location, baseUrl, primaryKeywords);
       break;
     default:
       throw new Error(`Unknown page type: ${pageType}`);
@@ -69,7 +69,7 @@ export function generatePageSEO(
  */
 function generateHomePageSEO(
   config: ProjectConfig,
-  content: any,
+  content: HomePageContent,
   location: string,
   baseUrl: string,
   keywords: string[]
@@ -81,22 +81,21 @@ function generateHomePageSEO(
     title: title.length > 60 ? title.substring(0, 57) + '...' : title,
     metaDescription: metaDescription.length > 165 ? metaDescription.substring(0, 162) + '...' : metaDescription,
     canonicalUrl: baseUrl,
-    h1: content.hero?.h1 || `${config.projectName}: ${config.industry} in ${config.location.city}`,
+    h1: content.hero.h1,
     headings: extractHeadingsFromContent(content, keywords),
     keywords: keywords,
-    schema: generateSchemaMarkup({
-      type: 'LocalBusiness',
+    schema: generateSchemaMarkup('LocalBusiness', {
       name: config.projectName,
       description: metaDescription,
       url: baseUrl,
       address: {
-        streetAddress: '[STREET ADDRESS]',
-        addressLocality: config.location.city,
-        addressRegion: config.location.region,
-        postalCode: '[POSTAL CODE]',
-        addressCountry: config.location.country
+        street: '[STREET ADDRESS]',
+        city: config.location.city,
+        state: config.location.region,
+        zip: '[POSTAL CODE]',
+        country: config.location.country
       },
-      telephone: '[PHONE NUMBER]',
+      phone: '[PHONE NUMBER]',
       priceRange: '$$'
     })
   };
@@ -107,7 +106,7 @@ function generateHomePageSEO(
  */
 function generateServicesPageSEO(
   config: ProjectConfig,
-  content: any,
+  content: ServicesPageContent,
   location: string,
   baseUrl: string,
   keywords: string[]
@@ -119,18 +118,16 @@ function generateServicesPageSEO(
     title: title.length > 60 ? title.substring(0, 57) + '...' : title,
     metaDescription: metaDescription.length > 165 ? metaDescription.substring(0, 162) + '...' : metaDescription,
     canonicalUrl: `${baseUrl}/services`,
-    h1: content.intro?.h1 || `${config.industry} Services in ${config.location.city}`,
+    h1: content.intro.h1,
     headings: extractHeadingsFromContent(content, keywords),
     keywords: keywords,
-    schema: generateSchemaMarkup({
-      type: 'Service',
+    schema: generateSchemaMarkup('LocalBusiness', {
       name: `${config.industry} Services`,
-      provider: {
-        name: config.projectName,
-        address: {
-          addressLocality: config.location.city,
-          addressRegion: config.location.region
-        }
+      description: metaDescription,
+      url: `${baseUrl}/services`,
+      address: {
+        city: config.location.city,
+        state: config.location.region
       }
     })
   };
@@ -141,7 +138,7 @@ function generateServicesPageSEO(
  */
 function generateAboutPageSEO(
   config: ProjectConfig,
-  content: any,
+  content: AboutPageContent,
   location: string,
   baseUrl: string,
   keywords: string[]
@@ -153,17 +150,16 @@ function generateAboutPageSEO(
     title: title.length > 60 ? title.substring(0, 57) + '...' : title,
     metaDescription: metaDescription.length > 165 ? metaDescription.substring(0, 162) + '...' : metaDescription,
     canonicalUrl: `${baseUrl}/about`,
-    h1: content.hero?.h1 || `About ${config.projectName}`,
+    h1: content.hero.h1,
     headings: extractHeadingsFromContent(content, keywords),
     keywords: keywords,
-    schema: generateSchemaMarkup({
-      type: 'Organization',
+    schema: generateSchemaMarkup('Organization', {
       name: config.projectName,
       description: metaDescription,
       url: baseUrl,
       address: {
-        addressLocality: config.location.city,
-        addressRegion: config.location.region
+        city: config.location.city,
+        state: config.location.region
       }
     })
   };
@@ -174,7 +170,7 @@ function generateAboutPageSEO(
  */
 function generateContactPageSEO(
   config: ProjectConfig,
-  content: any,
+  content: ContactPageContent,
   location: string,
   baseUrl: string,
   keywords: string[]
@@ -186,11 +182,10 @@ function generateContactPageSEO(
     title: title.length > 60 ? title.substring(0, 57) + '...' : title,
     metaDescription: metaDescription.length > 165 ? metaDescription.substring(0, 162) + '...' : metaDescription,
     canonicalUrl: `${baseUrl}/contact`,
-    h1: content.intro?.h1 || `Contact ${config.projectName}`,
+    h1: content.intro.h1,
     headings: extractHeadingsFromContent(content, keywords),
     keywords: keywords,
-    schema: generateSchemaMarkup({
-      type: 'ContactPage',
+    schema: generateSchemaMarkup('WebSite', {
       name: config.projectName,
       url: `${baseUrl}/contact`
     })
@@ -200,19 +195,28 @@ function generateContactPageSEO(
 /**
  * Extract headings from content structure
  */
-function extractHeadingsFromContent(content: any, keywords: string[]): Array<{ level: 2 | 3; text: string; keywords: string[] }> {
+function extractHeadingsFromContent(content: HomePageContent | ServicesPageContent | AboutPageContent | ContactPageContent, keywords: string[]): Array<{ level: 2 | 3; text: string; keywords: string[] }> {
   const headings: Array<{ level: 2 | 3; text: string; keywords: string[] }> = [];
-  
-  // Extract H2s from content structure
-  if (content.whoWeServe?.title) headings.push({ level: 2, text: content.whoWeServe.title, keywords });
-  if (content.keyServices?.title) headings.push({ level: 2, text: content.keyServices.title, keywords });
-  if (content.differentiators?.title) headings.push({ level: 2, text: content.differentiators.title, keywords });
-  if (content.outcomes?.title) headings.push({ level: 2, text: content.outcomes.title, keywords });
-  if (content.aboutTeaser?.title) headings.push({ level: 2, text: content.aboutTeaser.title, keywords });
-  if (content.howItWorks?.title) headings.push({ level: 2, text: content.howItWorks.title, keywords });
-  if (content.faq?.title) headings.push({ level: 2, text: content.faq.title, keywords });
-  if (content.finalCTA?.heading) headings.push({ level: 2, text: content.finalCTA.heading, keywords });
-  
+
+  // Extract H2s from content structure based on page type
+  if ('whoWeServe' in content && content.whoWeServe?.title) headings.push({ level: 2, text: content.whoWeServe.title, keywords });
+  if ('keyServices' in content && content.keyServices?.title) headings.push({ level: 2, text: content.keyServices.title, keywords });
+  if ('differentiators' in content && content.differentiators?.title) headings.push({ level: 2, text: content.differentiators.title, keywords });
+  if ('outcomes' in content && content.outcomes?.title) headings.push({ level: 2, text: content.outcomes.title, keywords });
+  if ('aboutTeaser' in content && content.aboutTeaser?.title) headings.push({ level: 2, text: content.aboutTeaser.title, keywords });
+  if ('howItWorks' in content && content.howItWorks?.title) headings.push({ level: 2, text: content.howItWorks.title, keywords });
+  if ('faq' in content && content.faq?.title) headings.push({ level: 2, text: content.faq.title, keywords });
+  if ('finalCTA' in content && content.finalCTA?.heading) headings.push({ level: 2, text: content.finalCTA.heading, keywords });
+  if ('cta' in content && content.cta?.heading) headings.push({ level: 2, text: content.cta.heading, keywords });
+  if ('story' in content && content.story?.title) headings.push({ level: 2, text: content.story.title, keywords });
+  if ('values' in content && content.values?.title) headings.push({ level: 2, text: content.values.title, keywords });
+  if ('team' in content && content.team?.title) headings.push({ level: 2, text: content.team.title, keywords });
+  if ('standards' in content && content.standards?.title) headings.push({ level: 2, text: content.standards.title, keywords });
+  if ('highlights' in content && content.highlights?.title) headings.push({ level: 2, text: content.highlights.title, keywords });
+  if ('overview' in content && content.overview?.title) headings.push({ level: 2, text: content.overview.title, keywords });
+  if ('contactOptions' in content && content.contactOptions?.title) headings.push({ level: 2, text: content.contactOptions.title, keywords });
+  if ('form' in content && content.form?.title) headings.push({ level: 2, text: content.form.title, keywords });
+
   return headings;
 }
 
@@ -244,8 +248,8 @@ export function loadPageSEO(projectSlug: string, pageType: string): PageSEO | nu
   try {
     const content = fs.readFileSync(seoPath, 'utf-8');
     return JSON.parse(content) as PageSEO;
-  } catch (error) {
-    console.error(`Error loading ${pageType} SEO for ${projectSlug}:`, error);
+  } catch (_error) {
+    console.error(`Error loading ${pageType} SEO for ${projectSlug}:`, _error);
     return null;
   }
 }

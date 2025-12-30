@@ -27,6 +27,10 @@ export interface ProjectConfig {
       heading?: string;
       body?: string;
     };
+    colorPreset?: string;
+    font?: string;
+    style?: string;
+    tone?: string;
   };
   services: Array<{
     name: string;
@@ -36,6 +40,29 @@ export interface ProjectConfig {
   specialNotes?: string;
   createdAt: string;
   updatedAt: string;
+
+  // Extended properties for phase tracking
+  packageType?: string;
+  projectOverview?: string;
+  businessType?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  contentTone?: string;
+  contentStyle?: string;
+  competitors?: string[];
+  inspirationalSites?: string[];
+  visualAssets?: string[];
+  logo?: string;
+  seoData?: {
+    keywords?: string[];
+    metaDescription?: string;
+  };
+  contentData?: {
+    heroHeadline?: string;
+    heroSubheadline?: string;
+    aboutContent?: string;
+  };
 }
 
 /**

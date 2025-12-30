@@ -3,9 +3,7 @@
  * Generates iOS and Android app packages from websites
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import { writeFileContent, readFileContent } from './azureStorage';
+import { writeFileContent } from './azureStorage';
 
 export interface MobileAppConfig {
   appName: string;
@@ -35,7 +33,7 @@ export interface AndroidAppConfig extends MobileAppConfig {
  */
 export async function generateiOSApp(
   projectSlug: string,
-  websiteHTML: string,
+  _websiteHTML: string,
   config: iOSAppConfig
 ): Promise<{ appPath: string; instructions: string }> {
   // In production, this would use Capacitor or similar to generate actual iOS app
@@ -86,7 +84,7 @@ Files generated:
  */
 export async function generateAndroidApp(
   projectSlug: string,
-  websiteHTML: string,
+  _websiteHTML: string,
   config: AndroidAppConfig
 ): Promise<{ appPath: string; instructions: string }> {
   // In production, this would use Capacitor or similar to generate actual Android app

@@ -230,7 +230,7 @@ export function ImageReplacementStage({
                   Ready to Generate Images?
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  We'll replace {images.length} images one by one using Leonardo AI. Each image will be
+                  We'll replace {images.length} images one by one using AI. Each image will be
                   tailored to your business context.
                 </p>
                 <Button onClick={startGeneration} size="lg" className="w-full gap-2">

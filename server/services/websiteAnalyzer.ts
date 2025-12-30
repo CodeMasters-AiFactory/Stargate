@@ -9,7 +9,6 @@ import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
 import fs from 'fs';
 import path from 'path';
-import { aiRouter } from '../ai/modelRouter';
 
 // OpenAI client factory (fallback)
 function createOpenAIClient(): OpenAI | null {
@@ -34,7 +33,7 @@ function readQualityManifesto(): string {
   try {
     const manifestoPath = path.join(process.cwd(), 'website_quality_standards', '00-website-quality-manifesto.md');
     return fs.readFileSync(manifestoPath, 'utf-8');
-  } catch (error) {
+  } catch (_error: unknown) {
     return '';
   }
 }
@@ -167,9 +166,9 @@ function extractWebsiteInfo(html: string): {
  */
 export async function analyzeWebsite(url: string): Promise<WebsiteAnalysis> {
   const qualityManifesto = readQualityManifesto();
-  
+
   // Fetch website
-  const { html, title, description } = await fetchWebsiteHTML(url);
+  const { html } = await fetchWebsiteHTML(url);
   const websiteInfo = extractWebsiteInfo(html);
   
   // Try v4.0 analysis first (multi-expert panel, most advanced)
@@ -224,8 +223,8 @@ export async function analyzeWebsite(url: string): Promise<WebsiteAnalysis> {
       finalVerdict: v4Result.finalScore.verdict,
       averageScore
     };
-  } catch (error) {
-    console.error('[Website Analyzer] ❌ v4.0 analysis failed:', error);
+  } catch (_error: unknown) {
+    console.error('[Website Analyzer] ❌ v4.0 analysis failed:', _error);
     console.warn('[Website Analyzer] Falling back to v3.0 analysis...');
   }
   
@@ -261,8 +260,8 @@ export async function analyzeWebsite(url: string): Promise<WebsiteAnalysis> {
       finalVerdict: v3Result.verdict,
       averageScore
     };
-  } catch (error) {
-    console.error('[Website Analyzer] ❌ v3.0 analysis failed:', error);
+  } catch (_error: unknown) {
+    console.error('[Website Analyzer] ❌ v3.0 analysis failed:', _error);
     console.warn('[Website Analyzer] Falling back to v2.0 analysis...');
   }
   
@@ -273,8 +272,8 @@ export async function analyzeWebsite(url: string): Promise<WebsiteAnalysis> {
     const advancedResult = await analyzeWebsiteAdvanced(url, html);
     console.log(`[Website Analyzer] Advanced analysis complete: ${advancedResult.averageScore}/10 - ${advancedResult.finalVerdict}`);
     return advancedResult;
-  } catch (error) {
-    console.error('[Website Analyzer] ❌ Advanced analysis failed:', error);
+  } catch (_error: unknown) {
+    console.error('[Website Analyzer] ❌ Advanced analysis failed:', _error);
     console.warn('[Website Analyzer] Falling back to basic local analysis...');
   }
   
@@ -285,8 +284,8 @@ export async function analyzeWebsite(url: string): Promise<WebsiteAnalysis> {
     const localResult = analyzeWebsiteLocally(url, html, websiteInfo);
     console.log(`[Website Analyzer] Local analysis complete: ${localResult.averageScore}/10 - ${localResult.finalVerdict}`);
     return localResult;
-  } catch (error) {
-    console.error('[Website Analyzer] ❌ Local analysis failed:', error);
+  } catch (_error: unknown) {
+    console.error('[Website Analyzer] ❌ Local analysis failed:', _error);
     console.warn('[Website Analyzer] Falling back to OpenAI or mock...');
   }
   
@@ -405,8 +404,8 @@ Output valid JSON only.`;
       finalVerdict: analysis.finalVerdict || 'OK',
       averageScore: analysis.averageScore || 0
     };
-  } catch (error) {
-    console.error('Error analyzing website:', error);
+  } catch (_error: unknown) {
+    console.error('Error analyzing website:', _error);
     return generateMockAnalysis(url, websiteInfo);
   }
 }
@@ -414,7 +413,7 @@ Output valid JSON only.`;
 /**
  * Generate mock analysis (fallback)
  */
-function generateMockAnalysis(url: string, info: any): WebsiteAnalysis {
+function generateMockAnalysis(url: string, _info: Record<string, unknown>): WebsiteAnalysis {
   const scores = {
     visualDesign: 5,
     uxStructure: 5,

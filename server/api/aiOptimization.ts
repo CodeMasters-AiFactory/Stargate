@@ -13,15 +13,16 @@ export function registerAIOptimizationRoutes(app: Express) {
   // ============================================
 
   // Generate A/B test variants
-  app.post('/api/optimization/ab-test/generate-variants', async (req, res) => {
+  app.post('/api/optimization/ab-test/generate-variants', async (req, res): Promise<void> => {
     try {
       const { elementSelector, currentContent, count } = req.body;
 
       if (!elementSelector || !currentContent) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'elementSelector and currentContent are required',
         });
+        return;
       }
 
       const variants = await aiOptimizationService.generateABTestVariants(
@@ -43,15 +44,16 @@ export function registerAIOptimizationRoutes(app: Express) {
   });
 
   // Create A/B test
-  app.post('/api/optimization/ab-test', async (req, res) => {
+  app.post('/api/optimization/ab-test', async (req, res): Promise<void> => {
     try {
       const { websiteId, name, elementSelector, variants } = req.body;
 
       if (!websiteId || !name || !elementSelector || !variants) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId, name, elementSelector, and variants are required',
         });
+        return;
       }
 
       const testId = await aiOptimizationService.createABTest(
@@ -96,15 +98,16 @@ export function registerAIOptimizationRoutes(app: Express) {
   // ============================================
 
   // Get optimization suggestions
-  app.post('/api/optimization/suggestions', async (req, res) => {
+  app.post('/api/optimization/suggestions', async (req, res): Promise<void> => {
     try {
       const { websiteId, analytics } = req.body;
 
       if (!websiteId || !analytics) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId and analytics are required',
         });
+        return;
       }
 
       const suggestions = await aiOptimizationService.generateOptimizationSuggestions(
@@ -125,15 +128,16 @@ export function registerAIOptimizationRoutes(app: Express) {
   });
 
   // Optimize color scheme
-  app.post('/api/optimization/colors', async (req, res) => {
+  app.post('/api/optimization/colors', async (req, res): Promise<void> => {
     try {
       const { currentColors, industry } = req.body;
 
       if (!currentColors || !industry) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'currentColors and industry are required',
         });
+        return;
       }
 
       const optimized = await aiOptimizationService.optimizeColorScheme(
@@ -154,15 +158,16 @@ export function registerAIOptimizationRoutes(app: Express) {
   });
 
   // Optimize layout
-  app.post('/api/optimization/layout', async (req, res) => {
+  app.post('/api/optimization/layout', async (req, res): Promise<void> => {
     try {
       const { currentLayout, analytics } = req.body;
 
       if (!currentLayout || !analytics) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'currentLayout and analytics are required',
         });
+        return;
       }
 
       const optimized = await aiOptimizationService.optimizeLayout(
@@ -187,15 +192,16 @@ export function registerAIOptimizationRoutes(app: Express) {
   // ============================================
 
   // Create conversion funnel
-  app.post('/api/optimization/funnels', async (req, res) => {
+  app.post('/api/optimization/funnels', async (req, res): Promise<void> => {
     try {
       const { websiteId, name, steps } = req.body;
 
       if (!websiteId || !name || !steps) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId, name, and steps are required',
         });
+        return;
       }
 
       const funnelId = await aiOptimizationService.createConversionFunnel(
@@ -217,16 +223,17 @@ export function registerAIOptimizationRoutes(app: Express) {
   });
 
   // Analyze funnel
-  app.get('/api/optimization/funnels/:funnelId', async (req, res) => {
+  app.get('/api/optimization/funnels/:funnelId', async (req, res): Promise<void> => {
     try {
       const { funnelId } = req.params;
       const funnel = await aiOptimizationService.analyzeFunnel(funnelId);
 
       if (!funnel) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Funnel not found',
         });
+        return;
       }
 
       res.json({
@@ -246,15 +253,16 @@ export function registerAIOptimizationRoutes(app: Express) {
   // ============================================
 
   // Predict visitor behavior
-  app.post('/api/analytics/predict/visitor', async (req, res) => {
+  app.post('/api/analytics/predict/visitor', async (req, res): Promise<void> => {
     try {
       const { websiteId, visitorData } = req.body;
 
       if (!websiteId || !visitorData) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId and visitorData are required',
         });
+        return;
       }
 
       const prediction = await predictiveAnalyticsService.predictVisitorBehavior(
@@ -275,15 +283,16 @@ export function registerAIOptimizationRoutes(app: Express) {
   });
 
   // Predict conversion
-  app.post('/api/analytics/predict/conversion', async (req, res) => {
+  app.post('/api/analytics/predict/conversion', async (req, res): Promise<void> => {
     try {
       const { websiteId, sessionId } = req.body;
 
       if (!websiteId || !sessionId) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId and sessionId are required',
         });
+        return;
       }
 
       const prediction = await predictiveAnalyticsService.predictConversion(
@@ -328,15 +337,16 @@ export function registerAIOptimizationRoutes(app: Express) {
   });
 
   // Get recommendations
-  app.post('/api/analytics/recommendations', async (req, res) => {
+  app.post('/api/analytics/recommendations', async (req, res): Promise<void> => {
     try {
       const { websiteId, analytics } = req.body;
 
       if (!websiteId || !analytics) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'websiteId and analytics are required',
         });
+        return;
       }
 
       const recommendations = await predictiveAnalyticsService.generateRecommendations(

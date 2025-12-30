@@ -1,38 +1,18 @@
 import React, { useState } from 'react';
 import {
-  Folder,
-  Globe,
-  GitBranch,
-  Bot,
-  Package,
-  User,
-  Settings,
-  Activity,
-  Brain,
-  Terminal,
-  Monitor,
-  Database,
-  HardDrive,
-  Key,
-  Users,
-  History,
-  Puzzle,
-  BarChart3,
-  Eye,
-  FileText,
   Atom,
-  Route,
+  Brain,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Code2,
+  Globe,
+  Headphones,
+  Route,
   Shield,
   Sparkles,
-  Download,
-  Bug,
-  Ticket,
-  Headphones,
   Store,
-  Code2,
+  Ticket,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -60,7 +40,7 @@ export function Sidebar({
   const { hasPermission, isAdmin } = useAuth();
   const { isServiceActive } = useServiceAccess();
   const isCollapsed = externalCollapsed !== undefined ? externalCollapsed : internalCollapsed;
-  const sidebarWidth = 300; // Fixed width, no resizing - increased to prevent text cutoff
+  const sidebarWidth = 340; // Fixed width, no resizing - increased for better visibility
 
   // All groups collapsed by default, except Services which is open by default
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
@@ -222,7 +202,7 @@ export function Sidebar({
                       filter: 'drop-shadow(0 2px 8px rgba(100, 150, 255, 0.3))',
                     }}
                   >
-                    Complete AI
+                    Merlin
                   </h2>
                   <h2
                     className="text-lg font-light tracking-[0.15em] text-white"
@@ -231,7 +211,7 @@ export function Sidebar({
                       filter: 'drop-shadow(0 2px 8px rgba(100, 150, 255, 0.3))',
                     }}
                   >
-                    Development System
+                    Website Wizard
                   </h2>
                 </div>
               </button>

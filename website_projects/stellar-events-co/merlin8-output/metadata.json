@@ -1,0 +1,29 @@
+{
+  "businessName": "Stellar Events Co",
+  "industry": "tech",
+  "industryName": "Tech Startup & SaaS",
+  "generatedAt": "2025-12-26T10:31:39.121Z",
+  "version": "8.0",
+  "images": [
+    {
+      "section": "hero",
+      "url": "images/hero.jpg"
+    },
+    {
+      "section": "services",
+      "url": "images/services.jpg"
+    },
+    {
+      "section": "about",
+      "url": "images/about.jpg"
+    },
+    {
+      "section": "team",
+      "url": "images/team.jpg"
+    },
+    {
+      "section": "background",
+      "url": "images/background.jpg"
+    }
+  ]
+}

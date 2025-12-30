@@ -5,13 +5,13 @@
 
 import type { Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
 
 // Try to import cors, but handle if not installed
-let cors: any = null;
+let cors: Record<string, unknown> | null = null;
 try {
   cors = require('cors');
-} catch {
+} catch (_error: unknown) {
   // CORS not installed, will use manual CORS headers
 }
 
@@ -44,11 +44,11 @@ export function securityHeaders() {
 /**
  * CORS configuration
  */
-export function corsConfig() {
+export function corsConfig(): (req: Request, res: Response, next: NextFunction) => void {
   if (cors) {
     // Use cors package if available
-    return cors({
-      origin: (origin, callback) => {
+    return (cors as (options: Record<string, unknown>) => (req: Request, res: Response, next: NextFunction) => void)({
+      origin: (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void): void => {
         // Allow requests with no origin (mobile apps, Postman, etc.)
         if (!origin) {
           return callback(null, true);
@@ -108,7 +108,7 @@ export function corsConfig() {
  * SQL injection prevention - sanitize input
  */
 export function sanitizeInput(req: Request, res: Response, next: NextFunction): void {
-  const sanitize = (obj: any): any => {
+  const sanitize = (obj: unknown): unknown => {
     if (typeof obj === 'string') {
       // Remove SQL injection patterns
       return obj
@@ -124,7 +124,7 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction): 
       return obj.map(sanitize);
     }
     if (obj && typeof obj === 'object') {
-      const sanitized: any = {};
+      const sanitized: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(obj)) {
         sanitized[key] = sanitize(value);
       }

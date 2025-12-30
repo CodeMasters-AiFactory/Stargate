@@ -3,6 +3,7 @@
  * Git-like version control for website designs
  */
 
+import type { Express, Request, Response } from 'express';
 import { Router } from 'express';
 import {
   createSnapshot,
@@ -25,14 +26,15 @@ const router = Router();
 /**
  * Create a new snapshot
  */
-router.post('/snapshot', (req, res) => {
+router.post('/snapshot', (req: Request, res: Response): void => {
   try {
     const { projectId, data, message, author, branch, tags, isAutoSave } = req.body;
-    
+
     if (!projectId || !data || !message) {
-      return res.status(400).json({ 
-        error: 'Missing required fields: projectId, data, message' 
+      res.status(400).json({
+        error: 'Missing required fields: projectId, data, message'
       });
+      return;
     }
 
     const snapshot = createSnapshot(projectId, data, {
@@ -47,8 +49,8 @@ router.post('/snapshot', (req, res) => {
       success: true,
       snapshot,
     });
-  } catch (error) {
-    console.error('[Version Control API] Snapshot error:', error);
+  } catch (_error) {
+    console.error('[Version Control API] Snapshot error:', _error);
     res.status(500).json({ error: 'Failed to create snapshot' });
   }
 });
@@ -56,7 +58,7 @@ router.post('/snapshot', (req, res) => {
 /**
  * Get project snapshots
  */
-router.get('/project/:projectId', (req, res) => {
+router.get('/project/:projectId', (req: Request, res: Response): void => {
   try {
     const { projectId } = req.params;
     const { branch, limit, includeAutoSaves } = req.query;
@@ -71,7 +73,7 @@ router.get('/project/:projectId', (req, res) => {
       success: true,
       snapshots,
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to get snapshots' });
   }
 });
@@ -79,20 +81,21 @@ router.get('/project/:projectId', (req, res) => {
 /**
  * Get specific snapshot
  */
-router.get('/snapshot/:snapshotId', (req, res) => {
+router.get('/snapshot/:snapshotId', (req: Request, res: Response): void => {
   try {
     const { snapshotId } = req.params;
     const snapshot = getSnapshot(snapshotId);
 
     if (!snapshot) {
-      return res.status(404).json({ error: 'Snapshot not found' });
+      res.status(404).json({ error: 'Snapshot not found' });
+      return;
     }
 
     res.json({
       success: true,
       snapshot,
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to get snapshot' });
   }
 });
@@ -100,20 +103,21 @@ router.get('/snapshot/:snapshotId', (req, res) => {
 /**
  * Compare two snapshots
  */
-router.get('/diff/:snapshotA/:snapshotB', (req, res) => {
+router.get('/diff/:snapshotA/:snapshotB', (req: Request, res: Response): void => {
   try {
     const { snapshotA, snapshotB } = req.params;
     const diff = compareSnapshots(snapshotA, snapshotB);
 
     if (!diff) {
-      return res.status(404).json({ error: 'One or both snapshots not found' });
+      res.status(404).json({ error: 'One or both snapshots not found' });
+      return;
     }
 
     res.json({
       success: true,
       diff,
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to compare snapshots' });
   }
 });
@@ -121,27 +125,29 @@ router.get('/diff/:snapshotA/:snapshotB', (req, res) => {
 /**
  * Rollback to a snapshot
  */
-router.post('/rollback', (req, res) => {
+router.post('/rollback', (req: Request, res: Response): void => {
   try {
     const { projectId, snapshotId, author, message } = req.body;
-    
+
     if (!projectId || !snapshotId) {
-      return res.status(400).json({ 
-        error: 'Missing required fields: projectId, snapshotId' 
+      res.status(400).json({
+        error: 'Missing required fields: projectId, snapshotId'
       });
+      return;
     }
 
     const snapshot = rollback(projectId, snapshotId, author || 'anonymous', message);
 
     if (!snapshot) {
-      return res.status(404).json({ error: 'Snapshot not found' });
+      res.status(404).json({ error: 'Snapshot not found' });
+      return;
     }
 
     res.json({
       success: true,
       snapshot,
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to rollback' });
   }
 });
@@ -149,7 +155,7 @@ router.post('/rollback', (req, res) => {
 /**
  * Get version timeline
  */
-router.get('/project/:projectId/timeline', (req, res) => {
+router.get('/project/:projectId/timeline', (req: Request, res: Response): void => {
   try {
     const { projectId } = req.params;
     const timeline = getVersionTimeline(projectId);
@@ -158,7 +164,7 @@ router.get('/project/:projectId/timeline', (req, res) => {
       success: true,
       timeline,
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to get timeline' });
   }
 });
@@ -166,7 +172,7 @@ router.get('/project/:projectId/timeline', (req, res) => {
 /**
  * Get project branches
  */
-router.get('/project/:projectId/branches', (req, res) => {
+router.get('/project/:projectId/branches', (req: Request, res: Response): void => {
   try {
     const { projectId } = req.params;
     const branches = getProjectBranches(projectId);
@@ -175,7 +181,7 @@ router.get('/project/:projectId/branches', (req, res) => {
       success: true,
       branches,
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to get branches' });
   }
 });
@@ -183,14 +189,15 @@ router.get('/project/:projectId/branches', (req, res) => {
 /**
  * Create a new branch
  */
-router.post('/branch', (req, res) => {
+router.post('/branch', (req: Request, res: Response): void => {
   try {
     const { projectId, name, author, fromSnapshotId } = req.body;
-    
+
     if (!projectId || !name) {
-      return res.status(400).json({ 
-        error: 'Missing required fields: projectId, name' 
+      res.status(400).json({
+        error: 'Missing required fields: projectId, name'
       });
+      return;
     }
 
     const branch = createBranch(projectId, name, author || 'anonymous', false, fromSnapshotId);
@@ -199,7 +206,7 @@ router.post('/branch', (req, res) => {
       success: true,
       branch,
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to create branch' });
   }
 });
@@ -207,27 +214,29 @@ router.post('/branch', (req, res) => {
 /**
  * Merge branches
  */
-router.post('/merge', (req, res) => {
+router.post('/merge', (req: Request, res: Response): void => {
   try {
     const { projectId, sourceBranch, targetBranch, author, message } = req.body;
-    
+
     if (!projectId || !sourceBranch || !targetBranch) {
-      return res.status(400).json({ 
-        error: 'Missing required fields: projectId, sourceBranch, targetBranch' 
+      res.status(400).json({
+        error: 'Missing required fields: projectId, sourceBranch, targetBranch'
       });
+      return;
     }
 
     const snapshot = mergeBranches(projectId, sourceBranch, targetBranch, author || 'anonymous', message);
 
     if (!snapshot) {
-      return res.status(404).json({ error: 'Branch not found' });
+      res.status(404).json({ error: 'Branch not found' });
+      return;
     }
 
     res.json({
       success: true,
       snapshot,
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to merge branches' });
   }
 });
@@ -235,12 +244,13 @@ router.post('/merge', (req, res) => {
 /**
  * Configure auto-save
  */
-router.post('/autosave/config', (req, res) => {
+router.post('/autosave/config', (req: Request, res: Response): void => {
   try {
     const { projectId, enabled, intervalMs, maxAutoSaves } = req.body;
-    
+
     if (!projectId) {
-      return res.status(400).json({ error: 'Missing projectId' });
+      res.status(400).json({ error: 'Missing projectId' });
+      return;
     }
 
     const config = configureAutoSave(projectId, { enabled, intervalMs, maxAutoSaves });
@@ -249,7 +259,7 @@ router.post('/autosave/config', (req, res) => {
       success: true,
       config,
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to configure auto-save' });
   }
 });
@@ -257,7 +267,7 @@ router.post('/autosave/config', (req, res) => {
 /**
  * Get auto-save config
  */
-router.get('/autosave/config/:projectId', (req, res) => {
+router.get('/autosave/config/:projectId', (req: Request, res: Response): void => {
   try {
     const { projectId } = req.params;
     const config = getAutoSaveConfig(projectId);
@@ -266,7 +276,7 @@ router.get('/autosave/config/:projectId', (req, res) => {
       success: true,
       config,
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to get auto-save config' });
   }
 });
@@ -274,12 +284,13 @@ router.get('/autosave/config/:projectId', (req, res) => {
 /**
  * Cleanup old auto-saves
  */
-router.post('/autosave/cleanup', (req, res) => {
+router.post('/autosave/cleanup', (req: Request, res: Response): void => {
   try {
     const { projectId } = req.body;
-    
+
     if (!projectId) {
-      return res.status(400).json({ error: 'Missing projectId' });
+      res.status(400).json({ error: 'Missing projectId' });
+      return;
     }
 
     const deletedCount = cleanupAutoSaves(projectId);
@@ -288,7 +299,7 @@ router.post('/autosave/cleanup', (req, res) => {
       success: true,
       deletedCount,
     });
-  } catch (error) {
+  } catch (_error) {
     res.status(500).json({ error: 'Failed to cleanup auto-saves' });
   }
 });

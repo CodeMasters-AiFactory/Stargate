@@ -7,13 +7,11 @@
  * - POST /api/templates/check-all - Check all templates
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import {
   checkAllTemplates,
   checkTemplates,
   getCurrentDependencyInventory,
-  type DependencyAnalysis,
-  type DependencyInventory,
 } from '../services/templateDependencyChecker';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 
@@ -23,15 +21,16 @@ export function registerTemplateDependencyCheckerRoutes(app: Express) {
    * POST /api/templates/check-dependencies
    * Body: { templateIds: string[] }
    */
-  app.post('/api/templates/check-dependencies', async (req, res) => {
+  app.post('/api/templates/check-dependencies', async (req: Request, res: Response): Promise<void> => {
     try {
       const { templateIds } = req.body;
 
       if (!Array.isArray(templateIds) || templateIds.length === 0) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'templateIds must be a non-empty array',
         });
+        return;
       }
 
       console.log(`[DependencyChecker] Checking ${templateIds.length} templates...`);
@@ -56,7 +55,7 @@ export function registerTemplateDependencyCheckerRoutes(app: Express) {
    * Get dependency inventory (all templates analyzed)
    * GET /api/templates/dependency-inventory
    */
-  app.get('/api/templates/dependency-inventory', async (req, res) => {
+  app.get('/api/templates/dependency-inventory', async (_req: Request, res: Response): Promise<void> => {
     try {
       console.log('[DependencyChecker] Building dependency inventory...');
       const inventory = await checkAllTemplates();
@@ -78,7 +77,7 @@ export function registerTemplateDependencyCheckerRoutes(app: Express) {
    * Check all templates (force refresh)
    * POST /api/templates/check-all
    */
-  app.post('/api/templates/check-all', async (req, res) => {
+  app.post('/api/templates/check-all', async (_req: Request, res: Response): Promise<void> => {
     try {
       console.log('[DependencyChecker] Checking ALL templates...');
       const inventory = await checkAllTemplates();
@@ -101,7 +100,7 @@ export function registerTemplateDependencyCheckerRoutes(app: Express) {
    * Get current dependency inventory (what we have available)
    * GET /api/templates/current-dependencies
    */
-  app.get('/api/templates/current-dependencies', async (req, res) => {
+  app.get('/api/templates/current-dependencies', async (_req: Request, res: Response): Promise<void> => {
     try {
       const current = await getCurrentDependencyInventory();
 
@@ -123,15 +122,16 @@ export function registerTemplateDependencyCheckerRoutes(app: Express) {
    * POST /api/templates/inject-dependencies
    * Body: { templateIds: string[] }
    */
-  app.post('/api/templates/inject-dependencies', async (req, res) => {
+  app.post('/api/templates/inject-dependencies', async (req: Request, res: Response): Promise<void> => {
     try {
       const { templateIds } = req.body;
 
       if (!Array.isArray(templateIds) || templateIds.length === 0) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'templateIds must be a non-empty array',
         });
+        return;
       }
 
       console.log(`[DependencyInjector] Injecting dependencies into ${templateIds.length} templates...`);
@@ -142,10 +142,11 @@ export function registerTemplateDependencyCheckerRoutes(app: Express) {
       const { eq } = await import('drizzle-orm');
 
       if (!db) {
-        return res.status(500).json({
+        res.status(500).json({
           success: false,
           error: 'Database not available',
         });
+        return;
       }
 
       const results: Array<{ templateId: string; success: boolean; error?: string }> = [];

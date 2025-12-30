@@ -7,14 +7,13 @@
 import React, { useState, useCallback, createContext, useContext } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
-  Monitor, Tablet, Smartphone, RotateCw, Settings, 
-  ChevronDown, Plus, Trash2, Eye, EyeOff, Maximize2,
-  Laptop, Watch
+  Monitor, Tablet, Smartphone, RotateCw,
+  ChevronDown, Plus, Eye,
+  Laptop
 } from 'lucide-react';
 
 // ==============================================
@@ -473,7 +472,7 @@ export function generateMediaQueries(breakpoints: Breakpoint[]): string {
   
   let css = '/* Generated Media Queries */\n\n';
   
-  sorted.forEach((bp, index) => {
+  sorted.forEach((bp, index: number) => {
     const minWidth = bp.minWidth || 0;
     const maxWidth = bp.maxWidth || (sorted[index + 1]?.width ? sorted[index + 1].width - 1 : undefined);
     

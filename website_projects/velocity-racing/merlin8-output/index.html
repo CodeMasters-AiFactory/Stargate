@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Velocity Racing | Racing at the Speed of Light</title>
-  <meta name="description" content="Professional motorsport team specializing in GT racing. Championship winners with cutting-edge technology.">
-  
+  <title>Velocity Racing | Engineered for Victory</title>
+  <meta name="description" content="Velocity Racing - A leading racing business providing exceptional What We Do to our community.">
+
   <!-- Open Graph -->
   <meta property="og:title" content="Velocity Racing">
-  <meta property="og:description" content="Professional motorsport team specializing in GT racing. Championship winners with cutting-edge technology.">
-  <meta property="og:image" content="images/hero.jpg">
+  <meta property="og:description" content="Velocity Racing - A leading racing business providing exceptional What We Do to our community.">
+  <meta property="og:image" content="">
   <meta property="og:type" content="website">
-  
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  
+
   <style>
 :root {
-  --color-primary: #E10600;
+  --color-primary: indigo;
   --color-secondary: #1E1E1E;
   --color-accent: #FFFFFF;
   --color-background: #0D0D0D;
@@ -182,13 +182,13 @@ nav {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.3);
+  filter: brightness(0.9);
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.5) 100%);
+  background: linear-gradient(90deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.1) 100%);
 }
 
 .hero-content {
@@ -439,12 +439,12 @@ section {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
-   FOOTER
+   FOOTER (Enhanced with contact info & social)
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 footer {
   background: #0A0A0A;
-  padding: 3rem 0;
+  padding: 4rem 0 2rem;
   border-top: 1px solid rgba(255,255,255,0.1);
 }
 
@@ -452,33 +452,122 @@ footer {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+}
+
+.footer-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+@media (max-width: 768px) {
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.footer-brand {
+  max-width: 300px;
 }
 
 .footer-logo {
   font-family: var(--font-heading);
   font-weight: 700;
+  font-size: 1.5rem;
   color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.footer-tagline {
+  opacity: 0.7;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.5rem;
+}
+
+.social-link {
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.social-link:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.footer-contact h4,
+.footer-links h4 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1.5rem;
+  color: var(--color-primary);
+}
+
+.footer-contact p {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+.footer-contact a {
+  color: inherit;
 }
 
 .footer-links {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .footer-links a {
   color: var(--color-text);
   opacity: 0.7;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
 }
 
 .footer-links a:hover {
   opacity: 1;
   color: var(--color-primary);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-bottom p {
+  opacity: 0.6;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.footer-legal {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-legal a {
+  color: var(--color-text);
+  opacity: 0.6;
+  font-size: 0.875rem;
+}
+
+.footer-legal a:hover {
+  opacity: 1;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -505,40 +594,96 @@ footer {
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 768px) {
+  .hero {
+    min-height: 80vh;
+  }
+
   .hero h1 {
     font-size: 2.5rem;
+    line-height: 1.2;
   }
-  
+
   .hero .subtitle {
     font-size: 1rem;
+    line-height: 1.5;
   }
-  
+
+  .hero-content {
+    padding: 0 1rem;
+  }
+
   .btn {
     padding: 0.875rem 1.5rem;
     font-size: 0.8rem;
+    width: 100%;
+    text-align: center;
   }
-  
+
   .btn-outline {
     margin-left: 0;
     margin-top: 1rem;
     display: block;
     text-align: center;
   }
-  
+
   section {
-    padding: 4rem 0;
+    padding: 3rem 0;
+  }
+
+  .section-container {
+    padding: 0 1rem;
+  }
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .card img {
+    height: 200px;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+}
+
+/* Extra small devices (phones, 480px and down) */
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .hero .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-main {
+    text-align: center;
+  }
+
+  .footer-brand {
+    max-width: 100%;
+    margin: 0 auto;
   }
 }
   </style>
 </head>
 <body>
-  <!-- Navigation -->
+  <!-- Navigation - Based on user's selected pages -->
   <nav>
     <div class="nav-container">
       <a href="#" class="logo">VELOCITY RACING</a>
       <ul class="nav-links">
         <li><a href="#home">Home</a></li>
-        <li><a href="#services">Services</a></li>
+        <li><a href="#What We Do">What We Do</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
@@ -549,54 +694,32 @@ footer {
   <!-- Hero Section -->
   <section class="hero" id="home">
     <div class="hero-background">
-      <img src="images/hero.jpg" alt="Velocity Racing">
+      <img src="" alt="Velocity Racing">
       <div class="hero-overlay"></div>
     </div>
     <div class="hero-content">
-      <h1>Racing at the<br>
-        <span class="highlight">Speed of Light</span>
+      <h1>Engineered for<br>
+        <span class="highlight">Victory</span>
       </h1>
-      <p class="subtitle">Professional motorsport team specializing in GT racing. Championship winners with cutting-edge technology.</p>
-      <a href="#contact" class="btn btn-primary">Join the Team</a>
-      <a href="#services" class="btn btn-outline">Race with Us</a>
+      <p class="subtitle">Velocity Racing - A leading racing business providing exceptional What We Do to our community.</p>
+      <a href="#contact" class="btn btn-primary">Get In Touch</a>
+      <a href="#What We Do" class="btn btn-outline">Get Quote</a>
     </div>
   </section>
 
   
-  <!-- Stats Bar -->
-  <section class="stats-bar">
-    <div class="stats-container">
-      <div class="stat-item">
-        <h3>10+</h3>
-        <p>Years Experience</p>
-      </div>
-      <div class="stat-item">
-        <h3>500+</h3>
-        <p>Happy Clients</p>
-      </div>
-      <div class="stat-item">
-        <h3>100%</h3>
-        <p>Satisfaction</p>
-      </div>
-      <div class="stat-item">
-        <h3>24/7</h3>
-        <p>Support</p>
-      </div>
-    </div>
-  </section>
-  
 
-  <!-- Services Section -->
-  <section id="services">
+  <!-- What We Do Section -->
+  <section id="What We Do">
     <div class="section-container">
       <div class="section-header">
         <h2>What We Offer</h2>
-        <p>Professional motorsport team specializing in GT racing. Championship winners with cutting-edge technology.</p>
+        <p>Velocity Racing - A leading racing business providing exceptional What We Do to our community.</p>
       </div>
       <div class="cards-grid">
 
       <div class="card">
-        <img src="images/services.jpg" alt="Racing Excellence">
+        <img src="" alt="Racing Excellence">
         <div class="card-content">
           <h3>Racing Excellence</h3>
           <p>Competing at the highest level of motorsport with cutting-edge technology and world-class drivers.</p>
@@ -604,7 +727,7 @@ footer {
       </div>
 
       <div class="card">
-        <img src="images/about.jpg" alt="Engineering Innovation">
+        <img src="" alt="Engineering Innovation">
         <div class="card-content">
           <h3>Engineering Innovation</h3>
           <p>Pushing the boundaries of aerodynamics and powertrain technology for maximum performance.</p>
@@ -612,7 +735,7 @@ footer {
       </div>
 
       <div class="card">
-        <img src="images/team.jpg" alt="Driver Development">
+        <img src="" alt="Driver Development">
         <div class="card-content">
           <h3>Driver Development</h3>
           <p>Nurturing the next generation of champions through our elite driver academy.</p>
@@ -627,13 +750,13 @@ footer {
     <div class="section-container">
       <div class="two-column">
         <div class="two-column-image">
-          <img src="images/team.jpg" alt="About Velocity Racing">
+          <img src="" alt="About Velocity Racing">
         </div>
         <div class="two-column-content">
-          <h2>About Us</h2>
-          <p>Professional motorsport team specializing in GT racing. Championship winners with cutting-edge technology.</p>
-          <p>We are committed to delivering exceptional results and exceeding expectations with every project we undertake.</p>
-          <a href="#contact" class="btn btn-primary">Join the Team</a>
+          <h2>Our Story</h2>
+          <p>Velocity Racing - A leading racing business providing exceptional What We Do to our community.</p>
+          <p>Velocity Racing is dedicated to providing outstanding service and quality results for every client.</p>
+          <a href="#contact" class="btn btn-primary">Get In Touch</a>
         </div>
       </div>
     </div>
@@ -642,20 +765,47 @@ footer {
   <!-- CTA Section -->
   <section class="cta-section">
     <div class="section-container">
-      <h2>Ready to Get Started?</h2>
-      <p>Contact us today and let's discuss how we can help you achieve your goals.</p>
-      <a href="#contact" class="btn">Join the Team</a>
+      <h2>Take the Next Step</h2>
+      <p>Contact Velocity Racing today and let us help you achieve your goals.</p>
+      <a href="#contact" class="btn">Get In Touch</a>
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- Footer / Contact Section -->
   <footer id="contact">
     <div class="footer-container">
-      <div class="footer-logo">VELOCITY RACING</div>
-      <div class="footer-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+      <div class="footer-main">
+        <div class="footer-brand">
+          <div class="footer-logo">VELOCITY RACING</div>
+          <p class="footer-tagline">Engineered for Victory</p>
+          
+        </div>
+
         
+        <div class="footer-contact">
+          <h4>Get In Touch</h4>
+          
+          
+          
+          
+        </div>
+        
+
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <a href="#home">Home</a>
+          <a href="#What We Do">What We Do</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Velocity Racing. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
       </div>
     </div>
   </footer>

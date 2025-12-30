@@ -10,8 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { 
-  Search, 
+import {
+  Search,
   CheckCircle2,
   Image,
   FileText,
@@ -19,17 +19,11 @@ import {
   Upload,
   Edit3,
   ChevronRight,
-  X,
   Wand2,
   ImagePlus,
   Building2,
   Filter,
-  Eye,
-  PanelLeft,
-  Save,
-  Download,
-  Maximize2,
-  Minimize2
+  Eye
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';

@@ -13,7 +13,7 @@
  * 8. Performance - Page loads under threshold
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import { JSDOM } from 'jsdom';
@@ -772,7 +772,7 @@ export function registerTemplateVerificationRoutes(app: Express) {
    * POST /api/templates/verify/:templateId
    * Verify a specific template
    */
-  app.post('/api/templates/verify/:templateId', async (req, res) => {
+  app.post('/api/templates/verify/:templateId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { templateId } = req.params;
 
@@ -803,10 +803,11 @@ export function registerTemplateVerificationRoutes(app: Express) {
       }
 
       if (!htmlContent) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Template not found or missing index.html',
         });
+        return;
       }
 
       const result = await verifyTemplate(templateId, templateName, htmlContent, templatePath);
@@ -815,11 +816,11 @@ export function registerTemplateVerificationRoutes(app: Express) {
         success: true,
         verification: result,
       });
-    } catch (error) {
-      console.error('[Template Verification] Error:', error);
+    } catch (_error: unknown) {
+      console.error('[Template Verification] Error:', _error);
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Verification failed',
+        error: _error instanceof Error ? _error.message : 'Verification failed',
       });
     }
   });
@@ -828,28 +829,34 @@ export function registerTemplateVerificationRoutes(app: Express) {
    * POST /api/templates/verify-html
    * Verify HTML content directly (for preview/testing)
    */
-  app.post('/api/templates/verify-html', async (req, res) => {
+  app.post('/api/templates/verify-html', async (req: Request, res: Response): Promise<void> => {
     try {
-      const { html, templateId = 'preview', templateName = 'Preview Template' } = req.body;
+      const { html, templateId = 'preview', templateName = 'Preview Template' } = req.body as Record<string, unknown>;
 
       if (!html) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           error: 'Missing HTML content',
         });
+        return;
       }
 
-      const result = await verifyTemplate(templateId, templateName, html, '');
+      const result = await verifyTemplate(
+        String(templateId),
+        String(templateName),
+        String(html),
+        ''
+      );
 
       res.json({
         success: true,
         verification: result,
       });
-    } catch (error) {
-      console.error('[Template Verification] Error:', error);
+    } catch (_error: unknown) {
+      console.error('[Template Verification] Error:', _error);
       res.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Verification failed',
+        error: _error instanceof Error ? _error.message : 'Verification failed',
       });
     }
   });
@@ -858,7 +865,7 @@ export function registerTemplateVerificationRoutes(app: Express) {
    * GET /api/templates/verification-status/:templateId
    * Get cached verification status for a template
    */
-  app.get('/api/templates/verification-status/:templateId', async (req, res) => {
+  app.get('/api/templates/verification-status/:templateId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { templateId } = req.params;
 
@@ -867,12 +874,13 @@ export function registerTemplateVerificationRoutes(app: Express) {
       const cachePath = path.join(cacheDir, `${templateId}.json`);
 
       if (fs.existsSync(cachePath)) {
-        const cached = JSON.parse(fs.readFileSync(cachePath, 'utf-8'));
-        return res.json({
+        const cached = JSON.parse(fs.readFileSync(cachePath, 'utf-8')) as Record<string, unknown>;
+        res.json({
           success: true,
           verification: cached,
           cached: true,
         });
+        return;
       }
 
       res.json({
@@ -880,7 +888,7 @@ export function registerTemplateVerificationRoutes(app: Express) {
         verification: null,
         cached: false,
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         success: false,
         error: 'Failed to get verification status',

@@ -4,11 +4,9 @@
  */
 
 import { captureScreenshots, ScreenshotAnalysis } from '../analyzer/screenshotEvaluator';
-import * as cheerio from 'cheerio';
-import fetch from 'node-fetch';
 import * as fs from 'fs';
 import * as path from 'path';
-import puppeteer, { Page } from 'puppeteer';
+import puppeteer, { Browser, Page } from 'puppeteer';
 
 export interface V3AnalysisResult {
   url: string;
@@ -49,7 +47,7 @@ export async function analyzeWebsiteV3(url: string): Promise<V3AnalysisResult> {
     fs.mkdirSync(outputDir, { recursive: true });
   }
   
-  let browser: puppeteer.Browser | null = null;
+  let browser: Browser | null = null;
   let page: Page | null = null;
   
   try {
@@ -60,9 +58,12 @@ export async function analyzeWebsiteV3(url: string): Promise<V3AnalysisResult> {
     });
     
     page = await browser.newPage();
+    if (!page) {
+      throw new Error('Failed to create browser page');
+    }
     await page.setViewport({ width: 1440, height: 900 });
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-    await page.waitForTimeout(2000);
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
     // Capture screenshots
     const screenshots = await captureScreenshots(url, outputDir);
@@ -337,7 +338,7 @@ async function analyzeMobileUX(
   // Switch to mobile viewport
   await page.setViewport({ width: 390, height: 844 });
   await page.reload({ waitUntil: 'networkidle2' });
-  await page.waitForTimeout(1000);
+  await new Promise(resolve => setTimeout(resolve, 1000));
   
   // 1. Mobile Navigation (0-2.0)
   const mobileNav = screenshots.mobile.navigationType;
@@ -777,7 +778,7 @@ async function analyzeSEOFoundations(page: Page, html: string): Promise<any> {
     return meta ? meta.getAttribute('content') : '';
   });
   
-  if (metaDesc.length >= 120 && metaDesc.length <= 165) {
+  if (metaDesc && metaDesc.length >= 120 && metaDesc.length <= 165) {
     score += 1.0;
     details.meta = 'Proper meta description';
   }
@@ -957,7 +958,7 @@ async function saveReports(outputDir: string, reports: any): Promise<void> {
 /**
  * Generate summary markdown
  */
-async function generateSummary(outputDir: string, finalScore: any, reports: any): Promise<void> {
+async function generateSummary(outputDir: string, finalScore: any, _reports: any): Promise<void> {
   const summary = `# Website Analysis Report v3.0
 
 **URL:** ${finalScore.url}  

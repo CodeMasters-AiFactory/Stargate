@@ -11,11 +11,11 @@
  * - POST /api/ai/seo - Generate SEO metadata
  */
 
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import type { Request, Response } from 'express';
 import {
   getAvailableProviders,
   getProviderStatus,
-  generate,
   generateParallel,
   generateConsensus,
   smartGenerate,
@@ -31,11 +31,11 @@ const router = Router();
  * GET /api/ai/status
  * Get available AI providers and their status
  */
-router.get('/status', async (req: Request, res: Response) => {
+router.get('/status', async (_req: Request, res: Response): Promise<void> => {
   try {
     const status = getProviderStatus();
     const available = getAvailableProviders();
-    
+
     res.json({
       success: true,
       providers: status,
@@ -55,19 +55,20 @@ router.get('/status', async (req: Request, res: Response) => {
  * POST /api/ai/generate
  * Smart generation with automatic provider selection
  */
-router.post('/generate', async (req: Request, res: Response) => {
+router.post('/generate', async (req: Request, res: Response): Promise<void> => {
   try {
     const request: GenerationRequest = req.body;
-    
+
     if (!request.prompt || !request.task) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Missing required fields: prompt, task',
       });
+      return;
     }
 
     const result = await smartGenerate(request);
-    
+
     res.json({
       success: true,
       result,
@@ -85,19 +86,20 @@ router.post('/generate', async (req: Request, res: Response) => {
  * POST /api/ai/generate/parallel
  * Parallel generation using multiple providers (returns fastest)
  */
-router.post('/generate/parallel', async (req: Request, res: Response) => {
+router.post('/generate/parallel', async (req: Request, res: Response): Promise<void> => {
   try {
     const request: GenerationRequest = req.body;
-    
+
     if (!request.prompt || !request.task) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Missing required fields: prompt, task',
       });
+      return;
     }
 
     const result = await generateParallel(request);
-    
+
     res.json({
       success: true,
       result,
@@ -115,19 +117,20 @@ router.post('/generate/parallel', async (req: Request, res: Response) => {
  * POST /api/ai/generate/consensus
  * Consensus generation using all available providers
  */
-router.post('/generate/consensus', async (req: Request, res: Response) => {
+router.post('/generate/consensus', async (req: Request, res: Response): Promise<void> => {
   try {
     const request: GenerationRequest = req.body;
-    
+
     if (!request.prompt || !request.task) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Missing required fields: prompt, task',
       });
+      return;
     }
 
     const result = await generateConsensus(request);
-    
+
     res.json({
       success: true,
       result,
@@ -145,15 +148,16 @@ router.post('/generate/consensus', async (req: Request, res: Response) => {
  * POST /api/ai/design
  * Generate design system (colors, fonts, layout)
  */
-router.post('/design', async (req: Request, res: Response) => {
+router.post('/design', async (req: Request, res: Response): Promise<void> => {
   try {
     const { businessName, industry, style, targetAudience } = req.body;
-    
+
     if (!businessName || !industry) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Missing required fields: businessName, industry',
       });
+      return;
     }
 
     const design = await generateDesign({
@@ -162,7 +166,7 @@ router.post('/design', async (req: Request, res: Response) => {
       style,
       targetAudience,
     });
-    
+
     res.json({
       success: true,
       design,
@@ -180,15 +184,16 @@ router.post('/design', async (req: Request, res: Response) => {
  * POST /api/ai/content
  * Generate SEO-optimized content
  */
-router.post('/content', async (req: Request, res: Response) => {
+router.post('/content', async (req: Request, res: Response): Promise<void> => {
   try {
     const { businessName, industry, sectionType, topic, keywords } = req.body;
-    
+
     if (!businessName || !industry || !sectionType || !topic) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Missing required fields: businessName, industry, sectionType, topic',
       });
+      return;
     }
 
     const content = await generateContent({
@@ -198,7 +203,7 @@ router.post('/content', async (req: Request, res: Response) => {
       topic,
       keywords,
     });
-    
+
     res.json({
       success: true,
       content,
@@ -216,15 +221,16 @@ router.post('/content', async (req: Request, res: Response) => {
  * POST /api/ai/seo
  * Generate SEO metadata
  */
-router.post('/seo', async (req: Request, res: Response) => {
+router.post('/seo', async (req: Request, res: Response): Promise<void> => {
   try {
     const { businessName, industry, pageType, keywords } = req.body;
-    
+
     if (!businessName || !industry || !pageType) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Missing required fields: businessName, industry, pageType',
       });
+      return;
     }
 
     const seo = await generateSEO({
@@ -233,7 +239,7 @@ router.post('/seo', async (req: Request, res: Response) => {
       pageType,
       keywords,
     });
-    
+
     res.json({
       success: true,
       seo,

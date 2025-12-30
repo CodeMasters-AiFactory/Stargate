@@ -9,11 +9,9 @@
 import * as cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import puppeteer, { Browser, Page } from 'puppeteer';
-import * as fs from 'fs';
-import * as path from 'path';
 import { getErrorMessage, logError } from '../utils/errorHandler';
 import { injectDependencies } from './templateDependencyInjector';
-import { extractAllImages, type ExtractedImage } from './imageExtractor';
+import { extractAllImages } from './imageExtractor';
 import { fetchWithAntiBlock, checkRobotsTxt } from './proxyManager';
 
 // Rate limiting
@@ -35,10 +33,10 @@ async function rateLimit(): Promise<void> {
 /**
  * Check if an error is retryable (network/timeout errors)
  */
-function isRetryableError(error: any): boolean {
+function isRetryableError(error: unknown): boolean {
   if (!error) return false;
-  
-  const errorMessage = error.message || String(error);
+
+  const errorMessage = (error as Error).message || String(error);
   const errorString = errorMessage.toLowerCase();
   
   // Retry on network/timeout errors
@@ -105,24 +103,24 @@ async function extractActualWebsiteFromAwardPage(page: Page, awardPageUrl: strin
     // Try each selector
     for (const selector of siteSelectors) {
       try {
-        const href = await page.$eval(selector, (el: any) => el.href);
-        if (href && 
-            !href.includes('awwwards.com') && 
+        const href = await page.$eval(selector, (el: Element) => (el as HTMLAnchorElement).href);
+        if (href &&
+            !href.includes('awwwards.com') &&
             !href.includes('cssdesignawards.com') &&
             !href.includes('thefwa.com') &&
             !href.includes('siteinspire.com')) {
           return href;
         }
-      } catch (e) {
+      } catch (_e) {
         // Selector not found, try next
         continue;
       }
     }
     
     // Fallback: Look for any external link that's not an award site
-    const externalLinks = await page.$$eval('a[target="_blank"]', (links: any[]) => 
-      links.map(l => l.href).filter(href => 
-        href && 
+    const externalLinks = await page.$$eval('a[target="_blank"]', (links: Element[]) =>
+      links.map((l) => (l as HTMLAnchorElement).href).filter((href) =>
+        href &&
         href.startsWith('http') &&
         !href.includes('awwwards.com') &&
         !href.includes('cssdesignawards.com') &&
@@ -582,7 +580,10 @@ async function searchGoogleAPI(
         throw new Error(`Google API error: ${response.status} ${response.statusText}`);
       }
 
-      const data = await response.json() as any;
+      const data = (await response.json()) as {
+        items?: Array<{ link: string; title: string; snippet: string }>;
+        queries?: { nextPage?: unknown };
+      };
 
       if (!data.items || data.items.length === 0) {
         break;
@@ -703,7 +704,7 @@ async function searchGoogleScrape(
                   if (urlMatch) {
                     url = decodeURIComponent(urlMatch[1]);
                   }
-                } catch (e) {
+                } catch (_e) {
                   // Keep original if decode fails
                 }
               }
@@ -800,7 +801,7 @@ export async function scrapeWebsiteFull(
   onProgress?: (phase: string, current: number, total: number, message?: string) => void
 ): Promise<ScrapedWebsiteData> {
   const fullUrl = url.startsWith('http') ? url : `https://${url}`;
-  let lastError: any = null;
+  let lastError: unknown = null;
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     let browser: Browser | null = null;
@@ -858,7 +859,7 @@ export async function scrapeWebsiteFull(
           if (redirectUrl) {
             console.log(`[WebsiteScraper] 🔗 Found actual website URL: ${redirectUrl}`);
           }
-        } catch (e) {
+        } catch (_e) {
           console.log(`[WebsiteScraper] ℹ️ Could not extract website URL from award page`);
         }
       }
@@ -953,10 +954,10 @@ export async function scrapeWebsiteFull(
       
       // Clean up on error
       if (page) {
-        try { await page.close(); } catch (e) {}
+        try { await page.close(); } catch (_e) {}
       }
       if (browser) {
-        try { await browser.close(); } catch (e) {}
+        try { await browser.close(); } catch (_e) {}
       }
 
       // Check if error is retryable
@@ -1034,6 +1035,7 @@ export async function scrapeWebsiteFull(
       keywords: [],
       ogTags: {},
     },
+    jsContent: '',
     error: errorMessage,
   };
 }
@@ -1041,7 +1043,7 @@ export async function scrapeWebsiteFull(
 /**
  * Extract CSS from page (inline + external stylesheets)
  */
-async function extractCSS(page: Page, baseUrl: string): Promise<string> {
+async function extractCSS(page: Page, _baseUrl: string): Promise<string> {
   try {
     const styles: string[] = [];
 
@@ -1083,7 +1085,7 @@ async function extractCSS(page: Page, baseUrl: string): Promise<string> {
           const cssText = await response.text();
           styles.push(`/* ${cssUrl} */\n${cssText}`);
         }
-      } catch (e) {
+      } catch (_e) {
         // Skip if can't fetch
         console.warn(`[WebsiteScraper] Could not fetch CSS from ${cssUrl}`);
       }
@@ -1100,45 +1102,56 @@ async function extractCSS(page: Page, baseUrl: string): Promise<string> {
  * Extract JavaScript files from page
  * CRITICAL: Downloads ALL external JS files so template works standalone
  */
-async function extractJavaScript(page: Page, baseUrl: string): Promise<string> {
+async function extractJavaScript(page: Page, _baseUrl: string): Promise<string> {
   try {
-    const js = await page.evaluate(async (url) => {
-      const scripts: string[] = [];
+    const scripts: string[] = [];
 
-      // Get inline scripts
-      const inlineScripts = Array.from(document.querySelectorAll('script:not([src])'));
-      inlineScripts.forEach(script => {
+    // Get inline scripts
+    const inlineScripts = await page.evaluate(() => {
+      const inline: string[] = [];
+      const inlineScriptTags = Array.from(document.querySelectorAll('script:not([src])'));
+      inlineScriptTags.forEach((script) => {
         if (script.textContent) {
-          scripts.push(`// Inline script\n${script.textContent}`);
+          inline.push(`// Inline script\n${script.textContent}`);
         }
       });
+      return inline;
+    });
+    scripts.push(...inlineScripts);
 
-      // Get external scripts (skip analytics/tracking)
+    // Get external script URLs
+    const externalScriptUrls = await page.evaluate(() => {
+      const urls: string[] = [];
       const externalScripts = Array.from(document.querySelectorAll('script[src]'));
-      for (const script of externalScripts) {
+      externalScripts.forEach((script) => {
         const src = (script as HTMLScriptElement).src;
-        if (src && 
-            !src.startsWith('data:') && 
-            !src.includes('google-analytics') && 
-            !src.includes('gtag') && 
+        if (src &&
+            !src.startsWith('data:') &&
+            !src.includes('google-analytics') &&
+            !src.includes('gtag') &&
             !src.includes('googletagmanager') &&
             !src.includes('facebook.net') &&
             !src.includes('doubleclick') &&
             !src.includes('analytics')) {
-          try {
-            const response = await fetchWithAntiBlock(src, { retries: 2 });
-            const jsText = await response.text();
-            scripts.push(`\n// External JS: ${src}\n${jsText}`);
-          } catch (e) {
-            // Skip if can't fetch (might be CORS blocked)
-            console.warn(`[WebsiteScraper] Failed to fetch JS: ${src}`);
-          }
+          urls.push(src);
         }
+      });
+      return urls;
+    });
+
+    // Fetch external scripts from Node.js side
+    for (const src of externalScriptUrls) {
+      try {
+        const response = await fetchWithAntiBlock(src, { retries: 2 });
+        const jsText = await response.text();
+        scripts.push(`\n// External JS: ${src}\n${jsText}`);
+      } catch (_e) {
+        // Skip if can't fetch (might be CORS blocked)
+        console.warn(`[WebsiteScraper] Failed to fetch JS: ${src}`);
       }
+    }
 
-      return scripts.join('\n\n');
-    }, baseUrl);
-
+    const js = scripts.join('\n\n');
     console.log(`[WebsiteScraper] ✅ Extracted ${js.length} chars of JavaScript`);
     return js;
   } catch (error) {
@@ -1381,10 +1394,46 @@ export function createTemplateFromScrape(
   city?: string,
   ranking?: string,
   designCategory?: string,
-  isDesignQuality: boolean = false,
+  isDesignQuality = false,
   designScore?: number,
   designAwardSource?: string
-): any {
+): {
+  id: string;
+  name: string;
+  brand: string;
+  category: string;
+  industry: string;
+  thumbnail: string;
+  colors: Record<string, string>;
+  typography: Record<string, string>;
+  layout: {
+    heroStyle: 'centered';
+    maxWidth: string;
+    borderRadius: string;
+    sections: string[];
+  };
+  css: string;
+  darkMode: boolean;
+  tags: string[];
+  sourceId: string;
+  locationCountry: string;
+  locationState: string | null;
+  locationCity: string | null;
+  rankingPosition: string | null;
+  isDesignQuality: boolean;
+  designCategory: string | null;
+  designScore: string | null;
+  designAwardSource: string | null;
+  sourceUrl: string;
+  contentData: {
+    html: string;
+    css: string;
+    js: string;
+    text: ScrapedWebsiteData['textContent'];
+    images: ScrapedWebsiteData['images'];
+    metadata: ScrapedWebsiteData['metadata'] & { url: string; sourceUrl: string };
+  };
+} {
   // Extract colors
   const colors = {
     primary: scrapedData.designTokens.colors.primary || '#000000',
@@ -1438,47 +1487,47 @@ export function createTemplateFromScrape(
       const $ = cheerio.load(processedHTML);
       
       // Convert all link[href] attributes (CSS files)
-      $('link[href]').each((_: number, el: any) => {
+      $('link[href]').each((_index, el) => {
         const href = $(el).attr('href');
         if (href && !href.startsWith('http') && !href.startsWith('//') && !href.startsWith('data:') && !href.startsWith('#')) {
-          const absoluteUrl = href.startsWith('/') 
+          const absoluteUrl = href.startsWith('/')
             ? `${baseUrl.origin}${href}`
             : new URL(href, sourceUrl).href;
           $(el).attr('href', absoluteUrl);
         }
       });
-      
+
       // Convert all script[src] attributes (JS files)
-      $('script[src]').each((_: number, el: any) => {
+      $('script[src]').each((_index, el) => {
         const src = $(el).attr('src');
         if (src && !src.startsWith('http') && !src.startsWith('//') && !src.startsWith('data:') && !src.startsWith('#')) {
-          const absoluteUrl = src.startsWith('/') 
+          const absoluteUrl = src.startsWith('/')
             ? `${baseUrl.origin}${src}`
             : new URL(src, sourceUrl).href;
           $(el).attr('src', absoluteUrl);
         }
       });
-      
+
       // Convert all img[src] attributes
-      $('img[src]').each((_: number, el: any) => {
+      $('img[src]').each((_index, el) => {
         const src = $(el).attr('src');
         if (src && !src.startsWith('http') && !src.startsWith('//') && !src.startsWith('data:') && !src.startsWith('#')) {
-          const absoluteUrl = src.startsWith('/') 
+          const absoluteUrl = src.startsWith('/')
             ? `${baseUrl.origin}${src}`
             : new URL(src, sourceUrl).href;
           $(el).attr('src', absoluteUrl);
         }
       });
-      
+
       // Convert all img[srcset] attributes
-      $('img[srcset]').each((_: number, el: any) => {
+      $('img[srcset]').each((_index, el) => {
         const srcset = $(el).attr('srcset');
         if (srcset) {
           const convertedSrcset = srcset.split(',').map((item: string) => {
             const parts = item.trim().split(/\s+/);
             const url = parts[0];
             if (url && !url.startsWith('http') && !url.startsWith('//') && !url.startsWith('data:')) {
-              const absoluteUrl = url.startsWith('/') 
+              const absoluteUrl = url.startsWith('/')
                 ? `${baseUrl.origin}${url}`
                 : new URL(url, sourceUrl).href;
               return `${absoluteUrl} ${parts.slice(1).join(' ')}`;
@@ -1488,20 +1537,20 @@ export function createTemplateFromScrape(
           $(el).attr('srcset', convertedSrcset);
         }
       });
-      
+
       // Convert all a[href] attributes (links)
-      $('a[href]').each((_: number, el: any) => {
+      $('a[href]').each((_index, el) => {
         const href = $(el).attr('href');
         if (href && !href.startsWith('http') && !href.startsWith('//') && !href.startsWith('data:') && !href.startsWith('#') && !href.startsWith('mailto:') && !href.startsWith('tel:')) {
-          const absoluteUrl = href.startsWith('/') 
+          const absoluteUrl = href.startsWith('/')
             ? `${baseUrl.origin}${href}`
             : new URL(href, sourceUrl).href;
           $(el).attr('href', absoluteUrl);
         }
       });
-      
+
       // Remove integrity attributes that cause blocking
-      $('link[integrity], script[integrity]').each((_: number, el: any) => {
+      $('link[integrity], script[integrity]').each((_index, el) => {
         $(el).removeAttr('integrity');
       });
       
@@ -1626,10 +1675,10 @@ export async function crawlWebsiteMultiPage(
   
   // Delete existing pages for this template
   try {
-    const deleteResult = await db.delete(templatePages).where(eq(templatePages.templateId, templateId));
+    await db.delete(templatePages).where(eq(templatePages.templateId, templateId));
     console.log(`[MultiPageCrawler] 🗑️ Cleared existing pages for template ${templateId}`);
-  } catch (e) {
-    console.warn(`[MultiPageCrawler] ⚠️ Could not clear existing pages:`, getErrorMessage(e));
+  } catch (_e) {
+    console.warn(`[MultiPageCrawler] ⚠️ Could not clear existing pages:`, getErrorMessage(_e));
   }
   
   // Helper to check if URL should be skipped
@@ -1679,7 +1728,7 @@ export async function crawlWebsiteMultiPage(
       if (urlObj.origin !== baseOrigin) {
         continue;
       }
-    } catch (e) {
+    } catch (_e) {
       continue;
     }
     
@@ -1747,29 +1796,29 @@ export async function crawlWebsiteMultiPage(
         try {
           const $ = cheerio.load(scrapedData.htmlContent);
           const newLinks: string[] = [];
-          
-          $('a[href]').each((_, el) => {
+
+          $('a[href]').each((_index, el) => {
             const href = $(el).attr('href');
             if (!href) return;
-            
+
             try {
               const absoluteUrl = new URL(href, normalizedUrl).href;
               const absoluteUrlObj = new URL(absoluteUrl);
-              
+
               // Only same-origin, non-visited, non-file URLs
               if (absoluteUrlObj.origin === baseOrigin) {
                 const normalized = absoluteUrl.split('#')[0].replace(/\/$/, '') || absoluteUrl;
-                if (!visitedUrls.has(normalized) && 
-                    !newLinks.includes(normalized) && 
+                if (!visitedUrls.has(normalized) &&
+                    !newLinks.includes(normalized) &&
                     !shouldSkipUrl(normalized)) {
                   newLinks.push(normalized);
                 }
               }
-            } catch (e) {
+            } catch (_e) {
               // Invalid URL
             }
           });
-          
+
           // Add to queue (limit to prevent explosion)
           const linksToAdd = newLinks.slice(0, 50); // Max 50 links per page
           for (const link of linksToAdd) {
@@ -1777,11 +1826,11 @@ export async function crawlWebsiteMultiPage(
               toVisit.push({ url: link, depth: depth + 1 });
             }
           }
-          
+
           if (newLinks.length > 0) {
             console.log(`[MultiPageCrawler] 🔍 Found ${newLinks.length} links, queued ${linksToAdd.length}`);
           }
-        } catch (parseError) {
+        } catch (_parseError) {
           // Ignore parse errors
         }
       }

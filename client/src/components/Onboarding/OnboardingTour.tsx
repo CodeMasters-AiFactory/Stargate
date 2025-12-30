@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -84,6 +85,7 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
+  const [location] = useLocation();
 
   // Check if tour was already completed
   useEffect(() => {
@@ -93,7 +95,18 @@ export function OnboardingTour({ onComplete, onSkip }: OnboardingTourProps) {
     }
   }, []);
 
-  if (!isVisible) {
+  // Don't show tour on specific pages where it would block important UI
+  // These pages have their own onboarding flow or shouldn't be interrupted
+  const blockedPaths = [
+    '/stargate-websites',  // Package selection page
+    '/merlin8',            // Merlin 8.0 pages
+    '/wizard',             // Website wizard
+    '/merlin',             // Merlin pages
+  ];
+
+  const isBlockedPath = blockedPaths.some(path => location.startsWith(path));
+
+  if (!isVisible || isBlockedPath) {
     return null;
   }
 

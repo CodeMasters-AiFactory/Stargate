@@ -1,18 +1,19 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { containerRuntime, type ExecutionRequest } from '../container/runtime';
 import { packageManager } from '../container/package-manager';
 import { randomUUID } from 'crypto';
 
 export function registerExecutionRoutes(app: Express) {
   // Execute code endpoint
-  app.post("/api/execute", async (req, res) => {
+  app.post("/api/execute", async (req: Request, res: Response): Promise<void> => {
     try {
       const { projectId, language, code, files, command } = req.body;
       
       if (!projectId || !language || !code) {
-        return res.status(400).json({ 
-          error: "Missing required fields: projectId, language, code" 
+        res.status(400).json({
+          error: "Missing required fields: projectId, language, code"
         });
+        return;
       }
 
       const request: ExecutionRequest = {
@@ -39,23 +40,24 @@ export function registerExecutionRoutes(app: Express) {
         executionId: result.id
       });
 
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         error: "Execution failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: _error instanceof Error ? _error.message : "Unknown error"
       });
     }
   });
 
   // Terminal command endpoint
-  app.post("/api/terminal", async (req, res) => {
+  app.post("/api/terminal", async (req: Request, res: Response): Promise<void> => {
     try {
       const { projectId, command, workingDir } = req.body;
 
       if (!projectId || !command) {
-        return res.status(400).json({
+        res.status(400).json({
           error: "Missing required fields: projectId, command"
         });
+        return;
       }
 
       // Map common terminal commands to appropriate languages/containers
@@ -97,23 +99,24 @@ export function registerExecutionRoutes(app: Express) {
         command: command
       });
 
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         error: "Terminal command failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: _error instanceof Error ? _error.message : "Unknown error"
       });
     }
   });
 
   // Package management endpoints
-  app.post("/api/packages/install", async (req, res) => {
+  app.post("/api/packages/install", async (req: Request, res: Response): Promise<void> => {
     try {
       const { projectId, language, packages } = req.body;
 
       if (!projectId || !language || !packages || !Array.isArray(packages)) {
-        return res.status(400).json({
+        res.status(400).json({
           error: "Missing or invalid fields: projectId, language, packages (array)"
         });
+        return;
       }
 
       const result = await packageManager.installPackages({
@@ -130,15 +133,15 @@ export function registerExecutionRoutes(app: Express) {
         installedPackages: result.installedPackages
       });
 
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         error: "Package installation failed",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: _error instanceof Error ? _error.message : "Unknown error"
       });
     }
   });
 
-  app.get("/api/packages/:projectId/:language", async (req, res) => {
+  app.get("/api/packages/:projectId/:language", async (req: Request, res: Response): Promise<void> => {
     try {
       const { projectId, language } = req.params;
       
@@ -150,28 +153,28 @@ export function registerExecutionRoutes(app: Express) {
         packages
       });
 
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         error: "Failed to get packages",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: _error instanceof Error ? _error.message : "Unknown error"
       });
     }
   });
 
   // Container management endpoints
-  app.get("/api/containers/active", async (req, res) => {
+  app.get("/api/containers/active", async (req: Request, res: Response): Promise<void> => {
     try {
       const containers = await containerRuntime.getActiveContainers();
       res.json(containers);
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         error: "Failed to get active containers",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: _error instanceof Error ? _error.message : "Unknown error"
       });
     }
   });
 
-  app.post("/api/containers/:requestId/stop", async (req, res) => {
+  app.post("/api/containers/:requestId/stop", async (req: Request, res: Response): Promise<void> => {
     try {
       const { requestId } = req.params;
       const success = await containerRuntime.stopContainer(requestId);
@@ -181,40 +184,40 @@ export function registerExecutionRoutes(app: Express) {
         message: success ? "Container stopped" : "Container not found or already stopped"
       });
 
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         error: "Failed to stop container",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: _error instanceof Error ? _error.message : "Unknown error"
       });
     }
   });
 
   // Language support endpoint
-  app.get("/api/languages", async (req, res) => {
+  app.get("/api/languages", async (req: Request, res: Response): Promise<void> => {
     try {
       const supportedLanguages = await containerRuntime.getLanguageSupport();
       res.json({
         languages: supportedLanguages,
         total: supportedLanguages.length
       });
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         error: "Failed to get supported languages",
-        message: error instanceof Error ? error.message : "Unknown error"
+        message: _error instanceof Error ? _error.message : "Unknown error"
       });
     }
   });
 
   // Health check endpoint
-  app.get("/api/execution/health", async (req, res) => {
+  app.get("/api/execution/health", async (req: Request, res: Response): Promise<void> => {
     try {
       const health = await containerRuntime.healthCheck();
       res.json(health);
-    } catch (error) {
+    } catch (_error: unknown) {
       res.status(500).json({
         status: 'error',
         details: {
-          error: error instanceof Error ? error.message : "Unknown error"
+          error: _error instanceof Error ? _error.message : "Unknown error"
         }
       });
     }

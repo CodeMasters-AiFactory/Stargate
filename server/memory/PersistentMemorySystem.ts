@@ -1,7 +1,7 @@
 import { Pool } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import { sql, eq, and, desc } from 'drizzle-orm';
-import { pgTable, text, json, timestamp, uuid, boolean, integer } from 'drizzle-orm/pg-core';
+import { pgTable, text, json, timestamp, uuid, boolean } from 'drizzle-orm/pg-core';
 
 // Database Tables for Persistent Memory
 export const agentMemory = pgTable('agent_memory', {
@@ -61,29 +61,29 @@ export interface AgentMemoryContext {
   sessionId: string;
   userId: string;
   agentId: string;
-  conversationContext: any;
-  projectContext?: any;
-  userPreferences?: any;
-  workHistory?: any;
-  codebase?: any;
+  conversationContext: Record<string, unknown>;
+  projectContext?: Record<string, unknown>;
+  userPreferences?: Record<string, unknown>;
+  workHistory?: Record<string, unknown>;
+  codebase?: Record<string, unknown>;
 }
 
 export interface ConversationMessage {
   id: string;
   type: 'user' | 'agent' | 'system';
   content: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   timestamp: Date;
 }
 
 export interface ProjectContext {
   projectId: string;
   projectName: string;
-  architecture?: any;
-  dependencies?: any;
-  codeStructure?: any;
-  aiDecisions?: any;
-  userRequirements?: any;
+  architecture?: Record<string, unknown>;
+  dependencies?: Record<string, unknown>;
+  codeStructure?: Record<string, unknown>;
+  aiDecisions?: Record<string, unknown>;
+  userRequirements?: Record<string, unknown>;
   developmentPhase?: string;
 }
 
@@ -104,8 +104,9 @@ export class PersistentMemorySystem {
       const pool = new Pool({ connectionString: process.env.DATABASE_URL });
       this.db = drizzle({ client: pool });
       console.log('🧠 Persistent memory system connected to database');
-    } catch (error) {
-      console.warn('🧠 Database connection failed, falling back to in-memory storage:', error.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.warn('🧠 Database connection failed, falling back to in-memory storage:', errorMessage);
       this.developmentMode = true;
     }
   }
@@ -158,13 +159,13 @@ export class PersistentMemorySystem {
             sessionId: memory.sessionId,
             userId: memory.userId,
             agentId: memory.agentId,
-            conversationContext: memory.conversationContext,
-            projectContext: memory.projectContext || undefined,
-            userPreferences: memory.userPreferences || undefined,
-            workHistory: memory.workHistory || undefined,
-            codebase: memory.codebase || undefined,
+            conversationContext: memory.conversationContext as Record<string, unknown>,
+            projectContext: (memory.projectContext as Record<string, unknown> | null) || undefined,
+            userPreferences: (memory.userPreferences as Record<string, unknown> | null) || undefined,
+            workHistory: (memory.workHistory as Record<string, unknown> | null) || undefined,
+            codebase: (memory.codebase as Record<string, unknown> | null) || undefined,
           };
-          
+
           this.memoryCache.set(sessionId, context);
           console.log(`🧠 Recovered agent memory from database: ${sessionId}`);
           return context;
@@ -190,9 +191,9 @@ export class PersistentMemorySystem {
       console.log(`🧠 Created new agent memory for session: ${sessionId}`);
       return newContext;
 
-    } catch (error) {
-      console.error('Failed to initialize session memory:', error);
-      
+    } catch (_error: unknown) {
+      console.error('Failed to initialize session memory:', _error);
+
       // Fallback to basic in-memory context
       const fallbackContext: AgentMemoryContext = {
         sessionId,
@@ -206,7 +207,7 @@ export class PersistentMemorySystem {
           requirements: [],
         },
       };
-      
+
       this.memoryCache.set(sessionId, fallbackContext);
       console.log(`🧠 Created fallback memory context: ${sessionId}`);
       return fallbackContext;
@@ -256,8 +257,8 @@ export class PersistentMemorySystem {
       } else {
         console.log(`💾 Saved memory to cache only: ${context.sessionId}`);
       }
-    } catch (error) {
-      console.error('Failed to save memory to database, keeping in cache:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to save memory to database, keeping in cache:', _error);
       // Don't throw error - cache save still works
     }
   }
@@ -280,16 +281,17 @@ export class PersistentMemorySystem {
       // Update memory context cache
       const context = this.memoryCache.get(sessionId);
       if (context && context.conversationContext) {
-        if (!context.conversationContext.history) {
-          context.conversationContext.history = [];
+        const history = context.conversationContext.history as ConversationMessage[] | undefined;
+        if (!history) {
+          context.conversationContext.history = [message];
+        } else {
+          history.push(message);
+          // Keep only last 50 messages in context (performance)
+          if (history.length > 50) {
+            context.conversationContext.history = history.slice(-50);
+          }
         }
-        context.conversationContext.history.push(message);
-        
-        // Keep only last 50 messages in context (performance)
-        if (context.conversationContext.history.length > 50) {
-          context.conversationContext.history = context.conversationContext.history.slice(-50);
-        }
-        
+
         await this.saveMemory(context);
       }
 
@@ -308,8 +310,8 @@ export class PersistentMemorySystem {
       }
 
       console.log(`💬 Added conversation message to session: ${sessionId}`);
-    } catch (error) {
-      console.error('Failed to add conversation message:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to add conversation message:', _error);
       // Don't throw - message is still saved in cache
     }
   }
@@ -336,7 +338,7 @@ export class PersistentMemorySystem {
           id: msg.messageId,
           type: msg.type as 'user' | 'agent' | 'system',
           content: msg.content,
-          metadata: msg.metadata,
+          metadata: (msg.metadata as Record<string, unknown> | null) || undefined,
           timestamp: msg.timestamp!,
         })).reverse();
 
@@ -346,8 +348,8 @@ export class PersistentMemorySystem {
       }
 
       return [];
-    } catch (error) {
-      console.error('Failed to get conversation history:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to get conversation history:', _error);
       return this.conversationCache.get(sessionId) || [];
     }
   }
@@ -355,6 +357,11 @@ export class PersistentMemorySystem {
   // Save project context for long-term memory
   async saveProjectMemory(projectContext: ProjectContext, userId: string): Promise<void> {
     try {
+      if (!this.db) {
+        console.warn('Database not available, skipping project memory save');
+        return;
+      }
+
       await this.db
         .insert(projectMemory)
         .values({
@@ -383,14 +390,19 @@ export class PersistentMemorySystem {
         });
 
       console.log(`📁 Saved project memory for: ${projectContext.projectId}`);
-    } catch (error) {
-      console.error('Failed to save project memory:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to save project memory:', _error);
     }
   }
 
   // Get project memory for context recovery
   async getProjectMemory(projectId: string, userId: string): Promise<ProjectContext | null> {
     try {
+      if (!this.db) {
+        console.warn('Database not available, cannot get project memory');
+        return null;
+      }
+
       const project = await this.db
         .select()
         .from(projectMemory)
@@ -407,29 +419,34 @@ export class PersistentMemorySystem {
       return {
         projectId: p.projectId,
         projectName: p.projectName,
-        architecture: p.architecture,
-        dependencies: p.dependencies,
-        codeStructure: p.codeStructure,
-        aiDecisions: p.aiDecisions,
-        userRequirements: p.userRequirements,
+        architecture: (p.architecture as Record<string, unknown> | null) || undefined,
+        dependencies: (p.dependencies as Record<string, unknown> | null) || undefined,
+        codeStructure: (p.codeStructure as Record<string, unknown> | null) || undefined,
+        aiDecisions: (p.aiDecisions as Record<string, unknown> | null) || undefined,
+        userRequirements: (p.userRequirements as Record<string, unknown> | null) || undefined,
         developmentPhase: p.developmentPhase || undefined,
       };
-    } catch (error) {
-      console.error('Failed to get project memory:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to get project memory:', _error);
       return null;
     }
   }
 
   // Save/update user preferences and patterns
   async saveUserProfile(userId: string, profile: {
-    preferences?: any;
-    codingStyle?: any;
+    preferences?: Record<string, unknown>;
+    codingStyle?: Record<string, unknown>;
     communicationStyle?: string;
     experienceLevel?: string;
-    favoriteFrameworks?: any;
-    workPatterns?: any;
+    favoriteFrameworks?: Record<string, unknown>;
+    workPatterns?: Record<string, unknown>;
   }): Promise<void> {
     try {
+      if (!this.db) {
+        console.warn('Database not available, skipping user profile save');
+        return;
+      }
+
       await this.db
         .insert(userProfiles)
         .values({
@@ -451,14 +468,19 @@ export class PersistentMemorySystem {
         });
 
       console.log(`👤 Saved user profile for: ${userId}`);
-    } catch (error) {
-      console.error('Failed to save user profile:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to save user profile:', _error);
     }
   }
 
   // Get user profile for personalized experience
-  async getUserProfile(userId: string): Promise<any | null> {
+  async getUserProfile(userId: string): Promise<Record<string, unknown> | null> {
     try {
+      if (!this.db) {
+        console.warn('Database not available, cannot get user profile');
+        return null;
+      }
+
       const profile = await this.db
         .select()
         .from(userProfiles)
@@ -466,14 +488,14 @@ export class PersistentMemorySystem {
         .limit(1);
 
       return profile.length > 0 ? profile[0] : null;
-    } catch (error) {
-      console.error('Failed to get user profile:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to get user profile:', _error);
       return null;
     }
   }
 
   // Update conversation context
-  async updateConversationContext(sessionId: string, updates: any): Promise<void> {
+  async updateConversationContext(sessionId: string, updates: Record<string, unknown>): Promise<void> {
     const context = this.memoryCache.get(sessionId);
     if (context) {
       context.conversationContext = {
@@ -493,6 +515,11 @@ export class PersistentMemorySystem {
 
     // Try database
     try {
+      if (!this.db) {
+        console.warn('Database not available, cannot get memory context');
+        return null;
+      }
+
       const memory = await this.db
         .select()
         .from(agentMemory)
@@ -508,18 +535,18 @@ export class PersistentMemorySystem {
           sessionId: m.sessionId,
           userId: m.userId,
           agentId: m.agentId,
-          conversationContext: m.conversationContext,
-          projectContext: m.projectContext || undefined,
-          userPreferences: m.userPreferences || undefined,
-          workHistory: m.workHistory || undefined,
-          codebase: m.codebase || undefined,
+          conversationContext: m.conversationContext as Record<string, unknown>,
+          projectContext: (m.projectContext as Record<string, unknown> | null) || undefined,
+          userPreferences: (m.userPreferences as Record<string, unknown> | null) || undefined,
+          workHistory: (m.workHistory as Record<string, unknown> | null) || undefined,
+          codebase: (m.codebase as Record<string, unknown> | null) || undefined,
         };
-        
+
         this.memoryCache.set(sessionId, context);
         return context;
       }
-    } catch (error) {
-      console.error('Failed to get memory context:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to get memory context:', _error);
     }
 
     return null;
@@ -559,26 +586,28 @@ export class PersistentMemorySystem {
       }
 
       // Get recent conversation patterns
-      const recentSessions = await this.db
-        .select()
-        .from(agentMemory)
-        .where(and(
-          eq(agentMemory.userId, userId),
-          eq(agentMemory.isActive, true)
-        ))
-        .orderBy(desc(agentMemory.updatedAt))
-        .limit(3);
+      if (this.db) {
+        const recentSessions = await this.db
+          .select()
+          .from(agentMemory)
+          .where(and(
+            eq(agentMemory.userId, userId),
+            eq(agentMemory.isActive, true)
+          ))
+          .orderBy(desc(agentMemory.updatedAt))
+          .limit(3);
 
-      if (recentSessions.length > 0) {
-        summary += `**Recent Work Patterns:**\n`;
-        recentSessions.forEach((session, index) => {
-          summary += `${index + 1}. Agent: ${session.agentId}, Last Active: ${session.updatedAt}\n`;
-        });
+        if (recentSessions.length > 0) {
+          summary += `**Recent Work Patterns:**\n`;
+          recentSessions.forEach((session, _index) => {
+            summary += `${_index + 1}. Agent: ${session.agentId}, Last Active: ${session.updatedAt}\n`;
+          });
+        }
       }
 
       return summary;
-    } catch (error) {
-      console.error('Failed to generate context summary:', error);
+    } catch (_error: unknown) {
+      console.error('Failed to generate context summary:', _error);
       return "Previous context unavailable.";
     }
   }

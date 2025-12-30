@@ -1,21 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, Code, BarChart3, Brain, Activity, ExternalLink, Zap, Plus, Loader2, Trash2, FolderOpen } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import {
+  Plus,
+  Loader2,
+  Trash2,
+  FolderOpen,
+  Search,
+  MoreHorizontal,
+  Eye,
+  Pencil,
+  Globe,
+  Clock,
+  Sparkles,
+  LayoutTemplate,
+  Wand2,
+  ExternalLink,
+  Copy,
+  Settings,
+  RotateCcw,
+  AlertTriangle,
+  Trash,
+} from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { ProjectThumbnail } from '@/components/Projects/ProjectThumbnail';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
 
 interface Project {
   id: string;
   name: string;
   templateName?: string;
   templatePreview?: string;
+  html?: string;
   status: string;
   industry?: string;
   createdAt: string;
   updatedAt: string;
   lastEditedAt?: string;
+  deletedAt?: string;
+  daysRemaining?: number;
 }
 
 interface DashboardViewProps {
@@ -27,45 +67,67 @@ interface DashboardViewProps {
   username?: string;
 }
 
+type ViewMode = 'projects' | 'trash';
+
 export function DashboardView({ onGenerate, onAIPlan, onAllTools, onLogout, onOpenProject, username }: DashboardViewProps) {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [trashedProjects, setTrashedProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [restoringId, setRestoringId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('projects');
+  const [showEmptyTrashDialog, setShowEmptyTrashDialog] = useState(false);
+  const [emptyingTrash, setEmptyingTrash] = useState(false);
+  const [deleteConfirmProject, setDeleteConfirmProject] = useState<Project | null>(null);
+  const { toast } = useToast();
 
   // Fetch user projects
   useEffect(() => {
-    async function fetchProjects() {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/projects', {
-          credentials: 'include',
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setProjects(data.projects || []);
-        } else if (response.status === 401) {
-          // Not logged in - show empty state
-          setProjects([]);
-        } else {
-          setError('Failed to load projects');
-        }
-      } catch (err) {
-        console.error('[Dashboard] Error fetching projects:', err);
-        setError('Failed to load projects');
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchProjects();
   }, []);
 
-  // Delete project
-  const handleDelete = async (projectId: string, e: React.MouseEvent) => {
+  const fetchProjects = async () => {
+    try {
+      setLoading(true);
+      const [projectsRes, trashRes] = await Promise.all([
+        fetch('/api/projects', { credentials: 'include' }),
+        fetch('/api/projects/trash', { credentials: 'include' }),
+      ]);
+
+      if (projectsRes.ok) {
+        const data = await projectsRes.json();
+        setProjects(data.projects || []);
+      } else if (projectsRes.status === 401) {
+        setProjects([]);
+      } else {
+        setError('Failed to load projects');
+      }
+
+      if (trashRes.ok) {
+        const data = await trashRes.json();
+        setTrashedProjects(data.projects || []);
+      }
+    } catch (err) {
+      console.error('[Dashboard] Error fetching projects:', err);
+      setError('Failed to load projects');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Show delete confirmation dialog
+  const handleDeleteClick = (project: Project, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm('Are you sure you want to delete this project?')) return;
+    setDeleteConfirmProject(project);
+  };
+
+  // Delete project (move to trash) - called after confirmation
+  const handleConfirmDelete = async () => {
+    if (!deleteConfirmProject) return;
+    const projectId = deleteConfirmProject.id;
 
     try {
       setDeletingId(projectId);
@@ -75,15 +137,137 @@ export function DashboardView({ onGenerate, onAIPlan, onAllTools, onLogout, onOp
       });
 
       if (response.ok) {
+        const deletedProject = projects.find(p => p.id === projectId);
         setProjects(prev => prev.filter(p => p.id !== projectId));
+        if (deletedProject) {
+          setTrashedProjects(prev => [{
+            ...deletedProject,
+            deletedAt: new Date().toISOString(),
+            daysRemaining: 60,
+          }, ...prev]);
+        }
+        toast({
+          title: 'Moved to trash',
+          description: 'Project will be permanently deleted after 60 days.',
+        });
       } else {
-        alert('Failed to delete project');
+        toast({
+          title: 'Error',
+          description: 'Failed to delete project',
+          variant: 'destructive',
+        });
       }
     } catch (err) {
       console.error('[Dashboard] Error deleting project:', err);
-      alert('Failed to delete project');
+      toast({
+        title: 'Error',
+        description: 'Failed to delete project',
+        variant: 'destructive',
+      });
     } finally {
       setDeletingId(null);
+      setDeleteConfirmProject(null);
+    }
+  };
+
+  // Restore project from trash
+  const handleRestore = async (projectId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    try {
+      setRestoringId(projectId);
+      const response = await fetch(`/api/projects/${projectId}/restore`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const restoredProject = trashedProjects.find(p => p.id === projectId);
+        setTrashedProjects(prev => prev.filter(p => p.id !== projectId));
+        if (restoredProject) {
+          setProjects(prev => [restoredProject, ...prev]);
+        }
+        toast({
+          title: 'Project restored',
+          description: 'Your project has been restored successfully.',
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Failed to restore project',
+          variant: 'destructive',
+        });
+      }
+    } catch (err) {
+      console.error('[Dashboard] Error restoring project:', err);
+      toast({
+        title: 'Error',
+        description: 'Failed to restore project',
+        variant: 'destructive',
+      });
+    } finally {
+      setRestoringId(null);
+    }
+  };
+
+  // Permanently delete project
+  const handlePermanentDelete = async (projectId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm('This will permanently delete the project. This cannot be undone.')) return;
+
+    try {
+      setDeletingId(projectId);
+      const response = await fetch(`/api/projects/${projectId}?permanent=true`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        setTrashedProjects(prev => prev.filter(p => p.id !== projectId));
+        toast({
+          title: 'Permanently deleted',
+          description: 'Project has been permanently removed.',
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Failed to delete project',
+          variant: 'destructive',
+        });
+      }
+    } catch (err) {
+      console.error('[Dashboard] Error permanently deleting project:', err);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  // Empty trash
+  const handleEmptyTrash = async () => {
+    try {
+      setEmptyingTrash(true);
+      const response = await fetch('/api/projects/trash/empty', {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        setTrashedProjects([]);
+        toast({
+          title: 'Trash emptied',
+          description: 'All projects in trash have been permanently deleted.',
+        });
+      }
+    } catch (err) {
+      console.error('[Dashboard] Error emptying trash:', err);
+      toast({
+        title: 'Error',
+        description: 'Failed to empty trash',
+        variant: 'destructive',
+      });
+    } finally {
+      setEmptyingTrash(false);
+      setShowEmptyTrashDialog(false);
     }
   };
 
@@ -97,59 +281,110 @@ export function DashboardView({ onGenerate, onAIPlan, onAllTools, onLogout, onOp
     }
   };
 
-  // Get status badge variant
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case 'published':
-        return 'default';
-      case 'draft':
-        return 'secondary';
-      case 'archived':
-        return 'outline';
-      default:
-        return 'secondary';
-    }
-  };
+  // Filter projects by search
+  const filteredProjects = (viewMode === 'projects' ? projects : trashedProjects).filter(p =>
+    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.templateName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.industry?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  // Stats
-  const stats = {
-    total: projects.length,
-    published: projects.filter(p => p.status === 'published').length,
-    drafts: projects.filter(p => p.status === 'draft').length,
+  // Get a color for project based on industry/name
+  const getProjectColor = (project: Project) => {
+    const colors = [
+      'from-blue-500 to-cyan-500',
+      'from-purple-500 to-pink-500',
+      'from-green-500 to-emerald-500',
+      'from-orange-500 to-amber-500',
+      'from-red-500 to-rose-500',
+      'from-indigo-500 to-violet-500',
+    ];
+    const index = project.name.charCodeAt(0) % colors.length;
+    return colors[index];
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* Welcome Section */}
-      <div className="mb-12">
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 to-purple-950 rounded-2xl p-8">
+    <div className="min-h-full bg-slate-950">
+      {/* Header Section */}
+      <div className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                Welcome back{username ? `, ${username}` : ''}!
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                {projects.length > 0
-                  ? `You have ${projects.length} project${projects.length === 1 ? '' : 's'}. Ready to build something new?`
-                  : 'Ready to build something amazing today?'}
-              </p>
+            {/* Left: Title & Search */}
+            <div className="flex items-center gap-6">
+              <div>
+                <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+                  <Wand2 className="w-7 h-7 text-purple-400" />
+                  {viewMode === 'projects' ? 'My Projects' : 'Trash'}
+                </h1>
+                <p className="text-slate-400 text-sm mt-0.5">
+                  {viewMode === 'projects'
+                    ? `${projects.length} project${projects.length !== 1 ? 's' : ''} total`
+                    : `${trashedProjects.length} item${trashedProjects.length !== 1 ? 's' : ''} in trash`
+                  }
+                </p>
+              </div>
+
+              {/* Search */}
+              <div className="relative w-72">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <Input
+                  placeholder={viewMode === 'projects' ? 'Search projects...' : 'Search trash...'}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500/20"
+                />
+              </div>
             </div>
-            <div className="flex space-x-3">
-              <Button
-                onClick={onGenerate}
-                className="bg-gradient-to-r from-blue-600 to-purple-600"
-                data-testid="button-new-project"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                New Project
-              </Button>
-              <Button variant="outline" onClick={onAIPlan} data-testid="button-ai-assistant">
-                <Brain className="w-4 h-4 mr-2" />
-                AI Assistant
-              </Button>
-              {onLogout && (
-                <Button variant="ghost" onClick={onLogout} data-testid="button-logout">
-                  Logout
+
+            {/* Right: View Toggle & Actions */}
+            <div className="flex items-center gap-3">
+              {/* View Toggle */}
+              <div className="flex bg-slate-800/50 rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode('projects')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                    viewMode === 'projects'
+                      ? 'bg-purple-600 text-white'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <FolderOpen className="w-4 h-4" />
+                  Projects
+                </button>
+                <button
+                  onClick={() => setViewMode('trash')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                    viewMode === 'trash'
+                      ? 'bg-red-600 text-white'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Trash className="w-4 h-4" />
+                  Trash
+                  {trashedProjects.length > 0 && (
+                    <span className="ml-1 px-1.5 py-0.5 text-xs bg-red-500/30 rounded-full">
+                      {trashedProjects.length}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {viewMode === 'projects' ? (
+                <Button
+                  onClick={onGenerate}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg shadow-purple-500/25"
+                  size="lg"
+                >
+                  <Plus className="w-5 h-5 mr-2" />
+                  Create New
+                </Button>
+              ) : trashedProjects.length > 0 && (
+                <Button
+                  onClick={() => setShowEmptyTrashDialog(true)}
+                  variant="destructive"
+                  className="bg-red-600 hover:bg-red-500"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Empty Trash
                 </Button>
               )}
             </div>
@@ -157,227 +392,429 @@ export function DashboardView({ onGenerate, onAIPlan, onAllTools, onLogout, onOp
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Total Projects
-                </p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Quick Actions Row - Only show in projects view */}
+        {viewMode === 'projects' && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            <button
+              onClick={onGenerate}
+              className="group p-4 rounded-xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/10"
+            >
+              <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <LayoutTemplate className="w-5 h-5 text-purple-400" />
               </div>
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                <Code className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              <h3 className="text-white font-medium text-left">Templates</h3>
+              <p className="text-slate-500 text-sm text-left">Browse & select</p>
+            </button>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Published
-                </p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.published}</p>
+            <button
+              onClick={onAIPlan}
+              className="group p-4 rounded-xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 hover:border-cyan-500/50 transition-all hover:shadow-lg hover:shadow-cyan-500/10"
+            >
+              <div className="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Sparkles className="w-5 h-5 text-cyan-400" />
               </div>
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                <Activity className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              <h3 className="text-white font-medium text-left">AI Canvas</h3>
+              <p className="text-slate-500 text-sm text-left">Build from scratch</p>
+            </button>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Drafts
-                </p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.drafts}</p>
+            <button
+              onClick={onAllTools}
+              className="group p-4 rounded-xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 hover:border-green-500/50 transition-all hover:shadow-lg hover:shadow-green-500/10"
+            >
+              <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Globe className="w-5 h-5 text-green-400" />
               </div>
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                <Brain className="w-6 h-6 text-purple-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              <h3 className="text-white font-medium text-left">Deploy</h3>
+              <p className="text-slate-500 text-sm text-left">Publish live</p>
+            </button>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Templates</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">7,280</p>
+            <button
+              className="group p-4 rounded-xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 hover:border-orange-500/50 transition-all hover:shadow-lg hover:shadow-orange-500/10"
+            >
+              <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Settings className="w-5 h-5 text-orange-400" />
               </div>
-              <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-orange-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+              <h3 className="text-white font-medium text-left">Settings</h3>
+              <p className="text-slate-500 text-sm text-left">Configure</p>
+            </button>
+          </div>
+        )}
 
-      {/* Recent Projects */}
-      <div className="mb-12">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Your Projects</h3>
-          {projects.length > 6 && (
-            <Button variant="outline" size="sm" data-testid="button-view-all-projects">
-              View All Projects
-              <ExternalLink className="w-4 h-4 ml-2" />
-            </Button>
-          )}
+        {/* Trash Info Banner */}
+        {viewMode === 'trash' && trashedProjects.length > 0 && (
+          <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="text-amber-200 font-medium">Items in trash are automatically deleted after 60 days</p>
+              <p className="text-amber-200/70 text-sm mt-1">
+                Restore items to keep them, or empty the trash to free up space immediately.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Section Header */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            {viewMode === 'projects' ? (
+              <>
+                <Clock className="w-4 h-4 text-slate-400" />
+                Recent Projects
+              </>
+            ) : (
+              <>
+                <Trash className="w-4 h-4 text-slate-400" />
+                Deleted Projects
+              </>
+            )}
+          </h2>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-            <span className="ml-3 text-gray-600">Loading your projects...</span>
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-10 h-10 animate-spin text-purple-500 mb-4" />
+            <p className="text-slate-400">Loading...</p>
           </div>
         ) : error ? (
-          <div className="text-center py-12">
-            <p className="text-red-500">{error}</p>
-            <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>
-              Retry
+          <div className="text-center py-20">
+            <p className="text-red-400 mb-4">{error}</p>
+            <Button variant="outline" onClick={() => window.location.reload()}>
+              Try Again
             </Button>
           </div>
-        ) : projects.length === 0 ? (
-          <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-xl">
-            <FolderOpen className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h4 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
-              No projects yet
-            </h4>
-            <p className="text-gray-500 dark:text-gray-400 mb-6">
-              Create your first website project by selecting a template
+        ) : filteredProjects.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 px-4">
+            <div className="w-20 h-20 rounded-2xl bg-slate-800/50 flex items-center justify-center mb-6">
+              {viewMode === 'projects' ? (
+                <FolderOpen className="w-10 h-10 text-slate-600" />
+              ) : (
+                <Trash className="w-10 h-10 text-slate-600" />
+              )}
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              {searchQuery
+                ? 'No results found'
+                : viewMode === 'projects'
+                ? 'No projects yet'
+                : 'Trash is empty'}
+            </h3>
+            <p className="text-slate-400 text-center mb-6 max-w-md">
+              {searchQuery
+                ? `No items match "${searchQuery}". Try a different search.`
+                : viewMode === 'projects'
+                ? 'Start building your first website. Choose from professional templates or let AI create one for you.'
+                : 'Deleted projects will appear here for 60 days before being permanently removed.'}
             </p>
-            <Button onClick={onGenerate} className="bg-gradient-to-r from-blue-600 to-purple-600">
-              <Plus className="w-4 h-4 mr-2" />
-              Create Your First Project
-            </Button>
+            {!searchQuery && viewMode === 'projects' && (
+              <div className="flex gap-3">
+                <Button
+                  onClick={onGenerate}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500"
+                >
+                  <LayoutTemplate className="w-4 h-4 mr-2" />
+                  Browse Templates
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={onAIPlan}
+                  className="border-slate-700 text-white hover:bg-slate-800"
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  AI Canvas
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {projects.slice(0, 6).map(project => (
-              <Card
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {filteredProjects.map(project => (
+              <div
                 key={project.id}
-                className="hover:shadow-lg transition-shadow cursor-pointer group"
-                data-testid={`project-card-${project.id}`}
-                onClick={() => onOpenProject?.(project.id)}
+                className={`group relative rounded-xl overflow-hidden bg-slate-900/50 border transition-all cursor-pointer ${
+                  viewMode === 'trash'
+                    ? 'border-red-900/50 hover:border-red-700/50'
+                    : 'border-slate-800 hover:border-slate-700'
+                } hover:shadow-xl hover:shadow-black/20`}
+                onClick={() => viewMode === 'projects' && onOpenProject?.(project.id)}
+                onMouseEnter={() => setHoveredProject(project.id)}
+                onMouseLeave={() => setHoveredProject(null)}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <ProjectThumbnail
-                      projectName={project.name}
-                      industry={project.industry}
-                      templateName={project.templateName}
-                      templatePreview={project.templatePreview}
-                      size="md"
-                    />
-                    <div className="flex items-center gap-2">
-                      <Badge variant={getStatusVariant(project.status)}>
-                        {project.status}
-                      </Badge>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700 hover:bg-red-50"
-                        onClick={(e) => handleDelete(project.id, e)}
-                        disabled={deletingId === project.id}
-                      >
-                        {deletingId === project.id ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Trash2 className="w-4 h-4" />
-                        )}
-                      </Button>
+                {/* Preview Image / Thumbnail */}
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  {project.templatePreview || project.html ? (
+                    <div className="absolute inset-0 bg-slate-800">
+                      {project.templatePreview ? (
+                        <img
+                          src={project.templatePreview}
+                          alt={project.name}
+                          className={`w-full h-full object-cover object-top ${viewMode === 'trash' ? 'opacity-50 grayscale' : ''}`}
+                        />
+                      ) : (
+                        <div
+                          className={`w-full h-full transform scale-[0.25] origin-top-left ${viewMode === 'trash' ? 'opacity-50 grayscale' : ''}`}
+                          style={{ width: '400%', height: '400%' }}
+                          dangerouslySetInnerHTML={{ __html: project.html?.slice(0, 5000) || '' }}
+                        />
+                      )}
                     </div>
-                  </div>
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                    {project.name}
-                  </h4>
-                  {project.templateName && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                      Based on: {project.templateName}
-                    </p>
+                  ) : (
+                    <div className={`absolute inset-0 bg-gradient-to-br ${getProjectColor(project)} ${viewMode === 'trash' ? 'opacity-30 grayscale' : 'opacity-80'}`}>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-5xl font-bold text-white/30">
+                          {project.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    </div>
                   )}
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                    Updated {formatTime(project.lastEditedAt || project.updatedAt)}
-                  </p>
-                  <div className="flex space-x-2">
-                    <Button
-                      size="sm"
-                      className="flex-1"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onOpenProject?.(project.id);
-                      }}
-                    >
-                      <Code className="w-3 h-3 mr-1" />
-                      Edit
-                    </Button>
-                    {project.status === 'published' && (
-                      <Button size="sm" variant="outline" className="flex-1">
-                        <ExternalLink className="w-3 h-3 mr-1" />
-                        View
-                      </Button>
+
+                  {/* Hover Overlay */}
+                  <div className={`absolute inset-0 bg-black/60 flex items-center justify-center gap-2 transition-opacity ${hoveredProject === project.id ? 'opacity-100' : 'opacity-0'}`}>
+                    {viewMode === 'projects' ? (
+                      <>
+                        <Button
+                          size="sm"
+                          className="bg-white text-black hover:bg-white/90"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onOpenProject?.(project.id);
+                          }}
+                        >
+                          <Pencil className="w-4 h-4 mr-1" />
+                          Edit
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-white/30 text-white hover:bg-white/10"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          Preview
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="bg-red-600 hover:bg-red-500 text-white"
+                          onClick={(e) => handleDeleteClick(project, e)}
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Delete
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          size="sm"
+                          className="bg-green-600 text-white hover:bg-green-500"
+                          onClick={(e) => handleRestore(project.id, e)}
+                          disabled={restoringId === project.id}
+                        >
+                          {restoringId === project.id ? (
+                            <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                          ) : (
+                            <RotateCcw className="w-4 h-4 mr-1" />
+                          )}
+                          Restore
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="bg-red-600 hover:bg-red-500"
+                          onClick={(e) => handlePermanentDelete(project.id, e)}
+                          disabled={deletingId === project.id}
+                        >
+                          {deletingId === project.id ? (
+                            <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-4 h-4 mr-1" />
+                          )}
+                          Delete
+                        </Button>
+                      </>
                     )}
                   </div>
-                </CardContent>
-              </Card>
+
+                  {/* Status Badge */}
+                  <div className="absolute top-3 left-3">
+                    {viewMode === 'trash' ? (
+                      <Badge className="bg-red-500/90 text-white text-xs">
+                        {project.daysRemaining} days left
+                      </Badge>
+                    ) : (
+                      <Badge
+                        className={`text-xs ${
+                          project.status === 'published'
+                            ? 'bg-green-500/90 text-white'
+                            : 'bg-slate-700/90 text-slate-300'
+                        }`}
+                      >
+                        {project.status === 'published' ? 'Live' : 'Draft'}
+                      </Badge>
+                    )}
+                  </div>
+
+                  {/* More Menu - Only for projects view */}
+                  {viewMode === 'projects' && (
+                    <div className="absolute top-3 right-3">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="w-8 h-8 bg-black/40 hover:bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <MoreHorizontal className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-slate-900 border-slate-700">
+                          <DropdownMenuItem className="text-slate-300 hover:text-white focus:text-white focus:bg-slate-800">
+                            <Pencil className="w-4 h-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-slate-300 hover:text-white focus:text-white focus:bg-slate-800">
+                            <Eye className="w-4 h-4 mr-2" />
+                            Preview
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-slate-300 hover:text-white focus:text-white focus:bg-slate-800">
+                            <Copy className="w-4 h-4 mr-2" />
+                            Duplicate
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-slate-300 hover:text-white focus:text-white focus:bg-slate-800">
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Open in new tab
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator className="bg-slate-700" />
+                          <DropdownMenuItem
+                            className="text-red-400 hover:text-red-300 focus:text-red-300 focus:bg-red-900/20"
+                            onClick={(e) => handleDeleteClick(project, e as unknown as React.MouseEvent)}
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  )}
+                </div>
+
+                {/* Project Info */}
+                <div className="p-4">
+                  <h3 className={`font-semibold truncate mb-1 transition-colors ${
+                    viewMode === 'trash' ? 'text-slate-400' : 'text-white group-hover:text-purple-400'
+                  }`}>
+                    {project.name}
+                  </h3>
+                  {project.templateName && (
+                    <p className="text-sm text-slate-500 truncate mb-2">
+                      {project.templateName}
+                    </p>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-slate-500 flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {viewMode === 'trash'
+                        ? `Deleted ${formatTime(project.deletedAt)}`
+                        : formatTime(project.lastEditedAt || project.updatedAt)
+                      }
+                    </span>
+                    {project.industry && viewMode === 'projects' && (
+                      <Badge variant="outline" className="text-xs border-slate-700 text-slate-400">
+                        {project.industry}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
             ))}
+
+            {/* New Project Card - Only in projects view */}
+            {viewMode === 'projects' && (
+              <button
+                onClick={onGenerate}
+                className="rounded-xl border-2 border-dashed border-slate-700 hover:border-purple-500/50 bg-slate-900/30 hover:bg-slate-800/30 transition-all flex flex-col items-center justify-center p-8 min-h-[240px] group"
+              >
+                <div className="w-14 h-14 rounded-xl bg-slate-800 group-hover:bg-purple-500/20 flex items-center justify-center mb-4 transition-colors">
+                  <Plus className="w-7 h-7 text-slate-500 group-hover:text-purple-400 transition-colors" />
+                </div>
+                <span className="text-slate-400 group-hover:text-white font-medium transition-colors">Create New Project</span>
+              </button>
+            )}
           </div>
         )}
       </div>
 
-      {/* Quick Actions */}
-      <div className="mb-12">
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Quick Actions</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Button
-            variant="outline"
-            className="h-24 flex flex-col space-y-2 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 hover:shadow-lg transition-all"
-            onClick={onGenerate}
-            data-testid="quick-action-generate"
-          >
-            <Code className="w-8 h-8 text-blue-600" />
-            <span>New Website</span>
-          </Button>
+      {/* Delete Project Confirmation Dialog */}
+      <AlertDialog open={!!deleteConfirmProject} onOpenChange={(open) => !open && setDeleteConfirmProject(null)}>
+        <AlertDialogContent className="bg-slate-900 border-slate-700">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Delete Project?</AlertDialogTitle>
+            <AlertDialogDescription className="text-slate-400">
+              Are you sure you want to delete <span className="font-semibold text-white">"{deleteConfirmProject?.name}"</span>?
+              <br /><br />
+              The project will be moved to trash and permanently deleted after 60 days. You can restore it from trash if needed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-slate-800 text-white border-slate-700 hover:bg-slate-700">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              disabled={deletingId === deleteConfirmProject?.id}
+              className="bg-red-600 hover:bg-red-500"
+            >
+              {deletingId === deleteConfirmProject?.id ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Yes, Delete
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
-          <Button
-            variant="outline"
-            className="h-24 flex flex-col space-y-2 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 hover:shadow-lg transition-all"
-            onClick={onAIPlan}
-            data-testid="quick-action-ai-plan"
-          >
-            <Brain className="w-8 h-8 text-purple-600" />
-            <span>AI Planning</span>
-          </Button>
-
-          <Button
-            variant="outline"
-            className="h-24 flex flex-col space-y-2 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 hover:shadow-lg transition-all"
-            onClick={onAllTools}
-            data-testid="quick-action-all-tools"
-          >
-            <Zap className="w-8 h-8 text-green-600" />
-            <span>All Tools</span>
-          </Button>
-
-          <Button
-            variant="outline"
-            className="h-24 flex flex-col space-y-2 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 hover:shadow-lg transition-all"
-            data-testid="quick-action-analytics"
-          >
-            <BarChart3 className="w-8 h-8 text-orange-600" />
-            <span>Analytics</span>
-          </Button>
-        </div>
-      </div>
+      {/* Empty Trash Confirmation Dialog */}
+      <AlertDialog open={showEmptyTrashDialog} onOpenChange={setShowEmptyTrashDialog}>
+        <AlertDialogContent className="bg-slate-900 border-slate-700">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Empty Trash?</AlertDialogTitle>
+            <AlertDialogDescription className="text-slate-400">
+              This will permanently delete all {trashedProjects.length} project{trashedProjects.length !== 1 ? 's' : ''} in the trash.
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-slate-800 text-white border-slate-700 hover:bg-slate-700">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleEmptyTrash}
+              disabled={emptyingTrash}
+              className="bg-red-600 hover:bg-red-500"
+            >
+              {emptyingTrash ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Emptying...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Empty Trash
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

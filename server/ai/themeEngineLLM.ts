@@ -7,7 +7,7 @@ import OpenAI from 'openai';
 import type { DesignContext } from '../generator/designThinking';
 import type { StyleSystem } from '../generator/styleSystem';
 import type { PlannedImage } from './imagePlannerLLM';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
 
 export interface GlobalTheme {
   palette: {
@@ -69,10 +69,10 @@ function buildThemePrompt(
   styleSystem: StyleSystem,
   imagePlans: PlannedImage[]
 ): string {
-  const industry = designContext.industry || 'business';
+  const industry = 'business'; // Default industry
   const tone = designContext.emotionalTone || 'professional';
-  const primaryGoal = designContext.primaryGoals?.[0] || 'engagement';
-  const brandVoice = designContext.brandVoice || 'professional';
+  const primaryGoal = designContext.userGoal || 'engagement';
+  const brandVoice = `${designContext.brandVoice.formality}, ${designContext.brandVoice.modernity}`;
   
   // Extract color hints from style system
   const primaryColor = styleSystem.colors.primary;
@@ -85,8 +85,8 @@ function buildThemePrompt(
   const bodyFont = styleSystem.typography.body.font;
   
   // Extract image style hints
-  const imageStyles = imagePlans.map(img => img.styleHint || '').filter(Boolean);
-  const imageStyleHint = imageStyles.length > 0 
+  const imageStyles = imagePlans.map(_img => _img.styleHint || '').filter(Boolean);
+  const imageStyleHint = imageStyles.length > 0
     ? `Image style hints: ${imageStyles.join(', ')}`
     : '';
   
@@ -249,8 +249,6 @@ export async function generateGlobalTheme(
 
   } catch (error: unknown) {
     logError(error, 'Theme Engine LLM v6.9');
-    const errorMessage = getErrorMessage(error);
-    const projectName = designContext.projectName || 'Unknown project';
     console.warn('[Theme Engine LLM v6.9] Falling back to style system-based theme - generation will continue');
     return generateFallbackTheme(finalStyleSystem);
   }

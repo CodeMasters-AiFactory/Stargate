@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ChevronLeft, ChevronRight, Navigation, Home } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Navigation, Home, Wand2 } from 'lucide-react';
 import type { WizardStage } from '@/types/websiteBuilder';
 import { useLocation } from 'wouter';
 import { useIDE } from '@/hooks/use-ide';
@@ -26,19 +26,21 @@ interface WizardNavigationProps {
   className?: string;
 }
 
-// NEW 3-PHASE ULTRA-SIMPLIFIED WORKFLOW
-// 1. Package → 2. Template → 3. Final Website
+// NEW 4-PHASE WORKFLOW (with Quick Business Form)
+// 1. Package → 2. Template → 3. Quick Form → 4. Final Website
 const STAGE_ORDER: WizardStage[] = [
   'package-select',      // Phase 1: Choose Package
   'template-select',     // Phase 2: Design Template Selection (LOOK/Layout)
-  'final-website',       // Phase 3: Display final website
+  'quick-form',          // Phase 3: Quick Business Form (4-5 questions)
+  'final-website',       // Phase 4: Display final website with auto-build
 ];
 
 const STAGE_LABELS: Record<WizardStage, string> = {
-  // NEW 3-PHASE ULTRA-SIMPLIFIED WORKFLOW
+  // NEW 4-PHASE WORKFLOW (with Quick Business Form)
   'package-select': 'Phase 1: Choose Your Package',
   'template-select': 'Phase 2: Select Design Template',
-  'final-website': 'Phase 3: Final Website',
+  'quick-form': 'Phase 3: Business Details',
+  'final-website': 'Phase 4: Your Website',
   // Deprecated phases (removed from workflow)
   'keywords-collection': 'Pages & Keywords (REMOVED)',
   'content-rewriting': 'AI Content Rewriting (REMOVED)',
@@ -147,6 +149,50 @@ export function WizardNavigation({
   // Hide navigation if stage is not in the new active flow
   if (!STAGE_ORDER.includes(currentStage)) {
     return null;
+  }
+
+  // Simplified Merlin header for template-select stage
+  if (currentStage === 'template-select') {
+    return (
+      <div className={`bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg ${className}`}>
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            {/* Left: Back + Merlin Branding */}
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handlePrevious}
+                disabled={!canNavigateBack}
+                className="bg-white/10 border border-white/20 text-white hover:bg-white/20"
+              >
+                <ChevronLeft className="w-4 h-4 mr-1" />
+                Back
+              </Button>
+              <div className="h-6 w-px bg-white/30" />
+              <div className="flex items-center gap-2">
+                <Wand2 className="w-6 h-6" />
+                <span className="text-xl font-bold">Merlin</span>
+              </div>
+            </div>
+
+            {/* Right: Home button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setState(prev => ({ ...prev, currentView: 'landing' }));
+                setLocation('/');
+              }}
+              className="bg-white/10 border border-white/20 text-white hover:bg-white/20"
+            >
+              <Home className="w-4 h-4 mr-1" />
+              Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

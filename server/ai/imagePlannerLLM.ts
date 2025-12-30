@@ -6,8 +6,8 @@
 import OpenAI from 'openai';
 import type { DesignContext } from '../generator/designThinking';
 import type { StyleSystem } from '../generator/styleSystem';
-import type { LayoutPlan, SectionPlan } from './layoutPlannerLLM';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import type { LayoutPlan } from './layoutPlannerLLM';
+import { logError } from '../utils/errorHandler';
 
 export interface PlannedImage {
   sectionKey: string;        // e.g. "hero-1", "about-1"
@@ -38,7 +38,6 @@ function extractStyleHints(styleSystem: StyleSystem): string {
   
   // Color palette analysis
   const primary = styleSystem.colors.primary?.toLowerCase() || '';
-  const secondary = styleSystem.colors.secondary?.toLowerCase() || '';
   const accent = styleSystem.colors.accent?.toLowerCase() || '';
   
   // Detect color themes
@@ -186,10 +185,10 @@ Return ONLY valid JSON array of PlannedImage objects. No markdown, no explanatio
     }
 
     // Parse JSON response
-    let parsed: any;
+    let parsed: unknown;
     try {
       parsed = JSON.parse(content);
-    } catch (parseError) {
+    } catch (_parseError) {
       // Try to extract JSON from markdown code blocks
       const jsonMatch = content.match(/```(?:json)?\s*(\[.*?\])\s*```/s);
       if (jsonMatch) {
@@ -201,25 +200,23 @@ Return ONLY valid JSON array of PlannedImage objects. No markdown, no explanatio
     }
 
     // Handle both { images: [...] } and direct array
-    const images = Array.isArray(parsed) ? parsed : (parsed.images || parsed.plannedImages || []);
+    const images = Array.isArray(parsed) ? parsed : ((parsed as Record<string, unknown>).images || (parsed as Record<string, unknown>).plannedImages || []);
 
     // Validate structure
-    const validatedImages: PlannedImage[] = images
-      .filter((img: any) => img && img.sectionKey && img.prompt && img.purpose)
-      .map((img: any) => ({
-        sectionKey: img.sectionKey,
-        purpose: img.purpose,
-        prompt: img.prompt,
-        styleHint: img.styleHint,
-        alt: img.alt || generateAltFromPrompt(img.prompt)
+    const validatedImages: PlannedImage[] = (images as Array<Record<string, unknown>>)
+      .filter((img: Record<string, unknown>) => img && img.sectionKey && img.prompt && img.purpose)
+      .map((img: Record<string, unknown>) => ({
+        sectionKey: img.sectionKey as string,
+        purpose: img.purpose as "hero" | "supporting" | "icon" | "background",
+        prompt: img.prompt as string,
+        styleHint: img.styleHint as string | undefined,
+        alt: (img.alt as string | undefined) || generateAltFromPrompt(img.prompt as string)
       }));
 
     console.log(`[Merlin 6.5] Generated image plan with ${validatedImages.length} items.`);
     return validatedImages;
   } catch (error: unknown) {
     logError(error, 'Image Planner LLM v6.5');
-    const errorMessage = getErrorMessage(error);
-    const projectName = designContext.projectName || 'Unknown project';
     console.warn('[Image Planner LLM v6.5] Falling back to rule-based image plan - generation will continue');
     return generateFallbackImagePlan(sectionPlan, designContext);
   }
@@ -231,11 +228,11 @@ Return ONLY valid JSON array of PlannedImage objects. No markdown, no explanatio
 function generateAltFromPrompt(prompt: string): string {
   // Extract key visual elements from prompt
   const words = prompt.toLowerCase().split(/\s+/);
-  const importantWords = words.filter(w => 
-    w.length > 4 && 
+  const importantWords = words.filter((w: string) =>
+    w.length > 4 &&
     !['the', 'and', 'with', 'from', 'that', 'this', 'image', 'photo', 'picture'].includes(w)
   ).slice(0, 5);
-  
+
   return importantWords.join(' ') || 'Website image';
 }
 

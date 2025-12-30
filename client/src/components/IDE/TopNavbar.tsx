@@ -47,7 +47,7 @@ export function TopNavbar({ currentSection = 'Dashboard' }: TopNavbarProps) {
   // const formatDate = (date: Date) => { ... }
 
   return (
-    <div className="h-10 bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 border-b border-blue-800/50 flex items-center justify-between px-4 backdrop-blur-xl flex-shrink-0">
+    <div className="h-14 bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 border-b border-blue-800/50 flex items-center justify-between px-4 backdrop-blur-xl flex-shrink-0">
       {/* Left side - Page Title */}
       <div className="flex items-center">
         <h1 className="text-sm font-bold bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-transparent">

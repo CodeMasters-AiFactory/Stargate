@@ -3,7 +3,7 @@
  * Phase 3.2: Integration Expansion - Developer API for custom integrations
  */
 
-import type { Express } from 'express';
+import type { Express, Request, Response } from 'express';
 import { validateIntegration, testIntegration, generateIntegrationSDK } from '../services/developer/integrationSDK';
 import type { Integration } from '../services/integrations/integrationService';
 
@@ -12,27 +12,28 @@ const developerIntegrations = new Map<string, Integration>();
 
 export function registerDeveloperRoutes(app: Express) {
   // Get SDK
-  app.get('/api/developer/sdk', (req, res) => {
+  app.get('/api/developer/sdk', (_req: Request, res: Response): void => {
     const sdk = generateIntegrationSDK();
     res.setHeader('Content-Type', 'application/javascript');
     res.send(sdk);
   });
 
   // Register a new integration
-  app.post('/api/developer/integrations', async (req, res) => {
+  app.post('/api/developer/integrations', async (req: Request, res: Response): Promise<void> => {
     try {
       const integration: Integration = req.body;
       const validation = validateIntegration(integration);
-      
+
       if (!validation.valid) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           errors: validation.errors,
         });
+        return;
       }
-      
+
       developerIntegrations.set(integration.id, integration);
-      
+
       res.json({
         success: true,
         integration,
@@ -46,9 +47,9 @@ export function registerDeveloperRoutes(app: Express) {
   });
 
   // Get all developer integrations
-  app.get('/api/developer/integrations', (req, res) => {
+  app.get('/api/developer/integrations', (_req: Request, res: Response): void => {
     const integrations = Array.from(developerIntegrations.values());
-    
+
     res.json({
       success: true,
       integrations,
@@ -57,17 +58,18 @@ export function registerDeveloperRoutes(app: Express) {
   });
 
   // Get a specific integration
-  app.get('/api/developer/integrations/:integrationId', (req, res) => {
+  app.get('/api/developer/integrations/:integrationId', (req: Request, res: Response): void => {
     const { integrationId } = req.params;
     const integration = developerIntegrations.get(integrationId);
-    
+
     if (!integration) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Integration not found',
       });
+      return;
     }
-    
+
     res.json({
       success: true,
       integration,
@@ -75,31 +77,33 @@ export function registerDeveloperRoutes(app: Express) {
   });
 
   // Update an integration
-  app.put('/api/developer/integrations/:integrationId', async (req, res) => {
+  app.put('/api/developer/integrations/:integrationId', async (req: Request, res: Response): Promise<void> => {
     try {
       const { integrationId } = req.params;
       const updates: Partial<Integration> = req.body;
-      
+
       const existing = developerIntegrations.get(integrationId);
       if (!existing) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Integration not found',
         });
+        return;
       }
-      
+
       const updated = { ...existing, ...updates, id: integrationId };
       const validation = validateIntegration(updated);
-      
+
       if (!validation.valid) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           errors: validation.errors,
         });
+        return;
       }
-      
+
       developerIntegrations.set(integrationId, updated);
-      
+
       res.json({
         success: true,
         integration: updated,
@@ -113,17 +117,18 @@ export function registerDeveloperRoutes(app: Express) {
   });
 
   // Delete an integration
-  app.delete('/api/developer/integrations/:integrationId', (req, res) => {
+  app.delete('/api/developer/integrations/:integrationId', (req: Request, res: Response): void => {
     const { integrationId } = req.params;
     const deleted = developerIntegrations.delete(integrationId);
-    
+
     if (!deleted) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Integration not found',
       });
+      return;
     }
-    
+
     res.json({
       success: true,
       message: 'Integration deleted successfully',
@@ -131,20 +136,21 @@ export function registerDeveloperRoutes(app: Express) {
   });
 
   // Test an integration
-  app.post('/api/developer/integrations/:integrationId/test', async (req, res) => {
+  app.post('/api/developer/integrations/:integrationId/test', async (req: Request, res: Response): Promise<void> => {
     try {
       const { integrationId } = req.params;
       const integration = developerIntegrations.get(integrationId);
-      
+
       if (!integration) {
-        return res.status(404).json({
+        res.status(404).json({
           success: false,
           error: 'Integration not found',
         });
+        return;
       }
-      
+
       const result = await testIntegration(integration);
-      
+
       res.json({
         success: result.success,
         message: result.message,
@@ -158,19 +164,20 @@ export function registerDeveloperRoutes(app: Express) {
   });
 
   // Generate integration script
-  app.get('/api/developer/integrations/:integrationId/script', (req, res) => {
+  app.get('/api/developer/integrations/:integrationId/script', (req: Request, res: Response): void => {
     const { integrationId } = req.params;
     const integration = developerIntegrations.get(integrationId);
-    
+
     if (!integration) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Integration not found',
       });
+      return;
     }
-    
+
     const script = generateIntegrationScript(integration);
-    
+
     res.setHeader('Content-Type', 'application/javascript');
     res.send(script);
   });

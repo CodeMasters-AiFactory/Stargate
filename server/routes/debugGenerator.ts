@@ -4,13 +4,12 @@
  */
 
 import type { Express, Request, Response } from 'express';
-import { generateWebsiteWithLLM } from '../services/merlinDesignLLM';
 import { convertRequirementsToProjectConfig } from '../services/formatConverter';
 import { convertV5ToMultiPageWebsite } from '../services/v5ToMultiPageConverter';
-import { getErrorMessage, logError } from '../utils/errorHandler';
+import { logError } from '../utils/errorHandler';
 
 interface DebugEventEmitter {
-  emit: (event: string, data: any) => void;
+  emit: (event: string, data: Record<string, unknown>) => void;
   isPaused: () => boolean;
   waitForResume: () => Promise<void>;
 }
@@ -22,11 +21,11 @@ export function registerDebugGeneratorRoute(app: Express) {
 
   const createDebugEmitter = (res: Response, sessionId: string): DebugEventEmitter => {
     return {
-      emit: (event: string, data: any) => {
+      emit: (event: string, data: Record<string, unknown>) => {
         try {
           res.write(`data: ${JSON.stringify({ type: event, ...data })}\n\n`);
-        } catch (error) {
-          console.error('[Debug] Failed to emit event:', error);
+        } catch (_error) {
+          console.error('[Debug] Failed to emit event:', _error);
         }
       },
       isPaused: () => {
@@ -46,7 +45,7 @@ export function registerDebugGeneratorRoute(app: Express) {
     };
   };
 
-  app.post('/api/website-builder/generate-debug', async (req: Request, res: Response) => {
+  app.post('/api/website-builder/generate-debug', async (req: Request, res: Response): Promise<void> => {
     const startTime = Date.now();
     const { requirements, _debugMode, pauseBetweenSteps } = req.body;
     const sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -219,7 +218,7 @@ export function registerDebugGeneratorRoute(app: Express) {
         duration: Date.now() - startTime,
         data: {
           totalSections: sectionPlan.totalSections,
-          sections: sectionPlan.sections.map((s: any) => ({ type: s.type, order: s.order })),
+          sections: sectionPlan.sections.map((s: Record<string, unknown>) => ({ type: s.type, order: s.order })),
         },
       });
 
@@ -246,7 +245,7 @@ export function registerDebugGeneratorRoute(app: Express) {
         duration: Date.now() - startTime,
         data: {
           sectionCount: layout.sections.length,
-          sections: layout.sections.map((s: any) => ({ type: s.type, key: s.key })),
+          sections: layout.sections.map((s: Record<string, unknown>) => ({ type: s.type, key: s.key })),
         },
       });
 
@@ -326,9 +325,9 @@ export function registerDebugGeneratorRoute(app: Express) {
         duration: Date.now() - startTime,
         data: {
           copyCount: sectionCopies.length,
-          samples: sectionCopies.slice(0, 3).map((c: any) => ({
+          samples: sectionCopies.slice(0, 3).map((c: Record<string, unknown>) => ({
             sectionKey: c.sectionKey,
-            headline: c.headline?.substring(0, 50),
+            headline: typeof c.headline === 'string' ? c.headline.substring(0, 50) : undefined,
           })),
         },
       });
@@ -603,7 +602,7 @@ export function registerDebugGeneratorRoute(app: Express) {
       });
 
       // Encode and send result
-      const safeFiles: Record<string, any> = {};
+      const safeFiles: Record<string, Record<string, unknown>> = {};
       for (const [filePath, file] of Object.entries(website.files)) {
         safeFiles[filePath] = {
           ...file,
@@ -636,14 +635,14 @@ export function registerDebugGeneratorRoute(app: Express) {
       // Clean up session
       globalPauseState.delete(sessionId);
       res.end();
-    } catch (error: unknown) {
-      logError(error, 'Debug Generator');
-      
+    } catch (_error: unknown) {
+      logError(_error, 'Debug Generator');
+
       debug.emit('error', {
         phase: 'Unknown',
         step: 'Unknown',
-        message: error.message,
-        stack: error.stack,
+        message: _error instanceof Error ? _error.message : String(_error),
+        stack: _error instanceof Error ? _error.stack : undefined,
       });
 
       // Clean up session
@@ -653,22 +652,24 @@ export function registerDebugGeneratorRoute(app: Express) {
   });
 
   // Pause/Resume control endpoint
-  app.post('/api/website-builder/debug-pause', (req: Request, res: Response) => {
+  app.post('/api/website-builder/debug-pause', (req: Request, res: Response): void => {
     const { sessionId } = req.body;
     if (sessionId && globalPauseState.has(sessionId)) {
       const state = globalPauseState.get(sessionId)!;
       state.isPaused = true;
       res.json({ status: 'paused', sessionId });
+      return;
     } else {
       // Pause all sessions if no sessionId provided
       for (const [_id, state] of globalPauseState.entries()) {
         state.isPaused = true;
       }
       res.json({ status: 'paused', all: true });
+      return;
     }
   });
 
-  app.post('/api/website-builder/debug-resume', (req: Request, res: Response) => {
+  app.post('/api/website-builder/debug-resume', (req: Request, res: Response): void => {
     const { sessionId } = req.body;
     if (sessionId && globalPauseState.has(sessionId)) {
       const state = globalPauseState.get(sessionId)!;
@@ -678,6 +679,7 @@ export function registerDebugGeneratorRoute(app: Express) {
         state.resumeResolve = undefined;
       }
       res.json({ status: 'resumed', sessionId });
+      return;
     } else {
       // Resume all sessions if no sessionId provided
       for (const [_id, state] of globalPauseState.entries()) {
@@ -688,6 +690,7 @@ export function registerDebugGeneratorRoute(app: Express) {
         }
       }
       res.json({ status: 'resumed', all: true });
+      return;
     }
   });
 }
